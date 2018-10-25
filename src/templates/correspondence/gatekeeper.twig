@@ -1,0 +1,41 @@
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Correspondence") %}
+
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta charset="utf-8" />
+        <title>Welcome to Craft CMS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+        <meta name="referrer" content="origin-when-cross-origin" />
+        <style>
+            html, body {
+                height: 100%;
+            }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="qarr-correspondence-fe">
+            <form method="post" accept-charset="UTF-8">
+                {{ csrfInput() }}
+                <input type="hidden" name="action" value="qarr/correspondence/check-password">
+                {{ redirectInput('qarr/correspondence/access') }}
+                <input type="hidden" name="email" value="{{ craft.app.request.queryParam('email') }}">
+                <input type="hidden" name="type" value="{{ craft.app.request.queryParam('type') }}">
+                <input type="hidden" name="elementId" value="{{ craft.app.request.queryParam('elementId') }}">
+
+
+                <div class="qarr-field">
+                    <input type="password" name="password" placeholder="Password">
+                    <button type="submit" class="button">Access</button>
+                </div>
+
+            </form>
+        </section>
+    </body>
+</html>

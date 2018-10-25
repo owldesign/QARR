@@ -1,0 +1,34 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * QARR plugin for Craft CMS
+ *
+ * QARRWidget Widget Settings
+ *
+ * @author    Vadim Goncharov
+ * @copyright Copyright (c) 2018 Vadim Goncharov
+ * @link      https://owl-design.net
+ * @package   QARR
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+{{ dd(settings) }}
+
+<div class="field" id="{{ id }}">
+    <div class="heading">
+        <label for="{{ namespacedId }}">{{ 'Type'|t('qarr') }}</label>
+    </div>
+    <div class="input ltr">
+        <div class="select">
+            <select name="type" id="{{ namespacedId }}">
+                <option value="owldesign\\qarr\\elements\\Review">Rating & Reviews</option>
+                <option value="owldesign\\qarr\\elements\\Question">Question & Answers</option>
+            </select>
+        </div>
+
+    </div>
+</div>
+
+

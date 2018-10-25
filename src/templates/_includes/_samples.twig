@@ -1,0 +1,15 @@
+{#<div class="qarr-field custom-field custom-select {% if display.getErrors('type') %}has-error{% endif %} {% if display.type %}has-value{% endif %}">#}
+                {#<select id="type" name="type">#}
+                    {#<option></option>#}
+                    {#<option value="review" {{ display.type == 'review' ? 'selected' : null }}>Review</option>#}
+                    {#<option value="question" {{ display.type == 'question' ? 'selected' : null }}>Question</option>#}
+                {#</select>#}
+                {#<label id="type-label" for="type" data-label="{{ 'Display Type'|t('qarr') }}" data-error-message="{% if display.getErrors('type') %}{{ display.getErrors('type')[0] }}{% endif %}">#}
+                    {#{% if display.getErrors('type') %}#}
+                        {#{{ 'Display'|t('qarr') }} {{ display.getErrors('type')[0] }}#}
+                    {#{% else %}#}
+                        {#{{ 'Display Type'|t('qarr') }}#}
+                    {#{% endif %}#}
+                {#</label>#}
+                {#<span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>#}
+            {#</div>#}

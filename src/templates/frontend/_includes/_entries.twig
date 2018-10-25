@@ -1,0 +1,43 @@
+<div class="qarr-entries-set" id="{{ random() }}">
+{% for entry in entries.all() %}
+    {% set type = entry|getClass()|lower %}
+
+    <div class="qarr-entry-item">
+        <div class="qarr-entry-meta">
+            <strong class="qarr-entry-name">{{ entry.fullName }}</strong>
+            {% if type == 'review' %}
+                <div class="qarr-entry-stars">
+                    {% for i in 1..5 %}
+                        <div class="qarr-entry-star {% if i <= entry.rating %}active{% endif %}" data-star-count="{{ i }}">★</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <div class="qarr-entry-posted-date">
+                {{ entry.dateCreated |date() }}
+            </div>
+        </div>
+        <div class="qarr-entry-content">
+            {% if type == 'review' %}
+                {{ entry.feedback }}
+            {% else %}
+                {{ entry.question }}
+            {% endif %}
+        </div>
+
+        <div class="qarr-entry-report-abuse-container">
+            {% set reported = craft.qarr.getCookie('reported') %}
+            {% if reported == entry.id %}
+                <span>{{ 'Reported'|t('qarr') }}</span>
+            {% else %}
+                <a href="#" class="qarr-entry-ra-btn" data-element-id="{{ entry.id }}">{{ 'Report Abuse'|t('qarr') }}</a>
+            {% endif %}
+        </div>
+
+        {% if entry.response %}
+            <div class="qarr-entry-admin-response">
+                <span class="qarr-entry-ar-text">{{ entry.response.reply }}</span>
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}
+</div>

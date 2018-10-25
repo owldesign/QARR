@@ -1,0 +1,10 @@
+<div id="qarr-{{ type }}-pagination" class="qarr-pagination" data-style="{{ style }}" data-type="{{ type }}" data-offset="4" data-total-pages="{{ info.totalPages }}">
+    <div class="qarr-pager-container">
+        {% if style == 'infinite' %}
+            <a href="#" class="qarr-pager qarr-pager-next qarr-pager-infinite" data-direction="next"><span>{{ 'Load More'|t('qarr') }}</span></a>
+        {% else %}
+            <a href="#" class="qarr-pager qarr-pager-prev" data-direction="prev"><span>&#8249;</span></a>
+            <a href="#" class="qarr-pager qarr-pager-next" data-direction="next"><span>&#8250;</span></a>
+        {% endif %}
+    </div>
+</div>

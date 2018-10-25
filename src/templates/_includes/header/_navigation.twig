@@ -1,0 +1,27 @@
+<section id="navigation">
+    <a href="{{ url('qarr') }}" class="qarr-logo">
+        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
+    </a>
+
+    <nav class="primary-nav">
+        <a href="{{ url('qarr/reviews') }}" {% if currentPage == 'reviews' %}class="active-link"{% endif %}>
+            <span class="link">
+                Reviews
+            </span>
+            <span class="badge">
+                <span class="badge-count reviews-count-header">{{ craft.qarr.getCount('reviews', 'pending') }}</span>
+            </span>
+
+        </a>
+        <a href="{{ url('qarr/questions') }}" {% if currentPage == 'questions' %}class="active-link"{% endif %}>
+            <span class="link">Questions</span>
+            <span class="badge">
+                <span class="badge-count questions-count-header">{{ craft.qarr.getCount('questions', 'pending') }}</span>
+            </span>
+        </a>
+
+        <a href="{{ url('qarr/displays') }}" class="{% if currentPage == 'displays' %}active-link{% endif %}">
+            <span class="link">Displays</span>
+        </a>
+    </nav>
+</section>

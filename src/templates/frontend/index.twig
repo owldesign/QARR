@@ -1,0 +1,76 @@
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Frontend") %}
+{% do view.registerJsFile('//owldesign.sfo2.cdn.digitaloceanspaces.com/scripts/garnish.min.js') %}
+
+<section id="qarr-display-container">
+    
+    <div class="qarr-tab-links">
+        {% if includeReviews %}
+            <a href="#" class="qarr-tab-link qarr-tab-link-reviews active" data-target="reviews">Reviews</a>
+        {% endif %}
+        {% if includeQuestions %}
+            <a href="#" class="qarr-tab-link qarr-tab-link-questions" data-target="questions">Questions</a>
+        {% endif %}
+    </div>
+    
+    <div class="qarr-tab-container">
+        <div class="qarr-loader">
+            {% include 'qarr/frontend/_includes/_loader' ignore missing %}
+        </div>
+        {% if includeReviews %}
+            <div id="qarr-tab-reviews" class="qarr-tab-content active pager-style-{{ pagination }}" {% if reviewsDisplay %}data-display-id="{{ reviewsDisplay.id }}"{% endif %} data-product-id="{{ product.id }}" data-qarr-reviews>
+                <div class="qarr-tab-header">
+                    <div class="qarr-overall-rating">
+                        <div class="qarr-element-title">{{ product.title }} {{ 'Reviews'|t('qarr') }}</div>
+                        {% set averageRating = craft.qarr.getAverageRating(product.id) %}
+                        <div class="qarr-stars">
+                            {% for i in 1..5 %}
+                                <div class="qarr-star {% if i <=averageRating|round %}active{% endif %}" data-star-count="{{ i }}">★</div>
+                            {% endfor %}
+                            <div class="qarr-star-count">{{ craft.qarr.getCount('reviews', 'approved', product.id) }} {{ 'reviews'|t('qarr') }}</div>
+                        </div>
+                        {% if averageRating > 0 %}
+                            <div class="qarr-callouts-value">{{ averageRating }}<span class="qarr-pipe"> {{ 'out of'|t('qarr') }} </span>5<span class="qarr-pipe"> {{ 'stars'|t('qarr') }} </span></div>
+                            <div class="qarr-callouts-label">{{ 'Average Rating'|t('qarr') }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="qarr-btn-container">
+                        {% if currentUser %}
+                            <a class="qarr-open-modal qarr-btn" data-type="review">{{ 'Write Review'|t('qarr') }}</a>
+                        {% else %}
+                            <p>{{ 'Please login to leave a review.'|t('qarr') }}</p>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+                <div class="qarr-entries-body">
+                    {% include 'qarr/frontend/_reviews' ignore missing with { type: 'reviews' } %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if includeQuestions %}
+            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-product-id="{{ product.id }}" data-qarr-questions>
+                <div class="qarr-tab-header">
+                    <div class="qarr-element-title">{{ product.title }} {{ 'Questions'|t('qarr') }}</div>
+                    <div class="qarr-btn-container">
+                        <a class="qarr-open-modal qarr-btn" data-type="question">{{ 'Ask Question'|t('qarr') }}</a>
+                    </div>
+                </div>
+                <div class="qarr-entries-body">
+                    {% include 'qarr/frontend/_questions' ignore missing with { type: 'questions' } %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+</section>
+
+<script>
+    window.QARR = {};
+    QARR.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
+    QARR.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+    QARR.productId = "{{ product.id }}";
+    QARR.productTypeId = "{{ product.type.id }}";
+    QARR.actionUrl = "{{ actionUrl('') }}/";
+    QARR.limit = "{{ limit }}";
+</script>

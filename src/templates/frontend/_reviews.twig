@@ -1,0 +1,47 @@
+{% paginate reviews as reviewsInfo, reviewsEntries %}
+
+<div id="qarr-{{ type }}-container" class="qarr-entries-container" data-product-id="{{ product.id }}">
+    <div class="qarr-entries-set">
+    {% for review in reviewsEntries %}
+        <div class="qarr-entry-item">
+            <div class="qarr-entry-meta">
+                <div class="qarr-entry-name">{{ review.fullName }}</div>
+                <div class="qarr-entry-posted-date">{{ review.dateCreated |date() }}</div>
+                <div class="qarr-entry-stars">
+                    {% for i in 1..5 %}
+                        <div class="qarr-entry-star {% if i <= review.rating %}active{% endif %}" data-star-count="{{ i }}">★</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="qarr-entry-content">
+                {{ review.feedback }}
+            </div>
+
+            {% if review.getReply() %}
+                <div class="qarr-entry-admin-response">
+                    <div class="qarr-entry-ar-title">{{ 'Shop Respose'|t('qarr') }}</div>
+                    <span class="qarr-entry-ar-text">{{ review.reply.reply }}</span>
+                </div>
+            {% endif %}
+
+            <div class="qarr-entry-report-abuse-container">
+                {% set reported = craft.qarr.getCookie('reported') %}
+                {% if reported == review.id %}
+                    <span>{{ 'Reported'|t('qarr') }}</span>
+                {% else %}
+                    <a href="#" class="qarr-entry-ra-btn" data-element-id="{{ review.id }}" data-type="reviews">{{ 'Report Abuse'|t('qarr') }}</a>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="qarr-entry-empty">{{ 'No reviews yet, be the first to leave a review.'|t('qarr') }}</div>
+    {% endfor %}
+    </div>
+</div>
+
+<div class="qarr-entries-footer">
+    {% if reviewsEntries and reviewsInfo.totalPages > 1 %}
+        {% include 'qarr/frontend/_includes/_pagination' ignore missing with { type: 'reviews', info: reviewsInfo, style: pagination } %}
+    {% endif %}
+    {% include 'qarr/frontend/_includes/_copyright' ignore missing %}
+</div>

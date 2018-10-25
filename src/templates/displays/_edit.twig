@@ -1,0 +1,97 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Displays") %}
+
+{% set fullPageForm = true %}
+{% set bodyClass = 'qarr qarr-nosettings qarr-display-edit' %}
+{% set pluginCpUrl = url('qarr') %}
+{% set selectedSubnavItem = "displays" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% import "_includes/forms" as forms %}
+
+{% block header %}
+    {% include 'qarr/_includes/_header' ignore missing %}
+
+    {% block actionButton %}
+        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="flex-container">
+
+        <div id="content-fields" class="full-col">
+            <div class="widget transparent">
+                <input type="hidden" name="action" value="qarr/displays/save">
+                {{ redirectInput('qarr/displays') }}
+
+                {% if display.id %}<input type="hidden" name="displayId" value="{{ display.id }}">{% endif %}
+
+                <div class="qarr-field custom-field {% if display.getErrors('name') %}has-error{% endif %} {% if display.name %}has-value{% endif %}">
+                    <input class="text fullwidth" type="text" id="name" name="name" value="{{ display.name }}"
+                           maxlength="255" autocomplete="off">
+                    <label id="name-label" for="name" data-label="{{ 'Name'|t('qarr') }}"
+                           data-error-message="{% if display.getErrors('name') %}{{ display.getErrors('name')[0] }}{% endif %}">
+                        {% if display.getErrors('name') %}
+                            {{ display.getErrors('name')[0] }}
+                        {% else %}
+                            {{ 'Name'|t('qarr') }}
+                        {% endif %}
+                    </label>
+                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
+                </div>
+
+                <div class="qarr-field custom-field {% if display.getErrors('handle') %}has-error{% endif %} {% if display.handle %}has-value{% endif %}">
+                    <input class="text fullwidth" type="text" id="handle" name="handle" value="{{ display.handle }}"
+                           autocomplete="off">
+                    <label id="handle-label" for="handle" data-label="{{ 'Handle'|t('qarr') }}"
+                           data-error-message="{% if display.getErrors('name') %}{{ display.getErrors('name')[0] }}{% endif %}">
+                        {% if display.getErrors('handle') %}
+                            {{ display.getErrors('handle')[0] }}
+                        {% else %}
+                            {{ 'Handle'|t('qarr') }}
+                        {% endif %}
+                    </label>
+                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
+                </div>
+
+                <div class="qarr-field custom-field {% if display.titleFormat %}has-value{% endif %}">
+                    <input class="text fullwidth" type="text" id="titleFormat" name="titleFormat"
+                           value="{{ display.titleFormat }}" maxlength="255" autocomplete="off">
+                    <label id="titleFormat-label" for="titleFormat">{{ 'Title Format'|t('qarr') }}</label>
+                </div>
+
+                <div id="title-format-items">
+                    <div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"
+                         data-field="{dateCreated}">Date Created
+                    </div>
+                    <div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"
+                         data-field="{fullName}">Full Name
+                    </div>
+                    <div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"
+                         data-field="{emailAddress}">Email Address
+                    </div>
+                    <div class="format-item format-example">
+                        eg. Review from {fullName} submitted on {dateCreated}
+                    </div>
+                </div>
+
+                <div class="fields-wrapper">
+                    <h1>{{ 'Additional Fields'|t('qarr') }}</h1>
+
+                    {% include "qarr/displays/_includes/fieldlayoutdesigner" with {
+                        fieldLayout: display.getFieldLayout(),
+                        customizableTabs: true,
+                        display: display
+                    } only %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% js %}
+    {% if display and not display.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+{% endjs %}

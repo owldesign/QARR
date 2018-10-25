@@ -1,0 +1,73 @@
+{% requirePermission 'qarr:accessDisplays' %}
+
+{% extends "_layouts/cp" %}
+{% set title = "Displays"|t('qarr') %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+{% set bodyClass = 'qarr qarr-noelements qarr-displays' %}
+{% set selectedSubnavItem = "displays" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+
+{% block header %}
+    {% include 'qarr/_includes/_header' ignore missing %}
+
+    {% block actionButton %}
+        {% if currentUser.can('qarr:editDisplays') %}
+            <a href="{{ url('qarr/displays/new') }}" class="btns btn-gray btn-rounded btn-icon btn-icon-left dropdown-menu">
+                <span class="icon"><i class="fa fa-plus"></i></span>
+                <span class="btn-text">{{ "New Display"|t('qarr') }}</span>
+            </a>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div id="nodisplays"{% if displays %} class="hidden"{% endif %}>
+        <p>{{ "No displays exist yet."|t('qarr') }}</p>
+    </div>
+
+    {% if displays|length %}
+        <table id="displays" class="data fullwidth collapsible">
+            <thead>
+            <th scope="col">{{ "Name"|t('qarr') }}</th>
+            <th scope="col">{{ "Handle"|t('qarr') }}</th>
+            <td class="thin"></td>
+            </thead>
+            <tbody>
+            {% for display in displays %}
+                <tr data-id="{{ display.id }}" data-name="{{ display.name }}">
+                    <td scope="row" data-title="{{ 'Name'|t('qarr') }}">
+                        <div class="element">
+                            <a href="{{ url('qarr/displays/' ~ display.id) }}">{{ display.name }}</a>
+                        </div>
+                    </td>
+                    <td data-title="{{ 'Handle'|t('qarr') }}"><code>{{ display.handle }}</code></td>
+                    <td class="thin">
+                        {% if currentUser.can('qarr:deleteDisplays') %}
+                            <a class="delete icon" title="{{ 'Delete'|t('qarr') }}" role="button"></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+
+{% js %}
+
+    var displayMenu = new Garnish.MenuBtn($('.dropdown-menu', this.$container));
+
+
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#displays',
+    noItemsSelector: '#nodisplays',
+    deleteAction: 'qarr/displays/delete',
+    confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}” and all its settings?"|t('qarr') }}',
+    onDeleteItem: function() {
+    if (adminTable.totalItems == 0) {
+    $('#nav-entries').remove();
+    }
+    }
+    });
+{% endjs %}

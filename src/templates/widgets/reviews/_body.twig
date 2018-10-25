@@ -1,0 +1,43 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * QARR plugin for Craft CMS
+ *
+ * QARRWidget Widget Body
+ *
+ * @author    Vadim Goncharov
+ * @copyright Copyright (c) 2018 Vadim Goncharov
+ * @link      https://owl-design.net
+ * @package   QARR
+ * @since     1.0.0
+ */
+#}
+
+{#{% set iconUrl = view.getAssetManager().getPublishedUrl('@owldesign/qarr/web/assets/images', true) ~ '/icon.svg' %}#}
+
+{#<img src="{{ iconUrl }}" height="64" width="64" />#}
+
+<div class="qarr-widget transparent">
+    <div class="widget-pie">
+        <div class="pie-area">
+            <div class="reviews-donut"></div>
+        </div>
+        <div class="pie-stats">
+            <div class="stat-item stat-pending">
+                <div class="stat-icon"></div>
+                <div class="stat-label">Pending</div>
+                <div class="stat-value">0%</div>
+            </div>
+            <div class="stat-item stat-approved">
+                <div class="stat-icon"></div>
+                <div class="stat-label">Approved</div>
+                <div class="stat-value">0%</div>
+            </div>
+            <div class="stat-item stat-rejected">
+                <div class="stat-icon"></div>
+                <div class="stat-label">Rejected</div>
+                <div class="stat-value">0%</div>
+            </div>
+        </div>
+    </div>
+</div>

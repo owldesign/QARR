@@ -1,0 +1,18 @@
+<span class="spinner hidden"></span>
+<div class="response-container">
+    <div class="response-wrapper">
+        <div class="response-author">
+            <div>{{ author }} {{ 'responded'|t('qarr') }} - <span>{{ dateCreated |date() }}</span></div>
+            {% if not dateCreated|date() is same as(dateUpdated|date()) %}
+                <div class="last">{{ 'Updated on'|t('qarr') }} <span>{{ dateUpdated |date() }}</span></div>
+            {% endif %}
+        </div>
+        <span class="response-text">{{ placeholder }}</span>
+    </div>
+
+    <div class="response-actions">
+        <a href="#" class="btns btn-rounded btn-link" id="reply-to-feedback-btn" data-reply-id="{{ id }}" data-element-id="{{ elementId }}" data-author-id="{{ authorId }}" data-placeholder="{{ placeholder }}">
+            {{ 'Edit reply'|t('qarr') }}
+        </a>
+    </div>
+</div>

@@ -1,0 +1,141 @@
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Frontend") %}
+
+<div id="qarr-modal-reviews" class="modal qarr-modal">
+    <div class="qarr-form-title">Write a Review</div>
+    <form method="post" accept-charset="utf-8" id="reviews-form-product-{{ product.id }}" action="{{ actionUrl("qarr/reviews/save") }}">
+        {{ csrfInput() }}
+
+        <input type="hidden" name="action" value="qarr/reviews/save">
+
+        <input type="hidden" name="productId" value="{{ product.id }}">
+        <input type="hidden" name="productType" value="{{ product.type.id}}">
+
+        <div class="qarr-field"><input type="text" name="fields[fullName]" placeholder="Full Name"></div>
+        <div class="qarr-field"><input type="text" name="fields[emailAddress]" placeholder="Email Address"></div>
+
+        <div class="qarr-field">
+            <span class="qarr-label">Rating</span>
+
+            <div class="qarr-star-container">
+                <div class="qarr-star selected" data-star-count="1">★</div>
+                <div class="qarr-star" data-star-count="2">★</div>
+                <div class="qarr-star" data-star-count="3">★</div>
+                <div class="qarr-star" data-star-count="4">★</div>
+                <div class="qarr-star" data-star-count="5">★</div>
+            </div>
+
+            <input type="hidden" id="qarr-rating-input" name="fields[rating]" value="1">
+        </div>
+
+        <div class="qarr-field"><textarea name="fields[feedback]" id="" cols="30" rows="10" placeholder="Your Feedback"></textarea></div>
+
+        {# Display #}
+        {% if display %}
+            <input type="hidden" name="displayId" value="{{ display.id }}">
+            <input type="hidden" name="displayHandle" value="{{ display.handle }}">
+
+            {%- namespace 'fields' -%}
+            {% set tabs = display.getFieldLayout.getTabs() %}
+
+            {% for tab in tabs %}
+                {% set fields = tab.getFields() %}
+
+                {% for field in fields %}
+                    {% set type = field |getClass %}
+                    {% set allowed = craft.qarr.allowedFields %}
+                    {% if type in allowed%}
+                        <div class="qarr-field">
+                            <span class="qarr-label">{{ field.name }}</span>
+                            {{ field.getInputHtml('') |raw }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            {% endnamespace %}
+        {% endif %}
+
+        <div class="qarr-notification"></div>
+
+        <button type="submit" class="qarr-form-btn">
+            <span class="qarr-text">Add Review</span>
+            <div class="qarr-loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+        </button>
+
+    </form>
+</div>
+
+<section id="qarr-container">
+
+    <div class="qarr-btn-container">
+        <a href="#qarr-modal-reviews" rel="modal:open" class="qarr-write-review-btn">Write Review</a>
+    </div>
+
+    {% paginate reviews as reviewsInfo, reviewEntries %}
+
+    <div id="qarr-reviews-container" data-product-id="{{ product.id }}">
+        {% for review in reviewEntries %}
+            <div class="review-item">
+                <div class="review-meta">
+                    <strong class="review-name">{{ review.fullName }}</strong>
+                    <div class="qarr-stars">
+                        {% for i in 1..review.rating %}
+                            <div class="qarr-star" data-star-count="{{ i }}">★</div>
+                        {% endfor %}
+                    </div>
+                    <div class="qarr-posted-date">
+                        {{ review.dateCreated |date() }}
+                    </div>
+                </div>
+                <div class="review-content">
+                    {{ review.feedback }}
+                </div>
+
+                <div class="qarr-report-abuse-container">
+                    {% set reported = craft.qarr.getCookie('reported') %}
+                    {% if reported == review.id %}
+                        <span>{{ 'Reported'|t('qarr') }}</span>
+                    {% else %}
+                        <a href="#" class="qarr-ra-btn" data-element-id="{{ review.id }}">{{ 'Report Abuse'|t('qarr') }}</a>
+                    {% endif %}
+                </div>
+
+                {% if review.response %}
+                    <div class="qarr-admin-response">
+                        <span class="qarr-ar-text">{{ review.response.reply }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="qarr-reviews-pagination">
+        <div class="qarr-pager-container">
+            <a href="{{ reviewsInfo.prevUrl }}" class="qarr-pager pager-disabled qarr-pager-prev" data-page="0" data-offset="0" data-total-pages="{{ reviewsInfo.totalPages }}"><span>&#8249;</span></a>
+            <a href="{{ reviewsInfo.nextUrl }}" class="qarr-pager qarr-pager-next" data-page="2" data-offset="{{ reviewsInfo.last }}" data-total-pages="{{ reviewsInfo.totalPages }}"><span>&#8250;</span></a>
+            <div class="qarr-loader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+        </div>
+
+        <div class="qarr-copyright">
+            <a href="{{ craft.qarr.pluginUrl() }}" target="_blank">{{ 'Powerd by QARR'|t('qarr') }}</a>
+        </div>
+    </div>
+</section>
+
+<!-- Remember to include jQuery :) -->
+<script>
+    if(!window.jQuery) {
+        var script = document.createElement('script');
+        script.type = "text/javascript";
+        script.src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js";
+        document.getElementsByTagName('head')[0].appendChild(script);
+    }
+    window.productId = "{{ product.id }}";
+    window.productType = "{{ product.type.id }}";
+    window.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
+    window.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+    window.cpActionUrl = "/admin";
+</script>
+
+<!-- jQuery Modal -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />

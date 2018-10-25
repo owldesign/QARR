@@ -1,0 +1,249 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Reviews") %}
+
+{% set bodyClass = 'qarr qarr-edit' %}
+{% set pluginCpUrl = url('qarr') %}
+{% set selectedSubnavItem = "reviews" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block actionButton %}
+    <div class="btngroup submit first">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('sqarr') }}">
+        {% if entry.id != null %}
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <hr>
+                <ul>
+                    <li><a class="formsubmit error"
+                           data-action="qarr/reviews/delete-entry"
+                           data-confirm='{{ "Are you sure you want to delete this review and all of it's data?"|t('qarr') }}'
+                           data-redirect="{{ 'qarr/reviews'|hash }}">{{ "Delete"|t('qarr') }}</a>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block header %}
+    {% include 'qarr/_includes/_header' ignore missing %}
+{% endblock %}
+
+{% block content %}
+    <input type="hidden" name="action" value="qarr/reviews/save-entry">
+    <input type="hidden" name="reviewId" value="{{ entry.id }}">
+    <input type="hidden" name="productTypeId" value="{{ entry.productTypeId }}">
+    <input type="hidden" name="productId" value="{{ entry.productId }}">
+
+    {% if entry.displayId %}
+        <input type="hidden" name="displayId" value="{{ entry.displayId }}">
+    {% endif %}
+
+    {% set feedbackResponse = entry.getReply() %}
+
+    <div class="primary-meta">
+        <div class="status-badge status-{{ entry.status }}">
+            <span>{{ entry.status }}</span>
+        </div>
+
+        <div class="created-date">
+            <span>{{ 'Submitted on'|t('qarr') }} {{ entry.dateCreated |date() }}</span>
+        </div>
+    </div>
+
+    <div class="panel feedback-panel {% if feedbackResponse is defined and feedbackResponse %}has-response{% endif %}">
+
+        <div class="panel-wrapper">
+            <p class="large-text"><span>{{ entry.feedback }}</span></p>
+
+
+            <div class="panel-response">
+                <span class="spinner hidden"></span>
+                {% if feedbackResponse %}
+                    <div class="response-container">
+                        <div class="response-wrapper">
+                            <div class="response-author">
+                                <div>{{ feedbackResponse.author }} {{ 'responded'|t('qarr') }} - <span>{{ feedbackResponse.dateCreated |date() }}</span></div>
+                                {% if not feedbackResponse.dateCreated|date() is same as(feedbackResponse.dateUpdated|date()) %}
+                                    <div class="last">{{ 'Updated on'|t('qarr') }} <span>{{ feedbackResponse.dateUpdated |date() }}</span></div>
+                                {% endif %}
+                            </div>
+                            <span class="response-text">{{ feedbackResponse.reply }}</span>
+                        </div>
+                        <div class="response-actions">
+                            <a href="#" class="btns btn-rounded btn-link" id="reply-to-feedback-btn" data-type="review" data-reply-id="{{ feedbackResponse.id }}" data-element-id="{{ entry.id }}" data-author-id="{{ feedbackResponse.authorId }}" data-placeholder="{{ feedbackResponse.reply }}">
+                                {{ 'Edit reply'|t('qarr') }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="panel-actions">
+            <div class="panel-progress"></div>
+            {% if not feedbackResponse %}
+                <a href="#" class="btns btn-rounded btn-gray btn-icon" id="reply-to-feedback-btn" data-type="review" data-element-id="{{ entry.id }}" data-author-id="{{ currentUser.id }}">
+                    <span class="icon"><i class="fa fa-reply"></i></span>
+                    <span class="btn-text">{{ 'Reply to feedback'|t('qarr') }}</span>
+                    <span class="loader"></span>
+                </a>
+            {% endif %}
+
+            <div class="pull-right">
+                <a href="#" class="btns btn-rounded btn-green btn-icon update-status-btn" data-type="reviews" data-status="approved" data-element-id="{{ entry.id }}">
+                    <span class="icon"><i class="fa fa-thumbs-up"></i></span>
+                    <span class="btn-text">{{ 'Approve'|t('qarr') }}</span>
+                    <span class="loader"></span>
+                </a>
+                <a href="#" class="btns btn-rounded btn-red btn-icon update-status-btn" data-type="reviews" data-status="rejected" data-element-id="{{ entry.id }}">
+                    <span class="icon"><i class="fa fa-thumbs-down"></i></span>
+                    <span class="btn-text">{{ 'Reject'|t('qarr') }}</span>
+                    <span class="loader"></span>
+                </a>
+            </div>
+            {% if currentUser.can('qarr:deleteReviews') %}
+            <div class="remove-entry">
+                <a href="#" class="btns btn-rounded btn-gray btn-icon delete-entry" data-type="reviews" data-element-id="{{ entry.id }}">
+                    <span class="icon"><i class="fa fa-trash"></i></span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if fieldLayoutTabs is defined is not empty %}
+        <div class="panel panel-fields panel-blue">
+            <div class="panel-wrapper">
+                <div class="panel-header">
+                    <h2>{{ 'Additional Info'|t('qarr') }}</h2>
+                    <span class="header-icon"><i class="fa fa-clipboard-list"></i></span>
+                </div>
+                <div class="panel-body">
+                {% for tab in fieldLayoutTabs %}
+                    {% set fields = tab.getFields() %}
+                    {% for field in fields %}
+                        {% set type = field|getClass %}
+                        {% set allowed = craft.qarr.allowedFields %}
+                        {% if type in allowed %}
+                            {% set value = entry.getFieldValue(field.handle) %}
+
+                            {% if value is iterable %}
+                                {% set value = craft.qarr.getArrayValue(value.options) %}
+                            {% endif %}
+
+
+                            {% if value and value != '' %}
+                                <div class="panel-item">
+                                    <div class="qarr-field-readonly">
+                                        <label>{{ field.name }}</label>
+                                        <div class="field-value">{{ value }}</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if correspondences %}
+    <div class="panel panel-correspondence panel-blue">
+        <div class="panel-wrapper">
+            <div class="panel-header">
+                <h2>{{ 'Email Correspondence'|t('qarr') }}</h2>
+                <span class="header-icon"><i class="fa fa-mail-bulk"></i></span>
+            </div>
+            <div class="panel-body">
+                {% for correspondence in correspondences %}
+                    <div class="panel-item">
+                        <span class="panel-meta">{{ 'Sent on'|t('qarr') }} {{ correspondence.dateCreated |date() }}</span>
+                        <p>{{ correspondence.email }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block details %}
+    {% set user = craft.app.users.getUserByUsernameOrEmail(entry.emailAddress) %}
+    {% if user %}
+        {% set customer = craft.commerce.customers.getCustomerByUserId(user.id) %}
+    {% endif %}
+
+    <div id="settings">
+
+        {% if entry.abuse %}
+        <div class="meta abuse-reported-meta">
+            <h2><i class="fa fa-exclamation-circle"></i>{{ 'Abuse Reported'|t('qarr') }}</h2>
+
+            <div class="meta-actions">
+                <a href="#" class="btns btn-rounded btn-on-red-bg" data-entry-id="{{ entry.id }}" data-type="reviews">
+                    <span class="link-text">{{ 'Clear' |t('qarr') }}</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="meta star-rating-meta">
+            <h2>{{ 'Rating'|t('qarr') }}</h2>
+            <div class="star-rating">
+                {% for star in 1..5 %}
+                    <span class="star {% if entry.rating >= star %}active{% endif %}"><i class="fa fa-star"></i></span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="meta centered">
+            <div class="guest-badge">
+                <span>{{ entry.fullName |first }}</span>
+            </div>
+            <div class="meta-item">
+                <h2>{{ entry.fullName }}</h2>
+                <div class="meta-label">{{ entry.emailAddress }}</div>
+                {% if customer is defined and customer %}
+                    <div class="badge-verified"><i class="fa fa-badge-check"></i> <span>Verified Customer</span></div>
+                {% endif %}
+            </div>
+
+            <div class="meta-actions">
+                <a href="#" class="btns btn-rounded btn-white" id="reply-email-btn" data-entry-id="{{ entry.id }}" data-type="reviews">
+                    <span class="spinner hidden"></span>
+                    <span class="link-text">{{ 'Reply by email' |t('qarr') }}</span>
+                </a>
+            </div>
+
+            <div class="loader-container">
+                {% include 'qarr/_includes/icons/_wave-loader' ignore missing %}
+            </div>
+        </div>
+
+        <div class="meta purple-bg icon-right">
+            <div class="meta-item single">
+                <div class="meta-label">Product</div>
+                <h2>{{ entry.product.title }}</h2>
+            </div>
+
+            <div class="meta-actions">
+                <a href="{{ entry.product.getCpEditUrl() }}" target="_blank" class="btn-link btn-in-purple">{{ 'Edit Product'|t('qarr') }}</a>
+            </div>
+
+            <div class="icon">
+                <i class="fal fa-tags"></i>
+            </div>
+        </div>
+
+        <div class="meta muted submission-details">
+            <div>IP Address: <span>{{ entry.ipAddress }}</span></div>
+            <div>Browser: <span>{{ entry.userAgent |browser }}</span></div>
+        </div>
+    </div>
+{% endblock %}

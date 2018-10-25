@@ -1,0 +1,39 @@
+{
+    "name": "owldesign/qarr",
+    "description": "Questions & Answers and Reviews & Ratings",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "qarr"
+    ],
+    "support": {
+        "docs": "https://github.com/owldesign/qarr/blob/master/README.md",
+        "issues": "https://github.com/owldesign/qarr/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vadim Goncharov",
+            "homepage": "https://owl-design.net"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "owldesign\\qarr\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "QARR",
+        "handle": "qarr",
+        "description": "Questions & Answers and Reviews & Ratings",
+        "developer": "Vadim Goncharov",
+        "class": "owldesign\\qarr\\QARR"
+    }
+}

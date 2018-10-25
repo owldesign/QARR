@@ -1,0 +1,30 @@
+{% set id = random(3000) %}
+
+<section class="hud-wrapper">
+    <div class="hud-name" data-posting-customer="{{ 'Posting as'|t('qarr') }} {{ author.name }}" data-posting-anonymous="{{ 'Posting as anonymous customer'|t('qarr') }}">
+        <span>{{ 'Posting as'|t('qarr') }} {{ author.name }}</span>
+
+        <div class="qarr-lightswitch small">
+            <div class="lightswitch-container">
+                <div class="label on"></div>
+                <div class="handle"></div>
+                <div class="label off"></div>
+            </div>
+
+            <input type="hidden" name="anonymous">
+        </div>
+    </div>
+
+    <div class="hud-form-wrapper">
+        <div class="qarr-field custom-field custom-textarea">
+            <textarea id="answer-textarea-{{ id }}" name="answer" cols="30" rows="4"></textarea>
+            <label for="answer-textarea-{{ id }}" class="qarr-label" data-label="{{ 'Answer'|t('qarr') }}" data-error-message="{{ 'Answer is required'|t('qarr') }}">{{ 'Answer'|t('qarr') }}</label>
+            <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
+        </div>
+    </div>
+</section>
+
+<section class="hud-footer qarr-footer">
+    <input type="button" class="btn-modal cancel" value="{{ 'Cancel'|t('qarr') }}">
+    <input type="submit" class="btn-modal submit" value="{{ 'Answer'|t('qarr') }}"/>
+</section>

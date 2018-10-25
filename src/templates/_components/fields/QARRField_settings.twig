@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * QARR plugin for Craft CMS
+ *
+ * QARRField Field Settings
+ *
+ * @author    Vadim Goncharov
+ * @copyright Copyright (c) 2018 Vadim Goncharov
+ * @link      https://owl-design.net
+ * @package   QARR
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{#{% do view.registerAssetBundle("owldesign\\qarr\\assetbundles\\qarr\\QARRAsset") %}#}
+
+{{ forms.textField({
+    label: 'Some Attribute',
+    instructions: 'Enter some attribute here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: field['someAttribute']})
+}}
