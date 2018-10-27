@@ -9,7 +9,9 @@
                 <div class="qarr-entry-posted-date">{{ review.dateCreated |date() }}</div>
                 <div class="qarr-entry-stars">
                     {% for i in 1..5 %}
-                        <div class="qarr-entry-star {% if i <= review.rating %}active{% endif %}" data-star-count="{{ i }}">★</div>
+                        <div class="qarr-entry-star {% if i <= review.rating %}active{% endif %}" data-star-count="{{ i }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 83.91"><path d="M43.91 0a2 2 0 0 0-1.82 1.39l-9.42 29.19L2 30.52a2 2 0 0 0-1.17 3.62l24.85 18-9.54 29.15a2 2 0 0 0 3.08 2.23L44 65.44l24.78 18.08a2 2 0 0 0 3.08-2.23l-9.54-29.17 24.85-18a2 2 0 0 0-1.17-3.6l-30.67.06-9.43-29.2A2 2 0 0 0 43.91 0z" /></svg>
+                        </div>
                     {% endfor %}
                 </div>
             </div>

@@ -31,7 +31,7 @@ Garnish.$doc.ready(function () {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Star Changer
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    $('.qarr-star').on('click', function () {
+    $('.qarr-star:not(.static)').on('click', function () {
         $('.qarr-star').removeClass('selected');
         $('.qarr-star').removeClass('active');
 
