@@ -519,6 +519,20 @@ var QarrPagination = Garnish.Base.extend({
                         $container.html(response.template);
                     }
 
+                    // TODO: make this more dry
+                    $('.add-answer').on('click', function (e) {
+                        e.preventDefault();
+
+                        var payload = {
+                            target: $(this),
+                            questionId: $(this).data('id'),
+                            authorName: $(this).data('user-name'),
+                            authorId: $(this).data('user-id')
+                        };
+
+                        var answerHud = new QarrAnswerHud(payload);
+                    });
+
                     var entrySetId = $(response.template).attr('id');
                     var $entrySet = $('#' + entrySetId);
 

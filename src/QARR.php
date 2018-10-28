@@ -56,9 +56,10 @@ class QARR extends Plugin
     public $schemaVersion = '1.0.0';
     public $hasCpSettings = true;
     public $hasCpSection = true;
-    public $changelogUrl = 'https://master/CHANGELOG.md';
-    public $downloadUrl = 'https://master.zip';
-    public $pluginUrl = 'https://google.com';
+    public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
+    public $downloadUrl = 'https://docs.qarr.tools';
+    public $pluginUrl = 'https://qarr.tools';
+    public $docsUrl = 'https://qarr.tools';
 
     // Trails
     // =========================================================================

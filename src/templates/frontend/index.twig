@@ -1,4 +1,5 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Frontend") %}
+{% do view.registerJsFile('//owldesign.sfo2.cdn.digitaloceanspaces.com/scripts/element-resize-detector.min.js') %}
 {% do view.registerJsFile('//owldesign.sfo2.cdn.digitaloceanspaces.com/scripts/garnish.min.js') %}
 
 <section id="qarr-display-container">
@@ -31,7 +32,7 @@
                             <div class="qarr-star-count">{{ craft.qarr.getCount('reviews', 'approved', product.id) }} {{ 'reviews'|t('qarr') }}</div>
                         </div>
                         {% if averageRating > 0 %}
-                            <div class="qarr-callouts-value">{{ averageRating }}<span class="qarr-pipe"> {{ 'out of'|t('qarr') }} </span>5<span class="qarr-pipe"> {{ 'stars'|t('qarr') }} </span></div>
+                            <div class="qarr-callouts-value">{{ averageRating|number_format(1) }}<span class="qarr-pipe"> {{ 'out of'|t('qarr') }} </span>5<span class="qarr-pipe"> {{ 'stars'|t('qarr') }} </span></div>
                             <div class="qarr-callouts-label">{{ 'Average Rating'|t('qarr') }}</div>
                         {% endif %}
                     </div>

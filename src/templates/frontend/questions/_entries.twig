@@ -1,0 +1,63 @@
+<div class="qarr-entries-set" id="{{ random() }}">
+    {% for question in entries.all() %}
+        <div class="qarr-entry-item">
+
+            <div class="qarr-entry-content">
+
+                <div class="qarr-entry-question">
+                    <div class="qarr-entry-label">
+                        <span>{{ 'Question'|t('qarr') }}</span>
+
+                        {% if currentUser %}
+                            <a href="#" class="add-answer"
+                               data-id="{{ question.id }}"
+                               data-user-name="{{ currentUser }}"
+                               data-user-id="{{ currentUser ? currentUser.id : '' }}">{{ 'Post Answer'|t('qarr') }}</a>
+                        {% else %}
+                            <span class="qarr-login-text">{{ 'Please login to post answers'|t('qarr') }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="qarr-entry-question-value">
+                        {{ question.question }}
+                    </div>
+                </div>
+
+                {% set answers = question.answers('approved') %}
+
+                {% if answers %}
+                    {% set answerId = random(5) %}
+                    <div class="qarr-entry-answers-container" id="qarr-answers-{{ answerId }}">
+                        <div class="qarr-entry-label">{{ 'Answer'|t('qarr') }}</div>
+
+                        <div class="qarr-entry-answer-data">
+                            <span class="qarr-entry-ar-text">{{ answers[0].answer }}</span>
+                            <span class="qarr-entry-answer-author">By {% if answers[0].anonymous %}{{ 'anonymous customer'|t('qarr') }}{% else %}{{ answers[0].author }}{% endif %} on {{ answers[0].dateCreated |date() }}</span>
+
+                            {% if answers|length > 1 %}
+                                <div class="qarr-entry-answers-additional-data">
+                                    <div class="qarr-entry-more-answers-container">
+                                        {% for answer in answers %}
+                                            {% if not loop.first %}
+                                                <div class="qarr-entry-additional-answer">
+                                                    <span class="qarr-entry-ar-text">{{ answer.answer }}</span>
+                                                    <span class="qarr-entry-answer-author">By {% if answer.anonymous %}{{ 'anonymous customer'|t('qarr') }}{% else %}{{ answer.author }}{% endif %} on {{ answer.dateCreated |date() }}</span>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+
+                                    <a href="#" class="qarr-show-more-answers-link" data-hide-text="{{ 'Hide answers'|t('qarr') }}">{{ 'See all answers'|t('qarr') }} ({{ answers|length }})</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% js %}
+                        new QarrAnswersContainer('#qarr-answers-'+{{ answerId }});
+                    {% endjs %}
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <div class="qarr-entry-empty">{{ 'No questions yet, be the first to ask one.'|t('qarr') }}</div>
+    {% endfor %}
+</div>

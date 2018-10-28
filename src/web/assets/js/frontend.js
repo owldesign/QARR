@@ -7,6 +7,7 @@ Garnish.$doc.ready(function () {
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Report Abuse
+    // TODO: this needs to work for ajax pagination as well
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $('.qarr-entry-ra-btn').on('click', function (e) {
         e.preventDefault();

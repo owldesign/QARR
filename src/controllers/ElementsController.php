@@ -51,7 +51,7 @@ class ElementsController extends Controller
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        $template = Craft::$app->view->renderTemplate('qarr/frontend/_includes/_entries', $variables);
+        $template = Craft::$app->view->renderTemplate('qarr/frontend/'. $type .'/_entries', $variables);
 
         Craft::$app->view->setTemplateMode($oldPath);
 

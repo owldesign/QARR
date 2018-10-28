@@ -70,6 +70,10 @@ class Review extends Element
      */
     public $feedback;
     /**
+     * @var
+     */
+    public $response;
+    /**
      * @var string
      */
     public $status = 'pending';

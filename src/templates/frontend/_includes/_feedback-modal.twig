@@ -77,7 +77,7 @@
                         {% set fieldType = field |getClass %}
                         {% set allowed = craft.qarr.allowedFields %}
                         {% if fieldType in allowed %}
-                            <div class="qarr-field {% if fieldType == 'PlainText' or fieldType == 'Url' %}custom-field{% endif %}" data-field-type="{{ fieldType|lower }}" id="{{ field.handle|lower }}-{{ type }}">
+                            <div class="qarr-field {% if fieldType == 'PlainText' or fieldType == 'Url' %}custom-field{% endif %}" data-field-type="{{ fieldType|lower }}" id="{{ field.handle }}-{{ type }}">
                                 {% if fieldType == 'PlainText' or fieldType == 'Url' %}
                                     {{ field.getInputHtml('') |raw }}
                                     <label for="{{ field.handle }}" {% if field.required %}data-label="{{ field.name }}" data-error-message="{{ field.name }} {{ 'is required'|t('qarr') }}"{% endif %}>{{ field.name }}</label>

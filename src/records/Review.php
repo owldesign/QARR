@@ -36,4 +36,14 @@ class Review extends ActiveRecord
     {
         return $this->hasOne(Element::class, ['id' => 'id']);
     }
+
+    /**
+     * Get response
+     *
+     * @return ActiveQueryInterface
+     */
+    public function getResponse(): ActiveQueryInterface
+    {
+        return $this->hasOne(Reply::class, ['id' => 'elementId']);
+    }
 }

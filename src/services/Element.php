@@ -125,7 +125,7 @@ class Element extends Component
             $entry->displayId       = $displayId;
             $entry->displayHandle   = $display->handle;
 
-            if (isset($display->titleFormat)) {
+            if (isset($display->titleFormat) && $display->titleFormat != '') {
                 $fields['dateCreated'] = date('F jS, Y');
                 $entry->title = Craft::$app->getView()->renderObjectTemplate($display->titleFormat, $fields);
             } else {
