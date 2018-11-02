@@ -60,6 +60,27 @@ Garnish.$doc.ready(function () {
     });
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Delete Feedback
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // TODO: move this into a class in correspondence.js
+    $('.feedback-panel #delete-feedback-btn').on('click', function (e) {
+        e.preventDefault();
+
+        var data = {
+            id: $(this).data('reply-id')
+        };
+
+        Craft.postActionRequest('qarr/replies/delete', data, $.proxy(function (response, textStatus) {
+            if (response.success) {
+                Craft.cp.displayNotice(Craft.t('qarr', 'Reply deleted'));
+                $('.panel-response').remove();
+                $('.feedback-panel').removeClass('has-response');
+                $('#reply-to-feedback-btn').show();
+            }
+        }, this));
+    });
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Delete Entry
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
     $('.delete-entry').on('click', function (e) {

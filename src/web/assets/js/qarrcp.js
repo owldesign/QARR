@@ -5,7 +5,6 @@ var QarrCP = Garnish.Base.extend({
     $navLabelBadge: null,
 
     navIconSvg: null,
-
     totalPending: null,
 
     init: function init() {
@@ -20,7 +19,7 @@ var QarrCP = Garnish.Base.extend({
         this._getPendingEntries();
     },
     handleResponse: function handleResponse(response) {
-        this.totalPending = response.total;
+        this.totalPending = response.totalPending;
         this.$navLabelBadge.html(this.totalPending);
     },
     updatedPendingCounter: function updatedPendingCounter(value) {
@@ -40,12 +39,4 @@ var QarrCP = Garnish.Base.extend({
 
 Garnish.$doc.ready(function () {
     window.qarrnav = new QarrCP();
-
-    var $appInfoContainer = $('#app-info');
-
-    // TODO: add dynamic version lookup
-    // if ($appInfoContainer) {
-    //     let qarrVersion = $('<div id="qarr-version">QARR 1.0.0</div>');
-    //     $appInfoContainer.append(qarrVersion);
-    // }
 });

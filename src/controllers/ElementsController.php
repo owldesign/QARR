@@ -36,6 +36,14 @@ class ElementsController extends Controller
     // Public Methods
     // =========================================================================
 
+    /**
+     * Query builder for elements
+     *
+     * @return Response
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionQueryElements()
     {
         $this->requirePostRequest();
@@ -50,9 +58,7 @@ class ElementsController extends Controller
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-
         $template = Craft::$app->view->renderTemplate('qarr/frontend/'. $type .'/_entries', $variables);
-
         Craft::$app->view->setTemplateMode($oldPath);
 
         return $this->asJson([
@@ -62,20 +68,80 @@ class ElementsController extends Controller
 
     }
 
+    /**
+     * Check total pending count
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionCheckPending()
     {
         $this->requirePostRequest();
 
-        $reviews = QARR::$plugin->elements->getCount('reviews', 'pending');
-        $questions = QARR::$plugin->elements->getCount('questions', 'pending');
+//        string $type, int $productId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = []
 
-        $total = $reviews + $questions;
+        $reviewsPending = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'pending')->count();
+        $reviewsApproved = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'approved')->count();
+        $reviewsRejected = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'rejected')->count();
+        $reviewsTotal =  $reviewsPending + $reviewsApproved + $reviewsRejected;
+
+        $questionsPending = QARR::$plugin->elements->queryElements('questions', null, null, null, 'pending')->count();
+        $questionsApproved = QARR::$plugin->elements->queryElements('questions', null, null, null, 'approved')->count();
+        $questionsRejected = QARR::$plugin->elements->queryElements('questions', null, null, null, 'rejected')->count();
+        $questionsTotal = $questionsPending + $questionsApproved + $questionsRejected;
+
+        $totalPending = $reviewsPending + $questionsPending;
+//        $reviews = QARR::$plugin->elements->getCount('reviews', 'pending');
+//        $questions = QARR::$plugin->elements->getCount('questions', 'pending');
+//
+        $variable['reviews'] = [
+            'total' => $reviewsTotal,
+            'pending' =>  (int) $reviewsPending,
+            'approved' => (int) $reviewsApproved,
+            'rejected' => (int) $reviewsRejected
+        ];
+
+        $variable['questions'] = [
+            'total' => $questionsTotal,
+            'pending' => (int) $questionsPending,
+            'approved' => (int) $questionsApproved,
+            'rejected' => (int) $questionsRejected,
+        ];
+
+//
+//        return $this->asJson([
+//            'success' => true,
+//            'reviews' => $variable['reviews'],
+//            'questions' => $variable['questions'],
+//            'total'   => $total,
+//        ]);
+
+        return $this->asJson([
+            'success'       => true,
+            'reviews'       => $variable['reviews'],
+            'questions'     => $variable['questions'],
+            'totalPending'  => $totalPending,
+        ]);
+    }
+
+    public function actionFetchPendingItems()
+    {
+        $this->requirePostRequest();
+
+        $request    = Craft::$app->getRequest();
+        $type       = $request->getBodyParam('type');
+        $limit      = $request->getBodyParam('limit');
+        $exclude    = $request->getBodyParam('exclude');
+
+        $variables['type'] = $type;
+        $variables['entries'] = QARR::$plugin->elements->queryElements($type, null, $limit, null, 'pending', $exclude);
+
+        $template = Craft::$app->view->renderTemplate('qarr/dashboard/_includes/pending-items', $variables);
 
         return $this->asJson([
             'success' => true,
-            'reviews' => $reviews,
-            'questions' => $questions,
-            'total'   => $total,
+            'template'   => Template::raw($template),
+            'count' => $variables['entries']->count()
         ]);
     }
 

@@ -23,11 +23,11 @@ class Variables extends Behavior
      *
      * Basic usage:
      *
-     * `{{ craft.qarr.display(product) }}`
+     * {{ craft.qarr.display(product) }}
      *
      * Advanced usage:
      *
-     * ```
+     * 
      * {{ craft.qarr.display(product, {
      *     limit: 3,
      *     pagination: 'infinite',
@@ -36,7 +36,7 @@ class Variables extends Behavior
      *     },
      *     questions: false
      * }) }}
-     * ```
+     * 
      *
      * @param $product
      * @param null $variables

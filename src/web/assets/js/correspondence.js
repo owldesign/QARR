@@ -232,7 +232,7 @@ QarrReplyToFeedback = Garnish.Base.extend({
                     this.$responseContainer.find('.response-container').removeClass('faded');
                     new QarrReplyToFeedback('#reply-to-feedback-btn');
                     this.$btn.velocity({ opacity: 0 }, 500, function () {
-                        that.$btn.remove();
+                        that.$btn.hide();
                     });
                 }, _this3), 1000);
             }

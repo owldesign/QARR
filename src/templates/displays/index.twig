@@ -9,17 +9,21 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Displays") %}
 
-{% block header %}
-    {% include 'qarr/_includes/_header' ignore missing %}
 
-    {% block actionButton %}
-        {% if currentUser.can('qarr:editDisplays') %}
-            <a href="{{ url('qarr/displays/new') }}" class="btns btn-gray btn-rounded btn-icon btn-icon-left dropdown-menu">
-                <span class="icon"><i class="fa fa-plus"></i></span>
-                <span class="btn-text">{{ "New Display"|t('qarr') }}</span>
-            </a>
-        {% endif %}
-    {% endblock %}
+{% block header %}
+    <a href="{{ url('qarr') }}" class="qarr-logo">
+        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
+    </a>
+    {{ parent() }}
+{% endblock %}
+
+{% block actionButton %}
+    {% if currentUser.can('qarr:editDisplays') %}
+        <a href="{{ url('qarr/displays/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
+            <span class="icon"><i class="fa fa-plus"></i></span>
+            <span class="btn-text">{{ "New Display"|t('qarr') }}</span>
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}

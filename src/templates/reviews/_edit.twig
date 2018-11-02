@@ -8,27 +8,14 @@
 {% set selectedSubnavItem = "reviews" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
-{% block actionButton %}
-    <div class="btngroup submit first">
-        <input type="submit" class="btn submit" value="{{ 'Save'|t('sqarr') }}">
-        {% if entry.id != null %}
-            <div class="btn submit menubtn"></div>
-            <div class="menu">
-                <hr>
-                <ul>
-                    <li><a class="formsubmit error"
-                           data-action="qarr/reviews/delete-entry"
-                           data-confirm='{{ "Are you sure you want to delete this review and all of it's data?"|t('qarr') }}'
-                           data-redirect="{{ 'qarr/reviews'|hash }}">{{ "Delete"|t('qarr') }}</a>
-                    </li>
-                </ul>
-            </div>
-        {% endif %}
-    </div>
+{% block header %}
+    <a href="{{ url('qarr') }}" class="qarr-logo">
+        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
+    </a>
+    {{ parent() }}
 {% endblock %}
 
-{% block header %}
-    {% include 'qarr/_includes/_header' ignore missing %}
+{% block actionButton %}
 {% endblock %}
 
 {% block content %}
@@ -73,8 +60,11 @@
                             <span class="response-text">{{ feedbackResponse.reply }}</span>
                         </div>
                         <div class="response-actions">
-                            <a href="#" class="btns btn-rounded btn-link" id="reply-to-feedback-btn" data-type="review" data-reply-id="{{ feedbackResponse.id }}" data-element-id="{{ entry.id }}" data-author-id="{{ feedbackResponse.authorId }}" data-placeholder="{{ feedbackResponse.reply }}">
+                            <a href="#" class="btns btn-rounded btn-basic" id="reply-to-feedback-btn" data-type="review" data-reply-id="{{ feedbackResponse.id }}" data-element-id="{{ entry.id }}" data-author-id="{{ feedbackResponse.authorId }}" data-placeholder="{{ feedbackResponse.reply }}">
                                 {{ 'Edit reply'|t('qarr') }}
+                            </a>
+                            <a href="#" class="btns btn-rounded btn-basic" id="delete-feedback-btn" data-type="review" data-reply-id="{{ feedbackResponse.id }}" data-element-id="{{ entry.id }}" data-author-id="{{ feedbackResponse.authorId }}">
+                                <i class="fal fa-trash-alt"></i>
                             </a>
                         </div>
                     </div>
@@ -108,7 +98,7 @@
             {% if currentUser.can('qarr:deleteReviews') %}
             <div class="remove-entry">
                 <a href="#" class="btns btn-rounded btn-gray btn-icon delete-entry" data-type="reviews" data-element-id="{{ entry.id }}">
-                    <span class="icon"><i class="fa fa-trash"></i></span>
+                    <span class="icon"><i class="fal fa-trash-alt"></i></span>
                 </a>
             </div>
             {% endif %}
@@ -193,16 +183,16 @@
         </div>
         {% endif %}
 
-        <div class="meta star-rating-meta">
+        <div class="meta star-rating-meta white-bg">
             <h2>{{ 'Rating'|t('qarr') }}</h2>
             <div class="star-rating">
                 {% for star in 1..5 %}
-                    <span class="star {% if entry.rating >= star %}active{% endif %}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 83.91"><path d="M43.91 0a2 2 0 0 0-1.82 1.39l-9.42 29.19L2 30.52a2 2 0 0 0-1.17 3.62l24.85 18-9.54 29.15a2 2 0 0 0 3.08 2.23L44 65.44l24.78 18.08a2 2 0 0 0 3.08-2.23l-9.54-29.17 24.85-18a2 2 0 0 0-1.17-3.6l-30.67.06-9.43-29.2A2 2 0 0 0 43.91 0z" /></svg></i></span>
+                    <span class="star {% if entry.rating >= star %}active{% endif %}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 83.91"><path d="M43.91 0a2 2 0 0 0-1.82 1.39l-9.42 29.19L2 30.52a2 2 0 0 0-1.17 3.62l24.85 18-9.54 29.15a2 2 0 0 0 3.08 2.23L44 65.44l24.78 18.08a2 2 0 0 0 3.08-2.23l-9.54-29.17 24.85-18a2 2 0 0 0-1.17-3.6l-30.67.06-9.43-29.2A2 2 0 0 0 43.91 0z" /></svg></span>
                 {% endfor %}
             </div>
         </div>
 
-        <div class="meta centered">
+        <div class="meta white-bg centered guest-meta">
             <div class="guest-badge">
                 <span>{{ entry.fullName |first }}</span>
             </div>
@@ -226,14 +216,14 @@
             </div>
         </div>
 
-        <div class="meta purple-bg icon-right">
+        <div class="meta purple-bg icon-right product-meta">
             <div class="meta-item single">
                 <div class="meta-label">Product</div>
                 <h2>{{ entry.product.title }}</h2>
             </div>
 
             <div class="meta-actions">
-                <a href="{{ entry.product.getCpEditUrl() }}" target="_blank" class="btn-link btn-in-purple">{{ 'Edit Product'|t('qarr') }}</a>
+                <a href="{{ entry.product.getCpEditUrl() }}" target="_blank" class="btns btn-basic btn-in-purple">{{ 'Edit Product'|t('qarr') }}</a>
             </div>
 
             <div class="icon">

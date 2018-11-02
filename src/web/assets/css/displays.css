@@ -38,8 +38,23 @@
   src: url("../fonts/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans-BoldItalic.ttf") format("truetype");
 }
 
+.qarr.qarr-reviews #content, .qarr.qarr-questions #content, .qarr.qarr-displays #content {
+  padding: 0 !important;
+}
+
 .qarr .toolbar {
-  margin-bottom: 0;
+  z-index: 2;
+  padding-top: 24px;
+  border-left: 1px solid transparent;
+}
+
+.qarr .toolbar.fixed {
+  border-top: 1px solid #E9EFF4;
+  border-left: 1px solid #E9EFF4;
+  border-color: #E9EFF4;
+  padding-bottom: 10px;
+  padding-top: 7px;
+  margin-left: -1px !important;
 }
 
 .qarr .toolbar .flex > * {
@@ -48,7 +63,7 @@
 
 .qarr .toolbar .btn {
   height: 100%;
-  padding: 16px 15px;
+  padding: 10px 15px;
   -webkit-box-shadow: none !important;
           box-shadow: none !important;
   background: #E9EFF4;
@@ -59,6 +74,28 @@
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+}
+
+.qarr .toolbar .btn.menubtn:empty {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.qarr .toolbar .btn:after {
+  -webkit-transition: -webkit-transform .3s ease;
+  transition: -webkit-transform .3s ease;
+  transition: transform .3s ease;
+  transition: transform .3s ease, -webkit-transform .3s ease;
+}
+
+.qarr .toolbar .btn.active:after {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.qarr .toolbar .elements-selected-count {
+  font-family: "OpenSans-SemiBold", "Helvetica", sans-serif;
+  font-size: 12px;
 }
 
 .qarr .selectallcontainer .btn {
@@ -254,6 +291,10 @@
 }
 
 .qarr .rating-wrapper svg {
+  color: #E9EFF4;
+}
+
+.qarr .rating-wrapper .active svg {
   color: #FFD012;
 }
 
@@ -419,7 +460,7 @@
 }
 
 .qarr table.data tbody tr.sel td {
-  background: rgba(178, 137, 239, 0.1) !important;
+  background: rgba(233, 239, 244, 0.5) !important;
   -webkit-box-shadow: none !important;
           box-shadow: none !important;
   border-bottom: 1px solid rgba(178, 137, 239, 0.2);
@@ -785,4 +826,8 @@
 .qarr .draghelper.fld-field .settings:before {
   color: #989898 !important;
   opacity: .2;
+}
+
+#nodisplays {
+  padding: 24px;
 }

@@ -71,6 +71,23 @@ class Replies extends Component
     }
 
     /**
+     * @param int $id
+     * @return null|Reply
+     */
+    public function getReplyModelById(int $id)
+    {
+        if (!$id) {
+            return null;
+        }
+
+        $record = ReplyRecord::find()
+            ->where(['id' => $id])
+            ->one();
+
+        return new Reply($record);
+    }
+
+    /**
      * @param Reply $reply
      * @param $author
      * @return bool|null|ReplyRecord
@@ -119,6 +136,8 @@ class Replies extends Component
     }
 
     /**
+     * Delete replies by element id
+     *
      * @param $element
      * @return bool|false|int
      * @throws \Throwable
@@ -135,5 +154,50 @@ class Replies extends Component
         }
 
         return $record->delete();
+    }
+
+    /**
+     * Delete reply by id
+     *
+     * @param int $replyId
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteReplyById(int $replyId): bool
+    {
+//        $reply = $this->getReplyModelById($replyId);
+//
+//        if (!$reply) {
+//            return false;
+//        }
+
+        return $this->delete($replyId);
+    }
+
+    /**
+     * Delete element
+     *
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public function delete(int $replyId): bool
+    {
+        $transaction = Craft::$app->db->beginTransaction();
+
+        try {
+
+            Craft::$app->getDb()->createCommand()
+                ->delete('{{%qarr_reviews_replies}}', ['id' => $replyId])
+                ->execute();
+
+            $transaction->commit();
+
+        } catch (\Exception $e) {
+            $transaction->rollback();
+
+            throw $e;
+        }
+
+        return true;
     }
 }

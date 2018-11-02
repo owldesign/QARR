@@ -11,7 +11,10 @@
 {% set elementType = 'owldesign\\qarr\\elements\\Review' %}
 
 {% block header %}
-    {% include 'qarr/_includes/_header' ignore missing %}
+    <a href="{{ url('qarr') }}" class="qarr-logo">
+        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
+    </a>
+    {{ parent() }}
 {% endblock %}
 
 {% block sidebar %}
@@ -42,20 +45,21 @@
         {% endif %}
 
         <div class="elements-data">
+            <h3>{{ 'Submission Stats'|t('qarr') }}</h3>
             <div class="ed-item">
-                <span>{{ craft.qarr.getCount('reviews', 'pending') }}</span>
+                <span class="count-badge pending-reviews">{{ craft.qarr.getCount('reviews', 'pending') }}</span>
                 <span>Pending</span>
                 <span class="status pending"></span>
             </div>
             <hr>
             <div class="ed-item">
-                <span>{{ craft.qarr.getCount('reviews', 'approved') }}</span>
+                <span class="count-badge approved-reviews">{{ craft.qarr.getCount('reviews', 'approved') }}</span>
                 <span>Approved</span>
                 <span class="status approved"></span>
             </div>
             <hr>
             <div class="ed-item">
-                <span>{{ craft.qarr.getCount('reviews', 'rejected') }}</span>
+                <span class="count-badge rejected-reviews">{{ craft.qarr.getCount('reviews', 'rejected') }}</span>
                 <span>Rejected</span>
                 <span class="status rejected"></span>
             </div>
@@ -115,7 +119,6 @@
                         <label for="search-element">{{ 'Search'|t('qarr') }}</label>
                         <div class="clear hidden" title="{{ 'Clear'|t('app') }}"></div>
                     </div>
-
                     <div>
                         <div class="btn menubtn sortmenubtn"{% if sortOptions %} title="{{ 'Sort by {attribute}'|t('app', { attribute: sortOptionLabel(sortOptions|first) }) }}"{% endif %} data-icon="asc">{{ sortOptions ? sortOptionLabel(sortOptions|first) }}</div>
                         <div class="menu">
@@ -132,6 +135,7 @@
                         </div>
                     </div>
                     <div class="spinner invisible"></div>
+                    <div class="elements-selected-count"></div>
                 </div>
             </div>
 

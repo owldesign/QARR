@@ -2,141 +2,37 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}
 
 {% set title = "Dashboard"|t('qarr') %}
 {% set bodyClass = 'qarr qarr-dashboard' %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    {% include 'qarr/_includes/_header' ignore missing %}
+    <a href="{{ url('qarr') }}" class="qarr-logo">
+        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
+    </a>
+    {{ parent() }}
 {% endblock %}
 
 {% set content %}
 
-    <section class="flex-container">
+<div id="dashboard-grid" class="grid">
 
-        <div class="full-col">
-            <div class="widget qarr-widget">
-                <header class="widget-header pad">
-                    <h2>{{ 'Reviews'|t('qarr') }}</h2>
-                </header>
-                <div class="body reviews-charts">
-                    <div class="chart-explorer-container chart-reviews"></div>
-                    <div class="widget-pie">
-                        <div class="pie-area">
-                            <div id="reviews-donut"></div>
-                        </div>
-                        <div class="pie-stats">
-                            <div class="stat-item stat-pending">
-                                <div class="stat-icon"></div>
-                                <div class="stat-label">Pending</div>
-                                <div class="stat-value">0%</div>
-                            </div>
-                            <div class="stat-item stat-approved">
-                                <div class="stat-icon"></div>
-                                <div class="stat-label">Approved</div>
-                                <div class="stat-value">0%</div>
-                            </div>
-                            <div class="stat-item stat-rejected">
-                                <div class="stat-icon"></div>
-                                <div class="stat-label">Rejected</div>
-                                <div class="stat-value">0%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="item" data-colspan="6">
+        {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {type: 'reviews' } %}
+    </div>
 
-        <div class="full-col">
-            <div class="widget qarr-widget">
-                <header class="widget-header pad">
-                    <h2>{{ 'Questions'|t('qarr') }}</h2>
-                </header>
-                <div class="body questions-charts">
-                    <div class="chart-explorer-container chart-questions"></div>
-                    <div class="widget-pie">
-                        <div class="pie-area">
-                            <div id="questions-donut"></div>
-                        </div>
-                        <div class="pie-stats">
-                            <div class="stat-item stat-pending">
-                                <div class="stat-icon"></div>
-                                <div class="stat-label">Pending</div>
-                                <div class="stat-value">0%</div>
-                            </div>
-                            <div class="stat-item stat-approved">
-                                <div class="stat-icon"></div>
-                                <div class="stat-label">Approved</div>
-                                <div class="stat-value">0%</div>
-                            </div>
-                            <div class="stat-item stat-rejected">
-                                <div class="stat-icon"></div>
-                                <div class="stat-label">Rejected</div>
-                                <div class="stat-value">0%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="item" data-colspan="6">
+        {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {type: 'questions' } %}
+    </div>
 
-        <div class="half-col">
-            <div class="widget">
-                <header class="widget-header pad">
-                    <h2>{{ 'Latest Reviews'|t('qarr') }}</h2>
-                    <a href="{{ url('qarr/reviews') }}" class="link">See all</a>
-                </header>
-                <div class="body">
-                    {% set recentReviews = craft.qarr.reviews({
-                        limit: 5
-                    }).all() %}
+    <div class="item" data-colspan="2">
+        {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Reviews'|t('qarr'),  type: 'reviews', limit: 5, class: 'inwards no-footer' } %}
+    </div>
 
-                    <div class="list">
-                        {% for entry in recentReviews %}
-                            <div class="list-item has-hover pad">
-                                <div class="item-meta">
-                                    <span class="item-meta-icon"><i class="far fa-tags"></i></span>
-                                    <span class="item-meta-title">{{ entry.product.title }}</span>
-                                </div>
-                                <div class="item-title">
-                                    <a href="{{ entry.url }}">{{ entry.title }}</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="half-col">
-            <div class="widget">
-                <header class="widget-header pad">
-                    <h2>{{ 'Latest Questions'|t('qarr') }}</h2>
-                    <a href="{{ url('qarr/questions') }}" class="link">See all</a>
-                </header>
-                <div class="body">
-
-                    {% set recentQuestions = craft.qarr.questions({
-                        limit: 5
-                    }).all() %}
-
-                    <div class="list">
-                        {% for entry in recentQuestions %}
-                            <div class="list-item has-hover pad">
-                                <div class="item-meta">
-                                    <span class="item-meta-icon"><i class="far fa-tags"></i></span>
-                                    <span class="item-meta-title">{{ entry.product.title }}</span>
-                                </div>
-                                <div class="item-title">
-                                    <a href="{{ entry.url }}">{{ entry.title }}</a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </section>
+    <div class="item" data-colspan="2">
+        {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Questions'|t('qarr'), type: 'questions', limit: 5, class: 'inwards no-footer' } %}
+    </div>
+</div>
 {% endset %}

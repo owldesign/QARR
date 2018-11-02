@@ -11,8 +11,11 @@
     </div>
 
     <div class="response-actions">
-        <a href="#" class="btns btn-rounded btn-link" id="reply-to-feedback-btn" data-reply-id="{{ id }}" data-element-id="{{ elementId }}" data-author-id="{{ authorId }}" data-placeholder="{{ placeholder }}">
+        <a href="#" class="btns btn-rounded btn-basic" id="reply-to-feedback-btn" data-reply-id="{{ id }}" data-element-id="{{ elementId }}" data-author-id="{{ authorId }}" data-placeholder="{{ placeholder }}">
             {{ 'Edit reply'|t('qarr') }}
+        </a>
+        <a href="#" class="btns btn-rounded btn-basic" id="delete-feedback-btn" data-type="review" data-reply-id="{{ id }}" data-element-id="{{ elementId }}">
+            <i class="fal fa-trash-alt"></i>
         </a>
     </div>
 </div>

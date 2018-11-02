@@ -1,0 +1,34 @@
+<div id="widget-{{ type }}" class="widget widget-{{ type }}" data-id="{{ type }}" data-type="{{ type }}" data-title="{{ type |capitalize|t('qarr') }}">
+    <div class="front">
+        <div class="pane">
+            {#<div class="spinner body-loading"></div>#}
+            {#<div class="settings icon hidden"></div>#}
+            <h2>{{ type|capitalize|t('qarr') }}</h2>
+            <div class="body">
+                <div class="chart-explorer-container chart-{{ type }}"></div>
+                <div class="widget-pie">
+                    <div class="pie-area">
+                        <div id="{{ type }}-donut"></div>
+                    </div>
+                    <div class="pie-stats">
+                        <div class="stat-item stat-pending">
+                            <div class="stat-icon"></div>
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-value">0%</div>
+                        </div>
+                        <div class="stat-item stat-approved">
+                            <div class="stat-icon"></div>
+                            <div class="stat-label">Approved</div>
+                            <div class="stat-value">0%</div>
+                        </div>
+                        <div class="stat-item stat-rejected">
+                            <div class="stat-icon"></div>
+                            <div class="stat-label">Rejected</div>
+                            <div class="stat-value">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

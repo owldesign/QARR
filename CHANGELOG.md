@@ -1,9 +1,16 @@
 # QARR Changelog
 
-All notable changes to this project will be documented in this file.
+## 1.0.1 - 2018-11-02
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+### Improved
+- Updated UI to closely match Crafts' UI
+- [Documentation](https://docs.qarr.tools)
+
+### Added
+- Ability to quickly moderate pending submissions from QARR dashboard [gif](https://s3-us-west-2.amazonaws.com/qarr/demos/quick-moderate.gif)
+
 
 ## 1.0.0 - 2018-09-11
+
 ### Added
 - Initial release

@@ -32,7 +32,7 @@ use craft\web\assets\cp\CpAsset;
  * @package   QARR
  * @since     1.0.0
  */
-class WidgetsAsset extends AssetBundle
+class Widgets extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -46,7 +46,6 @@ class WidgetsAsset extends AssetBundle
 
         $this->depends = [
             CpAsset::class,
-            Charts::class,
         ];
 
         $this->js = [

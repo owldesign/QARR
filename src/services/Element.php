@@ -47,14 +47,19 @@ class Element extends Component
      * @param int|null $limit
      * @param int|null $offset
      * @param string $status
+     * @param array $exclude
      * @return \craft\elements\db\ElementQueryInterface|null
-     * @throws \yii\base\ExitException
      */
-    public function queryElements(string $type, int $productId = null, int $limit = null, int $offset = null, string $status = 'approved')
+    public function queryElements(string $type, int $productId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = [])
     {
         $query = $this->_getElementQuery($type);
         $query->productId($productId);
         $query->limit($limit);
+
+        if ($exclude) {
+            $query->id('and, not ' . implode(', not ', $exclude));
+        }
+
         $query->offset($offset);
         $query->status($status);
 

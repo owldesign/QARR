@@ -6,7 +6,7 @@ Garnish.$doc.ready(function () {
     var questionsDonutChart = new QarrDonutChart('#questions-donut', 'owldesign\\qarr\\elements\\Question');
 
     reviewsDonutChart.on('pieIn', function (e) {
-        var mother = $('.reviews-charts');
+        var mother = $('#widget-reviews');
         var target = mother.find('.stat-' + e.data.handle);
         target.addClass('has-hover');
     });
@@ -16,14 +16,14 @@ Garnish.$doc.ready(function () {
     });
 
     reviewsDonutChart.on('response', function (e) {
-        var mother = $('.reviews-charts');
+        var mother = $('#widget-reviews');
         $.each(e.data, function (i, item) {
             mother.find('.stat-' + item.handle).find('.stat-value').html(Math.round(item.percent * 100) + '%');
         });
     });
 
     questionsDonutChart.on('pieIn', function (e) {
-        var mother = $('.questions-charts');
+        var mother = $('#widget-questions');
         var target = mother.find('.stat-' + e.data.handle);
         target.addClass('has-hover');
     });
@@ -33,19 +33,9 @@ Garnish.$doc.ready(function () {
     });
 
     questionsDonutChart.on('response', function (e) {
-        var mother = $('.questions-charts');
+        var mother = $('#widget-questions');
         $.each(e.data, function (i, item) {
             mother.find('.stat-' + item.handle).find('.stat-value').html(Math.round(item.percent * 100) + '%');
         });
     });
 });
-
-// if (response.total === 0) {
-//     $('.stat-pending').find('.stat-value').html(response.total + '%');
-//     $('.stat-approved').find('.stat-value').html(response.total + '%');
-//     $('.stat-rejected').find('.stat-value').html(response.total + '%');
-// } else {
-//     $.each(response.data, function (i, item) {
-//         $('.stat-' + item.handle).find('.stat-value').html(item.percent * 100 + '%');
-//     });
-// }

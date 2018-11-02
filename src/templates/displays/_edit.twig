@@ -11,11 +11,14 @@
 {% import "_includes/forms" as forms %}
 
 {% block header %}
-    {% include 'qarr/_includes/_header' ignore missing %}
+    <a href="{{ url('qarr') }}" class="qarr-logo">
+        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
+    </a>
+    {{ parent() }}
+{% endblock %}
 
-    {% block actionButton %}
-        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
-    {% endblock %}
+{% block actionButton %}
+    <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
 {% endblock %}
 
 {% block content %}

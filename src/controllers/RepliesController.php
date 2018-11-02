@@ -17,6 +17,7 @@ use owldesign\qarr\QARR;
 use Craft;
 use craft\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class RepliesController extends Controller
 {
@@ -100,5 +101,27 @@ class RepliesController extends Controller
         return $this->asJson([
             'success' => true
         ]);
+    }
+
+
+    /**
+     * Delete Reply
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     */
+    public function actionDelete(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $this->requirePermission('qarr:editReviews');
+
+        $replyId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+
+        QARR::$plugin->replies->deleteReplyById($replyId);
+
+        return $this->asJson(['success' => true]);
     }
 }

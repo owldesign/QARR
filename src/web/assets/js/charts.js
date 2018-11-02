@@ -219,6 +219,12 @@ QarrDonutChart = Garnish.Base.extend({
             }
         }, this));
     },
+    refreshData: function refreshData() {
+        // TODO: fix this
+        // this.path
+        this.svg.remove();
+        this._fetchData();
+    },
     drawEmptyChart: function drawEmptyChart() {
         this.drawArc();
         this.drawPie();

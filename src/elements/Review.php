@@ -349,7 +349,7 @@ class Review extends Element
         $sources = [
             [
                 'key'   => '*',
-                'label' => QARR::t('All Reviews')
+                'label' => QARR::t('All Product Types')
             ]
         ];
 
@@ -420,8 +420,12 @@ class Review extends Element
             case 'rating':
                 $rating = (int)$this->rating;
                 $markup = '<div class="rating-wrapper">';
-                for ($i = 1; $i <= $rating; $i++) {
-                    $markup .= '<span class="qarr-rating-star"><i class="fa fa-star"></i></span>';
+                for ($i = 1; $i <= 5; $i++) {
+                    if ($rating >= $i) {
+                        $markup .= '<span class="qarr-rating-star active"><i class="fa fa-star"></i></span>';
+                    } else {
+                        $markup .= '<span class="qarr-rating-star"><i class="fa fa-star"></i></span>';
+                    }
                 }
                 $markup .= '</div>';
                 return $markup;
@@ -465,7 +469,7 @@ class Review extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [];
-        $attributes['status'] = ['label' => null];
+        $attributes['status'] = ['label' => QARR::t('Title')];
         $attributes['reports'] = ['label' => QARR::t('Reports')];
         $attributes['guest'] = ['label' => QARR::t('Guest')];
         $attributes['rating'] = ['label' => QARR::t('Rating')];
@@ -507,6 +511,21 @@ class Review extends Element
         $response = QARR::$plugin->replies->getReply($this->id);
 
         return $response;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomer()
+    {
+        $customer = null;
+        $user = Craft::$app->users->getUserByUsernameOrEmail($this->emailAddress);
+
+        if ($user) {
+            $customer = CommercePlugin::getInstance()->customers->getCustomerByUserid($user->id);
+        }
+
+        return $customer;
     }
 
     /**

@@ -257,7 +257,7 @@ class Question extends Element
         $sources = [
             [
                 'key'   => '*',
-                'label' => QARR::t('All Question')
+                'label' => QARR::t('All Product Types')
             ]
         ];
 
@@ -373,7 +373,7 @@ class Question extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [];
-        $attributes['status'] = ['label' => null];
+        $attributes['status'] = ['label' => QARR::t('Title')];
         $attributes['reports'] = ['label' => QARR::t('Reports')];
         $attributes['guest'] = ['label' => QARR::t('Guest')];
         $attributes['question'] = ['label' => QARR::t('Question')];

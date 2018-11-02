@@ -37,6 +37,7 @@ class Extensions extends \Twig_Extension
             new \Twig_SimpleFilter('browser', [$this, 'browser']),
             new \Twig_SimpleFilter('formatBytes', [$this, 'formatBytes']),
             new \Twig_SimpleFilter('valueOutOfArray', [$this, 'valueOutOfArray']),
+            new \Twig_SimpleFilter('truncate', [$this, 'truncate']),
         ];
     }
 
@@ -136,6 +137,13 @@ class Extensions extends \Twig_Extension
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
+    /**
+     * Get value from an array
+     *
+     * @param array $array
+     * @param $value
+     * @return array
+     */
     public function valueOutOfArray(array $array, $value)
     {
         $result = [];
@@ -145,5 +153,22 @@ class Extensions extends \Twig_Extension
         }
 
         return $result;
+    }
+
+    /**
+     * Truncate text
+     *
+     * @param $text
+     * @param int $chars
+     * @return bool|string
+     */
+    function truncate($text, $chars = 120) {
+        if(strlen($text) > $chars) {
+            $text = $text.' ';
+            $text = substr($text, 0, $chars);
+            $text = substr($text, 0, strrpos($text ,' '));
+            $text = $text.'...';
+        }
+        return $text;
     }
 }

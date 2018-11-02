@@ -12,7 +12,7 @@ namespace owldesign\qarr\widgets;
 
 use craft\helpers\Json;
 use owldesign\qarr\QARR;
-use owldesign\qarr\web\assets\WidgetsAsset;
+use owldesign\qarr\web\assets\Widgets;
 
 use Craft;
 use craft\base\Widget;
@@ -112,7 +112,7 @@ class Stats extends Widget
     public function getBodyHtml()
     {
         $view = Craft::$app->getView();
-        $view->registerAssetBundle(WidgetsAsset::class);
+        $view->registerAssetBundle(Widgets::class);
 
         $options = [
             'type' => ['owldesign\\qarr\\elements\\Review', 'owldesign\\qarr\\elements\\Question']
