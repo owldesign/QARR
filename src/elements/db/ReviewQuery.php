@@ -78,6 +78,18 @@ class ReviewQuery extends ElementQuery
     }
 
     /**
+     * Rating
+     *
+     * @param $value
+     * @return $this
+     */
+    public function rating($value)
+    {
+        $this->rating = $value;
+        return $this;
+    }
+
+    /**
      * Return Has Purchased
      *
      * @param $value

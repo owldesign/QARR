@@ -20,6 +20,8 @@ use owldesign\qarr\elements\Review;
 use owldesign\qarr\elements\Question;
 use owldesign\qarr\elements\Display;
 
+require_once CRAFT_VENDOR_PATH . '/owldesign/qarr/src/functions/array-group-by.php';
+
 /**
  * Class Element
  * @package owldesign\qarr\services
@@ -66,6 +68,40 @@ class Element extends Component
         return $query;
     }
 
+    public function querySortElements(string $type, int $productId, string $value, int $limit)
+    {
+        $query = $this->_getElementQuery($type);
+        $query->productId($productId);
+        $query->orderBy($value);
+        $query->status('approved');
+    
+        return $query;
+    }
+
+    /**
+     * Query star filtered elements
+     *
+     * @param string $type
+     * @param int $productId
+     * @param int $rating
+     * @param int|null $limit
+     * @param init|null $offset
+     * @return \craft\elements\db\ElementQueryInterface|null
+     */
+    public function queryStarFilteredElements(string $type, int $productId, int $rating, int $limit = null, init $offset = null)
+    {
+        $query = $this->_getElementQuery($type);
+        $query->productId($productId);
+        $query->rating($rating);
+        // TODO: setup ajax limit and offsets
+        // $query->limit($limit);
+        // $query->offset($offset);
+
+        $query->status('approved');
+
+        return $query;
+    }
+
     /**
      * Marks element as abuse
      *
@@ -80,7 +116,7 @@ class Element extends Component
             return false;
         }
 
-        $table = '{{%qarr_'.$type.'}}';
+        $table = '{{%qarr_' . $type . '}}';
 
         $result = Craft::$app->getDb()->createCommand()
             ->update($table, ['abuse' => true], ['id' => $elementId])
@@ -103,7 +139,7 @@ class Element extends Component
             return false;
         }
 
-        $table = '{{%qarr_'.$type.'}}';
+        $table = '{{%qarr_' . $type . '}}';
 
         $result = Craft::$app->getDb()->createCommand()
             ->update($table, ['abuse' => false], ['id' => $elementId])
@@ -126,18 +162,18 @@ class Element extends Component
         $displayId = $request->getBodyParam('displayId');
 
         if ($displayId) {
-            $display                = Display::find()->id($displayId)->anyStatus()->one();
-            $entry->displayId       = $displayId;
-            $entry->displayHandle   = $display->handle;
+            $display = Display::find()->id($displayId)->anyStatus()->one();
+            $entry->displayId = $displayId;
+            $entry->displayHandle = $display->handle;
 
             if (isset($display->titleFormat) && $display->titleFormat != '') {
                 $fields['dateCreated'] = date('F jS, Y');
                 $entry->title = Craft::$app->getView()->renderObjectTemplate($display->titleFormat, $fields);
             } else {
-                $entry->title = 'Submission - '.date('F jS, Y');
+                $entry->title = 'Submission - ' . date('F jS, Y');
             }
         } else {
-            $entry->title = 'Submission - '.date('F jS, Y');
+            $entry->title = 'Submission - ' . date('F jS, Y');
             $entry->displayId = null;
         }
     }
@@ -163,8 +199,8 @@ class Element extends Component
             return QARR::t('Product not found.');
         }
 
-        $review->productId      = $productId;
-        $review->productTypeId  = $product->type->id;
+        $review->productId = $productId;
+        $review->productTypeId = $product->type->id;
     }
 
     /**
@@ -182,7 +218,7 @@ class Element extends Component
             return null;
         }
 
-        $table = '{{%qarr_'.$type.'}}';
+        $table = '{{%qarr_' . $type . '}}';
 
         $result = Craft::$app->getDb()->createCommand()
             ->update($table, ['status' => $status], ['id' => $elementId])
@@ -243,6 +279,32 @@ class Element extends Component
         return $query->count();
     }
 
+    public function getEntriesByRating($status, $productId)
+    {
+        $query = new Query();
+        $query->select('*')
+            ->from('{{%qarr_reviews}}')
+            ->where(['status' => $status, 'productId' => $productId]);
+
+        $grouped = array_group_by($query->all(), 'rating');
+        $newGroup = [];
+        for($i = 1; $i <= 5; $i++) {
+            $newGroup[$i] = [
+                'entries' => isset($grouped[$i]) ? $grouped[$i] : null,
+                'total' => isset($grouped[$i]) ? count($grouped[$i]) : 0
+            ];
+        }
+        ksort($newGroup, SORT_NUMERIC);
+
+        return $newGroup;
+    }
+
+    /**
+     * Average Count
+     *
+     * @param $productId
+     * @return float|int
+     */
     public function getAverageRating($productId)
     {
         $query = new Query();

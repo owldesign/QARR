@@ -1,5 +1,3 @@
-
-
 var QarrTabs = Garnish.Base.extend({
     $container: null,
     $tabLinksContainer: null,
@@ -690,6 +688,64 @@ var QarrAnswerHud = Garnish.Base.extend({
         } else {
             this.$hudName.find('span').html(this.asCustomerText);
         }
+    }
+});
+
+var QarrStarFilterEntries = Garnish.Base.extend({
+    $container: null,
+
+    payload: null,
+    type: null,
+    rating: null,
+    total: null,
+
+    init: function init(payload) {
+        this.$loader = $('.qarr-loader');
+        this.$container = payload.target;
+        this.payload = payload;
+        this.type = payload.type;
+        this.rating = payload.rating;
+        this.total = payload.total;
+
+        this.addListener(this.$container, 'click', this.fetchEntries);
+    },
+    fetchEntries: function fetchEntries(e) {
+        $('.qarr-pagination').hide();
+        e.preventDefault();
+        var that = this;
+        var $container = $('#qarr-' + this.type + '-container');
+
+        this.$loader.addClass('active');
+        $container.addClass('transition');
+
+        var payload = {
+            type: this.type,
+            limit: QARR.limit,
+            rating: this.rating,
+            productId: QARR.productId
+        };
+
+        payload[QARR.csrfTokenName] = QARR.csrfTokenValue;
+
+        $.post(QARR.actionUrl + 'qarr/elements/query-star-filtered-elements', payload, function (response, textStatus, jqXHR) {
+            if (response.success) {
+                setTimeout(function () {
+                    that.$loader.removeClass('active');
+                    $container.html(response.template);
+                    var entrySetId = $(response.template).attr('id');
+                    var $entrySet = $('#' + entrySetId);
+
+                    $('html, body').animate({
+                        scrollTop: $entrySet.offset().top
+                    }, 'fast');
+
+                    $container.removeClass('transition');
+                }, 1000);
+
+                // Set localstorage for clicked star rating
+                window.localStorage.setItem('qarr-star-filter', that.rating);
+            }
+        });
     }
 });
 

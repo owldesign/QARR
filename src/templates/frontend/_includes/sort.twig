@@ -1,0 +1,10 @@
+<div class="qarr-field qarr-custom-select">
+    <select name="qarr-sort" id="qarr-{{ type }}-sort" class="qarr-entry-sort" data-type="{{ type }}">
+        <option value="dateCreated asc">{{ 'Newest'|t('qarr') }}</option>
+        <option value="dateCreated desc">{{ 'Oldest'|t('qarr') }}</option>
+        {% if type == 'reviews' %}
+            <option value="rating desc">{{ 'Highest Rated'|t('qarr') }}</option>
+            <option value="rating asc">{{ 'Lowest Rated'|t('qarr') }}</option>
+        {% endif %}
+    </select>
+</div>

@@ -1,0 +1,7 @@
+<div class="qarr-rating-filter">
+    {% include 'qarr/frontend/_reviews/_includes/star-filter-item' ignore missing with { stars: 5, total: ratings[5].total } %}
+    {% include 'qarr/frontend/_reviews/_includes/star-filter-item' ignore missing with { stars: 4, total: ratings[4].total } %}
+    {% include 'qarr/frontend/_reviews/_includes/star-filter-item' ignore missing with { stars: 3, total: ratings[3].total } %}
+    {% include 'qarr/frontend/_reviews/_includes/star-filter-item' ignore missing with { stars: 2, total: ratings[2].total } %}
+    {% include 'qarr/frontend/_reviews/_includes/star-filter-item' ignore missing with { stars: 1, total: ratings[1].total } %}
+</div>

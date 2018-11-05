@@ -155,6 +155,29 @@ class Variables extends Behavior
         return $count;
     }
 
+    /**
+     * Entries by rating
+     *
+     * @param $productId
+     * @return null
+     */
+    public function getEntriesByRating($productId)
+    {
+        if (!$productId) {
+            return null;
+        }
+
+        $ratings = QARR::$plugin->elements->getEntriesByRating('approved', $productId);
+
+        return $ratings;
+    }
+
+    /**
+     * Average rating
+     *
+     * @param $productId
+     * @return null
+     */
     public function getAverageRating($productId)
     {
         if (!$productId) {

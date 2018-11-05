@@ -58,7 +58,30 @@ class ElementsController extends Controller
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-        $template = Craft::$app->view->renderTemplate('qarr/frontend/'. $type .'/_entries', $variables);
+        $template = Craft::$app->view->renderTemplate('qarr/frontend/_'. $type .'/entries', $variables);
+        Craft::$app->view->setTemplateMode($oldPath);
+
+        return $this->asJson([
+            'success' => true,
+            'template'   => Template::raw($template)
+        ]);
+    }
+
+    public function actionQuerySortElements()
+    {
+        $this->requirePostRequest();
+
+        $request    = Craft::$app->getRequest();
+        $type       = $request->getBodyParam('type');
+        $value      = $request->getBodyParam('value');
+        $limit      = $request->getBodyParam('limit');
+        $productId  = $request->getBodyParam('productId');
+
+        $variables['entries'] = QARR::$plugin->elements->querySortElements($type, $productId, $value, $limit);
+
+        $oldPath = Craft::$app->view->getTemplateMode();
+        Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+        $template = Craft::$app->view->renderTemplate('qarr/frontend/_'. $type .'/entries', $variables);
         Craft::$app->view->setTemplateMode($oldPath);
 
         return $this->asJson([
@@ -66,6 +89,37 @@ class ElementsController extends Controller
             'template'   => Template::raw($template)
         ]);
 
+    }
+
+    /**
+     * Star filtered elements
+     *
+     * @return Response
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionQueryStarFilteredElements()
+    {
+        $this->requirePostRequest();
+
+        $request    = Craft::$app->getRequest();
+        $type       = $request->getBodyParam('type');
+        $rating     = $request->getBodyParam('rating');
+        $limit      = $request->getBodyParam('limit');
+        $productId  = $request->getBodyParam('productId');
+
+        $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $productId, $rating, $limit);
+        
+        $oldPath = Craft::$app->view->getTemplateMode();
+        Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+        $template = Craft::$app->view->renderTemplate('qarr/frontend/_'. $type .'/entries', $variables);
+        Craft::$app->view->setTemplateMode($oldPath);
+
+        return $this->asJson([
+            'success' => true,
+            'template'   => Template::raw($template)
+        ]);
     }
 
     /**

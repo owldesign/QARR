@@ -1,0 +1,13 @@
+{% if type == 'reviews' %}
+    <div class="qarr-field">
+        {% if currentUser %}
+            <a class="qarr-open-modal qarr-btn" data-type="review">{{ 'Write Review'|t('qarr') }}</a>
+        {% else %}
+            <p>{{ 'Please login to leave a review.'|t('qarr') }}</p>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="qarr-field">
+        <a class="qarr-open-modal qarr-btn" data-type="question">{{ 'Ask Question'|t('qarr') }}</a>
+    </div>
+{% endif %}
