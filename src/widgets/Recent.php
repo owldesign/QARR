@@ -12,8 +12,6 @@ namespace owldesign\qarr\widgets;
 
 use craft\helpers\Json;
 use owldesign\qarr\QARR;
-use owldesign\qarr\elements\Review;
-use owldesign\qarr\elements\Question;
 use owldesign\qarr\web\assets\Widgets;
 
 use Craft;
@@ -31,13 +29,16 @@ use craft\base\Widget;
  * @package   QARR
  * @since     1.0.0
  */
-class Stats extends Widget
+class Recent extends Widget
 {
 
     // Public Properties
     // =========================================================================
 
     public $type;
+    public $limit = 5;
+    public $status = 'pending';
+    public $colspan = 2;
 
     // Static Methods
     // =========================================================================
@@ -47,7 +48,7 @@ class Stats extends Widget
      */
     public static function displayName(): string
     {
-        return QARR::t('Overall Stats');
+        return QARR::t('Recent Submissions');
     }
 
     /**
@@ -56,6 +57,14 @@ class Stats extends Widget
     public static function iconPath()
     {
         return Craft::getAlias("@owldesign/qarr/web/assets/images/icon.svg");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function maxColspan()
+    {
+        return 2;
     }
 
     // Public Methods
@@ -67,7 +76,8 @@ class Stats extends Widget
     public function rules()
     {
         $rules   = parent::rules();
-        $rules[] = [['type'], 'required'];
+        $rules[] = [['type', 'limit'], 'required'];
+        $rules[] = [['limit'], 'integer', 'min' => 1];
 
         return $rules;
     }
@@ -80,7 +90,7 @@ class Stats extends Widget
         $id = Craft::$app->getView()->formatInputId('type');
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
-        return Craft::$app->getView()->renderTemplate('qarr/widgets/_stats/settings', [
+        return Craft::$app->getView()->renderTemplate('qarr/widgets/_recent/settings', [
                 'id'        => $namespacedId,
                 'widget'    => $this
             ]
@@ -98,17 +108,19 @@ class Stats extends Widget
 
         if ($this->type == 'reviews') {
             $variables['title'] = QARR::t('Reviews');
-            $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Review")';
+            $js = 'new QARR.Widgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         } else {
             $variables['title'] = QARR::t('Questions');
-            $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Question")';
+            $js = 'new QARR.Widgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         }
 
         $view->registerJs($js);
 
         $variables['type'] = $this->type;
+        $variables['limit'] = $this->limit;
+        $variables['status'] = $this->status;
         $variables['id'] = $this->id;
 
-        return Craft::$app->getView()->renderTemplate('qarr/widgets/_stats/body', $variables);
+        return Craft::$app->getView()->renderTemplate('qarr/widgets/_recent/body', $variables);
     }
 }

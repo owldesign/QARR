@@ -24,7 +24,6 @@ QARR.Widgets.PendingItemsWidget = Garnish.Base.extend({
     type: null,
     limit: null,
     dragger: null,
-
     exclude: null,
 
     init: function init(el) {
@@ -43,45 +42,6 @@ QARR.Widgets.PendingItemsWidget = Garnish.Base.extend({
             });
         }
     },
-
-
-    // updateItemStatus(item, elementId, status, type) {
-    //     let payload = {
-    //         id: elementId,
-    //         status: status,
-    //         type: type
-    //     };
-    //
-    //     Craft.postActionRequest('qarr/elements/update-status', payload, $.proxy(((response, textStatus) => {
-    //         if (response.success) {
-    //             Craft.cp.displayNotice(Craft.t('qarr', 'Item ' + status));
-    //             this.fetchPendingItems(item, type)
-    //         }
-    //     }), this));
-    // },
-    //
-    // fetchPendingItems(purgeItem, type) {
-    //     purgeItem.remove();
-    //     this.$items = this.$container.find('.list-item:not(.excluded)');
-    //
-    //     let payload = {
-    //         type: type,
-    //         limit: this.limit
-    //     };
-    //
-    //     if (this.$items.length === 0) {
-    //         // TODO: Fetch more pending items
-    //         Craft.postActionRequest('qarr/elements/fetch-pending-items', payload, $.proxy(((response, textStatus) => {
-    //             if (response.success) {
-    //                 Craft.cp.displayNotice(Craft.t('qarr', 'Fetched more items ' + status));
-    //                 // TODO: append to $container
-    //                 this.$container.find('.list').html(response.template);
-    //                 this.addPendingItems(this.$container.find('.list-item:not(.excluded)'));
-    //             }
-    //         }), this));
-    //     }
-    // },
-
     addPendingItem: function addPendingItem(item) {
         new QARR.Widgets.PendingItem(item, this);
     },
@@ -332,6 +292,11 @@ QARR.Widgets.PendingItem = Garnish.Base.extend({
 });
 
 Garnish.$doc.ready(function () {
-    var pendingReviews = new QARR.Widgets.PendingItemsWidget('#widget-recent-reviews');
-    var pendingQuestions = new QARR.Widgets.PendingItemsWidget('#widget-recent-questions');
+    if ($('#widget-recent-reviews').length > 0) {
+        var pendingReviews = new QARR.Widgets.PendingItemsWidget('#widget-recent-reviews');
+    }
+
+    if ($('#widget-recent-questions').length > 0) {
+        var pendingQuestions = new QARR.Widgets.PendingItemsWidget('#widget-recent-questions');
+    }
 });

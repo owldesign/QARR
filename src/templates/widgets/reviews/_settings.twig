@@ -14,7 +14,6 @@
 #}
 
 {% import "_includes/forms" as forms %}
-{{ dd(settings) }}
 
 <div class="field" id="{{ id }}">
     <div class="heading">
@@ -23,8 +22,8 @@
     <div class="input ltr">
         <div class="select">
             <select name="type" id="{{ namespacedId }}">
-                <option value="owldesign\\qarr\\elements\\Review">Rating & Reviews</option>
-                <option value="owldesign\\qarr\\elements\\Question">Question & Answers</option>
+                <option value="reviews">Rating & Reviews</option>
+                <option value="questions">Question & Answers</option>
             </select>
         </div>
 

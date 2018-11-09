@@ -456,8 +456,11 @@ class Review extends Element
     protected static function defineSortOptions(): array
     {
         $attributes = [
-            'qarr_reviews.status' => QARR::t('Status'),
-            'elements.dateCreated' => QARR::t('Submitted')
+            'qarr_reviews.status'       => QARR::t('Status'),
+            'qarr_reviews.rating'       => QARR::t('Rating'),
+            'qarr_reviews.fullName'     => QARR::t('Customer'),
+            'qarr_reviews.productId'    => QARR::t('Product'),
+            'elements.dateCreated'      => QARR::t('Submitted')
         ];
 
         return $attributes;

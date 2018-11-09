@@ -16,6 +16,7 @@ use owldesign\qarr\fields\QARRField as QARRFieldField;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
 use owldesign\qarr\web\assets\QarrCp;
 use owldesign\qarr\widgets\Stats;
+use owldesign\qarr\widgets\Recent;
 
 use owldesign\qarr\plugin\Routes;
 use owldesign\qarr\plugin\Services;
@@ -88,7 +89,7 @@ class QARR extends Plugin
 
         // TODO: Widgets, fieldtypes, utitlities
         // Coming soon
-        // $this->_registerWidgets();
+         $this->_registerWidgets();
         // $this->_registerFieldTypes();
         // $this->_registerUtilities();
 
@@ -272,6 +273,7 @@ class QARR extends Plugin
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
                 $event->types[] = Stats::class;
+                $event->types[] = Recent::class;
             }
         );
     }
