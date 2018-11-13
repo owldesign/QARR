@@ -21,7 +21,7 @@ use yii\web\Response;
 
 class CorrespondenceController extends Controller
 {
-    protected $allowAnonymous = ['actionGateKeeper', 'actionCheckPassword', 'actionIndex', 'actionIndex', 'actionSendEmail'];
+    protected $allowAnonymous = ['actionGateKeeper', 'actionCheckPassword', 'actionIndex', 'actionIndex', 'actionSendMail'];
 
     public function actionGateKeeper($variables = null)
     {
