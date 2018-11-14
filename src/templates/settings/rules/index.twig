@@ -1,0 +1,76 @@
+{% requirePermission 'qarr:accessRules' %}
+
+{% extends "_layouts/cp" %}
+{% set title = "Rules"|t('qarr') %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+{% set bodyClass = 'qarr qarr-noelements qarr-rules' %}
+{% set selectedSubnavItem = "settings" %}
+{% set subTitle = "Settings" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+
+{% block header %}
+    {% include 'qarr/_includes/header' ignore missing %}
+    {% block actionButton %}
+        <a href="{{ url('qarr/settings/rules/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
+            <span class="icon"><i class="fa fa-plus"></i></span>
+            <span class="btn-text">{{ "New Rule"|t('qarr') }}</span>
+        </a>
+    {% endblock %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% block content %}
+    <div id="norules"{% if rules %} class="hidden"{% endif %}>
+        <p>{{ "No rules exist yet."|t('qarr') }}</p>
+    </div>
+
+    {% if rules|length %}
+        <table id="rules" class="data fullwidth collapsible">
+            <thead>
+            <th scope="col">{{ "Name"|t('qarr') }}</th>
+            <th scope="col">{{ "Handle"|t('qarr') }}</th>
+            <td class="thin"></td>
+            </thead>
+            <tbody>
+            {% for rule in rules %}
+                <tr data-id="{{ rule.id }}" data-name="{{ rule.name}}">
+                    <td scope="row" data-title="{{ 'Name'|t('qarr') }}">
+                        <div class="element">
+                            <a href="{{ url('qarr/settings/rules/' ~ rule.id) }}">{{ rule.name }}</a>
+                        </div>
+                    </td>
+                    <td data-title="{{ 'Handle'|t('qarr') }}"><code>{{ rule.handle }}</code></td>
+                    <td class="thin">
+                        {% if currentUser.can('qarr:deleteRules') %}
+                            <a class="delete icon" title="{{ 'Delete'|t('qarr') }}" role="button"></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
+
+{% js %}
+
+    var ruleMenu = new Garnish.MenuBtn($('.dropdown-menu', this.$container));
+
+
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#rules',
+    noItemsSelector: '#norules',
+    deleteAction: 'qarr/rules/delete',
+    confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}” and all its settings?"|t('qarr') }}',
+    onDeleteItem: function() {
+    if (adminTable.totalItems == 0) {
+    $('#nav-entries').remove();
+    }
+    }
+    });
+{% endjs %}

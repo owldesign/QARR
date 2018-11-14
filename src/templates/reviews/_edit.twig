@@ -40,6 +40,16 @@
         </div>
     </div>
 
+    {% set flags = entry.getFlags() %}
+    <div class="primary-meta rules-meta">
+        <div class="flagged-rules">
+            <span class="txt">{{ 'Entry is flagged for '|t('qarr') }}</span>
+            {% for flag in flags %}
+                <div class="flagged-item flagged-{{ flag.rule.handle }}">{{ flag.rule.name }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
     <div class="panel feedback-panel {% if feedbackResponse is defined and feedbackResponse %}has-response{% endif %}">
 
         <div class="panel-wrapper">

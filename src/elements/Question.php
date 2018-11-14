@@ -486,6 +486,10 @@ class Question extends Element
 
         $record->save(false);
 
+        if ($isNew) {
+            // Profanity Rule
+            $checkProfanity = QARR::$plugin->rules->checkProfanity($this->question, $record);
+        }
         parent::afterSave($isNew);
     }
 

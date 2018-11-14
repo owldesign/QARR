@@ -38,8 +38,20 @@
   src: url("../fonts/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans-BoldItalic.ttf") format("truetype");
 }
 
-.qarr.qarr-reviews #content, .qarr.qarr-questions #content, .qarr.qarr-displays #content {
+.qarr.qarr-reviews #content, .qarr.qarr-questions #content {
   padding: 0 !important;
+}
+
+.qarr.qarr-rules #content, .qarr.qarr-displays #content {
+  padding: 0 !important;
+}
+
+.qarr.qarr-rules table thead th, .qarr.qarr-displays table thead th {
+  padding: 35px 35px 15px 35px !important;
+}
+
+.qarr.qarr-rules table.data tbody td, .qarr.qarr-displays table.data tbody td {
+  padding: 15px 35px 15px 35px;
 }
 
 .qarr .toolbar {
@@ -211,9 +223,9 @@
   border-radius: 4px;
   width: 28px;
   height: 28px;
-  font-family: "OpenSans-Regular", "Helvetica", sans-serif;
+  text-transform: uppercase;
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
   font-size: 10px;
-  font-weight: 600;
 }
 
 .qarr .guest-wrapper {
@@ -281,9 +293,39 @@
   font-size: 10px;
 }
 
-.qarr .reports-wrapper svg {
+.qarr .flags-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.qarr .flags-wrapper svg {
   color: #f07575;
   font-size: 16px;
+  margin-right: 7px;
+}
+
+.qarr .flags-wrapper .flagged-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-transform: uppercase;
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
+  font-size: 10px;
+  letter-spacing: .05em;
+  line-height: 1;
+  padding: 4px 8px;
+  border: 1px solid #E9EFF4;
+  border-radius: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 
 .qarr .rating-wrapper span {

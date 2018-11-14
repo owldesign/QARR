@@ -10,19 +10,17 @@
 
 namespace owldesign\qarr;
 
-use owldesign\qarr\models\Settings;
 use owldesign\qarr\elements\Review as ReviewElement;
 use owldesign\qarr\fields\QARRField as QARRFieldField;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
 use owldesign\qarr\web\assets\QarrCp;
 use owldesign\qarr\widgets\Stats;
 use owldesign\qarr\widgets\Recent;
-
 use owldesign\qarr\plugin\Routes;
 use owldesign\qarr\plugin\Services;
-
 use owldesign\qarr\web\twig\Variables;
 use owldesign\qarr\web\twig\Extensions;
+use owldesign\qarr\models\Settings;
 
 use Craft;
 use craft\web\View;
@@ -38,13 +36,10 @@ use craft\events\TemplateEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 
-
 use yii\base\Event;
-use yii\base\InvalidConfigException;
 
 class QARR extends Plugin
 {
-
     /// Static Properties
     // =========================================================================
 
@@ -53,17 +48,17 @@ class QARR extends Plugin
     // Public Properties
     // =========================================================================
 
-    // TODO: update these..
-    public $schemaVersion = '1.0.0';
-    public $hasCpSettings = true;
+    public $schemaVersion = '1.0.1';
+    public $hasCpSettings = false;
     public $hasCpSection = true;
     public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
-    public $downloadUrl = 'https://docs.qarr.tools';
+    public $downloadUrl = 'https://qarr.tools';
     public $pluginUrl = 'https://qarr.tools';
-    public $docsUrl = 'https://qarr.tools';
+    public $docsUrl = 'https://docs.qarr.tools';
 
     // Trails
     // =========================================================================
+
     use Services;
     use Routes;
 
@@ -97,27 +92,26 @@ class QARR extends Plugin
 
     // Protected Methods
     // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
     protected function createSettingsModel()
     {
         return new Settings();
     }
 
+    protected function settingsHtml()
+    {
+        return \Craft::$app->getView()->renderTemplate('qarr/settings/index', [
+            'settings' => $this->getSettings()
+        ]);
+    }
+
     /**
      * @inheritdoc
      */
-    protected function settingsHtml(): string
+    public function getSettingsResponse()
     {
-        return Craft::$app->view->renderTemplate(
-            'qarr/settings',
-            [
-                'settings' => $this->getSettings()
-            ]
-        );
+        return Craft::$app->controller->renderTemplate('qarr/settings/index');
     }
+
 
     /**
      * @inheritdoc
@@ -143,6 +137,10 @@ class QARR extends Plugin
                 'displays' => [
                     'label' => QARR::t('Displays'),
                     'url' => 'qarr/displays'
+                ],
+                'settings' => [
+                    'label' => QARR::t('Settings'),
+                    'url' => 'qarr/settings'
                 ]
             ]
         ]);

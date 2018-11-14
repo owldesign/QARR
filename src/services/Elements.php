@@ -26,7 +26,7 @@ require_once CRAFT_VENDOR_PATH . '/owldesign/qarr/src/functions/array-group-by.p
  * Class Element
  * @package owldesign\qarr\services
  */
-class Element extends Component
+class Elements extends Component
 {
     /**
      * Query single element
@@ -68,7 +68,7 @@ class Element extends Component
         return $query;
     }
 
-    public function querySortElements(string $type, int $productId, string $value, int $limit)
+    public function querySortElements(string $type, int $productId, string $value, $limit)
     {
         $query = $this->_getElementQuery($type);
         $query->productId($productId);

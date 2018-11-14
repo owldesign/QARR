@@ -1,0 +1,96 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+
+{% set fullPageForm = true %}
+{% set bodyClass = 'qarr qarr-nosettings qarr-rule-edit' %}
+{% set pluginCpUrl = url('qarr') %}
+{% set selectedSubnavItem = "settings" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+{% set subTitle = 'Settigns > Rules' %}
+
+{% import "_includes/forms" as forms %}
+
+{% block header %}
+    {% include 'qarr/_includes/header' ignore missing %}
+    {% block actionButton %}
+        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
+    {% endblock %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% block content %}
+    <div class="flex-container">
+
+        <div id="content-fields" class="full-col">
+            <div class="widget transparent">
+                <input type="hidden" name="action" value="qarr/settings/rules/save">
+                {{ redirectInput('qarr/settings/rules') }}
+
+                {% if rule.id %}<input type="hidden" name="ruleId" value="{{ rule.id }}">{% endif %}
+
+                <div class="qarr-field custom-field {% if rule.getErrors('name') %}has-error{% endif %} {% if rule.name %}has-value{% endif %}">
+                    <input class="text fullwidth" type="text" id="name" name="name" value="{{ rule.name }}"
+                           maxlength="255" autocomplete="off">
+                    <label id="name-label" for="name" data-label="{{ 'Name'|t('qarr') }}"
+                           data-error-message="{% if rule.getErrors('name') %}{{ rule.getErrors('name')[0] }}{% endif %}">
+                        {% if rule.getErrors('name') %}
+                            {{ rule.getErrors('name')[0] }}
+                        {% else %}
+                            {{ 'Name'|t('qarr') }}
+                        {% endif %}
+                    </label>
+                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
+                </div>
+
+                <div class="qarr-field custom-field {% if rule.getErrors('handle') %}has-error{% endif %} {% if rule.handle %}has-value{% endif %}">
+                    <input class="text fullwidth" type="text" id="handle" name="handle" value="{{ rule.handle }}"
+                           autocomplete="off">
+                    <label id="handle-label" for="handle" data-label="{{ 'Handle'|t('qarr') }}"
+                           data-error-message="{% if rule.getErrors('name') %}{{ rule.getErrors('name')[0] }}{% endif %}">
+                        {% if rule.getErrors('handle') %}
+                            {{ rule.getErrors('handle')[0] }}
+                        {% else %}
+                            {{ 'Handle'|t('qarr') }}
+                        {% endif %}
+                    </label>
+                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
+                </div>
+
+                <div class="qarr-field custom-field custom-select">
+                    <select name="options[data][]" id="ruleData" multiple>
+                        <option value="boring">Boring</option>
+                        <option value="sucks">Sucks</option>
+                        <option value="broken">Broken</option>
+                    </select>
+                    {#<input class="text fullwidth" type="text" id="titleFormat" name="titleFormat" value="{{ rule.options }}" maxlength="255" autocomplete="off">#}
+                    <label id="ruleData-label" for="ruleData">{{ 'Rule Data'|t('qarr') }}</label>
+                </div>
+
+                {#<div id="title-format-items">#}
+                    {#<div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"#}
+                         {#data-field="{dateCreated}">Date Created#}
+                    {#</div>#}
+                    {#<div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"#}
+                         {#data-field="{fullName}">Full Name#}
+                    {#</div>#}
+                    {#<div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"#}
+                         {#data-field="{emailAddress}">Email Address#}
+                    {#</div>#}
+                    {#<div class="format-item format-example">#}
+                        {#eg. Review from {fullName} submitted on {dateCreated}#}
+                    {#</div>#}
+                {#</div>#}
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% js %}
+    {% if rule and not rule.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+{% endjs %}

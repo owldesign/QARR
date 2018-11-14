@@ -11,6 +11,7 @@
 namespace owldesign\qarr\migrations;
 
 use owldesign\qarr\QARR;
+use owldesign\qarr\models\Rule;
 
 use Craft;
 use craft\config\DbConfig;
@@ -39,6 +40,8 @@ class Install extends Migration
 
         // Refresh the db schema caches
         Craft::$app->db->schema->refresh();
+
+        $this->insertDefaultData();
 
         return true;
     }
@@ -201,6 +204,28 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
+
+        // Rules
+        $this->createTable('{{%qarr_rules}}', [
+            'id' => $this->primaryKey(),
+            'name' => $this->string()->notNull(),
+            'handle' => $this->string()->notNull(),
+            'settings' => $this->text(),
+            'options' => $this->text(),
+            'dateCreated' => $this->dateTime()->notNull(),
+            'dateUpdated' => $this->dateTime()->notNull(),
+            'uid' => $this->uid()
+        ]);
+
+        $this->createTable('{{%qarr_rules_elements}}', [
+            'id' => $this->primaryKey(),
+            'ruleId' => $this->integer()->notNull(),
+            'elementId' => $this->integer()->notNull(),
+            'details' => $this->text(),
+            'dateCreated' => $this->dateTime()->notNull(),
+            'dateUpdated' => $this->dateTime()->notNull(),
+            'uid' => $this->uid()
+        ]);
     }
 
     /**
@@ -253,6 +278,8 @@ class Install extends Migration
         $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_displays}}', 'fieldLayoutId'), '{{%qarr_displays}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL', null);
         $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_notes}}', 'elementId'), '{{%qarr_notes}}', 'elementId', '{{%elements}}', 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_correspondence_responses}}', 'parentId'), '{{%qarr_correspondence_responses}}', 'parentId', '{{%qarr_correspondence}}', 'id', 'CASCADE', null);
+
+        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_rules_elements}}', 'ruleId'), '{{%qarr_rules_elements}}', 'ruleId', '{{%qarr_rules}}', 'id', 'CASCADE', null);
     }
 
     /**
@@ -270,5 +297,23 @@ class Install extends Migration
         $this->dropTableIfExists('{{%qarr_notes}}');
         $this->dropTableIfExists('{{%qarr_correspondence_responses}}');
         $this->dropTableIfExists('{{%qarr_correspondence}}');
+        $this->dropTableIfExists('{{%qarr_rules_elements}}');
+        $this->dropTableIfExists('{{%qarr_rules}}');
+    }
+
+    public function insertDefaultData()
+    {
+        $profanityRule = new Rule([
+            'name' => 'Profanity',
+            'handle' => 'profanity'
+        ]);
+
+        $negativeFeedbackRule = new Rule([
+            'name' => 'Negative Feedback',
+            'handle' => 'negativeFeedback'
+        ]);
+
+        QARR::$plugin->rules->saveRule($profanityRule);
+        QARR::$plugin->rules->saveRule($negativeFeedbackRule);
     }
 }

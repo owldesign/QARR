@@ -40,6 +40,23 @@
 
 .qarr #main-container #main #header {
   height: 98px;
+  background: white;
+}
+
+.qarr .page-title-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.qarr .page-title-wrapper .page-title p {
+  margin: 0;
+  line-height: 1;
+  font-family: "OpenSans-Italic", "Helvetica", sans-serif;
+  color: #a5a6a8;
 }
 
 .qarr .qarr-logo {
@@ -779,6 +796,42 @@
       -ms-flex-align: center;
           align-items: center;
   margin: 10px 0 30px 0;
+}
+
+.qarr .rules-meta {
+  margin-bottom: 10px;
+}
+
+.qarr .rules-meta .txt {
+  font-size: 10px;
+  padding-right: 10px;
+}
+
+.qarr .rules-meta .flagged-rules {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.qarr .rules-meta .flagged-item {
+  text-transform: uppercase;
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
+  font-size: 10px;
+  letter-spacing: .05em;
+  line-height: 1;
+  padding: 4px 8px;
+  border: 1px solid #E9EFF4;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+.qarr .rules-meta .flagged-item.flagged-profanity, .qarr .rules-meta .flagged-item.flagged-negativeFeedback {
+  color: white;
+  background-color: #f07575;
+  border-color: #f07575;
 }
 
 .qarr .status-badge {
@@ -1908,6 +1961,10 @@ a.approved {
   }
 }
 
+.qarr #main-container a {
+  text-decoration: none;
+}
+
 .qarr hr {
   border-color: #E9EFF4;
   margin: 0;
@@ -2469,6 +2526,10 @@ a.approved {
           transition-delay: 0s;
 }
 
+.qarr-field.custom-select .select2-container--default {
+  width: 100% !important;
+}
+
 .qarr-field.custom-select .select2-container--default .select2-selection--single {
   border: none;
   outline: none;
@@ -2491,6 +2552,29 @@ a.approved {
 .qarr-field.custom-select .select2-container--default .select2-selection--single .select2-selection__arrow {
   height: 100%;
   width: 54px;
+}
+
+.qarr-field.custom-select .select2-container--default .select2-selection--multiple {
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  min-height: 60px;
+}
+
+.qarr-field.custom-select .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+  padding: 27px 40px 0 16px;
+}
+
+.qarr-field.custom-select .select2-container--default .select2-selection--multiple .select2-selection__rendered li.select2-selection__choice {
+  border-color: #B289EF;
+  background-color: #B289EF;
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
+  font-size: 10px;
+  color: white;
+}
+
+.qarr-field.custom-select .select2-container--default .select2-selection--multiple .select2-selection__rendered li .select2-selection__choice__remove {
+  color: white;
 }
 
 .qarr .select2-dropdown {

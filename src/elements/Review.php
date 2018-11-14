@@ -387,11 +387,20 @@ class Review extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch($attribute) {
-            case 'reports':
-                $markup = '<div class="reports-wrapper">';
-                if ($this->abuse) {
-                    $markup .= '<div class="badge-wrapper"><i class="fa fa-exclamation-circle"></i></span></div></div>';
+            case 'flags':
+                $markup = '<div class="flags-wrapper">';
+                $flags = self::getFlags();
+
+                if ($flags) {
+                    foreach ($flags as $flag) {
+                        $markup .= '<div class="flagged-item"><i class="fa fa-exclamation-circle"></i> '. $flag["rule"]["name"] .'</span></div>';
+                    }
                 }
+
+                if ($this->abuse) {
+                    $markup .= '<div class="flagged-item"><i class="fa fa-exclamation-circle"> Abuse</i></span></div>';
+                }
+
                 $markup .= '</div>';
                 return $markup;
                 break;
@@ -473,7 +482,7 @@ class Review extends Element
     {
         $attributes = [];
         $attributes['status'] = ['label' => QARR::t('Title')];
-        $attributes['reports'] = ['label' => QARR::t('Reports')];
+        $attributes['flags'] = ['label' => QARR::t('Flags')];
         $attributes['guest'] = ['label' => QARR::t('Guest')];
         $attributes['rating'] = ['label' => QARR::t('Rating')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
@@ -556,6 +565,13 @@ class Review extends Element
         return "$difference $periods[$j]";
     }
 
+    public function getFlags()
+    {
+        $result = QARR::$plugin->rules->getFlagged($this->id);
+
+        return $result;
+    }
+
     // Events
     // -------------------------------------------------------------------------
 
@@ -599,6 +615,11 @@ class Review extends Element
         $record->userAgent      = $this->userAgent;
 
         $record->save(false);
+
+        if ($isNew) {
+            // Profanity Rule
+            $checkProfanity = QARR::$plugin->rules->checkProfanity($this->feedback, $record);
+        }
 
         parent::afterSave($isNew);
     }

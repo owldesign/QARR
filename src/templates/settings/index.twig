@@ -1,0 +1,23 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+
+{% set title = "Settings"|t('qarr') %}
+{% set bodyClass = 'qarr qarr-settings' %}
+{% set selectedSubnavItem = "settings" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block header %}
+    <a href="{{ url('qarr') }}" class="qarr-logo">
+        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
+    </a>
+    {{ parent() }}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+
+{% endset %}

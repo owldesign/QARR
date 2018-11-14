@@ -18,7 +18,8 @@ use owldesign\qarr\services\Replies;
 use owldesign\qarr\services\Answers;
 use owldesign\qarr\services\Notes;
 use owldesign\qarr\services\Correspondence;
-use owldesign\qarr\services\Element;
+use owldesign\qarr\services\Elements;
+use owldesign\qarr\services\Rules;
 
 trait Services
 {
@@ -108,11 +109,21 @@ trait Services
     /**
      * Get elements
      *
-     * @return Element
+     * @return Elements
      */
-    public function getElement(): Element
+    public function getElements(): Elements
     {
         return $this->get('elements');
+    }
+
+    /**
+     * Get rules
+     *
+     * @return Rules
+     */
+    public function getRules(): Rules
+    {
+        return $this->get('rules');
     }
 
     // Private Methods
@@ -132,7 +143,8 @@ trait Services
             'notes' => Notes::class,
             'correspondence' => Correspondence::class,
             'cookies' => Cookies::class,
-            'elements' => Element::class,
+            'elements' => Elements::class,
+            'rules' => Rules::class,
         ]);
     }
 }

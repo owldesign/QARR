@@ -83,11 +83,11 @@ class Variables extends Behavior
 
         // Reviews & Questions
         if ($removePagination) {
-            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $product->id);
-            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $product->id);
+            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $product->id, null, 'approved');
+            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $product->id, null, 'approved');
         } else {
-            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $product->id, $limit);
-            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $product->id, $limit);
+            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $product->id, $limit, null, 'approved');
+            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $product->id, $limit, null, 'approved');
         }
 
         // Displays
