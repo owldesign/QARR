@@ -32,10 +32,11 @@ trait Routes
                 $event->rules['qarr/displays/<displayId:\d+>'] = 'qarr/displays/edit';
                 $event->rules['qarr/reviews/<reviewId:\d+>'] = 'qarr/reviews/edit';
                 $event->rules['qarr/questions/<questionId:\d+>'] = 'qarr/questions/edit';
-                $event->rules['qarr/settings'] = 'qarr/settings/rules/index';
-                $event->rules['qarr/settings/rules'] = 'qarr/settings/rules/index';
-                $event->rules['qarr/settings/rules/new'] = 'qarr/settings/rules/edit';
-                $event->rules['qarr/settings/rules/<ruleId:\d+>'] = 'qarr/settings/rules/edit';
+                $event->rules['qarr/tools'] = ['template' => 'qarr/tools/index'];
+                $event->rules['qarr/tools/rules'] = 'qarr/tools/rules/index';
+                $event->rules['qarr/tools/rules/new'] = 'qarr/tools/rules/edit';
+                $event->rules['qarr/tools/rules/<ruleId:\d+>'] = 'qarr/tools/rules/edit';
+                $event->rules['qarr/tools/helpdesk'] = 'qarr/tools/help-desk/index';
             }
         );
     }

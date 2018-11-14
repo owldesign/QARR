@@ -11,10 +11,7 @@
 {% set elementType = 'owldesign\\qarr\\elements\\Review' %}
 
 {% block header %}
-    <a href="{{ url('qarr') }}" class="qarr-logo">
-        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
-    </a>
-    {{ parent() }}
+    {% include 'qarr/_includes/header' ignore missing %}
 {% endblock %}
 
 {% block sidebar %}

@@ -1,0 +1,26 @@
+{% set currentSettingsPage = craft.app.request.getSegment(3) %}
+
+<nav id="settings-sidebar">
+    <ul>
+        <li>
+            <a href="{{ url('qarr/tools') }}" class="{{ currentSettingsPage == null ? 'sel' }}">
+                <i class="{{ currentSettingsPage == null ? 'fas' : 'far' }} fa-exclamation-circle icon"></i>
+                <span class="label">{{ 'Info'|t('qarr') }}</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url('qarr/tools/rules') }}" class="{{ currentSettingsPage == 'rules' ? 'sel' }}">
+                <i class="{{ currentSettingsPage == 'rules' ? 'fas' : 'far' }} fa-flag icon"></i>
+                <span class="label">{{ 'Rules'|t('qarr') }}</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url('qarr/tools/helpdesk') }}" class="{{ currentSettingsPage == 'helpdesk' ? 'sel' }}">
+                <i class="{{ currentSettingsPage == 'helpdesk' ? 'fas' : 'far' }} fa-comments-alt icon"></i>
+                <span class="label">{{ 'Help Desk'|t('qarr') }}</span>
+            </a>
+        </li>
+    </ul>
+</nav>

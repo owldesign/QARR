@@ -9,13 +9,7 @@
 {% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    <a href="{{ url('qarr') }}" class="qarr-logo">
-        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
-    </a>
-    {{ parent() }}
-{% endblock %}
-
-{% block actionButton %}
+    {% include 'qarr/_includes/header' ignore missing %}
 {% endblock %}
 
 {% block content %}

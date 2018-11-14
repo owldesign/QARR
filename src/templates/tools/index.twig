@@ -1,0 +1,30 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+
+{% set title = "Settings"|t('qarr') %}
+{% set bodyClass = 'qarr qarr-settings' %}
+{% set selectedSubnavItem = "tools" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block header %}
+    {% include 'qarr/_includes/header' ignore missing %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/tools/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+
+    {% set settings = craft.app.plugins.getPlugin('qarr') %}
+    {% set plugin = craft.app.plugins.getPluginInfo('qarr') %}
+
+    <p>Plugin Version: {{ settings.version }}</p>
+    <p>DB Schema: {{ settings.schemaVersion }}</p>
+    <p>Developer: {{ settings.developer }}</p>
+
+    {{ d(plugin) }}
+    {{ d(settings) }}
+
+{% endset %}

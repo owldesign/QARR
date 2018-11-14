@@ -9,13 +9,7 @@
 {% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    <a href="{{ url('qarr') }}" class="qarr-logo">
-        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
-    </a>
-    {{ parent() }}
-{% endblock %}
-
-{% block actionButton %}
+    {% include 'qarr/_includes/header' ignore missing %}
 {% endblock %}
 
 {% block content %}
@@ -41,6 +35,7 @@
     </div>
 
     {% set flags = entry.getFlags() %}
+    {% if flags %}
     <div class="primary-meta rules-meta">
         <div class="flagged-rules">
             <span class="txt">{{ 'Entry is flagged for '|t('qarr') }}</span>
@@ -49,6 +44,7 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
 
     <div class="panel feedback-panel {% if feedbackResponse is defined and feedbackResponse %}has-response{% endif %}">
 

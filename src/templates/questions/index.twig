@@ -11,15 +11,12 @@
 {% set elementType = 'owldesign\\qarr\\elements\\Question' %}
 
 {% block header %}
-    <a href="{{ url('qarr') }}" class="qarr-logo">
-        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
-    </a>
-    {{ parent() }}
+    {% include 'qarr/_includes/header' ignore missing %}
 {% endblock %}
 
 {% block sidebar %}
     {% if sources is not empty %}
-        <nav id="sources">
+        <nav>
             <ul>
                 {% for key, source in sources %}
                     {% if source.heading is defined %}

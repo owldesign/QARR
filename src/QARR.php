@@ -138,9 +138,9 @@ class QARR extends Plugin
                     'label' => QARR::t('Displays'),
                     'url' => 'qarr/displays'
                 ],
-                'settings' => [
-                    'label' => QARR::t('Settings'),
-                    'url' => 'qarr/settings'
+                'tools' => [
+                    'label' => QARR::t('Tools'),
+                    'url' => 'qarr/tools'
                 ]
             ]
         ]);

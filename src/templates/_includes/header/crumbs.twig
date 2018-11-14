@@ -1,0 +1,12 @@
+{% set segments = craft.app.request.segments %}
+
+{% if segments|length > 3 %}
+    <nav id="qarr-crumbs">
+        <a href="{{ url('qarr/' ~ segments[1]) }}">{{ segments[1] |capitalize }}</a> <i class="far fa-chevron-right"></i>
+        <a href="{{ url('qarr/settings/' ~ segments[2]) }}">{{ segments[2] |capitalize }}</a>
+    </nav>
+{% elseif segments|length == 3 %}
+    <nav id="qarr-crumbs">
+        <a href="{{ url('qarr/' ~ segments[1]) }}">{{ segments[1] |capitalize }}</a>
+    </nav>
+{% endif %}
