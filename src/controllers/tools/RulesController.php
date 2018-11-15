@@ -11,6 +11,7 @@
 namespace owldesign\qarr\controllers\tools;
 
 use craft\helpers\Json;
+use craft\helpers\StringHelper;
 use owldesign\qarr\models\Rule;
 use owldesign\qarr\QARR;
 
@@ -47,7 +48,7 @@ class RulesController extends Controller
             'ruleId' => $ruleId,
             'brandNewRule' => false
         ];
-        
+
         if ($ruleId !== null) {
             if ($rule === null) {
                 $rule = QARR::$plugin->rules->getRuleById($ruleId);
@@ -81,15 +82,26 @@ class RulesController extends Controller
 
         $request = Craft::$app->getRequest();
 
-        $model                = new Rule();
-        $model->id            = $request->getBodyParam('ruleId');
-        $model->name          = $request->getBodyParam('name');
-        $model->handle        = $request->getBodyParam('handle');
-        $model->enabled       = $request->getBodyParam('enabled');
-        $model->options       = Json::encode($request->getBodyParam('options'));
-        $model->settings      = Json::encode($request->getBodyParam('settings'));
-        
-        
+        $model = new Rule();
+        $model->id = $request->getBodyParam('ruleId');
+        $model->name = $request->getBodyParam('name');
+        $model->handle = $request->getBodyParam('handle');
+        $model->enabled = $request->getBodyParam('enabled');
+        $model->icon = $request->getBodyParam('icon');
+
+        if ($request->getBodyParam('data') != '' && $request->getBodyParam('data') != '[]') {
+            $model->data = Json::decode($request->getBodyParam('data'));
+            $model->data = StringHelper::toString($model->data);
+        }
+
+        if ($request->getBodyParam('options')) {
+            $model->options = Json::encode($request->getBodyParam('options'));
+        }
+
+        if ($request->getBodyParam('settings')) {
+            $model->settings = Json::encode($request->getBodyParam('settings'));
+        }
+
         // Permission enforcement
         $this->_enforceEditRulePermissions($model);
 
@@ -174,12 +186,11 @@ class RulesController extends Controller
     {
         $request = Craft::$app->getRequest();
 
-        $rule->name              = $request->getBodyParam('name', $rule->name);
-        $rule->handle            = $request->getBodyParam('handle', $rule->handle);
-        $rule->options           = $request->getBodyParam('options', $rule->options);
-        $rule->settings          = $request->getBodyParam('settings', $rule->settings);
+        $rule->name = $request->getBodyParam('name', $rule->name);
+        $rule->handle = $request->getBodyParam('handle', $rule->handle);
+        $rule->options = $request->getBodyParam('options', $rule->options);
+        $rule->settings = $request->getBodyParam('settings', $rule->settings);
     }
-
 
 
 }

@@ -1,5 +1,17 @@
 Garnish.$doc.ready(function () {
 
+    if ($('.flagged-rules').length > 0) {
+        $.each($('.tippy-with-html'), function (i, el) {
+            var index = $(el).data('index');
+
+            tippy('.tippy-with-html', {
+                content: document.querySelector('#myTemplate-' + index),
+                theme: 'light',
+                duration: 400
+            });
+        });
+    }
+
     if ($('#reply-email-btn').length > 0) {
         var emailCorrespondence = new QarrEmailCorrespondence('#reply-email-btn');
     }

@@ -388,20 +388,21 @@ class Review extends Element
     {
         switch($attribute) {
             case 'flags':
-                $markup = '<div class="flags-wrapper">';
                 $flags = self::getFlags();
+                $markup = '<div class="flags-container">';
 
                 if ($flags) {
                     foreach ($flags as $flag) {
-                        $markup .= '<div class="flagged-item"><i class="fa fa-exclamation-circle"></i> '. $flag["rule"]["name"] .'</span></div>';
+                        $markup .= '<div class="flags-wrapper">';
+                        $markup .= '<div class="flagged-item"><i class="fal fa-'. $flag["rule"]["icon"] .'"></i> <span>'. $flag["rule"]["name"] .'</span></div>';
+                        $markup .= '</div>';
                     }
                 }
 
-                if ($this->abuse) {
-                    $markup .= '<div class="flagged-item"><i class="fa fa-exclamation-circle"> Abuse</i></span></div>';
-                }
+//                if ($this->abuse) {
+//                    $markup .= '<div class="flagged-item"><i class="fa fa-exclamation-circle"></i> <span>Abuse</span></div>';
+//                }
 
-                $markup .= '</div>';
                 return $markup;
                 break;
             case 'guest':
@@ -636,6 +637,9 @@ class Review extends Element
     {
         $record = ReviewRecord::findOne($this->id);
         $record->delete();
+
+        // Remove rules
+        QARR::$plugin->rules->removeRecord($this->id);
     }
 
     /**

@@ -17,7 +17,8 @@ class Rules extends AssetBundle
         $this->sourcePath = __DIR__;
 
         $this->depends = [
-            Select2::class
+//            Select2::class,
+            Tags::class
         ];
 
         $this->css = [

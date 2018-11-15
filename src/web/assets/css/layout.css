@@ -38,6 +38,36 @@
   src: url("../fonts/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans-BoldItalic.ttf") format("truetype");
 }
 
+.flex-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.flex-container > div {
+  padding-right: 25px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.flex-container .full-col {
+  width: 100%;
+}
+
+.flex-container .third-col {
+  width: 75%;
+}
+
+.flex-container .half-col {
+  width: 50%;
+}
+
+.flex-container .quarter-col {
+  width: 25%;
+}
+
 .qarr #main-container #main #header {
   height: 98px;
   background: white;
@@ -76,9 +106,27 @@
   padding: 10px 0 30px 0;
 }
 
+.qarr .entry-title-wrapper .entry-title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
 .qarr .entry-title-wrapper .title-icon {
   margin-right: 8px;
   font-size: 20px;
+}
+
+.qarr .entry-title-wrapper h1 {
+  margin: 0 10px 0 0;
+  line-height: normal;
+}
+
+.qarr .entry-title-wrapper .lightswitch {
+  margin-top: 5px;
 }
 
 .qarr #qarr-crumbs {
@@ -845,7 +893,18 @@
           align-items: center;
 }
 
+.qarr .rules-meta .flagged-rules svg {
+  font-size: 16px;
+  margin-right: 7px;
+}
+
 .qarr .rules-meta .flagged-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   text-transform: uppercase;
   font-family: "OpenSans-Bold", "Helvetica", sans-serif;
   font-size: 10px;
@@ -855,12 +914,7 @@
   border: 1px solid #E9EFF4;
   border-radius: 5px;
   margin-right: 5px;
-}
-
-.qarr .rules-meta .flagged-item.flagged-profanity, .qarr .rules-meta .flagged-item.flagged-negativeFeedback {
-  color: white;
-  background-color: #f07575;
-  border-color: #f07575;
+  margin-bottom: 5px;
 }
 
 .qarr .status-badge {
@@ -1990,8 +2044,12 @@ a.approved {
   }
 }
 
-.qarr #main-container a {
-  text-decoration: none;
+.qarr .small-text {
+  font-size: 11px;
+}
+
+.qarr .muted {
+  color: #a5a6a8;
 }
 
 .qarr hr {
@@ -2087,7 +2145,7 @@ a.approved {
 }
 
 .qarr .lightswitch .label.on, .qarr .lightswitch:not(.dragging).on .label.off {
-  background: #B289EF;
+  background: #2fec94;
 }
 
 .qarr .texticon.icon:before {
@@ -2411,6 +2469,50 @@ a.approved {
   color: white;
 }
 
+.qarr .tagify tag:hover div:before {
+  background: #67aeff !important;
+}
+
+.qarr .tagify tag x {
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
+  font-size: 17px;
+  color: white;
+}
+
+.qarr .tagify tag x:hover {
+  color: black;
+  background: transparent;
+}
+
+.qarr .tagify tag > div {
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
+  font-size: 10px;
+  color: white;
+  padding: 5px 25px 5px 10px;
+}
+
+.qarr .tagify tag > div:before {
+  background: #4da1ff;
+}
+
+.qarr .tagify.tagify--outside {
+  border: none;
+}
+
+.tagify--outside {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.tagify__input--outside {
+  display: block;
+  max-width: 600px;
+  border: 1px solid #DDD;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+}
+
 @-webkit-keyframes shake {
   10%, 90% {
     -webkit-transform: translate3d(-1px, 0, 0);
@@ -2580,6 +2682,11 @@ a.approved {
 
 .btns.btn-purple:hover, .qarr-modal .btns.btn-purple:hover {
   background: #b89cf7;
+}
+
+.btns.btn-disabled, .qarr-modal .btns.btn-disabled {
+  opacity: .4;
+  pointer-events: none;
 }
 
 .btns.btn-white, .qarr-modal .btns.btn-white {

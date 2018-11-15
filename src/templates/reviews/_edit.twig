@@ -40,7 +40,15 @@
         <div class="flagged-rules">
             <span class="txt">{{ 'Entry is flagged for '|t('qarr') }}</span>
             {% for flag in flags %}
-                <div class="flagged-item flagged-{{ flag.rule.handle }}">{{ flag.rule.name }}</div>
+                {#data-tippy="{{ flag.details.matched |length }}"#}
+                <div class="flagged-item flagged-{{ flag.rule.handle }} tippy-with-html" data-index="{{ loop.index }}">
+                    <i class="fal fa-{{ flag.rule.icon }}"></i>
+                    <span>{{ flag.rule.name }}</span>
+                </div>
+
+                <div id="myTemplate-{{ loop.index }}" class="tippy-html-content">
+                    Matches: <strong style="color: pink;">{{ flag.details.matched |length }}</strong>
+                </div>
             {% endfor %}
         </div>
     </div>

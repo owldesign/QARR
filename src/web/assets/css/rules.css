@@ -293,17 +293,10 @@
 }
 
 .qarr .flags-wrapper {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  display: inline-block;
 }
 
 .qarr .flags-wrapper svg {
-  color: #f07575;
   font-size: 16px;
   margin-right: 7px;
 }
@@ -870,4 +863,36 @@
 
 #norules {
   padding: 24px;
+}
+
+.qarr-rule-edit #data-list-container {
+  margin-top: 30px;
+}
+
+.qarr-rule-edit #data-list-container h2 {
+  margin-bottom: 0;
+}
+
+.qarr-rule-edit #data-list-container p {
+  margin: 0 0 5px 0;
+}
+
+.qarr-rule-edit #data-list-container .tagify {
+  margin-left: -5px;
+  margin-top: 10px;
+}
+
+.qarr-rule-edit #data-list-container .tagify__input {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.qarr-rule-edit #data-list-container .tagify__input:before {
+  line-height: normal;
+  top: 2px;
+}
+
+.qarr-rule-edit #data-list-container .tags--removeAllBtn {
+  margin-top: 15px;
 }

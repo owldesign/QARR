@@ -40,6 +40,20 @@
                                     <span class="item-meta-title">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }}</span>
                                 </div>
 
+                                {% set flags = entry.getFlags() %}
+                                {% if flags %}
+                                    <div class="primary-meta rules-meta">
+                                        <div class="flagged-rules">
+                                            {% for flag in flags %}
+                                                <div class="flagged-item flagged-{{ flag.rule.handle }}">
+                                                    <i class="fal fa-{{ flag.rule.icon }}"></i>
+                                                    <span>{{ flag.rule.name }}</span>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+
                                 <div class="item-feedback">
                                     {% if type == 'reviews' %}
                                         {% include 'qarr/_includes/star-rating' ignore missing with { rating: entry.rating } %}

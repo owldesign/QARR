@@ -14,6 +14,8 @@ class Rule extends Model
     public $name;
     public $handle;
     public $enabled;
+    public $data;
+    public $icon;
     public $settings;
     public $options;
 

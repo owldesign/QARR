@@ -337,6 +337,43 @@
   padding-left: 7px;
 }
 
+.qarr .widget .list .list-item.excluded, .widget.craft-widget-recent-questions .list .list-item.excluded, .widget.craft-widget-recent-reviews .list .list-item.excluded {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.qarr .widget .list .list-item.excluded svg, .widget.craft-widget-recent-questions .list .list-item.excluded svg, .widget.craft-widget-recent-reviews .list .list-item.excluded svg {
+  color: #E9EFF4;
+}
+
+.qarr .widget .list .list-item.excluded .item-wrapper, .widget.craft-widget-recent-questions .list .list-item.excluded .item-wrapper, .widget.craft-widget-recent-reviews .list .list-item.excluded .item-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 50px !important;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.qarr .widget .list .list-item.excluded .item-wrapper p, .widget.craft-widget-recent-questions .list .list-item.excluded .item-wrapper p, .widget.craft-widget-recent-reviews .list .list-item.excluded .item-wrapper p {
+  color: #d8e3ec;
+}
+
 .qarr .widget .list .item-list, .widget.craft-widget-recent-questions .list .item-list, .widget.craft-widget-recent-reviews .list .item-list {
   display: -webkit-box;
   display: -ms-flexbox;

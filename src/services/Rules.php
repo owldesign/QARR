@@ -11,6 +11,7 @@
 namespace owldesign\qarr\services;
 
 use craft\helpers\Json;
+use craft\helpers\StringHelper;
 use owldesign\qarr\models\Flagged;
 use owldesign\qarr\models\Rule;
 use owldesign\qarr\QARR;
@@ -56,6 +57,12 @@ class Rules extends Component
     // =========================================================================
 
 
+    /**
+     * Get all rules
+     *
+     * @param null $enabled
+     * @return array
+     */
     public function getAllRules($enabled = null): array
     {
         if ($this->_fetchedAllRules) {
@@ -82,6 +89,13 @@ class Rules extends Component
         return array_values($this->_rulesById);
     }
 
+    /**
+     * Apply rules
+     *
+     * @param $element
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
     public function applyRules($element)
     {
         $rules = $this->getAllRules(true);
@@ -89,15 +103,19 @@ class Rules extends Component
 
         // Check config data
         if ($rules && isset($config['rules'])) {
-            foreach ($config['rules'] as $key => $configRule) {
+            foreach ($config['rules'] as $key => $words) {
                 foreach ($rules as $index => $rule) {
                     if ($rule->handle === $key) {
-                        $data = $rule->options['data'];
-                        foreach ($config['rules'][$key] as $word) {
-                            ArrayHelper::prependOrAppend($data, $word, false);
+                        $data = StringHelper::split($rule->data);
+                        $newWords = StringHelper::split($words);
+
+                        if ($newWords) {
+                            foreach ($newWords as $word) {
+                                ArrayHelper::prependOrAppend($data, $word, false);
+                            }
                         }
 
-                        $rules[$index]->options['data'] = $data;
+                        $rules[$index]->data = $data;
                     }
                 }
             }
@@ -107,40 +125,23 @@ class Rules extends Component
         $this->performRules($element, $rules);
     }
 
+    /**
+     * Perform rule matching
+     *
+     * @param $element
+     * @param $rules
+     * @throws \Throwable
+     * @throws \yii\db\Exception
+     */
     public function performRules($element, $rules)
     {
         foreach ($rules as $rule) {
-            $checker = new RuleChecker($rule->options['data']);
+            $checker = new RuleChecker($rule->data);
             $result = $checker->filter($element->feedback, true);
 
             if ($result['hasMatch']) {
-                $this->flagElement(1, $element->id, $result);
+                $this->flagElement($rule->id, $element->id, $result);
             }
-        }
-    }
-
-    /**
-     * Check profanity rule
-     *
-     * @param $string
-     * @param $entry
-     * @throws \Throwable
-     */
-    public function checkProfanity($string, $entry)
-    {
-        // Get user defined data
-        $newData = Craft::$app->config->getConfigFromFile('qarr');
-        $profanities = [];
-        if (isset($newData['rules']['profanity']['data'])) {
-            foreach ($newData['rules']['profanity']['data'] as $word) {
-                ArrayHelper::prependOrAppend($profanities, $word, true);
-            }
-        }
-        $profanityCheck = new ProfanityCheck($profanities);
-        $hasProfanity = $profanityCheck->filter($string, true);
-
-        if ($hasProfanity['hasMatch']) {
-            $this->flagElement(1, $entry->id, $hasProfanity);
         }
     }
 
@@ -176,6 +177,12 @@ class Rules extends Component
         return true;
     }
 
+    /**
+     * Get flagged element by id
+     *
+     * @param $elementId
+     * @return array|null
+     */
     public function getFlagged($elementId)
     {
         $flags = [];
@@ -210,7 +217,7 @@ class Rules extends Component
 
         $record = $query->one();
 
-        $record = new Rule($record->toArray(['id', 'name', 'handle', 'enabled', 'settings', 'options', 'dateCreated', 'dateUpdated']));
+        $record = new Rule($record->toArray(['id', 'name', 'handle', 'enabled', 'data', 'icon', 'settings', 'options', 'dateCreated', 'dateUpdated']));
 
         return $record;
     }
@@ -239,8 +246,14 @@ class Rules extends Component
         $record->name = $rule->name;
         $record->handle = $rule->handle;
         $record->enabled = $rule->enabled;
-        $record->settings = $rule->settings;
-        $record->options = $rule->options;
+        $record->data = $rule->data;
+        $record->icon = $rule->icon;
+        if ($rule->settings) {
+            $record->settings = $rule->settings;
+        }
+        if ($rule->options) {
+            $record->options = $rule->options;
+        }
         $record->save(false);
 
         if ($isNewRule) {
@@ -250,9 +263,39 @@ class Rules extends Component
         return true;
     }
 
+    /**
+     * Remove flagged records
+     *
+     * @param $elementId
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function removeRecord($elementId)
+    {
+        $records = FlaggedRecord::find()
+            ->where(['elementId' => $elementId])
+            ->all();
+
+        if (!$records) {
+            return true;
+        }
+
+        foreach ($records as $record) {
+            $record->delete();
+        }
+
+        return true;
+    }
+
     // Private Methods
     // =========================================================================
 
+    /**
+     * Create rule query
+     *
+     * @return Query
+     */
     private function _createRuleQuery(): Query
     {
         return (new Query())
@@ -261,6 +304,8 @@ class Rules extends Component
                 'rules.name',
                 'rules.handle',
                 'rules.enabled',
+                'rules.data',
+                'rules.icon',
                 'rules.settings',
                 'rules.options',
             ])

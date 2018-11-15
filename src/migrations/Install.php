@@ -211,6 +211,8 @@ class Install extends Migration
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
             'enabled' => $this->boolean(),
+            'data' => $this->longText(),
+            'icon' => $this->string()->defaultValue('exclamation'),
             'settings' => $this->text(),
             'options' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),

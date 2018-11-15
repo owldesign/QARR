@@ -16,6 +16,10 @@ class Reviews extends AssetBundle
     {
         $this->sourcePath = __DIR__;
 
+        $this->depends = [
+            Tippy::class
+        ];
+
         $this->css = [
             'css/reviews.css',
         ];

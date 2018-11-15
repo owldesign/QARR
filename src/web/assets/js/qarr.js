@@ -33,7 +33,6 @@ Garnish.$doc.ready(function () {
 
     // Handle Badge Counters Globally
     if (Craft.elementIndex) {
-
         Craft.elementIndex.on('selectionChange', function (e) {
             if (e.target.elementType === 'owldesign\\qarr\\elements\\Review' || e.target.elementType === 'owldesign\\qarr\\elements\\Question') {
                 var count = Craft.elementIndex.view.elementSelect.$selectedItems.length;
