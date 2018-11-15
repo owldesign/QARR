@@ -22,6 +22,7 @@ class m181113_175320_CreateRulesTable extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
+            'enabled' => $this->boolean(),
             'settings' => $this->text(),
             'options' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),

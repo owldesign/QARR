@@ -51,25 +51,23 @@ class RulesController extends Controller
         if ($ruleId !== null) {
             if ($rule === null) {
                 $rule = QARR::$plugin->rules->getRuleById($ruleId);
+                $variables['rule'] = $rule;
+                if ($rule->options) {
+                    $variables['rule']['options'] = Json::decode($rule->options);
+                }
 
                 if (!$rule) {
                     throw new NotFoundHttpException(QARR::t('Rule not found'));
                 }
             }
-
-            $variables['title'] = $rule->name;
-
         } else {
             if ($rule === null) {
                 $rule = new Rule();
                 $variables['brandNewRule'] = true;
             }
-
-            $variables['title'] = QARR::t('Create a new rule');
         }
 
         $this->_enforceEditRulePermissions($rule);
-        $variables['rule'] = $rule;
         $variables['fullPageForm'] = true;
         $variables['continueEditingUrl'] = 'qarr/tools/rules/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
@@ -87,6 +85,7 @@ class RulesController extends Controller
         $model->id            = $request->getBodyParam('ruleId');
         $model->name          = $request->getBodyParam('name');
         $model->handle        = $request->getBodyParam('handle');
+        $model->enabled       = $request->getBodyParam('enabled');
         $model->options       = Json::encode($request->getBodyParam('options'));
         $model->settings      = Json::encode($request->getBodyParam('settings'));
         

@@ -13,6 +13,7 @@ class Rule extends Model
     public $id;
     public $name;
     public $handle;
+    public $enabled;
     public $settings;
     public $options;
 

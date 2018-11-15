@@ -3,11 +3,11 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
 
 {% set fullPageForm = true %}
-{% set bodyClass = 'qarr qarr-nosettings qarr-rule-edit' %}
+{% set bodyClass = 'qarr qarr-rule-edit' %}
 {% set pluginCpUrl = url('qarr') %}
+{% set title = 'Rules' %}
 {% set selectedSubnavItem = "tools" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
-{% set subTitle = 'Settigns > Rules' %}
 
 {% import "_includes/forms" as forms %}
 
@@ -23,11 +23,13 @@
 {% endblock %}
 
 {% block content %}
+    {% include 'qarr/tools/_includes/sub-header' ignore missing with { name: rule.name, icon: 'flag' } %}
+
     <div class="flex-container">
 
         <div id="content-fields" class="full-col">
             <div class="widget transparent">
-                <input type="hidden" name="action" value="qarr/settings/rules/save">
+                <input type="hidden" name="action" value="qarr/tools/rules/save">
                 {{ redirectInput('qarr/tools/rules') }}
 
                 {% if rule.id %}<input type="hidden" name="ruleId" value="{{ rule.id }}">{% endif %}
@@ -60,30 +62,28 @@
                     <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
                 </div>
 
-                <div class="qarr-field custom-field custom-select">
+                <div class="qarr-field custom-field custom-select {% if rule.options %}has-value{% endif %}">
                     <select name="options[data][]" id="ruleData" multiple>
-                        <option value="boring">Boring</option>
-                        <option value="sucks">Sucks</option>
-                        <option value="broken">Broken</option>
+
+                        {% if rule.options %}
+                            {% for option in rule.options.data %}
+                                <option value="{{ option }}" selected>{{ option |capitalize }}</option>
+                            {% endfor %}
+                        {% endif %}
+
+                        <option value="boring">boring</option>
+                        <option value="sucks">sucks</option>
+                        <option value="broken">broken</option>
                     </select>
-                    {#<input class="text fullwidth" type="text" id="titleFormat" name="titleFormat" value="{{ rule.options }}" maxlength="255" autocomplete="off">#}
                     <label id="ruleData-label" for="ruleData">{{ 'Rule Data'|t('qarr') }}</label>
                 </div>
 
-                {#<div id="title-format-items">#}
-                    {#<div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"#}
-                         {#data-field="{dateCreated}">Date Created#}
-                    {#</div>#}
-                    {#<div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"#}
-                         {#data-field="{fullName}">Full Name#}
-                    {#</div>#}
-                    {#<div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"#}
-                         {#data-field="{emailAddress}">Email Address#}
-                    {#</div>#}
-                    {#<div class="format-item format-example">#}
-                        {#eg. Review from {fullName} submitted on {dateCreated}#}
-                    {#</div>#}
-                {#</div>#}
+                {{ forms.lightswitchField({
+                    label: 'Enabled'|t('qarr'),
+                    id: 'enabled',
+                    name: 'enabled',
+                    on: rule.enabled
+                }) }}
 
             </div>
         </div>

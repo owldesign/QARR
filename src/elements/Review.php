@@ -406,7 +406,6 @@ class Review extends Element
                 break;
             case 'guest':
                 $markup = '<div class="guest-wrapper">';
-                $markup .= '<div class="badge-wrapper"><div class="entry-badge pending"><span>'.StringHelper::first($this->fullName, 1).'</span></div></div>';
                 $markup .= '<div class="guest-meta"><span class="guest-name">'.$this->fullName.'</span><span class="guest-email">'.$this->emailAddress.'</span></div>';
                 $markup .= '</div>';
                 return $markup;
@@ -417,9 +416,6 @@ class Review extends Element
                     return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
                 }
                 $markup = '<div class="product-wrapper">';
-                $markup .= '<div class="product-badge-wrapper">';
-                $markup .= '<div class="product-badge purple"><span>'.StringHelper::first($product->getType()->name, 1).'</span></div>';
-                $markup .= '</div>';
                 $markup .= '<div class="product-meta">';
                 $markup .= '<span class="product-name">'.$product->title.'</span><span class="product-type">'.$product->getType()->name.'</span>';
                 $markup .= '</div>';
@@ -617,8 +613,8 @@ class Review extends Element
         $record->save(false);
 
         if ($isNew) {
-            // Profanity Rule
-            $checkProfanity = QARR::$plugin->rules->checkProfanity($this->feedback, $record);
+            // Apply Rule
+            QARR::$plugin->rules->applyRules($record);
         }
 
         parent::afterSave($isNew);

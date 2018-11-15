@@ -6,9 +6,8 @@ Garnish.$doc.ready(function () {
         tokenSeparators: [',', '.']
     });
 
-    $('#ruleData').on('select2:open', function (e) {
-        console.log(e);
-    });
+    // $('#ruleData').on('select2:open', function(e) {
+    // });
 
     // $('.tag-link').on('click', function(e) {
     //     let target = $($(this).data('target'))

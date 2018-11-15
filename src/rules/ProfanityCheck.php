@@ -34,8 +34,8 @@ class ProfanityCheck
     }
     public function reset()
     {
-        $this->replaceFullWords($this->config['replaceFullWords']);
-        $this->replaceWith($this->config['replaceWith']);
+        $this->replaceFullWords($this->replaceFullWords);
+        $this->replaceWith($this->replaceWith);
         return $this;
     }
     public function replaceWith($string)

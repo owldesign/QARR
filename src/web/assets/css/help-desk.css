@@ -271,7 +271,6 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  margin-left: 10px;
 }
 
 .qarr .guest-wrapper .guest-meta span {
@@ -354,7 +353,6 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  margin-left: 10px;
 }
 
 .qarr .product-wrapper .product-meta span {

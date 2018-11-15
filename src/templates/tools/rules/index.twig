@@ -3,7 +3,7 @@
 {% extends "_layouts/cp" %}
 {% set title = "Rules"|t('qarr') %}
 {% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'qarr qarr-noelements qarr-rules' %}
+{% set bodyClass = 'qarr qarr-rules' %}
 {% set selectedSubnavItem = "tools" %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
@@ -33,6 +33,7 @@
             <thead>
             <th scope="col">{{ "Name"|t('qarr') }}</th>
             <th scope="col">{{ "Handle"|t('qarr') }}</th>
+            <th scope="col">{{ "Enabled"|t('qarr') }}</th>
             <td class="thin"></td>
             </thead>
             <tbody>
@@ -44,6 +45,13 @@
                         </div>
                     </td>
                     <td data-title="{{ 'Handle'|t('qarr') }}"><code>{{ rule.handle }}</code></td>
+                    <td data-title="{{ 'Enabled'|t('qarr') }}">
+                        {% if rule.enabled %}
+                            <span class="status approved"></span>
+                        {% else %}
+                            <span class="status rejected"></span>
+                        {% endif %}
+                    </td>
                     <td class="thin">
                         {% if currentUser.can('qarr:deleteRules') %}
                             <a class="delete icon" title="{{ 'Delete'|t('qarr') }}" role="button"></a>

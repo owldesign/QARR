@@ -24,6 +24,7 @@ use Craft;
 use craft\base\Component;
 use craft\helpers\ArrayHelper;
 use craft\db\Query;
+use owldesign\qarr\rules\RuleChecker;
 use yii\base\Exception;
 
 /**
@@ -55,17 +56,23 @@ class Rules extends Component
     // =========================================================================
 
 
-    public function getAllRules(): array
+    public function getAllRules($enabled = null): array
     {
         if ($this->_fetchedAllRules) {
             return array_values($this->_rulesById);
         }
 
-        $results = $this->_createRuleQuery()->all();
+        $query = $this->_createRuleQuery();
+        if ($enabled) {
+            $query->where(['enabled' => $enabled]);
+        }
+        $results = $query->all();
 
         $this->_rulesById = [];
 
         foreach ($results as $result) {
+            $result['options'] = Json::decode($result['options']);
+            $result['settings'] = Json::decode($result['settings']);
             $rule = new Rule($result);
             $this->_rulesById[$rule->id] = $rule;
         }
@@ -73,6 +80,43 @@ class Rules extends Component
         $this->_fetchedAllRules = true;
 
         return array_values($this->_rulesById);
+    }
+
+    public function applyRules($element)
+    {
+        $rules = $this->getAllRules(true);
+        $config = Craft::$app->config->getConfigFromFile('qarr');
+
+        // Check config data
+        if ($rules && isset($config['rules'])) {
+            foreach ($config['rules'] as $key => $configRule) {
+                foreach ($rules as $index => $rule) {
+                    if ($rule->handle === $key) {
+                        $data = $rule->options['data'];
+                        foreach ($config['rules'][$key] as $word) {
+                            ArrayHelper::prependOrAppend($data, $word, false);
+                        }
+
+                        $rules[$index]->options['data'] = $data;
+                    }
+                }
+            }
+        }
+
+        // Ok lets go
+        $this->performRules($element, $rules);
+    }
+
+    public function performRules($element, $rules)
+    {
+        foreach ($rules as $rule) {
+            $checker = new RuleChecker($rule->options['data']);
+            $result = $checker->filter($element->feedback, true);
+
+            if ($result['hasMatch']) {
+                $this->flagElement(1, $element->id, $result);
+            }
+        }
     }
 
     /**
@@ -94,7 +138,7 @@ class Rules extends Component
         }
         $profanityCheck = new ProfanityCheck($profanities);
         $hasProfanity = $profanityCheck->filter($string, true);
-        
+
         if ($hasProfanity['hasMatch']) {
             $this->flagElement(1, $entry->id, $hasProfanity);
         }
@@ -145,7 +189,7 @@ class Rules extends Component
             return null;
         }
 
-        foreach($records as $key => $record) {
+        foreach ($records as $key => $record) {
             $details = Json::decode($record->details);
             $flags[$key] = new Flagged($record->toArray(['id', 'ruleId', 'elementId', 'details', 'dateCreated', 'dateUpdated']));
             $flags[$key]['details'] = $details;
@@ -166,7 +210,7 @@ class Rules extends Component
 
         $record = $query->one();
 
-        $record = new Rule($record->toArray(['id', 'name', 'handle', 'settings', 'options', 'dateCreated', 'dateUpdated']));
+        $record = new Rule($record->toArray(['id', 'name', 'handle', 'enabled', 'settings', 'options', 'dateCreated', 'dateUpdated']));
 
         return $record;
     }
@@ -185,17 +229,18 @@ class Rules extends Component
         if ($rule->id) {
             $record = RuleRecord::findOne($rule->id);
 
-            if  (!$record) {
-                throw new Exception(QARR::t('Rule with ID not found: '.$rule->id));
+            if (!$record) {
+                throw new Exception(QARR::t('Rule with ID not found: ' . $rule->id));
             }
         } else {
             $record = new RuleRecord();
         }
 
-        $record->name       = $rule->name;
-        $record->handle     = $rule->handle;
-        $record->settings   = $rule->settings;
-        $record->options    = $rule->options;
+        $record->name = $rule->name;
+        $record->handle = $rule->handle;
+        $record->enabled = $rule->enabled;
+        $record->settings = $rule->settings;
+        $record->options = $rule->options;
         $record->save(false);
 
         if ($isNewRule) {
@@ -215,6 +260,7 @@ class Rules extends Component
                 'rules.id',
                 'rules.name',
                 'rules.handle',
+                'rules.enabled',
                 'rules.settings',
                 'rules.options',
             ])
