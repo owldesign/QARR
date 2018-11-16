@@ -17,6 +17,7 @@ use owldesign\qarr\elements\db\ReviewQuery;
 use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\actions\Delete;
 use owldesign\qarr\records\Review as ReviewRecord;
+use owldesign\qarr\jobs\GeolocationTask;
 
 use Craft;
 use craft\base\Element;
@@ -117,6 +118,10 @@ class Review extends Element
      * @var
      */
     public $productTypeId;
+    /**
+     * @var
+     */
+    public $geolocation;
     /**
      * @var
      */
@@ -616,6 +621,13 @@ class Review extends Element
         if ($isNew) {
             // Apply Rule
             QARR::$plugin->rules->applyRules($record);
+
+            // Apply Geolocation
+            Craft::$app->getQueue()->push(new GeolocationTask([
+                'ipAddress' => $this->ipAddress,
+                'elementId' => $this->id,
+                'table' => '{{%qarr_reviews}}'
+            ]));
         }
 
         parent::afterSave($isNew);

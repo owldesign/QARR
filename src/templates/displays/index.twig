@@ -11,24 +11,24 @@
 
 
 {% block header %}
-    <a href="{{ url('qarr') }}" class="qarr-logo">
-        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
-    </a>
-    {{ parent() }}
+    {% include 'qarr/_includes/header' ignore missing %}
+    {% block actionButton %}
+        {% if currentUser.can('qarr:editDisplays') %}
+            <a href="{{ url('qarr/displays/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
+                <span class="icon"><i class="fa fa-plus"></i></span>
+                <span class="btn-text">{{ "New Display"|t('qarr') }}</span>
+            </a>
+        {% endif %}
+    {% endblock %}
 {% endblock %}
 
-{% block actionButton %}
-    {% if currentUser.can('qarr:editDisplays') %}
-        <a href="{{ url('qarr/displays/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
-            <span class="icon"><i class="fa fa-plus"></i></span>
-            <span class="btn-text">{{ "New Display"|t('qarr') }}</span>
-        </a>
-    {% endif %}
-{% endblock %}
 
 {% block content %}
     <div id="nodisplays"{% if displays %} class="hidden"{% endif %}>
-        <p>{{ "No displays exist yet."|t('qarr') }}</p>
+        <div class="empty-icon">
+            <i class="fa fa-magic"></i>
+        </div>
+        <h2>{{ "No displays exist yet."|t('qarr') }}</h2>
     </div>
 
     {% if displays|length %}

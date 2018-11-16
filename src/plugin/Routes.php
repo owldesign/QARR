@@ -37,6 +37,7 @@ trait Routes
                 $event->rules['qarr/tools/rules/new'] = 'qarr/tools/rules/edit';
                 $event->rules['qarr/tools/rules/<ruleId:\d+>'] = 'qarr/tools/rules/edit';
                 $event->rules['qarr/tools/helpdesk'] = 'qarr/tools/help-desk/index';
+                $event->rules['qarr/tools/utilities'] = 'qarr/tools/utilities/index';
             }
         );
     }

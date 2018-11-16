@@ -461,6 +461,12 @@
   border-bottom-right-radius: 3px;
 }
 
+.qarr table tbody tr.sel td:not(.checkbox-cell) {
+  background: rgba(95, 106, 130, 0.1) !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+}
+
 .qarr .fld-tab .tabs, .qarr .draghelper.fld-tab .tabs {
   position: relative;
   padding: 0;
@@ -810,5 +816,27 @@
 }
 
 #nodisplays {
-  padding: 24px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 100%;
+}
+
+#nodisplays .empty-icon {
+  font-size: 48px;
+  color: #a5a6a8;
+}
+
+#nodisplays h2 {
+  color: #a5a6a8;
 }

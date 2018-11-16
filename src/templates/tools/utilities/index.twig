@@ -1,0 +1,43 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Utilities") %}
+
+{% set title = "Utilities"|t('qarr') %}
+{% set bodyClass = 'qarr qarr-tools' %}
+{% set selectedSubnavItem = "tools" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block header %}
+    {% include 'qarr/_includes/header' ignore missing %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/tools/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+
+    <div class="flex-container">
+        <div class="quarter-col utility-widget utility-location">
+            <div class="pane">
+                <div class="utility-icon">
+                    <i class="fas fa-globe-americas"></i>
+                </div>
+
+                <div class="utility-info">
+                    <h2>{{ 'Geolocation'|t('qarr') }}</h2>
+                    <p>{{ 'Update geolocation for all entries based on submitted IP address.'|t('qarr') }}</p>
+                </div>
+
+                <div class="utility-actions">
+                    <a href="#" class="btns btn-rounded btn-mini btn-white"
+                       id="update-geolocations"
+                       data-tippy-theme="light"
+                       data-tippy-arrow="true"
+                       data-tippy="Geolocation will be used to pinpoint customer's locations for better statistics and reporting.">Update Geolocations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endset %}

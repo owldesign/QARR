@@ -100,6 +100,7 @@ class Reviews extends Component
 
         if ($review->id) {
             $record = ReviewRecord::findOne($review->id);
+
             if (!$record) {
                 throw new Exception(QARR::t('No review exists with id '.$review->id));
             }

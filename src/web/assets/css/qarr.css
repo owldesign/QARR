@@ -108,6 +108,10 @@
   width: 25%;
 }
 
+.qarr.qarr-edit #main-container #main #main-content #content-container #content {
+  background: white;
+}
+
 .qarr #main-container #main #main-content #content-container #content {
   background: #E9EFF4;
 }
@@ -2125,6 +2129,25 @@ a.approved {
   border-radius: 3px;
 }
 
+.qarr #header {
+  margin: 0 !important;
+  padding: 0 !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+  background: white !important;
+}
+
+.qarr #header .btns {
+  position: absolute;
+  bottom: 15px;
+  right: 40px;
+  z-index: 5;
+}
+
+#header .utility-nav .fa-layers {
+  font-size: 18px;
+}
+
 .hud {
   position: absolute;
   display: none;
@@ -2862,6 +2885,12 @@ a.approved {
   border-bottom-right-radius: 3px;
 }
 
+.qarr table tbody tr.sel td:not(.checkbox-cell) {
+  background: rgba(95, 106, 130, 0.1) !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+}
+
 .btns, .qarr-modal .btns {
   position: relative;
   display: -webkit-inline-box;
@@ -2901,6 +2930,7 @@ a.approved {
 
 .btns.btn-mini, .qarr-modal .btns.btn-mini {
   height: 100%;
+  padding: 5px 10px;
 }
 
 .btns.btn-purple, .qarr-modal .btns.btn-purple {
@@ -3037,8 +3067,10 @@ a.approved {
   margin-top: 10px;
   -webkit-box-shadow: none;
           box-shadow: none;
-  border: 1px solid #E9EFF4;
+  border: 3px solid white;
   border-radius: 5px;
+  -webkit-box-shadow: 0 0 5px 1px rgba(165, 166, 168, 0.2);
+          box-shadow: 0 0 5px 1px rgba(165, 166, 168, 0.2);
 }
 
 .qarr .menu hr {
@@ -4281,6 +4313,10 @@ a.approved {
   font-family: "OpenSans-Bold", "Helvetica", sans-serif;
 }
 
+.qarr-field.search {
+  border: none !important;
+}
+
 .qarr-field.custom-field {
   background: #fff;
   position: relative;
@@ -5118,6 +5154,11 @@ a.approved {
   font-family: "OpenSans-Bold", "Helvetica", sans-serif;
   font-size: 10px;
   text-shadow: 0 0 3px rgba(165, 166, 168, 0.5);
+}
+
+.qarr #sidebar .badge {
+  background: #B289EF !important;
+  color: white !important;
 }
 
 .tippy-content-wrapper {

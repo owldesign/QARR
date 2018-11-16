@@ -33,6 +33,7 @@ class QuestionQuery extends ElementQuery
     public $votes;
     public $productId;
     public $productTypeId;
+    public $geolocation;
     public $ipAddress;
     public $userAgent;
 
@@ -94,6 +95,7 @@ class QuestionQuery extends ElementQuery
             'qarr_questions.hasPurchased',
             'qarr_questions.productId',
             'qarr_questions.productTypeId',
+            'qarr_questions.geolocation',
             'qarr_questions.ipAddress',
             'qarr_questions.userAgent',
             'qarr_questions.dateCreated',

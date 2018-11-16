@@ -35,6 +35,7 @@ class ReviewQuery extends ElementQuery
     public $displayId;
     public $productId;
     public $productTypeId;
+    public $geolocation;
     public $ipAddress;
     public $userAgent;
 
@@ -125,6 +126,7 @@ class ReviewQuery extends ElementQuery
             'qarr_reviews.displayId',
             'qarr_reviews.productId',
             'qarr_reviews.productTypeId',
+            'qarr_reviews.geolocation',
             'qarr_reviews.ipAddress',
             'qarr_reviews.userAgent',
             'qarr_reviews.dateCreated',

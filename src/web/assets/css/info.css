@@ -38,38 +38,40 @@
   src: url("../fonts/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans-BoldItalic.ttf") format("truetype");
 }
 
-#norules {
-  padding: 24px;
+.qarr .utility-info .license-status {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
-.qarr-rule-edit #data-list-container {
-  margin-top: 30px;
+.qarr .utility-info .license-status h2, .qarr .utility-info .license-status p {
+  line-height: normal;
 }
 
-.qarr-rule-edit #data-list-container h2 {
-  margin-bottom: 0;
+.qarr .utility-info .license-status h2 {
+  margin: 0 0 4px 0;
 }
 
-.qarr-rule-edit #data-list-container p {
-  margin: 0 0 5px 0;
-}
-
-.qarr-rule-edit #data-list-container .tagify {
-  margin-left: -5px;
-  margin-top: 10px;
-}
-
-.qarr-rule-edit #data-list-container .tagify__input {
-  border: none;
-  padding: 0;
+.qarr .utility-info .license-status p {
   margin: 0;
 }
 
-.qarr-rule-edit #data-list-container .tagify__input:before {
-  line-height: normal;
-  top: 2px;
+.qarr .utility-info .utility-icon {
+  margin-left: auto;
+  font-size: 48px;
 }
 
-.qarr-rule-edit #data-list-container .tags--removeAllBtn {
-  margin-top: 15px;
+.qarr .utility-info .utility-icon.license-status-invalid {
+  color: #f07575;
+}
+
+.qarr .utility-info .utility-icon.license-status-valid {
+  color: #2fec94;
+}
+
+.qarr .utility-info .utility-icon.license-status-mismatched {
+  color: #a5a6a8;
 }

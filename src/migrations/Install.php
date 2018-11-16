@@ -84,6 +84,7 @@ class Install extends Migration
             'productId' => $this->integer()->notNull(),
             'productTypeId' => $this->integer()->notNull(),
 
+            'geolocation' => $this->text(),
             'ipAddress' => $this->string()->notNull(),
             'userAgent' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),
@@ -119,6 +120,7 @@ class Install extends Migration
             'productId' => $this->integer()->notNull(),
             'productTypeId' => $this->integer()->notNull(),
 
+            'geolocation' => $this->text(),
             'ipAddress' => $this->string()->notNull(),
             'userAgent' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),

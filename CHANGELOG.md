@@ -1,5 +1,17 @@
 # QARR Changelog
 
+## 1.0.4 - 2018-11-17
+
+### Added
+- Added Rules [Documentation](https://docs.qarr.tools/rules)
+- Added geolocation for submissions (for location stats & charts)
+
+### Improved
+- Improved UI
+
+## Fixed
+- Handful of bug fixes
+
 ## 1.0.3 - 2018-11-08
 
 ### Added

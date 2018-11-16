@@ -3,7 +3,7 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Displays") %}
 
 {% set fullPageForm = true %}
-{% set bodyClass = 'qarr qarr-nosettings qarr-display-edit' %}
+{% set bodyClass = 'qarr qarr-edit qarr-display-edit' %}
 {% set pluginCpUrl = url('qarr') %}
 {% set selectedSubnavItem = "displays" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
@@ -11,14 +11,10 @@
 {% import "_includes/forms" as forms %}
 
 {% block header %}
-    <a href="{{ url('qarr') }}" class="qarr-logo">
-        {% include 'qarr/_includes/icons/_qarr-logo.twig' ignore missing %}
-    </a>
-    {{ parent() }}
-{% endblock %}
-
-{% block actionButton %}
-    <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
+    {% include 'qarr/_includes/header' ignore missing %}
+    {% block actionButton %}
+        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
+    {% endblock %}
 {% endblock %}
 
 {% block content %}

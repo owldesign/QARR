@@ -107,6 +107,10 @@ class Question extends Element
     /**
      * @var
      */
+    public $geolocation;
+    /**
+     * @var
+     */
     public $ipAddress;
     /**
      * @var

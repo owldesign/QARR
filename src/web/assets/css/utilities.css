@@ -38,38 +38,22 @@
   src: url("../fonts/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans-BoldItalic.ttf") format("truetype");
 }
 
-#norules {
-  padding: 24px;
+.qarr .utility-location .pane {
+  text-align: center;
+  background: #B289EF;
+  color: white;
 }
 
-.qarr-rule-edit #data-list-container {
-  margin-top: 30px;
+.qarr .utility-location .utility-icon {
+  font-size: 48px;
+  color: white;
+  margin-bottom: 10px;
 }
 
-.qarr-rule-edit #data-list-container h2 {
-  margin-bottom: 0;
+.qarr .utility-location .utility-info h2 {
+  margin-bottom: 10px;
 }
 
-.qarr-rule-edit #data-list-container p {
-  margin: 0 0 5px 0;
-}
-
-.qarr-rule-edit #data-list-container .tagify {
-  margin-left: -5px;
-  margin-top: 10px;
-}
-
-.qarr-rule-edit #data-list-container .tagify__input {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
-.qarr-rule-edit #data-list-container .tagify__input:before {
-  line-height: normal;
-  top: 2px;
-}
-
-.qarr-rule-edit #data-list-container .tags--removeAllBtn {
+.qarr .utility-location .utility-actions {
   margin-top: 15px;
 }

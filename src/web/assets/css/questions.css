@@ -461,6 +461,12 @@
   border-bottom-right-radius: 3px;
 }
 
+.qarr table tbody tr.sel td:not(.checkbox-cell) {
+  background: rgba(95, 106, 130, 0.1) !important;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important;
+}
+
 .qarr .fld-tab .tabs, .qarr .draghelper.fld-tab .tabs {
   position: relative;
   padding: 0;
