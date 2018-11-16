@@ -2,17 +2,19 @@
 
 namespace owldesign\qarr\web\twig;
 
-use Craft;
-use craft\web\View;
-use craft\helpers\Template;
-use craft\commerce\elements\Product;
+use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Question;
 use owldesign\qarr\elements\db\QuestionQuery;
 use owldesign\qarr\elements\Review;
 use owldesign\qarr\elements\db\ReviewQuery;
-use yii\base\Behavior;
+use owldesign\qarr\services\Rules;
 
-use owldesign\qarr\QARR;
+use Craft;
+use craft\web\View;
+use craft\helpers\Template;
+use craft\commerce\elements\Product;
+use craft\events\DefineComponentsEvent;
+use yii\base\Behavior;
 
 class Variables extends Behavior
 {
@@ -136,6 +138,11 @@ class Variables extends Behavior
 
         return $query;
     }
+
+//    public function rules($id)
+//    {
+//        return QARR::$plugin->rules;
+//    }
 
     /**
      * * Get count of elements by **productId**, **productTypeId** and **status**

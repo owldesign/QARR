@@ -7,7 +7,6 @@ Garnish.$doc.ready(function () {
         var icon = window.FontAwesome.icon({ prefix: 'fal', iconName: value });
 
         if (icon) {
-            console.log(icon.html);
             html.html(icon.html);
         }
     });

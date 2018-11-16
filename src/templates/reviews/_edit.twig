@@ -35,30 +35,47 @@
     </div>
 
     {% set flags = entry.getFlags() %}
+    {% set flaggedWords = flaggedWords(flags) %}
     {% if flags %}
     <div class="primary-meta rules-meta">
         <div class="flagged-rules">
-            <span class="txt">{{ 'Entry is flagged for '|t('qarr') }}</span>
             {% for flag in flags %}
-                {#data-tippy="{{ flag.details.matched |length }}"#}
-                <div class="flagged-item flagged-{{ flag.rule.handle }} tippy-with-html" data-index="{{ loop.index }}">
+                <div class="flagged-item flagged-{{ flag.rule.handle }} tippy-with-html"
+                     data-index="{{ loop.index }}"
+                     data-rule="{{ flag.rule.handle }}">
                     <i class="fal fa-{{ flag.rule.icon }}"></i>
                     <span>{{ flag.rule.name }}</span>
                 </div>
 
-                <div id="myTemplate-{{ loop.index }}" class="tippy-html-content">
-                    Matches: <strong style="color: pink;">{{ flag.details.matched |length }}</strong>
+                <div id="flag-template-{{ loop.index }}" class="tippy-html-content" style="display: none;">
+                    <div class="tippy-content-wrapper">
+                        <div class="tippy-icon">
+                            <i class="fal fa-{{ flag.rule.icon }}"></i>
+                        </div>
+                        <div class="tippy-content">
+                            Found <span class="">{{ flag.details.matched |length }}</span> matching words
+                        </div>
+                        <div class="tippy-actions">
+                            <a href="#" class="btns btn-rounded btn-purple btn-mini btn-disabled">Apply Filter (coming soon)</a>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     </div>
     {% endif %}
 
+
     <div class="panel feedback-panel {% if feedbackResponse is defined and feedbackResponse %}has-response{% endif %}">
 
         <div class="panel-wrapper">
-            <p class="large-text"><span>{{ entry.feedback }}</span></p>
+            {% if flaggedWords %}
+                {% set feedback = entry.feedback|occurrence(flaggedWords)  %}
+            {% else %}
+                {% set feedback = entry.feedback  %}
+            {% endif %}
 
+            <p class="large-text"><span>{{ feedback |raw }}</span></p>
 
             <div class="panel-response">
                 <span class="spinner hidden"></span>

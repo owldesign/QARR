@@ -34,6 +34,7 @@
             <th scope="col">{{ "Name"|t('qarr') }}</th>
             <th scope="col">{{ "Handle"|t('qarr') }}</th>
             <th scope="col">{{ "Enabled"|t('qarr') }}</th>
+            <th scope="col">{{ "Flagged Count"|t('qarr') }}</th>
             <td class="thin"></td>
             </thead>
             <tbody>
@@ -52,6 +53,7 @@
                             <span class="status rejected"></span>
                         {% endif %}
                     </td>
+                    <td data-title="{{ 'Flagged Count'|t('qarr') }}">{{ craft.qarrRules.getFlaggedCountByRuleId(rule.id) }}</td>
                     <td class="thin">
                         {% if currentUser.can('qarr:deleteRules') %}
                             <a class="delete icon" title="{{ 'Delete'|t('qarr') }}" role="button"></a>

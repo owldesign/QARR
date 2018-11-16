@@ -11,6 +11,10 @@
 namespace owldesign\qarr\web\twig;
 
 use Craft;
+use craft\helpers\StringHelper;
+use craft\helpers\ArrayHelper;
+use owldesign\qarr\web\assets\Qarr;
+use owldesign\qarr\web\twig\Variables as QarrVariables;
 
 class Extensions extends \Twig_Extension
 {
@@ -22,7 +26,7 @@ class Extensions extends \Twig_Extension
      */
     public function getName()
     {
-        return 'QARR';
+        return 'qarr';
     }
 
     /**
@@ -38,9 +42,29 @@ class Extensions extends \Twig_Extension
             new \Twig_SimpleFilter('formatBytes', [$this, 'formatBytes']),
             new \Twig_SimpleFilter('valueOutOfArray', [$this, 'valueOutOfArray']),
             new \Twig_SimpleFilter('truncate', [$this, 'truncate']),
+            new \Twig_SimpleFilter('occurrence', [$this, 'occurrence']),
         ];
     }
 
+    /**
+     * @return array|\Twig_Function[]
+     */
+    public function getFunctions()
+    {
+        return [
+            new \Twig_Function('flaggedWords', [$this, 'flaggedWords']),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getGlobals(): array
+    {
+        return [
+            'qarr' => new QarrVariables()
+        ];
+    }
 
     /**
      * Return decoded json object
@@ -170,5 +194,49 @@ class Extensions extends \Twig_Extension
             $text = $text.'...';
         }
         return $text;
+    }
+
+    /**
+     * Find occurrence of word and wrap span tag around it
+     *
+     * @param string $string
+     * @param array $rules
+     * @return null|string|string[]
+     */
+    function occurrence(string $string, array $rules)
+    {
+        $wordList = [];
+        $patterns = [];
+
+        foreach($rules as $rule => $words) {
+            foreach ($words as $word) {
+                $patterns[] = '/\b' . $word . '\b/i';
+                ArrayHelper::prependOrAppend($wordList, $word, true);
+            }
+        }
+
+        $result = preg_replace($patterns, '<span class="matched-word">$0</span>', $string);
+        
+        return $result;
+    }
+
+    /**
+     * Flagged words array
+     *
+     * @param array $flags
+     * @return array
+     */
+    function flaggedWords($flags)
+    {
+        $result = [];
+        
+        if ($flags) {
+
+            foreach ($flags as $flag) {
+                $result[$flag->rule->handle] = $flag->details['matched'];
+            }
+        }
+
+        return $result;
     }
 }

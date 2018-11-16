@@ -75,11 +75,16 @@
         </div>
         <div class="quarter-col">
             <div class="qarr-field custom-field {% if rule.name %}has-value{% endif %}">
-                <input class="text fullwidth" type="text" id="rule-icon" name="icon" value="{{ rule.icon }}" autocomplete="off">
+                {% if rule.icon %}
+                    {% set icon = rule.icon %}
+                {% else %}
+                    {% set icon = 'exclamation' %}
+                {% endif %}
+                <input class="text fullwidth" type="text" id="rule-icon" name="icon" value="{{ icon }}" autocomplete="off">
                 <label id="rule-icon-label" for="rule-icon" >
                     {{ 'Icon'|t('qarr') }}
                 </label>
-                <span class="qarr-input-icon"><i class="fal fa-{{ rule.icon }}"></i></span>
+                <span class="qarr-input-icon"><i class="fal fa-{{ icon }}"></i></span>
             </div>
             <p class="small-text muted">See <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a> for icon names.</p>
         </div>

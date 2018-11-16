@@ -32,7 +32,7 @@ class Qarr extends AssetBundle
         ];
 
         $this->css = [
-            'css/layout.css',
+            'css/qarr.css',
         ];
 
         parent::init();

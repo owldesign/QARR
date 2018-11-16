@@ -1,14 +1,21 @@
 Garnish.$doc.ready(function () {
 
     if ($('.flagged-rules').length > 0) {
-        $.each($('.tippy-with-html'), function (i, el) {
-            var index = $(el).data('index');
+        var tip = tippy('.tippy-with-html', {
+            onShow: function onShow(e) {
+                var id = e.id;
+                var template = document.getElementById('flag-template-' + id).cloneNode(true);
+                $(template).show();
+                e.setContent(template);
+            },
 
-            tippy('.tippy-with-html', {
-                content: document.querySelector('#myTemplate-' + index),
-                theme: 'light',
-                duration: 400
-            });
+            placement: 'right',
+            interactive: true,
+            theme: 'light',
+            duration: 400,
+            arrow: true,
+            arrowType: 'sharp',
+            multiple: true
         });
     }
 

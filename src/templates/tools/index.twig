@@ -16,15 +16,39 @@
 {% endblock %}
 
 {% set content %}
-
     {% set settings = craft.app.plugins.getPlugin('qarr') %}
     {% set plugin = craft.app.plugins.getPluginInfo('qarr') %}
 
-    <p>Plugin Version: {{ settings.version }}</p>
-    <p>DB Schema: {{ settings.schemaVersion }}</p>
-    <p>Developer: {{ settings.developer }}</p>
+    <div class="flex-container">
+        <div class="third-col">
 
-    {{ d(plugin) }}
-    {{ d(settings) }}
+            <div class="license-status">
+                License Status:
+                {% switch craft.app.plugins.getPluginLicenseKeyStatus('qarr') %}
+                    {% case 'valid' %}
+                        <i class="fal fa-grimace"></i>
+                    {% case 'invalid' %}
+                        <i class="fal fa-sad-tear"></i>
+                    {% case 'mismatched' %}
+                        <i class="fal fa-dizzy"></i>
+                    {% default %}
+                        <i class="fal fa-dizzy"></i>
+                {% endswitch %}
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+    {#<p>Plugin Version: {{ settings.version }}</p>#}
+    {#<p>DB Schema: {{ settings.schemaVersion }}</p>#}
+    {#<p>Developer: {{ settings.developer }}</p>#}
+
+    {#{{ d(plugin) }}#}
+    {#{{ d(settings) }}#}
 
 {% endset %}

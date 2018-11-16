@@ -19,7 +19,6 @@ use owldesign\qarr\elements\Review;
 use owldesign\qarr\records\Review as ReviewRecord;
 use owldesign\qarr\records\Flagged as FlaggedRecord;
 use owldesign\qarr\records\Rule as RuleRecord;
-use owldesign\qarr\rules\ProfanityCheck;
 
 use Craft;
 use craft\base\Component;
@@ -136,7 +135,8 @@ class Rules extends Component
     public function performRules($element, $rules)
     {
         foreach ($rules as $rule) {
-            $checker = new RuleChecker($rule->data);
+            $data = StringHelper::explode($rule->data, ',', true, true);
+            $checker = new RuleChecker($data);
             $result = $checker->filter($element->feedback, true);
 
             if ($result['hasMatch']) {
@@ -220,6 +220,14 @@ class Rules extends Component
         $record = new Rule($record->toArray(['id', 'name', 'handle', 'enabled', 'data', 'icon', 'settings', 'options', 'dateCreated', 'dateUpdated']));
 
         return $record;
+    }
+
+    public function getFlaggedCountByRuleId($id)
+    {
+        $query = FlaggedRecord::find()
+            ->where(['ruleId' => $id]);
+        
+        return $query->count();
     }
 
     /**
