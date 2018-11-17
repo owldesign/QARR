@@ -1,3 +1,3 @@
 Garnish.$doc.ready(function () {
-    console.log('HELP DESK!!');
+    console.log('Coming Soon');
 });

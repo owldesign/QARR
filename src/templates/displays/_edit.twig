@@ -19,8 +19,7 @@
 
 {% block content %}
     <div class="flex-container">
-
-        <div id="content-fields" class="full-col">
+        <div id="content-fields" class="third-col">
             <div class="widget transparent">
                 <input type="hidden" name="action" value="qarr/displays/save">
                 {{ redirectInput('qarr/displays') }}
@@ -85,6 +84,34 @@
                         display: display
                     } only %}
                 </div>
+            </div>
+        </div>
+
+        <div class="quarter-col">
+            <div class="entry-settings">
+                <div class="col-header">
+                    <h2>{{ 'Settings'|t('qarr') }}</h2>
+                </div>
+
+                {%- set on = (display.enabled is defined ? display.enabled : false) %}
+                {%- set value = (value is defined ? value : '1') %}
+                <dif class="field">
+                    <div class="heading">
+                        <label for="">{{ 'Enabled'|t('qarr') }}</label>
+                    </div>
+                    <div class="input">
+
+                        <div class="lightswitch {% if on %} on{% endif %} small">
+                            <div class="lightswitch-container">
+                                <div class="label on"></div>
+                                <div class="handle"></div>
+                                <div class="label off"></div>
+                            </div>
+                            <input type="hidden" name="enabled" value="{{ on ? value }}">
+                        </div>
+                    </div>
+                </dif>
+
             </div>
         </div>
     </div>

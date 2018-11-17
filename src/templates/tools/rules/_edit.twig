@@ -63,7 +63,6 @@
                     <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
                 </div>
 
-
                 <div id="data-list-container">
                     <h2>{{ 'Data List'|t('qarr') }}</h2>
                     <p class="small-text muted">{{ 'Enter a list of words to look out for'|t('qarr') }}</p>
@@ -71,23 +70,28 @@
 
                     <a class="btns btn-rounded btn-mini btn-gray tags--removeAllBtn {% if rule.data == '' %}btn-disabled{% endif %}">Clear All</a>
                 </div>
-
             </div>
         </div>
         <div class="quarter-col">
-            <div class="qarr-field custom-field {% if rule.name %}has-value{% endif %}">
-                {% if rule.icon %}
-                    {% set icon = rule.icon %}
-                {% else %}
-                    {% set icon = 'exclamation' %}
-                {% endif %}
-                <input class="text fullwidth" type="text" id="rule-icon" name="icon" value="{{ icon }}" autocomplete="off">
-                <label id="rule-icon-label" for="rule-icon" >
-                    {{ 'Icon'|t('qarr') }}
-                </label>
-                <span class="qarr-input-icon"><i class="fal fa-{{ icon }}"></i></span>
+            <div class="entry-settings">
+                <div class="col-header">
+                    <h2>{{ 'Customize'|t('qarr') }}</h2>
+                </div>
+
+                <div class="qarr-field custom-field {% if rule.name %}has-value{% endif %}">
+                    {% if rule.icon %}
+                        {% set icon = rule.icon %}
+                    {% else %}
+                        {% set icon = 'exclamation' %}
+                    {% endif %}
+                    <input class="text fullwidth" type="text" id="rule-icon" name="icon" value="{{ icon }}" autocomplete="off">
+                    <label id="rule-icon-label" for="rule-icon" >
+                        {{ 'Icon'|t('qarr') }}
+                    </label>
+                    <span class="qarr-input-icon"><i class="fal fa-{{ icon }}"></i></span>
+                </div>
+                <p class="small-text muted">See <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a> for icon names.</p>
             </div>
-            <p class="small-text muted">See <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a> for icon names.</p>
         </div>
     </div>
 

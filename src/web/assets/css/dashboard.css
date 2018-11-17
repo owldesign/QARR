@@ -168,7 +168,7 @@
   display: flex;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 767px) {
   .qarr .widget .body, .widget.craft-widget-recent-questions .body, .widget.craft-widget-recent-reviews .body {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -1745,7 +1745,7 @@ a.approved {
   fill: #4da1ff !important;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 767px) {
   .qarr-dashboard .chart-explorer-container {
     height: 150px;
   }

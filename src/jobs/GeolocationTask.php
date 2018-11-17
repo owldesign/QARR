@@ -65,10 +65,16 @@ class GeolocationTask extends BaseJob
      */
     public function execute($queue)
     {
-        $json = file_get_contents('https://geoip-db.com/json/'.$this->ipAddress);
+        $json = file_get_contents('http://ip-api.com/json/'.$this->ipAddress);
+
+        if (!$json || Json::decode($json)['status'] == 'fail') {
+            $json = file_get_contents('http://api.ipstack.com/'. $this->ipAddress .'?access_key=52190a7c005443842c6b11c70df7f59c&format=1&fields=country_code,country_name,region_name,city,zip');
+        }
+        
+        $geolocation = $this->_normalizeData($json);
 
         $result = Craft::$app->getDb()->createCommand()
-            ->update($this->table, ['geolocation' => $json], ['id' => $this->elementId])
+            ->update($this->table, ['geolocation' => $geolocation], ['id' => $this->elementId])
             ->execute();
 
         if ($result) {
@@ -78,6 +84,45 @@ class GeolocationTask extends BaseJob
         }
 
         return true;
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    private function _normalizeData($json)
+    {
+        $cleanData = [];
+        $data = Json::decode($json);
+
+        if (isset($data['country_code'])) {
+            if (array_key_exists($data['countryCode'])) {
+                $cleanData['country_code'] = $data['countryCode'];
+            } else {
+                $cleanData['country_code'] = $data['country_code'];
+            }
+
+            if (array_key_exists($data['country'])) {
+                $cleanData['country_name'] = $data['country'];
+            } else {
+                $cleanData['country_name'] = $data['country_name'];
+            }
+
+            if (array_key_exists($data['regionName'])) {
+                $cleanData['region'] = $data['regionName'];
+            } else {
+                $cleanData['region'] = $data['region_name'];
+            }
+
+            $cleanData['city'] = $data['city'];
+
+            if (array_key_exists($data['zip'])) {
+                $cleanData['postal'] = $data['zip'];
+            }
+
+            return $cleanData;
+        } else {
+            return null;
+        }
     }
 
     // Protected Methods
@@ -90,4 +135,5 @@ class GeolocationTask extends BaseJob
     {
         return Craft::t('qarr', 'Geolocation');
     }
+    
 }

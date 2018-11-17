@@ -16,17 +16,14 @@
 
 {% block sidebar %}
     {% if sources is not empty %}
-        <nav>
+        <nav id="sources">
             <ul>
                 {% for key, source in sources %}
                     {% if source.heading is defined %}
                         <li class="heading"><span>{{ source.heading|t('form-builder') }}</span></li>
                     {% else %}
                         <li {% if source.key != '*' %}class="group-item"{% endif %}>
-                            <a data-label="{{ source.label }}"
-                               data-key="{{ source.key is defined ? source.key : key }}" {%- if source.defaultSort is defined %}{% set defaultSort = source.defaultSort %} data-default-sort="{{ defaultSort is iterable ? defaultSort|join(':') : defaultSort }}"{% endif %}{%- if source.data is defined -%}{% for dataKey, dataVal in source.data %} data-{{ dataKey }}="{{ dataVal }}"{% endfor %}{%- endif %}>
-                                {% if source.key != '*' %}<span class="product-badge purple">
-                                    <span>{{ source.label |first }}</span></span>{% endif %}
+                            <a data-label="{{ source.label }}" data-key="{{ source.key is defined ? source.key : key }}" {%- if source.defaultSort is defined %}{% set defaultSort = source.defaultSort %} data-default-sort="{{ defaultSort is iterable ? defaultSort|join(':') : defaultSort }}"{% endif %}{%- if source.data is defined -%}{% for dataKey, dataVal in source.data %} data-{{ dataKey }}="{{ dataVal }}"{% endfor %}{%- endif %}>
                                 <span class="source-text">{{- source.label -}}</span>
                                 {% if source.criteria is defined %}
                                     {% set count = craft.qarr.getCount('questions', '*', null, source.criteria.productTypeId) %}

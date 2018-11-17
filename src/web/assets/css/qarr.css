@@ -97,7 +97,7 @@
 }
 
 .flex-container .third-col {
-  width: 75%;
+  width: 65%;
 }
 
 .flex-container .half-col {
@@ -105,7 +105,48 @@
 }
 
 .flex-container .quarter-col {
-  width: 25%;
+  width: 35%;
+}
+
+@media only screen and (max-width: 998px) {
+  .flex-container .quarter-col, .flex-container .third-col {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .flex-container > div {
+    padding: 0;
+  }
+  .flex-container .quarter-col, .flex-container .half-col, .flex-container .third-col {
+    width: 100%;
+  }
+}
+
+.flex-container .entry-settings {
+  background: #E9EFF4;
+  padding: 24px;
+  border-radius: 4px;
+}
+
+.flex-container .col-header {
+  margin-bottom: 20px;
+}
+
+.flex-container .col-header h2 {
+  color: #8b8c8f;
+}
+
+@media only screen and (max-width: 1223px) {
+  .qarr #crumbs {
+    position: relative;
+    padding: 0 !important;
+  }
+  .qarr #crumbs #nav-toggle {
+    position: absolute;
+    z-index: 100;
+    left: 9px;
+  }
 }
 
 .qarr.qarr-edit #main-container #main #main-content #content-container #content {
@@ -122,6 +163,9 @@
   padding: 24px !important;
   -webkit-box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.1);
           box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.1);
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
 }
 
 .qarr .page-title-wrapper {
@@ -2129,19 +2173,12 @@ a.approved {
   border-radius: 3px;
 }
 
-.qarr #header {
-  margin: 0 !important;
-  padding: 0 !important;
-  -webkit-box-shadow: none !important;
-          box-shadow: none !important;
-  background: white !important;
+#header .utility-nav {
+  margin: 0 30px 0 auto;
 }
 
-.qarr #header .btns {
-  position: absolute;
-  bottom: 15px;
-  right: 40px;
-  z-index: 5;
+#header .utility-nav .utility-nav-item {
+  opacity: .2;
 }
 
 #header .utility-nav .fa-layers {
@@ -3250,7 +3287,7 @@ a.approved {
   display: flex;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 767px) {
   .qarr .widget .body, .widget.craft-widget-recent-questions .body, .widget.craft-widget-recent-reviews .body {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -5104,6 +5141,10 @@ a.approved {
 .qarr .draghelper.fld-field .settings:before {
   color: #989898 !important;
   opacity: .2;
+}
+
+.qarr #sidebar-toggle #selected-sidebar-item-label {
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
 }
 
 .qarr #sidebar ul {
