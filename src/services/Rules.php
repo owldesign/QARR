@@ -135,7 +135,12 @@ class Rules extends Component
     public function performRules($element, $rules)
     {
         foreach ($rules as $rule) {
-            $data = StringHelper::explode($rule->data, ',', true, true);
+            if (is_string($rule->data)) {
+                $data = StringHelper::explode($rule->data, ',', true, true);
+            } else {
+                $data = $rule->data;
+            }
+
             $checker = new RuleChecker($data);
             $result = $checker->filter($element->feedback, true);
 

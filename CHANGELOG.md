@@ -1,6 +1,11 @@
 # QARR Changelog
 
-## 1.0.4 - 2018-11-17
+## 1.0.5 - 2018-11-16
+
+## Fixed
+- fixed bug inside rules 
+
+## 1.0.4 - 2018-11-16
 
 ### Added
 - Added Rules [Documentation](https://docs.qarr.tools/rules)
