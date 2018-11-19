@@ -3,6 +3,7 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Geolocation") %}
 
 {% set title = "Dashboard"|t('qarr') %}
 {% set bodyClass = 'qarr qarr-dashboard' %}
@@ -31,5 +32,21 @@
     <div class="item" data-colspan="2">
         {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Questions'|t('qarr'), type: 'questions', limit: 5, class: 'inwards no-footer' } %}
     </div>
+
+    <div class="item" data-colspan="6">
+        Geolocation
+
+        <div id='map' style='width: 100%; height: 600px;'></div>
+    </div>
 </div>
 {% endset %}
+
+{% js %}
+    mapboxgl.accessToken = 'pk.eyJ1Ijoib3dsZGVzaWduIiwiYSI6ImNqb2w0cDJnYjA0MTQzcW4xZG9teGI1eGkifQ.M4gSoq2V4F4P2TABdJKjWg';
+    var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/owldesign/cjol4xb3m54uh2rt69t38qrds',
+    center: [-71.986797, 42.098019],
+    zoom: 0
+    });
+{% endjs %}

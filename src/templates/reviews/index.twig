@@ -27,7 +27,7 @@
                                 <span class="source-text">{{- source.label -}}</span>
                                 {% if source.criteria is defined %}
                                     {% set count = craft.qarr.getCount('reviews', '*', null, source.criteria.productTypeId) %}
-                                    <span class="source-count">{{ count is defined and count > 0 ? count : '' }}</span>
+                                    <span class="badge">{{ count is defined and count > 0 ? count : '' }}</span>
                                 {% endif %}
                             </a>
                         </li>

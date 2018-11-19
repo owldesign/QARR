@@ -17,13 +17,15 @@ use owldesign\qarr\elements\db\QuestionQuery;
 use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\actions\Delete;
 use owldesign\qarr\records\Question as QuestionRecord;
+use owldesign\qarr\jobs\GeolocationTask;
+use owldesign\qarr\jobs\RulesTask;
 
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
-
 use craft\commerce\Plugin as CommercePlugin;
+
 use yii\base\Exception;
 use yii\validators\EmailValidator;
 
@@ -491,9 +493,19 @@ class Question extends Element
         $record->save(false);
 
         if ($isNew) {
-            // Profanity Rule
-            $checkProfanity = QARR::$plugin->rules->checkProfanity($this->question, $record);
+            // Apply Rule
+            Craft::$app->getQueue()->push(new RulesTask([
+                'entry' => $record,
+            ]));
+
+            // Apply Geolocation
+            Craft::$app->getQueue()->push(new GeolocationTask([
+                'ipAddress' => $this->ipAddress,
+                'elementId' => $this->id,
+                'table' => '{{%qarr_questions}}'
+            ]));
         }
+
         parent::afterSave($isNew);
     }
 

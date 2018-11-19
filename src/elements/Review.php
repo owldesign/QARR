@@ -18,6 +18,7 @@ use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\actions\Delete;
 use owldesign\qarr\records\Review as ReviewRecord;
 use owldesign\qarr\jobs\GeolocationTask;
+use owldesign\qarr\jobs\RulesTask;
 
 use Craft;
 use craft\base\Element;
@@ -620,7 +621,9 @@ class Review extends Element
 
         if ($isNew) {
             // Apply Rule
-            QARR::$plugin->rules->applyRules($record);
+            Craft::$app->getQueue()->push(new RulesTask([
+                'entry' => $record,
+            ]));
 
             // Apply Geolocation
             Craft::$app->getQueue()->push(new GeolocationTask([

@@ -16,36 +16,6 @@ use owldesign\qarr\QARR;
 use Craft;
 use craft\queue\BaseJob;
 
-/**
- * QARRTask job
- *
- * Jobs are run in separate process via a Queue of pending jobs. This allows
- * you to spin lengthy processing off into a separate PHP process that does not
- * block the main process.
- *
- * You can use it like this:
- *
- * use owldesign\qarr\jobs\QARRTask as QARRTaskJob;
- *
- * $queue = Craft::$app->getQueue();
- * $jobId = $queue->push(new QARRTaskJob([
- *     'description' => Craft::t('qarr', 'This overrides the default description'),
- *     'someAttribute' => 'someValue',
- * ]));
- *
- * The key/value pairs that you pass in to the job will set the public properties
- * for that object. Thus whatever you set 'someAttribute' to will cause the
- * public property $someAttribute to be set in the job.
- *
- * Passing in 'description' is optional, and only if you want to override the default
- * description.
- *
- * More info: https://github.com/yiisoft/yii2-queue
- *
- * @author    Vadim Goncharov
- * @package   QARR
- * @since     1.0.0
- */
 class GeolocationTask extends BaseJob
 {
     // Public Properties
@@ -65,22 +35,24 @@ class GeolocationTask extends BaseJob
      */
     public function execute($queue)
     {
-        $json = file_get_contents('http://ip-api.com/json/'.$this->ipAddress);
+        try {
+            $json = file_get_contents('http://ip-api.com/json/'.$this->ipAddress);
 
-        if (!$json || Json::decode($json)['status'] == 'fail') {
-            $json = file_get_contents('http://api.ipstack.com/'. $this->ipAddress .'?access_key=52190a7c005443842c6b11c70df7f59c&format=1&fields=country_code,country_name,region_name,city,zip');
-        }
-        
-        $geolocation = $this->_normalizeData($json);
+            if (!$json || Json::decode($json)['status'] == 'fail') {
+                $json = file_get_contents('http://api.ipstack.com/'. $this->ipAddress .'?access_key=52190a7c005443842c6b11c70df7f59c&format=1&fields=country_code,country_name,region_name,city,zip');
+            }
 
-        $result = Craft::$app->getDb()->createCommand()
-            ->update($this->table, ['geolocation' => $geolocation], ['id' => $this->elementId])
-            ->execute();
+            $geolocation = $this->_normalizeData($json);
 
-        if ($result) {
-            QARR::log('Geolocation has been added to element with ID: ' . $this->elementId);
-        } else {
-            QARR::log('Geolocation failed to update');
+            QARR::log('Geolocation data: ' . Json::encode($geolocation));
+
+
+            $result = Craft::$app->getDb()->createCommand()
+                ->update($this->table, ['geolocation' => Json::encode($geolocation)], ['id' => $this->elementId])
+                ->execute();
+
+        } catch (\Exception $e) {
+            QARR::log('Geolocation failed to update: ' . $e->getMessage());
         }
 
         return true;
@@ -94,35 +66,34 @@ class GeolocationTask extends BaseJob
         $cleanData = [];
         $data = Json::decode($json);
 
-        if (isset($data['country_code'])) {
-            if (array_key_exists($data['countryCode'])) {
-                $cleanData['country_code'] = $data['countryCode'];
-            } else {
-                $cleanData['country_code'] = $data['country_code'];
-            }
+        // Check for $data['status'] == fail
+        // or $data['country_code'] is null
 
-            if (array_key_exists($data['country'])) {
-                $cleanData['country_name'] = $data['country'];
-            } else {
-                $cleanData['country_name'] = $data['country_name'];
-            }
-
-            if (array_key_exists($data['regionName'])) {
-                $cleanData['region'] = $data['regionName'];
-            } else {
-                $cleanData['region'] = $data['region_name'];
-            }
-
-            $cleanData['city'] = $data['city'];
-
-            if (array_key_exists($data['zip'])) {
-                $cleanData['postal'] = $data['zip'];
-            }
-
-            return $cleanData;
+        if (array_key_exists('countryCode', $data)) {
+            $cleanData['country_code'] = $data['countryCode'];
         } else {
-            return null;
+            $cleanData['country_code'] = $data['country_code'];
         }
+
+        if (array_key_exists('country', $data)) {
+            $cleanData['country_name'] = $data['country'];
+        } else {
+            $cleanData['country_name'] = $data['country_name'];
+        }
+
+        if (array_key_exists('regionName', $data)) {
+            $cleanData['region'] = $data['regionName'];
+        } else {
+            $cleanData['region'] = $data['region_name'];
+        }
+
+        $cleanData['city'] = $data['city'];
+
+        if (array_key_exists('zip', $data)) {
+            $cleanData['postal'] = $data['zip'];
+        }
+
+        return $cleanData;
     }
 
     // Protected Methods

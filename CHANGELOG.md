@@ -1,5 +1,15 @@
 # QARR Changelog
 
+## 1.0.6 - 2018-11-17
+
+### Improved
+- move rules to job ques
+
+## Fixed
+- fixed bug in applying rules to submissions
+- added rules and geolocations to Questions element
+
+
 ## 1.0.5 - 2018-11-16
 
 ## Fixed

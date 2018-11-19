@@ -129,6 +129,7 @@ class Rules extends Component
      *
      * @param $element
      * @param $rules
+     * @return bool
      * @throws \Throwable
      * @throws \yii\db\Exception
      */
@@ -148,6 +149,8 @@ class Rules extends Component
                 $this->flagElement($rule->id, $element->id, $result);
             }
         }
+
+        return true;
     }
 
     /**
