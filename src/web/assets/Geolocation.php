@@ -15,6 +15,7 @@ class Geolocation extends AssetBundle
 
         $this->css = [
             'geolocation/mapbox-gl.css',
+            'flags/flag-icon.min.css',
         ];
 
         $this->js = [

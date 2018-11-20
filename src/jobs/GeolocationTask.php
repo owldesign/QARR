@@ -10,10 +10,11 @@
 
 namespace owldesign\qarr\jobs;
 
-use craft\helpers\Json;
 use owldesign\qarr\QARR;
+use owldesign\qarr\helpers\Countries;
 
 use Craft;
+use craft\helpers\Json;
 use craft\queue\BaseJob;
 
 class GeolocationTask extends BaseJob
@@ -66,9 +67,6 @@ class GeolocationTask extends BaseJob
         $cleanData = [];
         $data = Json::decode($json);
 
-        // Check for $data['status'] == fail
-        // or $data['country_code'] is null
-
         if (array_key_exists('countryCode', $data)) {
             $cleanData['country_code'] = $data['countryCode'];
         } else {
@@ -91,6 +89,17 @@ class GeolocationTask extends BaseJob
 
         if (array_key_exists('zip', $data)) {
             $cleanData['postal'] = $data['zip'];
+        }
+
+        // Apply continent to geolocation
+        if ($cleanData['country_code']) {
+            $countries = Countries::instance()->countries;
+
+            foreach ($countries as $code => $country) {
+                if ($code === $cleanData['country_code']) {
+                    $cleanData['continent'] = $country['continent'];
+                }
+            }
         }
 
         return $cleanData;

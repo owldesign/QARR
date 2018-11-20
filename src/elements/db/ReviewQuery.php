@@ -14,6 +14,7 @@ namespace owldesign\qarr\elements\db;
 use Craft;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
+use craft\helpers\Json;
 use owldesign\qarr\elements\Review;
 use owldesign\qarr\QARR;
 
@@ -99,6 +100,12 @@ class ReviewQuery extends ElementQuery
     public function hasPurchased($value)
     {
         $this->hasPurchased = $value;
+        return $this;
+    }
+
+    public function geolocation($value)
+    {
+        $this->geolocation = Json::decode($value);
         return $this;
     }
 

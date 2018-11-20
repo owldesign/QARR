@@ -84,6 +84,7 @@
   display: flex;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
+  width: 100%;
 }
 
 .flex-container > div {
@@ -114,7 +115,7 @@
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 767px) {
   .flex-container > div {
     padding: 0;
   }
@@ -3287,7 +3288,7 @@ a.approved {
   display: flex;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 767px) {
   .qarr .widget .body, .widget.craft-widget-recent-questions .body, .widget.craft-widget-recent-reviews .body {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -3828,6 +3829,83 @@ a.approved {
 .other-menu .item-wrapper {
   -webkit-animation: pullBounce 700ms linear both;
           animation: pullBounce 700ms linear both;
+}
+
+.widget-top-country-submissions .pane {
+  padding: 0 !important;
+}
+
+.widget-top-country-submissions .continent-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding: 24px;
+}
+
+.widget-top-country-submissions .continent-list .list-item {
+  margin-bottom: 10px;
+}
+
+.widget-top-country-submissions .continent-list .list-item:last-child {
+  margin-bottom: 0;
+}
+
+.widget-top-country-submissions .continent-list .item-title {
+  font-family: "OpenSans-SemiBold", "Helvetica", sans-serif;
+  color: #a5a6a8;
+}
+
+.widget-top-country-submissions .continent-list .item-progress {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.widget-top-country-submissions .continent-list .item-progress-bar {
+  margin-right: 10px;
+  width: 0;
+  height: 5px;
+  border-radius: 3px;
+}
+
+.widget-top-country-submissions .continent-list .item-progress-bar.theme-purple {
+  background: #B289EF;
+}
+
+.widget-top-country-submissions .continent-list .item-progress-count {
+  font-family: "OpenSans-SemiBold", "Helvetica", sans-serif;
+  color: #a5a6a8;
+  font-size: 10px;
+}
+
+.widget-top-country-submissions .continent-list {
+  border-left: 1px solid #E9EFF4;
+}
+
+.widget-top-country-submissions .continent-list .details-title {
+  font-family: "OpenSans-Regular", "Helvetica", sans-serif;
+  font-size: 24px;
+  border-bottom: 1px solid #E9EFF4;
+}
+
+.widget-top-country-submissions .details-country-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.widget-top-country-submissions .details-country-wrapper .details-count {
+  margin-left: auto;
 }
 
 @keyframes pullBounce {

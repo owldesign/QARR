@@ -13,6 +13,7 @@ namespace owldesign\qarr;
 use owldesign\qarr\elements\Review as ReviewElement;
 use owldesign\qarr\fields\QARRField as QARRFieldField;
 use owldesign\qarr\services\Rules;
+use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
 use owldesign\qarr\web\assets\QarrCp;
 use owldesign\qarr\widgets\Stats;
@@ -89,11 +90,11 @@ class QARR extends Plugin
         // $this->_registerFieldTypes();
         // $this->_registerUtilities();
 
-
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
             /** @var CraftVariable $variable */
             $variable = $e->sender;
             $variable->set('qarrRules', Rules::class);
+            $variable->set('geolocations', Geolocations::class);
         });
 
     }
