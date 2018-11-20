@@ -279,6 +279,20 @@ class Elements extends Component
         return $query->count();
     }
 
+    /**
+     * Get total count of approved elements
+     *
+     * @return int
+     */
+    public function getTotalApproved()
+    {
+        $reviews    = Review::find()->where(['status' => 'approved'])->count();
+        $questions  = Question::find()->where(['status' => 'approved'])->count();
+        $total      = $reviews + $questions;
+
+        return $total;
+    }
+
     public function getEntriesByRating($status, $productId)
     {
         $query = new Query();

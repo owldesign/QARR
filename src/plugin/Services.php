@@ -20,6 +20,7 @@ use owldesign\qarr\services\Notes;
 use owldesign\qarr\services\Correspondence;
 use owldesign\qarr\services\Elements;
 use owldesign\qarr\services\Rules;
+use owldesign\qarr\services\Geolocations;
 
 trait Services
 {
@@ -126,6 +127,16 @@ trait Services
         return $this->get('rules');
     }
 
+    /**
+     * Get geolocations
+     *
+     * @return Geolocations
+     */
+    public function getGeolocations(): Geolocations
+    {
+        return $this->get('geolocations');
+    }
+
     // Private Methods
     // =========================================================================
 
@@ -145,6 +156,7 @@ trait Services
             'cookies' => Cookies::class,
             'elements' => Elements::class,
             'rules' => Rules::class,
+            'geolocations' => Geolocations::class,
         ]);
     }
 }

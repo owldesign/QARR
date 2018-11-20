@@ -10,10 +10,12 @@
 
 namespace owldesign\qarr;
 
+use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\Review as ReviewElement;
 use owldesign\qarr\fields\QARRField as QARRFieldField;
 use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\Geolocations;
+use owldesign\qarr\services\Elements as QarrElements;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
 use owldesign\qarr\web\assets\QarrCp;
 use owldesign\qarr\widgets\Stats;
@@ -94,7 +96,19 @@ class QARR extends Plugin
             /** @var CraftVariable $variable */
             $variable = $e->sender;
             $variable->set('qarrRules', Rules::class);
+            $variable->set('qarrElements', QarrElements::class);
             $variable->set('geolocations', Geolocations::class);
+        });
+
+        // Element status updates
+        Event::on(SetStatus::class, SetStatus::EVENT_AFTER_SAVE, function(Event $e) {
+            if ($e->response) {
+                $status = $e->status;
+                $type = $e->type;
+
+                // Reset geolocation stats
+                QARR::$plugin->geolocations->reset();
+            }
         });
 
     }

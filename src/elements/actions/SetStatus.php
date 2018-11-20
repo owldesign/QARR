@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\elements\actions;
 
+use owldesign\qarr\events\SetStatusEvent;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Review;
 use owldesign\qarr\elements\Question;
@@ -68,10 +69,6 @@ class SetStatus extends ElementAction
         return Craft::$app->getView()->renderTemplate('qarr/_components/elementactions/SetStatus/trigger');
     }
 
-    /**
-     * @param ElementQueryInterface $query
-     * @return bool
-     */
     public function performAction(ElementQueryInterface $query): bool
     {
         $type = $this->_getType($query->elementType);
@@ -81,6 +78,14 @@ class SetStatus extends ElementAction
         }
 
         $response = QARR::$plugin->elements->updateAllStatuses($query->all(), $this->status, $type);
+
+        if ($this->hasEventHandlers(self::EVENT_AFTER_SAVE)) {
+            $this->trigger(self::EVENT_AFTER_SAVE, new SetStatusEvent([
+                'response' => $response,
+                'status' => $this->status,
+                'type' => $type
+            ]));
+        }
 
         if ($response) {
             $message = QARR::t('Status Updated.');

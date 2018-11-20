@@ -1,12 +1,15 @@
 # QARR Changelog
 
-## 1.0.6 - 2018-11-17
+## 1.0.6 - 2018-11-20
+
+### Added
+- Added Top Submissions by country and continent to qarr dashboard.
 
 ### Improved
-- move rules to job ques
+- Move Rules to job ques
 
 ## Fixed
-- fixed bug in applying rules to submissions
+- fixed bug in applying rules to submissions + various other bugs
 - added rules and geolocations to Questions element
 
 

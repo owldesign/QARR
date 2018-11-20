@@ -40,6 +40,17 @@ Garnish.$doc.ready(function () {
     });
 
     if ($('#widget-top-country-submissions').length > 0) {
+
+        $('#reset-geolocation-stats').on('click', function (e) {
+            e.preventDefault();
+
+            Craft.postActionRequest('qarr/geolocations/reset', {}, $.proxy(function (response, textStatus) {
+                if (response) {
+                    window.location.reload();
+                }
+            }, this));
+        });
+
         var tip = tippy('.tippy-with-html', {
             onShow: function onShow(e) {
                 var id = e.id;
@@ -48,13 +59,14 @@ Garnish.$doc.ready(function () {
                 e.setContent(template);
             },
 
-            placement: 'right',
+            // onHide(e) {
+            //     return false;
+            // },
+            placement: 'top',
             interactive: true,
             theme: 'light',
             duration: 400,
-            arrow: true,
-            arrowType: 'sharp',
-            multiple: true
+            arrow: true
         });
     }
 });

@@ -56,8 +56,8 @@ class Geolocations extends Component
 
         if ($cache->get('geolocations') === false) {
             // Fetch all records
-            $reviews    = Review::find()->asArray()->all();
-            $questions  = Question::find()->asArray()->all();
+            $reviews    = Review::find()->asArray()->where(['status' => 'approved'])->all();
+            $questions  = Question::find()->asArray()->where(['status' => 'approved'])->all();
             $elements   = ArrayHelper::merge($reviews, $questions);
             $totalElements = count($elements);
             $geolocationArrayClean = [];
@@ -136,6 +136,20 @@ class Geolocations extends Component
         $geolocations = $cache->get('geolocations');
 
         return $geolocations;
+    }
+
+    /**
+     * Reset geolocation stats
+     *
+     * @return bool
+     */
+    public function reset()
+    {
+        Craft::$app->getCache()->delete('geolocations');
+
+        $this->all();
+
+        return true;
     }
 
     // Private Methods
