@@ -115,7 +115,7 @@
   }
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
   .flex-container > div {
     padding: 0;
   }
@@ -3288,7 +3288,7 @@ a.approved {
   display: flex;
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
   .qarr .widget .body, .widget.craft-widget-recent-questions .body, .widget.craft-widget-recent-reviews .body {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
@@ -3470,7 +3470,8 @@ a.approved {
 }
 
 .qarr .widget .list .list-item.excluded svg, .widget.craft-widget-recent-questions .list .list-item.excluded svg, .widget.craft-widget-recent-reviews .list .list-item.excluded svg {
-  color: #E9EFF4;
+  width: 100px;
+  opacity: .2;
 }
 
 .qarr .widget .list .list-item.excluded .item-wrapper, .widget.craft-widget-recent-questions .list .list-item.excluded .item-wrapper, .widget.craft-widget-recent-reviews .list .list-item.excluded .item-wrapper {
@@ -3855,8 +3856,12 @@ a.approved {
 }
 
 .widget-top-country-submissions .continent-list .item-title {
-  font-family: "OpenSans-SemiBold", "Helvetica", sans-serif;
-  color: #a5a6a8;
+  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
+  font-size: 12px;
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
 }
 
 .widget-top-country-submissions .continent-list .item-progress {
@@ -3869,13 +3874,24 @@ a.approved {
 }
 
 .widget-top-country-submissions .continent-list .item-progress-bar {
+  position: relative;
   margin-right: 10px;
+  height: 5px;
+  width: 100%;
+  background: #E9EFF4;
+  border-radius: 3px;
+}
+
+.widget-top-country-submissions .continent-list .item-progress-bar .item-progress-bar-track {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 0;
   height: 5px;
   border-radius: 3px;
 }
 
-.widget-top-country-submissions .continent-list .item-progress-bar.theme-purple {
+.widget-top-country-submissions .continent-list .item-progress-bar .item-progress-bar-track.theme-purple {
   background: #B289EF;
 }
 

@@ -6,48 +6,31 @@
 
                 <div class="flex-container">
 
-                    <div class="continent-list quarter-col">
+                    <div class="continent-list full-col">
                         {% set geolocations = craft.geolocations.all() %}
 
-                        {% for continent, location in geolocations.byContinent %}
-                            <div class="list-item has-hover pad">
-                                <div class="item-wrapper">
-                                    <div class="item-title">{{ continent }}</div>
-                                    <div class="item-progress">
-                                        <div class="item-progress-bar theme-purple" style="width: {{ location.percentage }};"></div>
-                                        <div class="item-progress-count">{{ location.percentage }}</div>
+                        {% if geolocations %}
+                            {% for continent, location in geolocations.byContinent %}
+                                <div class="list-item has-hover pad tippy-with-html">
+                                    <div class="item-wrapper">
+                                        <div class="item-title">{{ continent }}</div>
+                                        <div class="item-progress">
+                                            <div class="item-progress-bar">
+                                                <div class="item-progress-bar-track theme-purple" style="width: {{ location.percentage }};"></div>
+                                            </div>
+                                            <div class="item-progress-count">{{ location.percentage }}</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="continent-list half-col">
-                        {# TODO: update country list with ajax.. tabs #}
-                        <div class="details-title">Asia</div>
-                        {% for item in geolocations.byCountry if item.continent == 'Asia' %}
-                            <div class="details-country-wrapper">
-                                <div class="details-name">{{ item.country }}</div>
-                                <div class="details-count">{{ item.count }}</div>
-                            </div>
-                        {% endfor %}
-                        {#{{ d(geolocations.byCountry) }}#}
+
+                                <div id="country-details-{{ loop.index }}">
+                                    hi
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-{#{% js %}#}
-    {#mapboxgl.accessToken = 'pk.eyJ1Ijoib3dsZGVzaWduIiwiYSI6ImNqb2w0cDJnYjA0MTQzcW4xZG9teGI1eGkifQ.M4gSoq2V4F4P2TABdJKjWg';#}
-    {#var map = new mapboxgl.Map({#}
-    {#container: 'map',#}
-    {#style: 'mapbox://styles/owldesign/cjol4xb3m54uh2rt69t38qrds',#}
-    {#center: [-71.986797, 42.098019],#}
-    {#zoom: 1#}
-    {#});#}
-
-    {#setTimeout(function(e) {#}
-        {#map.resize();#}
-    {#}, 1000);#}
-{#{% endjs %}#}

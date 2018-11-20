@@ -38,4 +38,23 @@ Garnish.$doc.ready(function () {
             mother.find('.stat-' + item.handle).find('.stat-value').html(Math.round(item.percent * 100) + '%');
         });
     });
+
+    if ($('#widget-top-country-submissions').length > 0) {
+        var tip = tippy('.tippy-with-html', {
+            onShow: function onShow(e) {
+                var id = e.id;
+                var template = document.getElementById('country-details-' + id).cloneNode(true);
+                $(template).show();
+                e.setContent(template);
+            },
+
+            placement: 'right',
+            interactive: true,
+            theme: 'light',
+            duration: 400,
+            arrow: true,
+            arrowType: 'sharp',
+            multiple: true
+        });
+    }
 });

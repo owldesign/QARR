@@ -71,7 +71,6 @@ class Geolocations extends Component
                 $countryGrouped = array_group_by($geolocationArrayClean, 'country_code');
                 $continentGrouped = array_group_by($geolocationArrayClean, 'continent');
                 $countriesArray = Countries::instance()->countries;
-                $continentsArray = Countries::instance()->continents(true);
 
                 // Continent Grouped
                 foreach ($continentGrouped as $continent => $countries) {
@@ -96,11 +95,6 @@ class Geolocations extends Component
                     ];
                 }
 
-                // Sort from most to least
-                uasort($countryGrouped, function($a, $b) {
-                    return $b['count'] <=> $a['count'];
-                });
-
                 foreach ($continentGrouped as $continent => $countries) {
                     $total = array_sum(array_map(function($item) {
                         return $item['count'];
@@ -112,20 +106,35 @@ class Geolocations extends Component
                         'countries' => $countries
                     ];
                 }
+
+                $geolocations = false;
+
+                if ($continentGrouped) {
+                    // Sort from most to least
+                    uasort($continentGrouped, function($a, $b) {
+                        return $b['count'] <=> $a['count'];
+                    });
+                    $geolocations['byContinent'] = $continentGrouped;
+                }
+
+                if ($countryGrouped) {
+                    // Sort from most to least
+                    uasort($countryGrouped, function($a, $b) {
+                        return $b['count'] <=> $a['count'];
+                    });
+
+                    $geolocations['byCountry'] = $countryGrouped;
+                }
                 
-
-                $geolocations = [
-                    'byContinent' => $continentGrouped,
-                    'byCountry' => $countryGrouped
-                ];
-
                 // Set 24 hour cache
-                $cache->set('geolocations', $geolocations);
+                if ($geolocations) {
+                    $cache->set('geolocations', $geolocations);
+                }
             }
         }
 
         $geolocations = $cache->get('geolocations');
-        
+
         return $geolocations;
     }
 
