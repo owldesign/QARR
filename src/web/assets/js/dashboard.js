@@ -41,7 +41,7 @@ Garnish.$doc.ready(function () {
 
     if ($('#widget-top-country-submissions').length > 0) {
 
-        $('#reset-geolocation-stats').on('click', function (e) {
+        $('.reset-geolocation-stats').on('click', function (e) {
             e.preventDefault();
 
             Craft.postActionRequest('qarr/geolocations/reset', {}, $.proxy(function (response, textStatus) {

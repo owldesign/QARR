@@ -3845,6 +3845,13 @@ a.approved {
   padding: 24px !important;
 }
 
+.widget-top-country-submissions .pane > .reset-geolocation-stats {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #a5a6a8;
+}
+
 .widget-top-country-submissions .continent-list {
   display: -webkit-box;
   display: -ms-flexbox;

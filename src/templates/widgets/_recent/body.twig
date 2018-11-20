@@ -65,14 +65,9 @@
                             </div>
                         </div>
                     {% else %}
-                        <div class="list-item excluded">
+                        <div class="list-item excluded no-submissions">
                             <div class="item-wrapper">
-
-                                <span class="fa-stack fa-3x">
-                                  <i class="fal fa-scroll-old fa-stack-2x"></i>
-                                  <i class="fal fa-align-left fa-stack-1x" data-fa-transform="shrink-5 up-2"></i>
-                                </span>
-
+                                {% include 'qarr/_includes/icons/icon-' ~ type ignore missing %}
                                 <p>{{ 'No recent submissions'|t('qarr') }}</p>
                             </div>
                         </div>

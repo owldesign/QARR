@@ -2,6 +2,8 @@
     <div class="front">
         <div class="pane">
             <h2>{{ 'Top Submissions'|t('qarr') }}</h2>
+            {#<a href="#" class="reset-geolocation-stats"><i class="far fa-sync"></i></a>#}
+
             <div class="body">
                 {#<div id='map' style='width: 560px; height: 600px;'></div>#}
 
@@ -55,7 +57,7 @@
 
                                     <div class="item-actions">
                                         {% if craft.qarrElements.getTotalApproved() > 0 %}
-                                            <a href="#" id="reset-geolocation-stats" class="btn btn-rounded btn-purple">Reset Stats</a>
+                                            <a href="#" class="btn btn-rounded btn-purple reset-geolocation-stats">Reset Stats</a>
                                         {% endif %}
                                         <p>{{ 'You have no approved submissions'|t('qarr') }}</p>
                                     </div>

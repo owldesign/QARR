@@ -73,7 +73,8 @@ QARR.Widgets.PendingItemsWidget = Garnish.Base.extend({
                 if (response.count === 0) {
                     if (_this.fetchNewExcludeIds().length === 0) {
                         var $empty = $('<div class="list-item excluded">' + '<div class="item-wrapper">' + '<p>' + Craft.t("qarr", "No recent submissions") + '</p>' + '</div>' + '</div>');
-                        _this.$container.find('.list').html($empty);
+                        _this.$container.find('.list').html(itemHtml);
+                        // this.$container.find('.list').html($empty);
                     }
                 } else {
                     _this.$container.find('.list').append(itemHtml);

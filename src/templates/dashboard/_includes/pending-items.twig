@@ -43,9 +43,10 @@
         </div>
     </div>
 {% else %}
-    <div class="list-item excluded">
+    <div class="list-item excluded no-submissions">
         <div class="item-wrapper">
-            <p>{{ 'No recent submission'|t('qarr') }}</p>
+            {% include 'qarr/_includes/icons/icon-' ~ type ignore missing %}
+            <p>{{ 'No recent submissions'|t('qarr') }}</p>
         </div>
     </div>
 {% endfor %}
