@@ -115,7 +115,7 @@
   }
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
   .flex-container > div {
     padding: 0;
   }
@@ -3292,7 +3292,7 @@ a.approved {
   display: flex;
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
   .qarr .widget .body, .widget.craft-widget-recent-questions .body, .widget.craft-widget-recent-reviews .body {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;

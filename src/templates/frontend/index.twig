@@ -1,9 +1,7 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Frontend") %}
-{% do view.registerJsFile('//owldesign.sfo2.cdn.digitaloceanspaces.com/scripts/element-resize-detector.min.js') %}
-{% do view.registerJsFile('//owldesign.sfo2.cdn.digitaloceanspaces.com/scripts/garnish.min.js') %}
 
 <section id="qarr-display-container">
-    
+
     <div class="qarr-tab-links">
         {% if includeReviews %}
             <a href="#" class="qarr-tab-link qarr-tab-link-reviews active" data-target="reviews">Reviews</a>
@@ -12,7 +10,7 @@
             <a href="#" class="qarr-tab-link qarr-tab-link-questions" data-target="questions">Questions</a>
         {% endif %}
     </div>
-    
+
     <div class="qarr-tab-container">
         <div class="qarr-loader">
             {% include 'qarr/frontend/_includes/loader' ignore missing %}
@@ -77,7 +75,7 @@
             </div>
         {% endif %}
     </div>
-    
+
 </section>
 
 <script>

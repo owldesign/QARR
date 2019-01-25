@@ -1,5 +1,13 @@
 # QARR Changelog
 
+## 1.0.7 - 2019-01-24
+
+## Fixed
+- Fixed CDN error for frontend display
+
+### Improved
+- Improved calls to get array of reviews & questions `craft.qarr.reviews().all()`
+
 ## 1.0.6 - 2018-11-20
 
 ### Added

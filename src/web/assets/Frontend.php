@@ -22,6 +22,8 @@ class Frontend extends AssetBundle
         ];
 
         $this->js = [
+            'js/element-resize-detector.min.js',
+            'js/garnish.min.js',
             'js/utilities-web.js',
             'js/frontend.js',
         ];

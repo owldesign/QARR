@@ -24,7 +24,12 @@
 {% endblock %}
 
 {% block content %}
-    {% include 'qarr/tools/_includes/sub-header' ignore missing with { name: rule.name, icon: 'flag', on: rule.enabled  } %}
+    {% if rule.id %}
+        {% set name = rule.name %}
+    {% else %}
+        {% set name = 'New Rule'|t('qarr') %}
+    {% endif %}
+    {% include 'qarr/tools/_includes/sub-header' ignore missing with { name: name, icon: 'flag', on: rule.enabled  } %}
 
     <div class="flex-container">
 
@@ -33,7 +38,9 @@
                 <input type="hidden" name="action" value="qarr/tools/rules/save">
                 {{ redirectInput('qarr/tools/rules') }}
 
-                {% if rule.id %}<input type="hidden" name="ruleId" value="{{ rule.id }}">{% endif %}
+                {% if rule.id %}
+                    <input type="hidden" name="ruleId" value="{{ rule.id }}">
+                {% endif %}
 
                 <div class="qarr-field custom-field {% if rule.getErrors('name') %}has-error{% endif %} {% if rule.name %}has-value{% endif %}">
                     <input class="text fullwidth" type="text" id="name" name="name" value="{{ rule.name }}"
@@ -78,7 +85,7 @@
                     <h2>{{ 'Customize'|t('qarr') }}</h2>
                 </div>
 
-                <div class="qarr-field custom-field {% if rule.name %}has-value{% endif %}">
+                <div class="qarr-field custom-field has-value">
                     {% if rule.icon %}
                         {% set icon = rule.icon %}
                     {% else %}
@@ -98,5 +105,12 @@
 {% endblock %}
 
 {% js %}
-    {% if rule and not rule.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+    {% if rule is defined and not rule.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
+    $('#name').on('keyup', function(e) {
+        var text = $(this).val();
+        var titleEl = $('.entry-title h1');
+
+        titleEl.html(text);
+    });
 {% endjs %}

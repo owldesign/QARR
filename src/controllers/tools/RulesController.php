@@ -63,12 +63,12 @@ class RulesController extends Controller
             }
         } else {
             if ($rule === null) {
-                $rule = new Rule();
+                $variables['rule'] = new Rule();
                 $variables['brandNewRule'] = true;
             }
         }
 
-        $this->_enforceEditRulePermissions($rule);
+        $this->_enforceEditRulePermissions($variables['rule']);
         $variables['fullPageForm'] = true;
         $variables['continueEditingUrl'] = 'qarr/tools/rules/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];

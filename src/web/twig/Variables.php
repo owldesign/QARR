@@ -29,7 +29,7 @@ class Variables extends Behavior
      *
      * Advanced usage:
      *
-     * 
+     *
      * {{ craft.qarr.display(product, {
      *     limit: 3,
      *     pagination: 'infinite',
@@ -38,7 +38,7 @@ class Variables extends Behavior
      *     },
      *     questions: false
      * }) }}
-     * 
+     *
      *
      * @param $product
      * @param null $variables
@@ -117,7 +117,13 @@ class Variables extends Behavior
         return Template::raw($html);
     }
 
-    public function reviews($criteria = null): ReviewQuery
+    /**
+     * Get all reviews
+     *
+     * @param null $criteria
+     * @return \craft\elements\db\ElementQueryInterface
+     */
+    public function reviews($criteria = null)
     {
         $query = Review::find();
 
@@ -128,7 +134,13 @@ class Variables extends Behavior
         return $query;
     }
 
-    public function questions($criteria = null): QuestionQuery
+    /**
+     * Get all questions
+     *
+     * @param null $criteria
+     * @return \craft\elements\db\ElementQueryInterface
+     */
+    public function questions($criteria = null)
     {
         $query = Question::find();
 
@@ -138,11 +150,6 @@ class Variables extends Behavior
 
         return $query;
     }
-
-//    public function rules($id)
-//    {
-//        return QARR::$plugin->rules;
-//    }
 
     /**
      * * Get count of elements by **productId**, **productTypeId** and **status**
