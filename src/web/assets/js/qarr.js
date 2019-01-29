@@ -65,15 +65,15 @@ Garnish.$doc.ready(function () {
                         window.qarrnav.handleResponse(response);
 
                         if (e.target.elementType === 'owldesign\\qarr\\elements\\Review') {
-                            $('.count-badge.pending-reviews').html(response.reviews.pending);
-                            $('.count-badge.approved-reviews').html(response.reviews.approved);
-                            $('.count-badge.rejected-reviews').html(response.reviews.rejected);
+                            $('.count-badge.pending-reviews').html(response.variables.reviews.pending);
+                            $('.count-badge.approved-reviews').html(response.variables.reviews.approved);
+                            $('.count-badge.rejected-reviews').html(response.variables.reviews.rejected);
                         }
 
                         if (e.target.elementType === 'owldesign\\qarr\\elements\\Question') {
-                            $('.count-badge.pending-questions').html(response.questions.pending);
-                            $('.count-badge.approved-questions').html(response.questions.approved);
-                            $('.count-badge.rejected-questions').html(response.questions.rejected);
+                            $('.count-badge.pending-questions').html(response.variables.questions.pending);
+                            $('.count-badge.approved-questions').html(response.variables.questions.approved);
+                            $('.count-badge.rejected-questions').html(response.variables.questions.rejected);
                         }
                     }
                 }, this));

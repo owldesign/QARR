@@ -29,7 +29,7 @@ var QarrCP = Garnish.Base.extend({
     _getPendingEntries: function _getPendingEntries() {
         var _this = this;
 
-        Craft.postActionRequest('qarr/elements/check-pending', {}, $.proxy(function (response, textStatus) {
+        Craft.postActionRequest('qarr/elements/check-pending', $.proxy(function (response, textStatus) {
             if (response.success) {
                 _this.handleResponse(response);
             }

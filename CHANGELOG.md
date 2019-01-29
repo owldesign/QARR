@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.0.8 - 2019-01-29
+
+### Fixed
+-- Fixed a bug where checking pending entries would break the plugin and cp in PHP 7.3
+
 ## 1.0.7 - 2019-01-24
 
 ## Fixed

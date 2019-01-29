@@ -131,8 +131,7 @@ class ElementsController extends Controller
     public function actionCheckPending()
     {
         $this->requirePostRequest();
-
-//        string $type, int $productId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = []
+        $this->requireAcceptsJson();
 
         $reviewsPending = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'pending')->count();
         $reviewsApproved = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'approved')->count();
@@ -145,9 +144,7 @@ class ElementsController extends Controller
         $questionsTotal = $questionsPending + $questionsApproved + $questionsRejected;
 
         $totalPending = $reviewsPending + $questionsPending;
-//        $reviews = QARR::$plugin->elements->getCount('reviews', 'pending');
-//        $questions = QARR::$plugin->elements->getCount('questions', 'pending');
-//
+        
         $variable['reviews'] = [
             'total' => $reviewsTotal,
             'pending' =>  (int) $reviewsPending,
@@ -161,21 +158,15 @@ class ElementsController extends Controller
             'approved' => (int) $questionsApproved,
             'rejected' => (int) $questionsRejected,
         ];
+        
 
-//
-//        return $this->asJson([
-//            'success' => true,
-//            'reviews' => $variable['reviews'],
-//            'questions' => $variable['questions'],
-//            'total'   => $total,
-//        ]);
-
-        return $this->asJson([
+        $data = [
             'success'       => true,
-            'reviews'       => $variable['reviews'],
-            'questions'     => $variable['questions'],
+            'variables'     => $variable,
             'totalPending'  => $totalPending,
-        ]);
+        ];
+        
+        return $this->asJson($data);
     }
 
     public function actionFetchPendingItems()
