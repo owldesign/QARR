@@ -1,5 +1,11 @@
 # QARR Changelog
 
+## 1.0.9 - 2019-02-16
+
+### Fixed
+-- Fixed errors when product would be missing
+-- Fixed bug on Questions that do not have rules assigned to them
+
 ## 1.0.8 - 2019-01-29
 
 ### Fixed

@@ -10,8 +10,16 @@
 
 namespace owldesign\qarr\elements;
 
+
+use Craft;
+use craft\base\Element;
+use craft\commerce\elements\Product;
+use craft\elements\db\ElementQueryInterface;
+use craft\helpers\UrlHelper;
+use craft\commerce\Plugin as CommercePlugin;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
+
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\db\QuestionQuery;
 use owldesign\qarr\elements\actions\SetStatus;
@@ -19,12 +27,6 @@ use owldesign\qarr\elements\actions\Delete;
 use owldesign\qarr\records\Question as QuestionRecord;
 use owldesign\qarr\jobs\GeolocationTask;
 use owldesign\qarr\jobs\RulesTask;
-
-use Craft;
-use craft\base\Element;
-use craft\elements\db\ElementQueryInterface;
-use craft\helpers\UrlHelper;
-use craft\commerce\Plugin as CommercePlugin;
 
 use yii\base\Exception;
 use yii\validators\EmailValidator;
@@ -301,6 +303,19 @@ class Question extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch($attribute) {
+            case 'flags':
+                $flags = self::getFlags();
+                $markup = '<div class="flags-container">';
+
+                if ($flags) {
+                    foreach ($flags as $flag) {
+                        $markup .= '<div class="flags-wrapper">';
+                        $markup .= '<div class="flagged-item"><i class="fal fa-'. $flag["rule"]["icon"] .'"></i> <span>'. $flag["rule"]["name"] .'</span></div>';
+                        $markup .= '</div>';
+                    }
+                }
+                return $markup;
+                break;
             case 'reports':
                 $markup = '<div class="reports-wrapper">';
                 if ($this->abuse) {
@@ -311,7 +326,6 @@ class Question extends Element
                 break;
             case 'guest':
                 $markup = '<div class="guest-wrapper">';
-                $markup .= '<div class="badge-wrapper"><div class="entry-badge pending"><span>'.StringHelper::first($this->fullName, 1).'</span></div></div>';
                 $markup .= '<div class="guest-meta"><span class="guest-name">'.$this->fullName.'</span><span class="guest-email">'.$this->emailAddress.'</span></div>';
                 $markup .= '</div>';
                 return $markup;
@@ -407,6 +421,8 @@ class Question extends Element
         $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
 
         if (!$product) {
+            $product = new Product();
+            return $product;
             return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
         }
 
@@ -447,6 +463,13 @@ class Question extends Element
         }
 
         return "$difference $periods[$j]";
+    }
+
+    public function getFlags()
+    {
+        $result = QARR::$plugin->rules->getFlagged($this->id);
+
+        return $result;
     }
 
 

@@ -28,7 +28,11 @@
                                 </div>
                                 <div class="item-meta">
                                     <span class="item-meta-icon"><i class="far fa-tags"></i></span>
-                                    <span class="item-meta-title">{{ entry.product.title }}</span>
+                                    {% if entry.product.id %}
+                                        <span class="item-meta-title">{{ entry.product.title }}</span>
+                                    {% else %}
+                                        <span class="item-meta-title color-danger">{{ 'Product does not exist!'|t('qarr') }}</span>
+                                    {% endif %}
                                     <span class="item-pipe">|</span>
                                     <span class="item-meta-icon">
                                         {% if entry.customer is defined %}

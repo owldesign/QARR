@@ -247,19 +247,28 @@
         </div>
 
         <div class="meta purple-bg icon-right product-meta">
-            <div class="meta-item single">
-                <div class="meta-label">Product</div>
-                <h2>{{ entry.product.title }}</h2>
-            </div>
+            {% if entry.product.id %}
+                <div class="meta-item single">
+                    <div class="meta-label">{{ 'Product'|t('qarr') }}</div>
+                    <h2>{{ entry.product.title }}</h2>
+                </div>
 
-            <div class="meta-actions">
-                <a href="{{ entry.product.getCpEditUrl() }}" target="_blank" class="btns btn-basic btn-in-purple">{{ 'Edit Product'|t('qarr') }}</a>
-            </div>
+                <div class="meta-actions">
+                    <a href="{{ entry.product.getCpEditUrl() }}" target="_blank" class="btns btn-link btn-in-purple">{{ 'Edit Product'|t('qarr') }}</a>
+                </div>
+            {% else %}
+                <div class="meta-item single">
+                    <div class="meta-label">{{ 'Product'|t('qarr') }}</div>
+                    <h2>{{ 'Product does not exist!'|t('qarr') }}</h2>
+                </div>
+            {% endif %}
 
             <div class="icon">
                 <i class="fal fa-tags"></i>
             </div>
         </div>
+
+
 
         <div class="meta muted submission-details">
             <div>IP Address: <span>{{ entry.ipAddress }}</span></div>

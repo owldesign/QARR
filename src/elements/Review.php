@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\elements;
 
+use craft\commerce\elements\Product;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use owldesign\qarr\QARR;
@@ -404,11 +405,6 @@ class Review extends Element
                         $markup .= '</div>';
                     }
                 }
-
-//                if ($this->abuse) {
-//                    $markup .= '<div class="flagged-item"><i class="fa fa-exclamation-circle"></i> <span>Abuse</span></div>';
-//                }
-
                 return $markup;
                 break;
             case 'guest':
@@ -512,7 +508,10 @@ class Review extends Element
         $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
 
         if (!$product) {
-            return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
+            $product = new Product();
+            return $product;
+//            Craft::dd($product);
+//            return '<p>'.QARR::t('Product not found!').'</p>';
         }
 
         return $product;

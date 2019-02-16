@@ -2420,6 +2420,10 @@ a.approved {
   color: #a5a6a8;
 }
 
+.qarr .color-danger {
+  color: #f07575 !important;
+}
+
 .qarr hr {
   border-color: #E9EFF4;
   margin: 0;
