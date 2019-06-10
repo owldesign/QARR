@@ -52,7 +52,7 @@ class QARR extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '1.0.2';
+    public $schemaVersion = '1.0.4';
     public $hasCpSettings = false;
     public $hasCpSection = true;
     public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
@@ -111,6 +111,8 @@ class QARR extends Plugin
             }
         });
 
+        Craft::setAlias('@qarr', $this->getBasePath());
+
     }
 
     // Protected Methods
@@ -149,22 +151,22 @@ class QARR extends Plugin
                     'label' => QARR::t('Dashboard'),
                     'url' => 'qarr'
                 ],
-                'reviews' => [
-                    'label' => QARR::t('Reviews'),
-                    'url' => 'qarr/reviews'
-                ],
-                'questions' => [
-                    'label' => QARR::t('Questions'),
-                    'url' => 'qarr/questions'
-                ],
-                'displays' => [
-                    'label' => QARR::t('Displays'),
-                    'url' => 'qarr/displays'
-                ],
-                'tools' => [
-                    'label' => QARR::t('Tools'),
-                    'url' => 'qarr/tools'
-                ]
+//                'reviews' => [
+//                    'label' => QARR::t('Reviews'),
+//                    'url' => 'qarr/reviews'
+//                ],
+//                'questions' => [
+//                    'label' => QARR::t('Questions'),
+//                    'url' => 'qarr/questions'
+//                ],
+//                'displays' => [
+//                    'label' => QARR::t('Displays'),
+//                    'url' => 'qarr/displays'
+//                ],
+//                'tools' => [
+//                    'label' => QARR::t('Tools'),
+//                    'url' => 'qarr/tools'
+//                ]
             ]
         ]);
 
@@ -304,15 +306,16 @@ class QARR extends Plugin
      */
     private function _registerCpAssets()
     {
-        if (Craft::$app->getRequest()->getIsCpRequest()) {
-            Event::on(
-                View::class,
-                View::EVENT_BEFORE_RENDER_TEMPLATE,
-                function (TemplateEvent $event) {
-                    Craft::$app->getView()->registerAssetBundle(QarrCp::class);
-                }
-            );
-        }
+        // TODO: load this for global CP stuff
+//        if (Craft::$app->getRequest()->getIsCpRequest()) {
+//            Event::on(
+//                View::class,
+//                View::EVENT_BEFORE_RENDER_TEMPLATE,
+//                function (TemplateEvent $event) {
+//                    Craft::$app->getView()->registerAssetBundle(QarrCp::class);
+//                }
+//            );
+//        }
     }
 
     private function _registerFieldTypes()

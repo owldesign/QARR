@@ -27,18 +27,29 @@
                                     <a href="{{ entry.url }}">{{ entry.title }}</a>
                                 </div>
                                 <div class="item-meta">
-                                    <span class="item-meta-icon"><i class="far fa-tags"></i></span>
-                                    {% if entry.product.id %}
-                                        <span class="item-meta-title">{{ entry.product.title }}</span>
-                                    {% else %}
-                                        <span class="item-meta-title color-danger">{{ 'Product does not exist!'|t('qarr') }}</span>
-                                    {% endif %}
+                                    <span class="item-meta-icon">
+                                        {% if entry.elementType == 'product' %}
+                                            <i class="far fa-tags"></i>
+                                        {% elseif entry.elementType == 'entry' %}
+                                            {% set sectionType = entry.element.section.type %}
+                                            {% if sectionType == 'channel' %}
+                                                <i class="fal fa-newspaper"></i>
+                                            {% elseif sectionType == 'single' %}
+                                                <i class="fal fa-file-alt"></i>
+                                            {% endif %}
+                                        {% endif %}
+                                    </span>
+
+                                    <span class="item-meta-title">{{ entry.element.title }}</span>
+
                                     <span class="item-pipe">|</span>
                                     <span class="item-meta-icon">
-                                        {% if entry.customer is defined %}
-                                            <span class="badge-verified"><i class="fa fa-badge-check"></i></span>
+                                        {% if entry.elementType == 'product' %}
+                                            {% if entry.customer is defined %}
+                                                <span class="badge-verified"><i class="fa fa-badge-check"></i></span>
+                                            {% endif %}
                                         {% else %}
-                                            <i class="far fa-user"></i>
+                                            <i class="fas fa-user"></i>
                                         {% endif %}
                                     </span>
                                     <span class="item-meta-title">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }}</span>

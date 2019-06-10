@@ -10,12 +10,15 @@
 
 namespace owldesign\qarr\migrations;
 
-use owldesign\qarr\QARR;
-use owldesign\qarr\models\Rule;
 
 use Craft;
 use craft\config\DbConfig;
 use craft\db\Migration;
+use craft\db\Table as CraftTable;
+
+use owldesign\qarr\QARR;
+use owldesign\qarr\models\Rule;
+use owldesign\qarr\elements\db\Table;
 
 class Install extends Migration
 {
@@ -66,7 +69,7 @@ class Install extends Migration
     protected function createTables()
     {
         // Reviews
-        $this->createTable('{{%qarr_reviews}}', [
+        $this->createTable(Table::REVIEWS, [
             'id' => $this->primaryKey(),
             'fullName' => $this->string()->notNull(),
             'emailAddress' => $this->string()->notNull(),
@@ -75,14 +78,15 @@ class Install extends Migration
             'status' => $this->string()->notNull()->defaultValue('pending'),
             'options' => $this->text(),
 
-            'hasPurchased' => $this->boolean()->notNull()->defaultValue(false),
             'isNew' => $this->boolean()->notNull()->defaultValue(true),
             'abuse' => $this->boolean()->notNull()->defaultValue(false),
             'votes' => $this->integer(),
 
             'displayId' => $this->integer(),
-            'productId' => $this->integer()->notNull(),
-            'productTypeId' => $this->integer()->notNull(),
+            'elementId' => $this->integer()->notNull(),
+            'sectionId' => $this->integer(),
+            'structureId' => $this->integer(),
+            'productTypeId' => $this->integer(),
 
             'geolocation' => $this->text(),
             'ipAddress' => $this->string()->notNull(),
@@ -92,7 +96,7 @@ class Install extends Migration
             'uid' => $this->uid(),
         ]);
 
-        $this->createTable('{{%qarr_reviews_replies}}', [
+        $this->createTable(Table::REVIEWSREPLIES, [
             'id' => $this->primaryKey(),
             'reply' => $this->text(),
             'elementId' => $this->integer()->notNull(),
@@ -103,7 +107,7 @@ class Install extends Migration
         ]);
 
         // Questions
-        $this->createTable('{{%qarr_questions}}', [
+        $this->createTable(Table::QUESTIONS, [
             'id' => $this->primaryKey(),
             'fullName' => $this->string()->notNull(),
             'emailAddress' => $this->string()->notNull(),
@@ -111,14 +115,13 @@ class Install extends Migration
             'status' => $this->string()->notNull()->defaultValue('pending'),
             'options' => $this->text(),
 
-            'hasPurchased' => $this->boolean()->notNull()->defaultValue(false),
             'isNew' => $this->boolean()->notNull()->defaultValue(true),
             'abuse' => $this->boolean()->notNull()->defaultValue(false),
             'votes' => $this->integer(),
 
             'displayId' => $this->integer(),
-            'productId' => $this->integer()->notNull(),
-            'productTypeId' => $this->integer()->notNull(),
+            'elementId' => $this->integer()->notNull(),
+            'parentId' => $this->integer()->notNull(),
 
             'geolocation' => $this->text(),
             'ipAddress' => $this->string()->notNull(),
@@ -128,7 +131,7 @@ class Install extends Migration
             'uid' => $this->uid(),
         ]);
 
-        $this->createTable('{{%qarr_questions_answers}}', [
+        $this->createTable(Table::QUESTIONSANSWERS, [
             'id' => $this->primaryKey(),
             'answer' => $this->text(),
             'elementId' => $this->integer()->notNull(),
@@ -142,7 +145,7 @@ class Install extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->createTable('{{%qarr_questions_answers_comments}}', [
+        $this->createTable(Table::QUESTIONSANSWERSCOMMENTS, [
             'id' => $this->primaryKey(),
             'answerId' => $this->integer()->notNull(),
             'comment' => $this->text(),
@@ -155,7 +158,7 @@ class Install extends Migration
         ]);
 
         // Displays
-        $this->createTable('{{%qarr_displays}}', [
+        $this->createTable(Table::DISPLAYS, [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
@@ -169,7 +172,7 @@ class Install extends Migration
             'uid' => $this->uid(),
         ]);
 
-        $this->createTable('{{%qarr_correspondence}}', [
+        $this->createTable(Table::CORRESPONDENCE, [
             'id' => $this->primaryKey(),
             'email' => $this->text(),
             'response' => $this->text(),
@@ -183,7 +186,7 @@ class Install extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->createTable('{{%qarr_correspondence_responses}}', [
+        $this->createTable(Table::CORRESPONDENCERESPONSES, [
             'id' => $this->primaryKey(),
 
             'response' => $this->text()->notNull(),
@@ -196,7 +199,7 @@ class Install extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->createTable('{{%qarr_notes}}', [
+        $this->createTable(Table::NOTES, [
             'id' => $this->primaryKey(),
             'note' => $this->text(),
             'elementId' => $this->integer()->notNull(),
@@ -208,7 +211,7 @@ class Install extends Migration
         ]);
 
         // Rules
-        $this->createTable('{{%qarr_rules}}', [
+        $this->createTable(Table::RULES, [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
@@ -222,7 +225,7 @@ class Install extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->createTable('{{%qarr_rules_elements}}', [
+        $this->createTable(Table::RULESFLAGGED, [
             'id' => $this->primaryKey(),
             'ruleId' => $this->integer()->notNull(),
             'elementId' => $this->integer()->notNull(),
@@ -238,20 +241,18 @@ class Install extends Migration
      */
     protected function createIndexes()
     {
-        $this->createIndex($this->db->getIndexName('{{%qarr_reviews}}', 'emailAddress', false), '{{%qarr_reviews}}', 'emailAddress', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_reviews}}', 'status', false), '{{%qarr_reviews}}', 'status', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_reviews}}', 'displayId', false), '{{%qarr_reviews}}', 'displayId', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_reviews}}', 'productId', false), '{{%qarr_reviews}}', 'productId', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_reviews}}', 'productTypeId', false), '{{%qarr_reviews}}', 'productTypeId', false);
+        $this->createIndex($this->db->getIndexName(Table::REVIEWS, 'emailAddress', false), Table::REVIEWS, 'emailAddress', false);
+        $this->createIndex($this->db->getIndexName(Table::REVIEWS, 'status', false), Table::REVIEWS, 'status', false);
+        $this->createIndex($this->db->getIndexName(Table::REVIEWS, 'displayId', false), Table::REVIEWS, 'displayId', false);
+        $this->createIndex($this->db->getIndexName(Table::REVIEWS, 'elementId', false), Table::REVIEWS, 'elementId', false);
 
-        $this->createIndex($this->db->getIndexName('{{%qarr_questions}}', 'emailAddress', false), '{{%qarr_questions}}', 'emailAddress', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_questions}}', 'status', false), '{{%qarr_questions}}', 'status', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_questions}}', 'displayId', false), '{{%qarr_questions}}', 'displayId', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_questions}}', 'productId', false), '{{%qarr_questions}}', 'productId', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_questions}}', 'productTypeId', false), '{{%qarr_questions}}', 'productTypeId', false);
+        $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'emailAddress', false), Table::QUESTIONS, 'emailAddress', false);
+        $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'status', false), Table::QUESTIONS, 'status', false);
+        $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'displayId', false), Table::QUESTIONS, 'displayId', false);
+        $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'elementId', false), Table::QUESTIONS, 'elementId', false);
 
-        $this->createIndex($this->db->getIndexName('{{%qarr_displays}}', 'name', false), '{{%qarr_displays}}', 'name', false);
-        $this->createIndex($this->db->getIndexName('{{%qarr_displays}}', 'handle', false), '{{%qarr_displays}}', 'handle', false);
+        $this->createIndex($this->db->getIndexName(Table::DISPLAYS, 'name', false), Table::DISPLAYS, 'name', false);
+        $this->createIndex($this->db->getIndexName(Table::DISPLAYS, 'handle', false), Table::DISPLAYS, 'handle', false);
 
         // Additional commands depending on the db driver
         switch ($this->driver) {
@@ -267,24 +268,21 @@ class Install extends Migration
      */
     protected function addForeignKeys()
     {
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_reviews}}', 'productId'), '{{%qarr_reviews}}', 'productId', '{{%commerce_products}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_reviews}}', 'productTypeId'), '{{%qarr_reviews}}', 'productTypeId', '{{%commerce_producttypes}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_reviews_replies}}', 'elementId'), '{{%qarr_reviews_replies}}', 'elementId', '{{%qarr_reviews}}', 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::REVIEWS, 'elementId'), Table::REVIEWS, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::REVIEWSREPLIES, 'elementId'), Table::REVIEWSREPLIES, 'elementId', Table::REVIEWS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::REVIEWSREPLIES, 'authorId'), Table::REVIEWSREPLIES, 'authorId', CraftTable::USERS, 'id', 'CASCADE', null);
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_reviews_replies}}', 'authorId'), '{{%qarr_reviews_replies}}', 'authorId', '{{%users}}', 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONS, 'elementId'), Table::QUESTIONS, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERS, 'elementId'), Table::QUESTIONSANSWERS, 'elementId', Table::QUESTIONS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERS, 'authorId'), Table::QUESTIONSANSWERS, 'authorId', CraftTable::USERS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERSCOMMENTS, 'answerId'), Table::QUESTIONSANSWERSCOMMENTS, 'answerId', Table::QUESTIONSANSWERS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERSCOMMENTS, 'authorId'), Table::QUESTIONSANSWERSCOMMENTS, 'authorId', CraftTable::USERS, 'id', 'CASCADE', null);
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_questions}}', 'productId'), '{{%qarr_questions}}', 'productId', '{{%commerce_products}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_questions}}', 'productTypeId'), '{{%qarr_questions}}', 'productTypeId', '{{%commerce_producttypes}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_questions_answers}}', 'elementId'), '{{%qarr_questions_answers}}', 'elementId', '{{%qarr_questions}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_questions_answers}}', 'authorId'), '{{%qarr_questions_answers}}', 'authorId', '{{%users}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_questions_answers_comments}}', 'answerId'), '{{%qarr_questions_answers_comments}}', 'answerId', '{{%qarr_questions_answers}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_questions_answers_comments}}', 'authorId'), '{{%qarr_questions_answers_comments}}', 'authorId', '{{%users}}', 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::DISPLAYS, 'fieldLayoutId'), Table::DISPLAYS, 'fieldLayoutId', CraftTable::FIELDLAYOUTS, 'id', 'SET NULL', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::NOTES, 'elementId'), Table::NOTES, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::CORRESPONDENCERESPONSES, 'parentId'), Table::CORRESPONDENCERESPONSES, 'parentId', Table::CORRESPONDENCE, 'id', 'CASCADE', null);
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_displays}}', 'fieldLayoutId'), '{{%qarr_displays}}', 'fieldLayoutId', '{{%fieldlayouts}}', 'id', 'SET NULL', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_notes}}', 'elementId'), '{{%qarr_notes}}', 'elementId', '{{%elements}}', 'id', 'CASCADE', null);
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_correspondence_responses}}', 'parentId'), '{{%qarr_correspondence_responses}}', 'parentId', '{{%qarr_correspondence}}', 'id', 'CASCADE', null);
-
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_rules_elements}}', 'ruleId'), '{{%qarr_rules_elements}}', 'ruleId', '{{%qarr_rules}}', 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::RULESFLAGGED, 'ruleId'), Table::RULESFLAGGED, 'ruleId', Table::RULES, 'id', 'CASCADE', null);
     }
 
     /**
@@ -292,18 +290,17 @@ class Install extends Migration
      */
     protected function removeTables()
     {
-        $this->dropTableIfExists('{{%qarr_questions_answers_comments}}');
-        $this->dropTableIfExists('{{%qarr_questions_answers}}');
-        $this->dropTableIfExists('{{%qarr_reviews_replies}}');
-        $this->dropTableIfExists('{{%qarr_reviews}}');
-        $this->dropTableIfExists('{{%qarr_questions}}');
-        $this->dropTableIfExists('{{%qarr_displays}}');
-        $this->dropTableIfExists('{{%qarr_replies}}');
-        $this->dropTableIfExists('{{%qarr_notes}}');
-        $this->dropTableIfExists('{{%qarr_correspondence_responses}}');
-        $this->dropTableIfExists('{{%qarr_correspondence}}');
-        $this->dropTableIfExists('{{%qarr_rules_elements}}');
-        $this->dropTableIfExists('{{%qarr_rules}}');
+        $this->dropTableIfExists(Table::QUESTIONSANSWERSCOMMENTS);
+        $this->dropTableIfExists(Table::QUESTIONSANSWERS);
+        $this->dropTableIfExists(Table::REVIEWSREPLIES);
+        $this->dropTableIfExists(Table::REVIEWS);
+        $this->dropTableIfExists(Table::QUESTIONS);
+        $this->dropTableIfExists(Table::DISPLAYS);
+        $this->dropTableIfExists(Table::NOTES);
+        $this->dropTableIfExists(Table::CORRESPONDENCERESPONSES);
+        $this->dropTableIfExists(Table::CORRESPONDENCE);
+        $this->dropTableIfExists(Table::RULESFLAGGED);
+        $this->dropTableIfExists(Table::RULES);
     }
 
     public function insertDefaultData()

@@ -11,6 +11,8 @@
 namespace owldesign\qarr\controllers;
 
 use Craft;
+use craft\commerce\Plugin as CommercePlugin;
+use craft\models\Section;
 use craft\web\View;
 use craft\web\Controller;
 use craft\helpers\Template;
@@ -33,6 +35,43 @@ class ElementsController extends Controller
      */
     protected $allowAnonymous = true;
 
+    public function actionGetAllSources() : Response
+    {
+        $this->requireAcceptsJson();
+
+        $sections       = Craft::$app->getSections()->getAllSections();
+        $productTypes   = CommercePlugin::getInstance()->getProductTypes()->getAllProductTypes();
+        $sectionIds     = [];
+        $sectionsByType = [];
+        $productTypeIds = [];
+
+        foreach ($sections as $section) {
+            $sectionIds[] = $section->id;
+
+            if ($section->type == Section::TYPE_SINGLE) {
+                $sectionsByType['single'][] = $section;
+            } else {
+                $sectionsByType[$section->type][] = $section;
+            }
+        }
+        
+        foreach ($productTypes as $productType) {
+            $productTypeIds[] = $productType->id;
+        }
+
+        foreach ($productTypes as $productType) {
+            $sectionsByType['productType'][] = $productType;
+        }
+        
+        return $this->asJson([
+            'success'   => true,
+            'sources'      => $sectionsByType
+        ]);
+    }
+
+
+
+
     // Public Methods
     // =========================================================================
 
@@ -52,9 +91,9 @@ class ElementsController extends Controller
         $type       = $request->getBodyParam('type');
         $limit      = $request->getBodyParam('limit');
         $offset     = $request->getBodyParam('offset');
-        $productId  = $request->getBodyParam('productId');
+        $elementId  = $request->getBodyParam('elementId');
 
-        $variables['entries'] = QARR::$plugin->elements->queryElements($type, $productId, $limit, $offset);
+        $variables['entries'] = QARR::$plugin->elements->queryElements($type, $elementId, $limit, $offset);
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
@@ -75,9 +114,9 @@ class ElementsController extends Controller
         $type       = $request->getBodyParam('type');
         $value      = $request->getBodyParam('value');
         $limit      = $request->getBodyParam('limit');
-        $productId  = $request->getBodyParam('productId');
+        $elementId  = $request->getBodyParam('elementId');
 
-        $variables['entries'] = QARR::$plugin->elements->querySortElements($type, $productId, $value, $limit);
+        $variables['entries'] = QARR::$plugin->elements->querySortElements($type, $elementId, $value, $limit);
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
@@ -107,9 +146,9 @@ class ElementsController extends Controller
         $type       = $request->getBodyParam('type');
         $rating     = $request->getBodyParam('rating');
         $limit      = $request->getBodyParam('limit');
-        $productId  = $request->getBodyParam('productId');
+        $elementId  = $request->getBodyParam('elementId');
 
-        $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $productId, $rating, $limit);
+        $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $elementId, $rating, $limit);
         
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);

@@ -5,6 +5,8 @@ namespace owldesign\qarr\migrations;
 use Craft;
 use craft\db\Migration;
 
+use owldesign\qarr\elements\db\Table;
+
 /**
  * m181116_051411_AddGeolocationToElements migration.
  */
@@ -15,8 +17,8 @@ class m181116_051411_AddGeolocationToElements extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('{{%qarr_reviews}}', 'geolocation', $this->text()->after('productTypeId'));
-        $this->addColumn('{{%qarr_questions}}', 'geolocation', $this->text()->after('productTypeId'));
+        $this->addColumn(Table::REVIEWS, 'geolocation', $this->text()->after('productTypeId'));
+        $this->addColumn(Table::QUESTIONS, 'geolocation', $this->text()->after('productTypeId'));
     }
 
     /**

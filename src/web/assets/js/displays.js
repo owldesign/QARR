@@ -1,9 +1,1 @@
-Garnish.$doc.ready(function () {
-    $('.tag-link').on('click', function (e) {
-        var target = $($(this).data('target'));
-        var field = $(this).data('field');
-
-        target.val(target.val() + field);
-        target.focus();
-    });
-});
+Garnish.$doc.ready(function(){$(".tag-link").on("click",function(a){var t=$($(this).data("target")),i=$(this).data("field");t.val(t.val()+i),t.focus()})});

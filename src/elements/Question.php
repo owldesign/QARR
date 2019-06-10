@@ -10,12 +10,15 @@
 
 namespace owldesign\qarr\elements;
 
-
 use Craft;
 use craft\base\Element;
 use craft\commerce\elements\Product;
+use craft\elements\Asset;
+use craft\elements\Category;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\Entry;
 use craft\helpers\UrlHelper;
+use craft\models\Section;
 use craft\commerce\Plugin as CommercePlugin;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
@@ -83,10 +86,6 @@ class Question extends Element
     /**
      * @var
      */
-    public $hasPurchased;
-    /**
-     * @var
-     */
     public $isNew;
     /**
      * @var
@@ -103,11 +102,11 @@ class Question extends Element
     /**
      * @var
      */
-    public $productId;
+    public $elementId;
     /**
      * @var
      */
-    public $productTypeId;
+    public $parentId;
     /**
      * @var
      */
@@ -262,21 +261,106 @@ class Question extends Element
      */
     protected static function defineSources(string $context = null): array
     {
+        if ($context === 'index') {
+            $sections = Craft::$app->getSections()->getEditableSections();
+            $productTypes = CommercePlugin::getInstance()->getProductTypes()->getEditableProductTypes();
+        } else {
+            $sections = Craft::$app->getSections()->getAllSections();
+            $productTypes = CommercePlugin::getInstance()->getProductTypes()->getAllProductTypes();
+        }
+
+        $sectionIds = [];
+        $singleSectionIds = [];
+        $sectionsByType = [];
+        $productTypeIds = [];
+
+        foreach ($sections as $section) {
+            $sectionIds[] = $section->id;
+
+            if ($section->type == Section::TYPE_SINGLE) {
+                $singleSectionIds[] = $section->id;
+            } else {
+                $sectionsByType[$section->type][] = $section;
+            }
+        }
+
+        foreach ($productTypes as $productType) {
+            $productTypeIds[] = $productType->id;
+        }
+
         $sources = [
             [
-                'key'   => '*',
-                'label' => QARR::t('All Product Types')
+                'key' => '*',
+                'label' => Craft::t('app', 'All entries'),
+                'criteria' => [
+                    'parentId' => $sectionIds,
+                ],
+                'defaultSort' => ['postDate', 'desc']
             ]
         ];
 
-        $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
 
-        foreach ($productTypes as $type) {
-            $key = 'type:' . $type->id;
+
+        if (!empty($singleSectionIds)) {
+            $sources[] = [
+                'key' => 'singles',
+                'label' => Craft::t('app', 'Singles'),
+                'criteria' => [
+                    'parentId' => $singleSectionIds,
+                ],
+                'defaultSort' => ['title', 'asc']
+            ];
+        }
+
+        $sectionTypes = [
+            Section::TYPE_CHANNEL => Craft::t('app', 'Channels'),
+            Section::TYPE_STRUCTURE => Craft::t('app', 'Structures')
+        ];
+
+        foreach ($sectionTypes as $type => $heading) {
+            if (!empty($sectionsByType[$type])) {
+                $sources[] = ['heading' => $heading];
+
+                foreach ($sectionsByType[$type] as $section) {
+                    /** @var Section $section */
+                    $source = [
+                        'key' => 'section:' . $section->uid,
+                        'label' => Craft::t('site', $section->name),
+                        'sites' => $section->getSiteIds(),
+                        'data' => [
+                            'type' => $type,
+                            'handle' => $section->handle
+                        ],
+                        'criteria' => [
+                            'parentId' => $section->id,
+                        ]
+                    ];
+
+                    if ($type == Section::TYPE_STRUCTURE) {
+                        $source['defaultSort'] = ['structure', 'asc'];
+                        $source['structureId'] = $section->structureId;
+                        $source['structureEditable'] = Craft::$app->getUser()->checkPermission('publishEntries:' . $section->uid);
+                    } else {
+                        $source['defaultSort'] = ['postDate', 'desc'];
+                    }
+
+                    $sources[] = $source;
+                }
+            }
+        }
+
+        $sources[] = ['heading' => QARR::t('Product Types')];
+
+        foreach ($productTypes as $productType) {
+            $key = 'productType:' . $productType->uid;
+
             $sources[$key] = [
-                'key'      => $key,
-                'label'    => $type->name,
-                'criteria' => ['productTypeId' => $type->id]
+                'key' => $key,
+                'label' => $productType->name,
+                'data' => [
+                    'handle' => $productType->handle,
+                ],
+                'criteria' => ['elementId' => $productType->id]
             ];
         }
 
@@ -330,17 +414,10 @@ class Question extends Element
                 $markup .= '</div>';
                 return $markup;
                 break;
-            case 'productId':
-                $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
-                if (!$product) {
-                    return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
-                }
-                $markup = '<div class="product-wrapper">';
-                $markup .= '<div class="product-badge-wrapper">';
-                $markup .= '<div class="product-badge purple"><span>'.StringHelper::first($product->getType()->name, 1).'</span></div>';
-                $markup .= '</div>';
-                $markup .= '<div class="product-meta">';
-                $markup .= '<span class="product-name">'.$product->title.'</span><span class="product-type">'.$product->getType()->name.'</span>';
+            case 'elementId':
+                $markup = '<div class="element-wrapper">';
+                $markup .= '<div class="element-meta">';
+                $markup .= '<span class="element-name">'.$this->element->title.'</span><span class="element-type">'.$this->element->getType()->name.'</span>';
                 $markup .= '</div>';
                 $markup .= '</div">';
                 return $markup;
@@ -374,6 +451,8 @@ class Question extends Element
         }
     }
 
+    // TODO: Make thead orderable
+
     /**
      * @return array
      */
@@ -381,7 +460,8 @@ class Question extends Element
     {
         $attributes = [
             'qarr_questions.status' => QARR::t('Status'),
-            'qarr_questions.dateCreated' => QARR::t('Submitted')
+            'qarr_questions.elementId' => QARR::t('Page'),
+            'element.dateCreated' => QARR::t('Date Submitted'),
         ];
 
         return $attributes;
@@ -398,10 +478,15 @@ class Question extends Element
         $attributes['guest'] = ['label' => QARR::t('Guest')];
         $attributes['question'] = ['label' => QARR::t('Question')];
         $attributes['answer'] = ['label' => QARR::t('Answer')];
-        $attributes['productId'] = ['label' => QARR::t('Product')];
+        $attributes['elementId'] = ['label' => QARR::t('Page')];
         $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
 
         return $attributes;
+    }
+
+    protected static function defineDefaultTableAttributes(string $source): array
+    {
+        return ['status', 'guest', 'question', 'elementId', 'dateCreated'];
     }
 
     /**
@@ -410,7 +495,7 @@ class Question extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'guest', 'question', 'productId', 'dateCreated'];
+        return ['status', 'guest', 'question', 'elementId', 'dateCreated'];
     }
 
     /**
@@ -418,7 +503,7 @@ class Question extends Element
      */
     public function product()
     {
-        $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
+        $product = CommercePlugin::getInstance()->products->getProductById($this->elementId);
 
         if (!$product) {
             $product = new Product();
@@ -472,6 +557,28 @@ class Question extends Element
         return $result;
     }
 
+    public function getElement()
+    {
+        return Craft::$app->elements->getElementById($this->elementId);
+    }
+
+    public function getElementType()
+    {
+        switch (true) {
+            case $this->element instanceof Entry:
+                return 'entry';
+                break;
+            case $this->element instanceof Category:
+                return 'category';
+                break;
+            case $this->element instanceof Asset:
+                return 'asset';
+                break;
+            case $this->element instanceof Product:
+                return 'product';
+                break;
+        }
+    }
 
     // Events
     // -------------------------------------------------------------------------
@@ -508,8 +615,8 @@ class Question extends Element
         $record->status         = $this->status;
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
-        $record->productId      = $this->productId;
-        $record->productTypeId  = $this->productTypeId;
+        $record->elementId      = $this->elementId;
+        $record->parentId       = $this->parentId;
         $record->ipAddress      = $this->ipAddress;
         $record->userAgent      = $this->userAgent;
 

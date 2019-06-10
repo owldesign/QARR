@@ -10,6 +10,10 @@
 
 namespace owldesign\qarr\controllers;
 
+use craft\commerce\elements\Product;
+use craft\elements\Asset;
+use craft\elements\Category;
+use craft\elements\Entry;
 use craft\helpers\ArrayHelper;
 use owldesign\qarr\models\Reply;
 use owldesign\qarr\QARR;
@@ -30,8 +34,17 @@ class FrontendController extends Controller
         $variables              = [];
         $variables['type']      = Craft::$app->getRequest()->getBodyParam('type');
         $variables['displayId'] = Craft::$app->getRequest()->getBodyParam('displayId');
-        $variables['productId'] = Craft::$app->getRequest()->getBodyParam('productId');
-
+        $variables['elementId'] = Craft::$app->getRequest()->getBodyParam('elementId');
+        
+        $element = Craft::$app->getElements()->getElementById($variables['elementId']);
+        $type = $this->getElementType($element);
+        
+        if ($type == 'entry') {
+            $variables['parentId']  = $element->sectionId;
+        } elseif ($type == 'product') {
+            $variables['parentId']  = $element->typeId;
+        }
+        
         // Display
         if ($variables['displayId']) {
             $variables['display'] = QARR::$plugin->displays->getDisplayById($variables['displayId']);
@@ -42,7 +55,7 @@ class FrontendController extends Controller
         } else {
             $variables['title'] = QARR::t('Ask Question');
         }
-
+        
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
@@ -54,5 +67,23 @@ class FrontendController extends Controller
             'success' => true,
             'template'   => $template
         ]);
+    }
+
+    private function getElementType($element)
+    {
+        switch (true) {
+            case $element instanceof Entry:
+                return 'entry';
+                break;
+            case $element instanceof Category:
+                return 'category';
+                break;
+            case $element instanceof Asset:
+                return 'asset';
+                break;
+            case $element instanceof Product:
+                return 'product';
+                break;
+        }
     }
 }

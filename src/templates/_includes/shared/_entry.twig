@@ -1,0 +1,20 @@
+{% set sectionType = entry.element.section.type %}
+
+<div class="meta purple-bg icon-right element-meta">
+    <div class="meta-item single">
+        <div class="meta-label">{{ 'Entry'|t('qarr') }}</div>
+        <h2>{{ entry.element.title }}</h2>
+    </div>
+
+    <div class="meta-actions">
+        <a href="{{ entry.element.getCpEditUrl() }}" target="_blank" class="btns btn-link btn-in-purple">{{ 'Edit Page'|t('qarr') }}</a>
+    </div>
+
+    <div class="icon">
+        {% if sectionType == 'channel' %}
+            <i class="fal fa-newspaper"></i>
+        {% elseif sectionType == 'single' %}
+            <i class="fal fa-file-alt"></i>
+        {% endif %}
+    </div>
+</div>

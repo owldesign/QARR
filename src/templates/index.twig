@@ -1,41 +1,56 @@
 {% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Geolocation") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}
+{% includeCssFile "https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" %}
 
-{% set title = "Dashboard"|t('qarr') %}
-{% set bodyClass = 'qarr qarr-dashboard' %}
-{% set currentPage = craft.app.request.getSegment(2) %}
 
-{% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
-{% endblock %}
+{% set bodyClass = 'qarr-app' %}
+{% set title = 'Dashboard'|t('qarr') %}
 
-{% set content %}
+{% set main %}
 
-<div id="dashboard-grid" class="grid">
-
-    <div class="item" data-colspan="6">
-        {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {type: 'reviews' } %}
+    <div id="qarr-app">
+        <router-view></router-view>
     </div>
 
-    <div class="item" data-colspan="6">
-        {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {type: 'questions' } %}
-    </div>
-
-    <div class="item" data-colspan="2">
-        {% include 'qarr/dashboard/_includes/widget-geolocation' ignore missing with { title: 'Top Submissions'|t('qarr'), limit: 5, class: 'inwards no-footer' } %}
-    </div>
-
-    <div class="item" data-colspan="2">
-        {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Reviews'|t('qarr'),  type: 'reviews', limit: 5, class: 'inwards no-footer' } %}
-    </div>
-
-    <div class="item" data-colspan="2">
-        {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Questions'|t('qarr'), type: 'questions', limit: 5, class: 'inwards no-footer' } %}
-    </div>
-
-</div>
 {% endset %}
+
+{#{% extends "_layouts/cp" %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Geolocation") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}#}
+
+{#{% set title = "Dashboard"|t('qarr') %}#}
+{#{% set bodyClass = 'qarr qarr-dashboard' %}#}
+{#{% set currentPage = craft.app.request.getSegment(2) %}#}
+
+{#{% block header %}#}
+{#    {% include 'qarr/_includes/header' ignore missing %}#}
+{#{% endblock %}#}
+
+{#{% set content %}#}
+
+{#<div id="dashboard-grid" class="grid">#}
+
+{#    <div class="item" data-colspan="6">#}
+{#        {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {type: 'reviews' } %}#}
+{#    </div>#}
+
+{#    <div class="item" data-colspan="6">#}
+{#        {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {type: 'questions' } %}#}
+{#    </div>#}
+
+{#    <div class="item" data-colspan="2">#}
+{#        {% include 'qarr/dashboard/_includes/widget-geolocation' ignore missing with { title: 'Top Submissions'|t('qarr'), limit: 5, class: 'inwards no-footer' } %}#}
+{#    </div>#}
+
+{#    <div class="item" data-colspan="2">#}
+{#        {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Reviews'|t('qarr'),  type: 'reviews', limit: 5, class: 'inwards no-footer' } %}#}
+{#    </div>#}
+
+{#    <div class="item" data-colspan="2">#}
+{#        {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Questions'|t('qarr'), type: 'questions', limit: 5, class: 'inwards no-footer' } %}#}
+{#    </div>#}
+
+{#</div>#}
+{#{% endset %}#}

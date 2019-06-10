@@ -12,9 +12,14 @@ use owldesign\qarr\services\Rules;
 use Craft;
 use craft\web\View;
 use craft\helpers\Template;
-use craft\commerce\elements\Product;
 use craft\events\DefineComponentsEvent;
 use yii\base\Behavior;
+
+// Element Types
+use craft\elements\Entry;
+use craft\elements\Category;
+use craft\elements\Asset;
+use craft\commerce\elements\Product;
 
 class Variables extends Behavior
 {
@@ -40,17 +45,19 @@ class Variables extends Behavior
      * }) }}
      *
      *
-     * @param $product
+     * @param $element
      * @param null $variables
      * @return string|\Twig_Markup
      * @throws \Twig_Error_Loader
      * @throws \yii\base\Exception
      */
-    public function display($product, $variables = null)
+
+
+    public function display($element, $variables = null)
     {
-        if(!$product instanceof Product) {
-            return QARR::t('Product required, please provide craft\commerce\elements\Product instance.');
-        }
+//        if(!$product instanceof Product) {
+//            return QARR::t('Product required, please provide craft\commerce\elements\Product instance.');
+//        }
 
         $limit              = null;
         $pagination         = 'arrows';
@@ -85,11 +92,11 @@ class Variables extends Behavior
 
         // Reviews & Questions
         if ($removePagination) {
-            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $product->id, null, 'approved');
-            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $product->id, null, 'approved');
+            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, null, 'approved');
+            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, null, 'approved');
         } else {
-            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $product->id, $limit, null, 'approved');
-            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $product->id, $limit, null, 'approved');
+            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, $limit, null, 'approved');
+            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, $limit, null, 'approved');
         }
 
         // Displays
@@ -100,7 +107,7 @@ class Variables extends Behavior
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         $html = Craft::$app->view->renderTemplate('qarr/frontend/index', [
-            'product' => $product,
+            'element' => $element,
             'includeReviews' => $removeReviews ? false : true,
             'includeQuestions' => $removeQuestions ? false : true,
             'includePagination' => $removePagination ? false : true,
@@ -152,19 +159,18 @@ class Variables extends Behavior
     }
 
     /**
-     * * Get count of elements by **productId**, **productTypeId** and **status**
+     * * Get count of elements by **$elementId** and **status**
      *
      * You can also include **Product Type ID** to get count specific to commerce product type.
      *
      * @param string $type
      * @param string $status
-     * @param int|null $productId
-     * @param int|null $productTypeId
+     * @param int|null $elementId
      * @return mixed
      */
-    public function getCount(string $type, string $status, int $productId = null, int $productTypeId = null)
+    public function getCount(string $type, string $status, int $elementId = null)
     {
-        $count = QARR::$plugin->elements->getCount($type, $status, $productId, $productTypeId);
+        $count = QARR::$plugin->elements->getCount($type, $status, $elementId);
 
         return $count;
     }
@@ -172,16 +178,16 @@ class Variables extends Behavior
     /**
      * Entries by rating
      *
-     * @param $productId
+     * @param $elementId
      * @return null
      */
-    public function getEntriesByRating($productId)
+    public function getEntriesByRating($elementId)
     {
-        if (!$productId) {
+        if (!$elementId) {
             return null;
         }
 
-        $ratings = QARR::$plugin->elements->getEntriesByRating('approved', $productId);
+        $ratings = QARR::$plugin->elements->getEntriesByRating('approved', $elementId);
 
         return $ratings;
     }
@@ -189,16 +195,16 @@ class Variables extends Behavior
     /**
      * Average rating
      *
-     * @param $productId
+     * @param $elementId
      * @return null
      */
-    public function getAverageRating($productId)
+    public function getAverageRating($elementId)
     {
-        if (!$productId) {
+        if (!$elementId) {
             return null;
         }
 
-        return QARR::$plugin->elements->getAverageRating($productId);
+        return QARR::$plugin->elements->getAverageRating($elementId);
     }
 
     /**

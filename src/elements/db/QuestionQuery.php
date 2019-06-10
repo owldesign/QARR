@@ -12,8 +12,11 @@
 namespace owldesign\qarr\elements\db;
 
 use Craft;
+use craft\commerce\models\ProductType;
 use craft\elements\db\ElementQuery;
+use craft\db\Query;
 use craft\helpers\Db;
+
 use owldesign\qarr\elements\Question;
 use owldesign\qarr\QARR;
 
@@ -27,40 +30,29 @@ class QuestionQuery extends ElementQuery
     public $question;
     public $status;
     public $options;
-    public $hasPurchased;
     public $isNew;
     public $abuse;
     public $votes;
-    public $productId;
-    public $productTypeId;
+    public $elementId;
+    public $parentId;
     public $geolocation;
     public $ipAddress;
     public $userAgent;
+
+    public $element;
 
     // Public Methods
     // =========================================================================
 
     /**
-     * Return Product ID
+     * Return Element ID
      *
      * @param $value
      * @return $this
      */
-    public function productId($value)
+    public function elementId($value)
     {
-        $this->productId = $value;
-        return $this;
-    }
-
-    /**
-     * Return Product Type ID
-     *
-     * @param $value
-     * @return $this
-     */
-    public function productTypeId($value)
-    {
-        $this->productTypeId = $value;
+        $this->elementId = $value;
         return $this;
     }
 
@@ -73,6 +65,29 @@ class QuestionQuery extends ElementQuery
     public function status($value)
     {
         $this->status = $value;
+        return $this;
+    }
+
+//    public function parentId($value)
+//    {
+//        $this->parentId = $value;
+//        return $this;
+//    }
+
+    public function element($value)
+    {
+        if ($value instanceof ProductType) {
+            $this->parentId = $value->id;
+        } else if ($value !== null) {
+            $this->parentId = (new Query())
+                ->select(['id'])
+                ->from(['{{%commerce_producttypes}}'])
+                ->where(Db::parseParam('handle', $value))
+                ->column();
+        } else {
+            $this->parentId = null;
+        }
+
         return $this;
     }
 
@@ -92,14 +107,13 @@ class QuestionQuery extends ElementQuery
             'qarr_questions.question',
             'qarr_questions.status',
             'qarr_questions.options',
-            'qarr_questions.hasPurchased',
-            'qarr_questions.productId',
-            'qarr_questions.productTypeId',
+            'qarr_questions.elementId as elementId',
+            'qarr_questions.parentId',
             'qarr_questions.geolocation',
             'qarr_questions.ipAddress',
             'qarr_questions.userAgent',
             'qarr_questions.dateCreated',
-            'qarr_questions.dateUpdated'
+            'qarr_questions.dateUpdated',
         ]);
 
         if ($this->fullName) {
@@ -122,12 +136,12 @@ class QuestionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.options', $this->options));
         }
 
-        if ($this->productId) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_questions.productId', $this->productId));
+        if ($this->elementId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.elementId', $this->elementId));
         }
 
-        if ($this->productTypeId) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_questions.productTypeId', $this->productTypeId));
+        if ($this->parentId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.parentId', $this->parentId));
         }
 
         return parent::beforePrepare();
