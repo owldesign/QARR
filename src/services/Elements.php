@@ -15,6 +15,7 @@ use craft\base\Component;
 use craft\commerce\elements\Product;
 
 use craft\db\Query;
+use craft\records\Element;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Review;
 use owldesign\qarr\elements\Question;
@@ -45,17 +46,17 @@ class Elements extends Component
 
     /**
      * @param string $type
-     * @param int|null $productId
+     * @param int|null $elementId
      * @param int|null $limit
      * @param int|null $offset
      * @param string $status
      * @param array $exclude
      * @return \craft\elements\db\ElementQueryInterface|null
      */
-    public function queryElements(string $type, int $productId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = [])
+    public function queryElements(string $type, int $elementId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = [])
     {
         $query = $this->_getElementQuery($type);
-        $query->productId($productId);
+        $query->elementId($elementId);
         $query->limit($limit);
 
         if ($exclude) {
@@ -68,10 +69,10 @@ class Elements extends Component
         return $query;
     }
 
-    public function querySortElements(string $type, int $productId, string $value, $limit)
+    public function querySortElements(string $type, int $elementId, string $value, $limit)
     {
         $query = $this->_getElementQuery($type);
-        $query->productId($productId);
+        $query->elementId($elementId);
         $query->orderBy($value);
         $query->status('approved');
     
@@ -82,16 +83,16 @@ class Elements extends Component
      * Query star filtered elements
      *
      * @param string $type
-     * @param int $productId
+     * @param int $elementId
      * @param int $rating
      * @param int|null $limit
      * @param init|null $offset
      * @return \craft\elements\db\ElementQueryInterface|null
      */
-    public function queryStarFilteredElements(string $type, int $productId, int $rating, int $limit = null, init $offset = null)
+    public function queryStarFilteredElements(string $type, int $elementId, int $rating, int $limit = null, init $offset = null)
     {
         $query = $this->_getElementQuery($type);
-        $query->productId($productId);
+        $query->elementId($elementId);
         $query->rating($rating);
         // TODO: setup ajax limit and offsets
         // $query->limit($limit);
@@ -185,22 +186,40 @@ class Elements extends Component
      * @param $review
      * @return string
      */
-    public function getProduct($request, &$review)
+//    public function getProduct($request, &$review)
+//    {
+//        $elementId = $request->getRequiredBodyParam('elementId');
+//
+//        if (!$elementId) {
+//            return QARR::t('Product ID is required.');
+//        }
+//
+//        $product = Product::find()->id($elementId)->one();
+//
+//        if (!$product) {
+//            return QARR::t('Product not found.');
+//        }
+//
+//        $review->elementId = $elementId;
+//    }
+
+    public function getElementRecord($request, &$review)
     {
-        $productId = $request->getRequiredBodyParam('productId');
+        $elementId = $request->getRequiredBodyParam('elementId');
 
-        if (!$productId) {
-            return QARR::t('Product ID is required.');
+        if (!$elementId) {
+            return QARR::t('Element ID is required.');
         }
 
-        $product = Product::find()->id($productId)->one();
+        $element = Craft::$app->elements->getElementById($elementId);
 
-        if (!$product) {
-            return QARR::t('Product not found.');
+        $record = $element::find()->id($elementId)->one();
+
+        if (!$record) {
+            return QARR::t('Element not found.');
         }
 
-        $review->productId = $productId;
-        $review->productTypeId = $product->type->id;
+        $review->elementId = $elementId;
     }
 
     /**
@@ -254,11 +273,10 @@ class Elements extends Component
      *
      * @param $type
      * @param $status
-     * @param $productId
-     * @param $productTypeId
+     * @param $elementId
      * @return int|null
      */
-    public function getCount($type, $status, $productId = null, $productTypeId = null)
+    public function getCount($type, $status, $elementId = null)
     {
         $query = $this->_getElementQuery($type);
 
@@ -266,12 +284,8 @@ class Elements extends Component
             return null;
         }
 
-        if ($productTypeId) {
-            $query->productTypeId($productTypeId);
-        }
-
-        if ($productId) {
-            $query->productId($productId);
+        if ($elementId) {
+            $query->elementId($elementId);
         }
 
         $query->status($status);
@@ -293,12 +307,12 @@ class Elements extends Component
         return $total;
     }
 
-    public function getEntriesByRating($status, $productId)
+    public function getEntriesByRating($status, $elementId)
     {
         $query = new Query();
         $query->select('*')
             ->from('{{%qarr_reviews}}')
-            ->where(['status' => $status, 'productId' => $productId]);
+            ->where(['status' => $status, 'elementId' => $elementId]);
 
         $grouped = array_group_by($query->all(), 'rating');
         $newGroup = [];
@@ -316,15 +330,15 @@ class Elements extends Component
     /**
      * Average Count
      *
-     * @param $productId
+     * @param $elementId
      * @return float|int
      */
-    public function getAverageRating($productId)
+    public function getAverageRating($elementId)
     {
         $query = new Query();
         $query->select('rating')
             ->from('{{%qarr_reviews}}')
-            ->where(['status' => 'approved', 'productId' => $productId]);
+            ->where(['status' => 'approved', 'elementId' => $elementId]);
 
         $count = $query->count();
         $sum = $query->sum('rating');

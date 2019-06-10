@@ -12,6 +12,7 @@ namespace owldesign\qarr\services;
 
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Question;
+use owldesign\qarr\elements\Review;
 use owldesign\qarr\records\Question as QuestionRecord;
 
 use Craft;
@@ -44,11 +45,11 @@ class Questions extends Component
     // =========================================================================
 
     /**
-     * @param null $productId
+     * @param null $elementId
      * @param null $productType
      * @return array
      */
-    public function getAllReviews($productId = null, $productType = null): array
+    public function getAllReviews($elementId = null, $productType = null): array
     {
         if ($this->_allQuestions !== null) {
             return $this->_allQuestions;
@@ -61,14 +62,14 @@ class Questions extends Component
     }
 
     /**
-     * @param $productId
+     * @param $elementId
      * @param int $offset
      * @return \craft\elements\db\ElementQueryInterface
      */
-    public function paginateQuestionsByProductId($productId, $offset = 0)
+    public function paginateQuestionsByProductId($elementId, $offset = 0)
     {
         $query = Question::find();
-        $query->productId($productId);
+        $query->elementId($elementId);
         $query->limit(4);
         $query->offset($offset);
         $query->status('approved');
@@ -77,13 +78,13 @@ class Questions extends Component
     }
 
     /**
-     * @param $productId
+     * @param $elementId
      * @return \craft\elements\db\ElementQueryInterface
      */
-    public function getQuestionsByProductId($productId)
+    public function getQuestionsByProductId($elementId)
     {
         $query = Question::find();
-        $query->productId($productId);
+        $query->elementId($elementId);
         $query->status('approved');
 
         return $query;

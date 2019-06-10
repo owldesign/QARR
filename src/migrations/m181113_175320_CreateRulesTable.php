@@ -2,11 +2,13 @@
 
 namespace owldesign\qarr\migrations;
 
-use owldesign\qarr\models\Rule;
-use owldesign\qarr\QARR;
 
 use Craft;
 use craft\db\Migration;
+
+use owldesign\qarr\models\Rule;
+use owldesign\qarr\QARR;
+use owldesign\qarr\elements\db\Table;
 
 /**
  * m181113_175320_CreateRulesTable migration.
@@ -18,7 +20,7 @@ class m181113_175320_CreateRulesTable extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('{{%qarr_rules}}', [
+        $this->createTable(Table::RULES, [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
@@ -32,7 +34,7 @@ class m181113_175320_CreateRulesTable extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->createTable('{{%qarr_rules_elements}}', [
+        $this->createTable(Table::RULESFLAGGED, [
             'id' => $this->primaryKey(),
             'ruleId' => $this->integer()->notNull(),
             'elementId' => $this->integer()->notNull(),
@@ -42,7 +44,7 @@ class m181113_175320_CreateRulesTable extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->addForeignKey($this->db->getForeignKeyName('{{%qarr_rules_elements}}', 'ruleId'), '{{%qarr_rules_elements}}', 'ruleId', '{{%qarr_rules}}', 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::RULESFLAGGED, 'ruleId'), Table::RULESFLAGGED, 'ruleId', Table::RULES, 'id', 'CASCADE', null);
 
         $this->insertDefaultData();
     }

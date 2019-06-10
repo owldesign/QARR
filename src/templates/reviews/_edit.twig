@@ -15,8 +15,7 @@
 {% block content %}
     <input type="hidden" name="action" value="qarr/reviews/save-entry">
     <input type="hidden" name="reviewId" value="{{ entry.id }}">
-    <input type="hidden" name="productTypeId" value="{{ entry.productTypeId }}">
-    <input type="hidden" name="productId" value="{{ entry.productId }}">
+    <input type="hidden" name="elementId" value="{{ entry.elementId }}">
 
     {% if entry.displayId %}
         <input type="hidden" name="displayId" value="{{ entry.displayId }}">
@@ -229,8 +228,14 @@
             <div class="meta-item">
                 <h2>{{ entry.fullName }}</h2>
                 <div class="meta-label">{{ entry.emailAddress }}</div>
-                {% if customer is defined and customer %}
-                    <div class="badge-verified"><i class="fa fa-badge-check"></i> <span>Verified Customer</span></div>
+
+                {% if entry.elementType == 'product' %}
+                    {% if customer is defined and customer %}
+                        <div class="badge-verified"><i class="fa fa-badge-check"></i> <span>{{ 'Verified Customer'|t('qarr') }}</span></div>
+                    {% endif %}
+                {% endif %}
+                {% if entry.elementType == 'entry' %}
+                    <div class="badge-verified"><i class="fa fa-user"></i> <span>{{ 'Registered User'|t('qarr') }}</span></div>
                 {% endif %}
             </div>
 
@@ -246,33 +251,11 @@
             </div>
         </div>
 
-        <div class="meta purple-bg icon-right product-meta">
-            {% if entry.product.id %}
-                <div class="meta-item single">
-                    <div class="meta-label">{{ 'Product'|t('qarr') }}</div>
-                    <h2>{{ entry.product.title }}</h2>
-                </div>
-
-                <div class="meta-actions">
-                    <a href="{{ entry.product.getCpEditUrl() }}" target="_blank" class="btns btn-link btn-in-purple">{{ 'Edit Product'|t('qarr') }}</a>
-                </div>
-            {% else %}
-                <div class="meta-item single">
-                    <div class="meta-label">{{ 'Product'|t('qarr') }}</div>
-                    <h2>{{ 'Product does not exist!'|t('qarr') }}</h2>
-                </div>
-            {% endif %}
-
-            <div class="icon">
-                <i class="fal fa-tags"></i>
-            </div>
-        </div>
-
-
+        {% include 'qarr/_includes/shared/_' ~ entry.elementType ignore missing with { entry: entry } %}
 
         <div class="meta muted submission-details">
-            <div>IP Address: <span>{{ entry.ipAddress }}</span></div>
-            <div>Browser: <span>{{ entry.userAgent |browser }}</span></div>
+            <div>{{ 'IP Address'|t('qarr') }}: <span>{{ entry.ipAddress }}</span></div>
+            <div>{{ 'Browser'|t('qarr') }}: <span>{{ entry.userAgent |browser }}</span></div>
         </div>
     </div>
 {% endblock %}

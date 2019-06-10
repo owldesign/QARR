@@ -2,13 +2,12 @@
 
 <div id="qarr-modal-reviews" class="modal qarr-modal">
     <div class="qarr-form-title">Write a Review</div>
-    <form method="post" accept-charset="utf-8" id="reviews-form-product-{{ product.id }}" action="{{ actionUrl("qarr/reviews/save") }}">
+    <form method="post" accept-charset="utf-8" id="reviews-form-element-{{ element.id }}" action="{{ actionUrl("qarr/reviews/save") }}">
         {{ csrfInput() }}
 
         <input type="hidden" name="action" value="qarr/reviews/save">
 
-        <input type="hidden" name="productId" value="{{ product.id }}">
-        <input type="hidden" name="productType" value="{{ product.type.id}}">
+        <input type="hidden" name="elementId" value="{{ element.id }}">
 
         <div class="qarr-field"><input type="text" name="fields[fullName]" placeholder="Full Name"></div>
         <div class="qarr-field"><input type="text" name="fields[emailAddress]" placeholder="Email Address"></div>
@@ -72,7 +71,7 @@
 
     {% paginate reviews as reviewsInfo, reviewEntries %}
 
-    <div id="qarr-reviews-container" data-product-id="{{ product.id }}">
+    <div id="qarr-reviews-container" data-element-id="{{ element.id }}">
         {% for review in reviewEntries %}
             <div class="review-item">
                 <div class="review-meta">
@@ -129,8 +128,7 @@
         script.src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js";
         document.getElementsByTagName('head')[0].appendChild(script);
     }
-    window.productId = "{{ product.id }}";
-    window.productType = "{{ product.type.id }}";
+    window.elementId = "{{ element.id }}";
     window.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
     window.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
     window.cpActionUrl = "/admin";

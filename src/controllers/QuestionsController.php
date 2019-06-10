@@ -69,14 +69,16 @@ class QuestionsController extends Controller
         $question->fullName       = $fields['fullName'];
         $question->emailAddress   = $fields['emailAddress'];
         $question->question       = $fields['question'];
+        $question->parentId       = $request->getRequiredBodyParam('parentId');
         $question->ipAddress      = $request->getUserIP();
         $question->userAgent      = $request->getHeaders()->get('user-agent');
+        
 
         // Get Display
         QARR::$plugin->elements->getDisplay($request, $fields, $question);
 
-        // Get Product
-        QARR::$plugin->elements->getProduct($request, $question);
+        // Get Element
+        QARR::$plugin->elements->getElementRecord($request, $question);
 
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $question->setFieldValuesFromRequest($fieldsLocation);

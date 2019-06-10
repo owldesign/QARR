@@ -1,6 +1,6 @@
 {% paginate questions as questionsInfo, questionsEntries %}
 
-<div id="qarr-{{ type }}-container" class="qarr-entries-container" data-product-id="{{ product.id }}">
+<div id="qarr-{{ type }}-container" class="qarr-entries-container" data-element-id="{{ element.id }}">
     {% include 'qarr/frontend/_questions/entries' ignore missing with { entries: questions } %}
 </div>
 

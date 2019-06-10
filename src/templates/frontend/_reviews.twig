@@ -1,6 +1,6 @@
 {% paginate reviews as reviewsInfo, reviewsEntries %}
 
-<div id="qarr-{{ type }}-container" class="qarr-entries-container" data-product-id="{{ product.id }}">
+<div id="qarr-{{ type }}-container" class="qarr-entries-container" data-element-id="{{ element.id }}">
     {% include 'qarr/frontend/_reviews/entries' ignore missing with { entries: reviews } %}
 </div>
 

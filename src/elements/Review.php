@@ -10,9 +10,21 @@
 
 namespace owldesign\qarr\elements;
 
+use Craft;
+use craft\base\Element;
+use craft\elements\Entry;
+use craft\elements\Category;
+use craft\elements\Asset;
+use craft\helpers\UrlHelper;
+use craft\elements\db\ElementQueryInterface;
+use craft\behaviors\FieldLayoutBehavior;
+use craft\commerce\Plugin as CommercePlugin;
 use craft\commerce\elements\Product;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
+use yii\base\Exception;
+use yii\validators\EmailValidator;
+
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\db\ReviewQuery;
 use owldesign\qarr\elements\actions\SetStatus;
@@ -20,16 +32,6 @@ use owldesign\qarr\elements\actions\Delete;
 use owldesign\qarr\records\Review as ReviewRecord;
 use owldesign\qarr\jobs\GeolocationTask;
 use owldesign\qarr\jobs\RulesTask;
-
-use Craft;
-use craft\base\Element;
-use craft\helpers\UrlHelper;
-use craft\elements\db\ElementQueryInterface;
-use craft\behaviors\FieldLayoutBehavior;
-
-use craft\commerce\Plugin as CommercePlugin;
-use yii\base\Exception;
-use yii\validators\EmailValidator;
 
 /**
  * Class Review
@@ -87,10 +89,6 @@ class Review extends Element
     /**
      * @var
      */
-    public $hasPurchased;
-    /**
-     * @var
-     */
     public $isNew;
     /**
      * @var
@@ -115,11 +113,13 @@ class Review extends Element
     /**
      * @var
      */
-    public $productId;
+    public $elementId;
+    public $element;
+    public $elementType;
     /**
      * @var
      */
-    public $productTypeId;
+    public $parentId;
     /**
      * @var
      */
@@ -203,6 +203,7 @@ class Review extends Element
 
         return self::STATUS_PENDING;
     }
+
 
     /**
      * @inheritdoc
@@ -413,14 +414,11 @@ class Review extends Element
                 $markup .= '</div>';
                 return $markup;
                 break;
-            case 'productId':
-                $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
-                if (!$product) {
-                    return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
-                }
-                $markup = '<div class="product-wrapper">';
-                $markup .= '<div class="product-meta">';
-                $markup .= '<span class="product-name">'.$product->title.'</span><span class="product-type">'.$product->getType()->name.'</span>';
+            case 'elementId':
+                $markup = '<div class="element-wrapper">';
+                $markup .= '<div class="element-meta">';
+                $markup .= '<span class="element-icon"><i class="fal fa-newspaper"></i></span>';
+                $markup .= '<span class="element-name">'.$this->element->title.'</span><span class="element-type">'.$this->element->getType()->name.'</span>';
                 $markup .= '</div>';
                 $markup .= '</div">';
                 return $markup;
@@ -467,7 +465,7 @@ class Review extends Element
             'qarr_reviews.status'       => QARR::t('Status'),
             'qarr_reviews.rating'       => QARR::t('Rating'),
             'qarr_reviews.fullName'     => QARR::t('Customer'),
-            'qarr_reviews.productId'    => QARR::t('Product'),
+            'qarr_reviews.elementId'    => QARR::t('Element'),
             'elements.dateCreated'      => QARR::t('Submitted')
         ];
 
@@ -485,7 +483,7 @@ class Review extends Element
         $attributes['guest'] = ['label' => QARR::t('Guest')];
         $attributes['rating'] = ['label' => QARR::t('Rating')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
-        $attributes['productId'] = ['label' => QARR::t('Product')];
+        $attributes['elementId'] = ['label' => QARR::t('Element')];
         $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
 
         return $attributes;
@@ -497,7 +495,7 @@ class Review extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'guest', 'rating', 'productId', 'dateCreated'];
+        return ['status', 'guest', 'rating', 'elementId', 'dateCreated'];
     }
 
     /**
@@ -505,7 +503,7 @@ class Review extends Element
      */
     public function product()
     {
-        $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
+        $product = CommercePlugin::getInstance()->products->getProductById($this->elementId);
 
         if (!$product) {
             $product = new Product();
@@ -574,6 +572,29 @@ class Review extends Element
         return $result;
     }
 
+    public function getElement()
+    {
+        return Craft::$app->elements->getElementById($this->elementId);
+    }
+
+    public function getElementType()
+    {
+        switch (true) {
+            case $this->element instanceof Entry:
+                return 'entry';
+                break;
+            case $this->element instanceof Category:
+                return 'category';
+                break;
+            case $this->element instanceof Asset:
+                return 'asset';
+                break;
+            case $this->element instanceof Product:
+                return 'product';
+                break;
+        }
+    }
+
     // Events
     // -------------------------------------------------------------------------
 
@@ -611,8 +632,8 @@ class Review extends Element
         $record->status         = $this->status;
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
-        $record->productId      = $this->productId;
-        $record->productTypeId  = $this->productTypeId;
+        $record->elementId      = $this->elementId;
+        $record->parentId       = $this->parentId;
         $record->ipAddress      = $this->ipAddress;
         $record->userAgent      = $this->userAgent;
 

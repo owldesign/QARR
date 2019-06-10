@@ -26,8 +26,8 @@
                             <a data-label="{{ source.label }}" data-key="{{ source.key is defined ? source.key : key }}" {%- if source.defaultSort is defined %}{% set defaultSort = source.defaultSort %} data-default-sort="{{ defaultSort is iterable ? defaultSort|join(':') : defaultSort }}"{% endif %}{%- if source.data is defined -%}{% for dataKey, dataVal in source.data %} data-{{ dataKey }}="{{ dataVal }}"{% endfor %}{%- endif %}>
                                 <span class="source-text">{{- source.label -}}</span>
                                 {% if source.criteria is defined %}
-                                    {% set count = craft.qarr.getCount('questions', '*', null, source.criteria.productTypeId) %}
-                                    <span class="source-count">{{ count is defined and count > 0 ? count : '' }}</span>
+{#                                    {% set count = craft.qarr.getCount('questions', '*', null, source.criteria.productTypeId) %}#}
+{#                                    <span class="source-count">{{ count is defined and count > 0 ? count : '' }}</span>#}
                                 {% endif %}
                             </a>
                         </li>

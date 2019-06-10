@@ -16,11 +16,11 @@
             {% include 'qarr/frontend/_includes/loader' ignore missing %}
         </div>
         {% if includeReviews %}
-            {% set ratings = craft.qarr.getEntriesByRating(product.id) %}
+            {% set ratings = craft.qarr.getEntriesByRating(element.id) %}
 
-            <div id="qarr-tab-reviews" class="qarr-tab-content active pager-style-{{ pagination }}" {% if reviewsDisplay %}data-display-id="{{ reviewsDisplay.id }}"{% endif %} data-product-id="{{ product.id }}" data-qarr-reviews>
+            <div id="qarr-tab-reviews" class="qarr-tab-content active pager-style-{{ pagination }}" {% if reviewsDisplay %}data-display-id="{{ reviewsDisplay.id }}"{% endif %} data-element-id="{{ element.id }}" data-qarr-reviews>
                 {# Product Title #}
-                {% include 'qarr/frontend/_includes/title' ignore missing with { product: product, type: 'Reviews' } %}
+                {% include 'qarr/frontend/_includes/title' ignore missing with { element: element, type: 'Reviews' } %}
 
                 <div class="qarr-tab-header">
                     {# Over All Average Rating #}
@@ -50,9 +50,9 @@
         {% endif %}
 
         {% if includeQuestions %}
-            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-product-id="{{ product.id }}" data-qarr-questions>
+            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-element-id="{{ element.id }}" data-qarr-questions>
                 <div class="qarr-tab-header">
-                    {% include 'qarr/frontend/_includes/title' ignore missing with { product: product, type: 'Questions' } %}
+                    {% include 'qarr/frontend/_includes/title' ignore missing with { element: element, type: 'Questions' } %}
 
                     {# Ask Question Button #}
                     <div class="qarr-header-actions">
@@ -82,8 +82,8 @@
     window.QARR = {};
     QARR.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
     QARR.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
-    QARR.productId = "{{ product.id }}";
-    QARR.productTypeId = "{{ product.type.id }}";
+    QARR.elementId = "{{ element.id }}";
+    QARR.elementTypeId = "{{ element.type.id }}";
     QARR.actionUrl = "{{ actionUrl('') }}/";
     QARR.limit = "{{ limit }}";
 </script>

@@ -29,13 +29,12 @@ class ReviewQuery extends ElementQuery
     public $feedback;
     public $status;
     public $options;
-    public $hasPurchased;
     public $isNew;
     public $abuse;
     public $votes;
     public $displayId;
-    public $productId;
-    public $productTypeId;
+    public $elementId;
+    public $parentId;
     public $geolocation;
     public $ipAddress;
     public $userAgent;
@@ -44,26 +43,20 @@ class ReviewQuery extends ElementQuery
     // =========================================================================
 
     /**
-     * Return Product ID
+     * Return Element ID
      *
      * @param $value
      * @return $this
      */
-    public function productId($value)
+    public function elementId($value)
     {
-        $this->productId = $value;
+        $this->elementId = $value;
         return $this;
     }
 
-    /**
-     * Return Product Type ID
-     *
-     * @param $value
-     * @return $this
-     */
-    public function productTypeId($value)
+    public function parentId($value)
     {
-        $this->productTypeId = $value;
+        $this->parentId = $value;
         return $this;
     }
 
@@ -91,18 +84,6 @@ class ReviewQuery extends ElementQuery
         return $this;
     }
 
-    /**
-     * Return Has Purchased
-     *
-     * @param $value
-     * @return $this
-     */
-    public function hasPurchased($value)
-    {
-        $this->hasPurchased = $value;
-        return $this;
-    }
-
     public function geolocation($value)
     {
         $this->geolocation = Json::decode($value);
@@ -126,13 +107,11 @@ class ReviewQuery extends ElementQuery
             'qarr_reviews.feedback',
             'qarr_reviews.status',
             'qarr_reviews.options',
-            'qarr_reviews.hasPurchased',
             'qarr_reviews.isNew',
             'qarr_reviews.votes',
             'qarr_reviews.abuse',
             'qarr_reviews.displayId',
-            'qarr_reviews.productId',
-            'qarr_reviews.productTypeId',
+            'qarr_reviews.elementId',
             'qarr_reviews.geolocation',
             'qarr_reviews.ipAddress',
             'qarr_reviews.userAgent',
@@ -168,12 +147,12 @@ class ReviewQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('qarr_reviews.displayId', $this->displayId));
         }
 
-        if ($this->productId) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_reviews.productId', $this->productId));
+        if ($this->elementId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_reviews.elementId', $this->elementId));
         }
 
-        if ($this->productTypeId) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_reviews.productTypeId', $this->productTypeId));
+        if ($this->parentId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_reviews.parentId', $this->parentId));
         }
 
         if ($this->abuse) {
@@ -186,10 +165,6 @@ class ReviewQuery extends ElementQuery
 
         if ($this->isNew) {
             $this->subQuery->andWhere(Db::parseParam('qarr_reviews.isNew', $this->isNew));
-        }
-
-        if ($this->hasPurchased) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_reviews.hasPurchased', $this->hasPurchased));
         }
 
         return parent::beforePrepare();

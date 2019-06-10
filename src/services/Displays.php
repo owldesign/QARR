@@ -52,11 +52,11 @@ class Displays extends Component
     // =========================================================================
 
     /**
-     * @param null $productId
+     * @param null $elementId
      * @param null $productType
      * @return array
      */
-    public function getAllDisplays($productId = null, $productType = null): array
+    public function getAllDisplays($elementId = null, $productType = null): array
     {
         if ($this->_fetchedAllDisplays) {
             return array_values($this->_displaysById);
