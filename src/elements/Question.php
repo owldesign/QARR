@@ -103,10 +103,12 @@ class Question extends Element
      * @var
      */
     public $elementId;
-    /**
-     * @var
-     */
-    public $parentId;
+    public $element;
+    public $elementType;
+    public $elementSource;
+    public $sectionId;
+    public $structureId;
+    public $productTypeId;
     /**
      * @var
      */
@@ -417,6 +419,7 @@ class Question extends Element
             case 'elementId':
                 $markup = '<div class="element-wrapper">';
                 $markup .= '<div class="element-meta">';
+                $markup .= '<span class="element-icon"><i class="fal fa-newspaper"></i></span>';
                 $markup .= '<span class="element-name">'.$this->element->title.'</span><span class="element-type">'.$this->element->getType()->name.'</span>';
                 $markup .= '</div>';
                 $markup .= '</div">';
@@ -460,7 +463,7 @@ class Question extends Element
     {
         $attributes = [
             'qarr_questions.status' => QARR::t('Status'),
-            'qarr_questions.elementId' => QARR::t('Page'),
+            'qarr_questions.elementId' => QARR::t('Element'),
             'element.dateCreated' => QARR::t('Date Submitted'),
         ];
 
@@ -580,6 +583,24 @@ class Question extends Element
         }
     }
 
+    public function getElementSource()
+    {
+        switch (true) {
+            case $this->element instanceof Entry:
+                return $this->element->section->type;
+                break;
+            case $this->element instanceof Category:
+                return 'category';
+                break;
+            case $this->element instanceof Asset:
+                return 'asset';
+                break;
+            case $this->element instanceof Product:
+                return $this->element->type->name;
+                break;
+        }
+    }
+
     // Events
     // -------------------------------------------------------------------------
 
@@ -616,7 +637,9 @@ class Question extends Element
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
         $record->elementId      = $this->elementId;
-        $record->parentId       = $this->parentId;
+        $record->sectionId      = $this->sectionId;
+        $record->structureId    = $this->structureId;
+        $record->productTypeId  = $this->productTypeId;
         $record->ipAddress      = $this->ipAddress;
         $record->userAgent      = $this->userAgent;
 

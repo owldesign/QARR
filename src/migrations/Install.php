@@ -7,48 +7,35 @@
  * @link      https://owl-design.net
  * @copyright Copyright (c) 2018 Vadim Goncharov
  */
-
 namespace owldesign\qarr\migrations;
-
-
 use Craft;
 use craft\config\DbConfig;
 use craft\db\Migration;
 use craft\db\Table as CraftTable;
-
 use owldesign\qarr\QARR;
 use owldesign\qarr\models\Rule;
 use owldesign\qarr\elements\db\Table;
-
 class Install extends Migration
 {
     // Public Properties
     // =========================================================================
-
     public $driver;
-
     // Public Methods
     // =========================================================================
-
     /**
      * @inheritdoc
      */
     public function safeUp()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
-
         $this->createTables();
         $this->createIndexes();
         $this->addForeignKeys();
-
         // Refresh the db schema caches
         Craft::$app->db->schema->refresh();
-
         $this->insertDefaultData();
-
         return true;
     }
-
     /**
      * @inheritdoc
      */
@@ -56,13 +43,10 @@ class Install extends Migration
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         $this->removeTables();
-
         return true;
     }
-
     // Protected Methods
     // =========================================================================
-
     /**
      * Create tables
      */
@@ -77,15 +61,14 @@ class Install extends Migration
             'rating' => $this->enum('rating', ['1', '2', '3', '4', '5'])->notNull()->defaultValue('1'),
             'status' => $this->string()->notNull()->defaultValue('pending'),
             'options' => $this->text(),
-
             'isNew' => $this->boolean()->notNull()->defaultValue(true),
             'abuse' => $this->boolean()->notNull()->defaultValue(false),
             'votes' => $this->integer(),
-
             'displayId' => $this->integer(),
             'elementId' => $this->integer()->notNull(),
-            'parentId' => $this->integer()->notNull(),
-
+            'sectionId' => $this->integer(),
+            'structureId' => $this->integer(),
+            'productTypeId' => $this->integer(),
             'geolocation' => $this->text(),
             'ipAddress' => $this->string()->notNull(),
             'userAgent' => $this->text(),
@@ -93,7 +76,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
         ]);
-
         $this->createTable(Table::REVIEWSREPLIES, [
             'id' => $this->primaryKey(),
             'reply' => $this->text(),
@@ -103,7 +85,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
-
         // Questions
         $this->createTable(Table::QUESTIONS, [
             'id' => $this->primaryKey(),
@@ -112,15 +93,12 @@ class Install extends Migration
             'question' => $this->text()->notNull(),
             'status' => $this->string()->notNull()->defaultValue('pending'),
             'options' => $this->text(),
-
             'isNew' => $this->boolean()->notNull()->defaultValue(true),
             'abuse' => $this->boolean()->notNull()->defaultValue(false),
             'votes' => $this->integer(),
-
             'displayId' => $this->integer(),
             'elementId' => $this->integer()->notNull(),
             'parentId' => $this->integer()->notNull(),
-
             'geolocation' => $this->text(),
             'ipAddress' => $this->string()->notNull(),
             'userAgent' => $this->text(),
@@ -128,7 +106,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
         ]);
-
         $this->createTable(Table::QUESTIONSANSWERS, [
             'id' => $this->primaryKey(),
             'answer' => $this->text(),
@@ -142,7 +119,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
-
         $this->createTable(Table::QUESTIONSANSWERSCOMMENTS, [
             'id' => $this->primaryKey(),
             'answerId' => $this->integer()->notNull(),
@@ -154,7 +130,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
-
         // Displays
         $this->createTable(Table::DISPLAYS, [
             'id' => $this->primaryKey(),
@@ -169,7 +144,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid(),
         ]);
-
         $this->createTable(Table::CORRESPONDENCE, [
             'id' => $this->primaryKey(),
             'email' => $this->text(),
@@ -183,20 +157,16 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
-
         $this->createTable(Table::CORRESPONDENCERESPONSES, [
             'id' => $this->primaryKey(),
-
             'response' => $this->text()->notNull(),
             'parentId' => $this->integer()->notNull(),
             'helpfulResponse' => $this->integer(),
             'isNew' => $this->boolean()->defaultValue(true),
-
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
-
         $this->createTable(Table::NOTES, [
             'id' => $this->primaryKey(),
             'note' => $this->text(),
@@ -207,7 +177,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
-
         // Rules
         $this->createTable(Table::RULES, [
             'id' => $this->primaryKey(),
@@ -222,7 +191,6 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
-
         $this->createTable(Table::RULESFLAGGED, [
             'id' => $this->primaryKey(),
             'ruleId' => $this->integer()->notNull(),
@@ -233,7 +201,6 @@ class Install extends Migration
             'uid' => $this->uid()
         ]);
     }
-
     /**
      * Create indexes
      */
@@ -243,15 +210,12 @@ class Install extends Migration
         $this->createIndex($this->db->getIndexName(Table::REVIEWS, 'status', false), Table::REVIEWS, 'status', false);
         $this->createIndex($this->db->getIndexName(Table::REVIEWS, 'displayId', false), Table::REVIEWS, 'displayId', false);
         $this->createIndex($this->db->getIndexName(Table::REVIEWS, 'elementId', false), Table::REVIEWS, 'elementId', false);
-
         $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'emailAddress', false), Table::QUESTIONS, 'emailAddress', false);
         $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'status', false), Table::QUESTIONS, 'status', false);
         $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'displayId', false), Table::QUESTIONS, 'displayId', false);
         $this->createIndex($this->db->getIndexName(Table::QUESTIONS, 'elementId', false), Table::QUESTIONS, 'elementId', false);
-
         $this->createIndex($this->db->getIndexName(Table::DISPLAYS, 'name', false), Table::DISPLAYS, 'name', false);
         $this->createIndex($this->db->getIndexName(Table::DISPLAYS, 'handle', false), Table::DISPLAYS, 'handle', false);
-
         // Additional commands depending on the db driver
         switch ($this->driver) {
             case DbConfig::DRIVER_MYSQL:
@@ -260,7 +224,6 @@ class Install extends Migration
                 break;
         }
     }
-
     /**
      * Add foreign keys
      */
@@ -269,20 +232,16 @@ class Install extends Migration
         $this->addForeignKey($this->db->getForeignKeyName(Table::REVIEWS, 'elementId'), Table::REVIEWS, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::REVIEWSREPLIES, 'elementId'), Table::REVIEWSREPLIES, 'elementId', Table::REVIEWS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::REVIEWSREPLIES, 'authorId'), Table::REVIEWSREPLIES, 'authorId', CraftTable::USERS, 'id', 'CASCADE', null);
-
         $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONS, 'elementId'), Table::QUESTIONS, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERS, 'elementId'), Table::QUESTIONSANSWERS, 'elementId', Table::QUESTIONS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERS, 'authorId'), Table::QUESTIONSANSWERS, 'authorId', CraftTable::USERS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERSCOMMENTS, 'answerId'), Table::QUESTIONSANSWERSCOMMENTS, 'answerId', Table::QUESTIONSANSWERS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::QUESTIONSANSWERSCOMMENTS, 'authorId'), Table::QUESTIONSANSWERSCOMMENTS, 'authorId', CraftTable::USERS, 'id', 'CASCADE', null);
-
         $this->addForeignKey($this->db->getForeignKeyName(Table::DISPLAYS, 'fieldLayoutId'), Table::DISPLAYS, 'fieldLayoutId', CraftTable::FIELDLAYOUTS, 'id', 'SET NULL', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::NOTES, 'elementId'), Table::NOTES, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::CORRESPONDENCERESPONSES, 'parentId'), Table::CORRESPONDENCERESPONSES, 'parentId', Table::CORRESPONDENCE, 'id', 'CASCADE', null);
-
         $this->addForeignKey($this->db->getForeignKeyName(Table::RULESFLAGGED, 'ruleId'), Table::RULESFLAGGED, 'ruleId', Table::RULES, 'id', 'CASCADE', null);
     }
-
     /**
      * Remove tables
      */
@@ -300,19 +259,16 @@ class Install extends Migration
         $this->dropTableIfExists(Table::RULESFLAGGED);
         $this->dropTableIfExists(Table::RULES);
     }
-
     public function insertDefaultData()
     {
         $profanityRule = new Rule([
             'name' => 'Profanity',
             'handle' => 'profanity'
         ]);
-
         $negativeFeedbackRule = new Rule([
             'name' => 'Negative Feedback',
             'handle' => 'negativeFeedback'
         ]);
-
         QARR::$plugin->rules->saveRule($profanityRule);
         QARR::$plugin->rules->saveRule($negativeFeedbackRule);
     }

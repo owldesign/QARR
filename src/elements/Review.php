@@ -7,9 +7,7 @@
  * @link      https://owl-design.net
  * @copyright Copyright (c) 2018 Vadim Goncharov
  */
-
 namespace owldesign\qarr\elements;
-
 use Craft;
 use craft\base\Element;
 use craft\elements\Entry;
@@ -24,7 +22,6 @@ use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 use yii\base\Exception;
 use yii\validators\EmailValidator;
-
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\db\ReviewQuery;
 use owldesign\qarr\elements\actions\SetStatus;
@@ -32,7 +29,6 @@ use owldesign\qarr\elements\actions\Delete;
 use owldesign\qarr\records\Review as ReviewRecord;
 use owldesign\qarr\jobs\GeolocationTask;
 use owldesign\qarr\jobs\RulesTask;
-
 /**
  * Class Review
  * @package owldesign\qarr\elements
@@ -41,7 +37,6 @@ class Review extends Element
 {
     // Constants
     // =========================================================================
-
     /**
      *
      */
@@ -54,10 +49,8 @@ class Review extends Element
      *
      */
     const STATUS_REJECTED   = 'rejected';
-
     // Properties
     // =========================================================================
-
     /**
      * @var
      */
@@ -116,10 +109,10 @@ class Review extends Element
     public $elementId;
     public $element;
     public $elementType;
-    /**
-     * @var
-     */
-    public $parentId;
+    public $elementSource;
+    public $sectionId;
+    public $structureId;
+    public $productTypeId;
     /**
      * @var
      */
@@ -132,10 +125,8 @@ class Review extends Element
      * @var
      */
     public $userAgent;
-
     // Static Methods
     // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -143,7 +134,6 @@ class Review extends Element
     {
         return QARR::t('Review');
     }
-
     /**
      * @inheritdoc
      */
@@ -151,7 +141,6 @@ class Review extends Element
     {
         return 'qarrReview';
     }
-
     /**
      * @inheritdoc
      */
@@ -159,7 +148,6 @@ class Review extends Element
     {
         return true;
     }
-
     /**
      * @inheritdoc
      */
@@ -167,7 +155,6 @@ class Review extends Element
     {
         return true;
     }
-
     /**
      * @inheritdoc
      */
@@ -175,7 +162,6 @@ class Review extends Element
     {
         return false;
     }
-
     /**
      * @inheritdoc
      */
@@ -183,7 +169,6 @@ class Review extends Element
     {
         return true;
     }
-
     /**
      * @inheritdoc
      */
@@ -192,19 +177,14 @@ class Review extends Element
         if ($this->status == 'pending') {
             return self::STATUS_PENDING;
         }
-
         if ($this->status == 'approved') {
             return self::STATUS_APPROVED;
         }
-
         if ($this->status == 'rejected') {
             return self::STATUS_REJECTED;
         }
-
         return self::STATUS_PENDING;
     }
-
-
     /**
      * @inheritdoc
      */
@@ -212,10 +192,8 @@ class Review extends Element
     {
         return new ReviewQuery(get_called_class());
     }
-
     // Public Methods
     // =========================================================================
-
     /**
      *
      */
@@ -224,7 +202,6 @@ class Review extends Element
         parent::init();
         $this->setScenario(self::SCENARIO_LIVE);
     }
-
     /**
      * @inheritdoc
      */
@@ -237,25 +214,20 @@ class Review extends Element
         ];
         return $behaviors;
     }
-
     /**
      * @inheritdoc
      */
     public function fieldLayoutFields(): array
     {
         $display = $this->getDisplay();
-
         if ($display) {
             $fieldLayout = $display->getFieldLayout();
-
             if ($fieldLayout) {
                 return $fieldLayout->getFields();
             }
         }
-
         return [];
     }
-
     /**
      * Returns the field context this element's content uses.
      *
@@ -266,7 +238,6 @@ class Review extends Element
     {
         return 'global';
     }
-
     /**
      * @inheritdoc
      */
@@ -274,7 +245,6 @@ class Review extends Element
     {
         return $this->title ?: ((string)$this->id ?: static::class);
     }
-
     /**
      * @inheritdoc
      */
@@ -286,10 +256,8 @@ class Review extends Element
                 return $display->getFieldLayout();
             }
         }
-
         return null;
     }
-
     /**
      * @return mixed
      */
@@ -298,10 +266,8 @@ class Review extends Element
         if ($this->displayId !== null) {
             $this->display = QARR::$plugin->displays->getDisplayById($this->displayId);
         }
-
         return $this->display;
     }
-
     /**
      * @inheritdoc
      */
@@ -311,7 +277,6 @@ class Review extends Element
             'qarr/reviews/'.$this->id
         );
     }
-
     /**
      * @inheritdoc
      */
@@ -321,7 +286,6 @@ class Review extends Element
             'qarr/reviews/'.$this->id
         );
     }
-
     /**
      * @inheritdoc
      */
@@ -333,7 +297,6 @@ class Review extends Element
             self::STATUS_REJECTED   => QARR::t('Rejected'),
         ];
     }
-
     /**
      * @inheritdoc
      */
@@ -342,13 +305,10 @@ class Review extends Element
         $rules      = parent::rules();
         $rules[]    = [['fullName', 'emailAddress', 'rating', 'feedback'], 'required'];
         $rules[]    = [['emailAddress'], EmailValidator::class];
-
         return $rules;
     }
-
     // Protected Methods
     // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -360,9 +320,7 @@ class Review extends Element
                 'label' => QARR::t('All Product Types')
             ]
         ];
-
         $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
-
         foreach ($productTypes as $type) {
             $key = 'type:' . $type->id;
             $sources[$key] = [
@@ -371,10 +329,8 @@ class Review extends Element
                 'criteria' => ['productTypeId' => $type->id]
             ];
         }
-
         return $sources;
     }
-
     /**
      * @param string|null $source
      * @return array
@@ -383,10 +339,8 @@ class Review extends Element
     {
         $actions[] = SetStatus::class;
         $actions[] = Delete::class;
-
         return $actions;
     }
-
     /**
      * @param string $attribute
      * @return string
@@ -398,7 +352,6 @@ class Review extends Element
             case 'flags':
                 $flags = self::getFlags();
                 $markup = '<div class="flags-container">';
-
                 if ($flags) {
                     foreach ($flags as $flag) {
                         $markup .= '<div class="flags-wrapper">';
@@ -455,7 +408,6 @@ class Review extends Element
                 break;
         }
     }
-
     /**
      * @return array
      */
@@ -468,10 +420,8 @@ class Review extends Element
             'qarr_reviews.elementId'    => QARR::t('Element'),
             'elements.dateCreated'      => QARR::t('Submitted')
         ];
-
         return $attributes;
     }
-
     /**
      * @return array
      */
@@ -485,10 +435,8 @@ class Review extends Element
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
         $attributes['elementId'] = ['label' => QARR::t('Element')];
         $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
-
         return $attributes;
     }
-
     /**
      * @param string $source
      * @return array
@@ -497,34 +445,28 @@ class Review extends Element
     {
         return ['status', 'guest', 'rating', 'elementId', 'dateCreated'];
     }
-
     /**
      * @return \craft\commerce\elements\Product|null|string
      */
     public function product()
     {
         $product = CommercePlugin::getInstance()->products->getProductById($this->elementId);
-
         if (!$product) {
             $product = new Product();
             return $product;
 //            Craft::dd($product);
 //            return '<p>'.QARR::t('Product not found!').'</p>';
         }
-
         return $product;
     }
-
     /**
      * @return mixed
      */
     public function getReply()
     {
         $response = QARR::$plugin->replies->getReply($this->id);
-
         return $response;
     }
-
     /**
      * @return mixed
      */
@@ -532,14 +474,11 @@ class Review extends Element
     {
         $customer = null;
         $user = Craft::$app->users->getUserByUsernameOrEmail($this->emailAddress);
-
         if ($user) {
             $customer = CommercePlugin::getInstance()->customers->getCustomerByUserid($user->id);
         }
-
         return $customer;
     }
-
     /**
      * @param $time
      * @return string
@@ -548,27 +487,20 @@ class Review extends Element
     {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
         $lengths = array("60","60","24","7","4.35","12","10");
-
         $now = time();
         $difference     = $now - strtotime($time);
-
         for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
             $difference /= $lengths[$j];
         }
-
         $difference = round($difference);
-
         if($difference != 1) {
             $periods[$j].= "s";
         }
-
         return "$difference $periods[$j]";
     }
-
     public function getFlags()
     {
         $result = QARR::$plugin->rules->getFlagged($this->id);
-
         return $result;
     }
 
@@ -595,9 +527,26 @@ class Review extends Element
         }
     }
 
+    public function getElementSource()
+    {
+        switch (true) {
+            case $this->element instanceof Entry:
+                return $this->element->section->type;
+                break;
+            case $this->element instanceof Category:
+                return 'category';
+                break;
+            case $this->element instanceof Asset:
+                return 'asset';
+                break;
+            case $this->element instanceof Product:
+                return $this->element->type->name;
+                break;
+        }
+    }
+
     // Events
     // -------------------------------------------------------------------------
-
     /**
      * @param bool $isNew
      * @return bool
@@ -606,17 +555,14 @@ class Review extends Element
     {
         return true;
     }
-
     /**
      * @param bool $isNew
      * @throws Exception
      */
     public function afterSave(bool $isNew)
     {
-
         if (!$isNew) {
             $record = ReviewRecord::findOne($this->id);
-
             if (!$record) {
                 throw new Exception('Invalid Review ID: '.$this->id);
             }
@@ -624,7 +570,6 @@ class Review extends Element
             $record = new ReviewRecord();
             $record->id = $this->id;
         }
-
         $record->fullName       = $this->fullName;
         $record->emailAddress   = $this->emailAddress;
         $record->feedback       = $this->feedback;
@@ -633,7 +578,9 @@ class Review extends Element
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
         $record->elementId      = $this->elementId;
-        $record->parentId       = $this->parentId;
+        $record->sectionId      = $this->sectionId;
+        $record->structureId    = $this->structureId;
+        $record->productTypeId  = $this->productTypeId;
         $record->ipAddress      = $this->ipAddress;
         $record->userAgent      = $this->userAgent;
 
@@ -644,7 +591,6 @@ class Review extends Element
             Craft::$app->getQueue()->push(new RulesTask([
                 'entry' => $record,
             ]));
-
             // Apply Geolocation
             Craft::$app->getQueue()->push(new GeolocationTask([
                 'ipAddress' => $this->ipAddress,
@@ -652,10 +598,8 @@ class Review extends Element
                 'table' => '{{%qarr_reviews}}'
             ]));
         }
-
         parent::afterSave($isNew);
     }
-
     /**
      * @return bool
      */
@@ -663,7 +607,6 @@ class Review extends Element
     {
         return true;
     }
-
     /**
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
@@ -672,11 +615,9 @@ class Review extends Element
     {
         $record = ReviewRecord::findOne($this->id);
         $record->delete();
-
         // Remove rules
         QARR::$plugin->rules->removeRecord($this->id);
     }
-
     /**
      * @param int $structureId
      * @return bool
@@ -685,7 +626,6 @@ class Review extends Element
     {
         return true;
     }
-
     /**
      * @param int $structureId
      */

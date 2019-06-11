@@ -26,17 +26,17 @@ class QarrCp extends AssetBundle
         ];
 
         $this->css = [
-            'dist/css/qarrcp.css',
+            'css/qarrcp.css',
         ];
 
         $this->js = [
-            'dist/js/main.js',
-            'dist/js/dashboard.js',
-            'dist/js/reviews.js',
-            'dist/js/questions.js',
-            'dist/js/displays.js',
-            'dist/js/rules.js',
-            'dist/js/utilities.js',
+            'js/main.js',
+            'js/dashboard.js',
+            'js/reviews.js',
+            'js/questions.js',
+            'js/displays.js',
+            'js/rules.js',
+            'js/utilities.js',
         ];
 
         parent::init();

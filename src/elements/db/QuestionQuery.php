@@ -11,14 +11,10 @@
 
 namespace owldesign\qarr\elements\db;
 
-use Craft;
-use craft\commerce\models\ProductType;
 use craft\elements\db\ElementQuery;
-use craft\db\Query;
 use craft\helpers\Db;
 
 use owldesign\qarr\elements\Question;
-use owldesign\qarr\QARR;
 
 class QuestionQuery extends ElementQuery
 {
@@ -34,7 +30,9 @@ class QuestionQuery extends ElementQuery
     public $abuse;
     public $votes;
     public $elementId;
-    public $parentId;
+    public $sectionId;
+    public $structureId;
+    public $productTypeId;
     public $geolocation;
     public $ipAddress;
     public $userAgent;
@@ -74,22 +72,22 @@ class QuestionQuery extends ElementQuery
 //        return $this;
 //    }
 
-    public function element($value)
-    {
-        if ($value instanceof ProductType) {
-            $this->parentId = $value->id;
-        } else if ($value !== null) {
-            $this->parentId = (new Query())
-                ->select(['id'])
-                ->from(['{{%commerce_producttypes}}'])
-                ->where(Db::parseParam('handle', $value))
-                ->column();
-        } else {
-            $this->parentId = null;
-        }
-
-        return $this;
-    }
+//    public function element($value)
+//    {
+//        if ($value instanceof ProductType) {
+//            $this->parentId = $value->id;
+//        } else if ($value !== null) {
+//            $this->parentId = (new Query())
+//                ->select(['id'])
+//                ->from(['{{%commerce_producttypes}}'])
+//                ->where(Db::parseParam('handle', $value))
+//                ->column();
+//        } else {
+//            $this->parentId = null;
+//        }
+//
+//        return $this;
+//    }
 
     // Protected Methods
     // =========================================================================
@@ -107,8 +105,10 @@ class QuestionQuery extends ElementQuery
             'qarr_questions.question',
             'qarr_questions.status',
             'qarr_questions.options',
-            'qarr_questions.elementId as elementId',
-            'qarr_questions.parentId',
+            'qarr_questions.elementId ',
+            'qarr_questions.sectionId',
+            'qarr_questions.structureId',
+            'qarr_questions.productTypeId',
             'qarr_questions.geolocation',
             'qarr_questions.ipAddress',
             'qarr_questions.userAgent',
@@ -119,29 +119,29 @@ class QuestionQuery extends ElementQuery
         if ($this->fullName) {
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.fullName', $this->fullName));
         }
-
         if ($this->emailAddress) {
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.emailAddress', $this->emailAddress));
         }
-
         if ($this->question) {
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.question', $this->question));
         }
-
         if ($this->status) {
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.status', $this->status));
         }
-
         if ($this->options) {
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.options', $this->options));
         }
-
         if ($this->elementId) {
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.elementId', $this->elementId));
         }
-
-        if ($this->parentId) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_questions.parentId', $this->parentId));
+        if ($this->sectionId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.sectionId', $this->sectionId));
+        }
+        if ($this->structureId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.structureId', $this->structureId));
+        }
+        if ($this->productTypeId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.productTypeId', $this->productTypeId));
         }
 
         return parent::beforePrepare();
