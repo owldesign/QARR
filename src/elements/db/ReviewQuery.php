@@ -30,6 +30,7 @@ class ReviewQuery extends ElementQuery
     public $votes;
     public $displayId;
     public $elementId;
+    public $element;
     public $sectionId;
     public $structureId;
     public $productTypeId;

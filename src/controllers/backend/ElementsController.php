@@ -8,7 +8,6 @@ use craft\web\twig\variables\Paginate;
 use owldesign\qarr\elements\Display;
 use owldesign\qarr\elements\Review;
 use owldesign\qarr\elements\Question;
-use owldesign\qarr\QARR;
 
 use Craft;
 use craft\web\Controller;
@@ -20,18 +19,20 @@ class ElementsController  extends Controller
     {
         // Fetch Reviews
         $reviews = [
-            'total' => (int)Review::find()->count(),
-            'pending' => (int)Review::find()->where(['status' => 'pending'])->count(),
-            'approved' => (int)Review::find()->where(['status' => 'approved'])->count(),
-            'rejected' => (int)Review::find()->where(['status' => 'rejected'])->count(),
+            'total'     => (int)Review::find()->count(),
+            'pending'   => (int)Review::find()->where(['status' => 'pending'])->count(),
+            'approved'  => (int)Review::find()->where(['status' => 'approved'])->count(),
+            'rejected'  => (int)Review::find()->where(['status' => 'rejected'])->count(),
+            'entries'   => Review::find()->all(),
         ];
 
         // Fetch Questions
         $questions = [
-            'total' => (int)Question::find()->count(),
-            'pending' => (int)Question::find()->where(['status' => 'pending'])->count(),
-            'approved' => (int)Question::find()->where(['status' => 'approved'])->count(),
-            'rejected' => (int)Question::find()->where(['status' => 'rejected'])->count(),
+            'total'     => (int)Question::find()->count(),
+            'pending'   => (int)Question::find()->where(['status' => 'pending'])->count(),
+            'approved'  => (int)Question::find()->where(['status' => 'approved'])->count(),
+            'rejected'  => (int)Question::find()->where(['status' => 'rejected'])->count(),
+//            'entries'   => Question::find()->all(),
         ];
 
         // Fetch Displays
@@ -69,10 +70,18 @@ class ElementsController  extends Controller
         // Query
         $query = $this->_getElementClass($elementType);
         $query->limit($limit);
-        
+
+        // Status
+        if ($payload['status'] !== '*') {
+            $query->where(['status' => $payload['status']]);
+        }
+
         // Sources
         $source = $this->_getSource($payload['source']);
         $this->_buildQuery($query, $source);
+
+        // Sort
+         $query->orderBy($payload['sort']);
 
         // Get entries
         $paginated = $this->_paginateCriteria($query, $currentPage);
@@ -80,6 +89,35 @@ class ElementsController  extends Controller
         return $this->asJson([
             'entries' => $paginated['entries'],
             'pager' => $paginated['pager'],
+        ]);
+    }
+
+
+    public function actionUpdateElementsStatus()
+    {
+        $this->requirePostRequest();
+        $request        = Craft::$app->getRequest();
+        $elementType    = $request->getBodyParam('elementType');
+        $status         = $request->getBodyParam('status');
+        $elements       = JSON::decode($request->getBodyParam('elements'));
+
+        $elementService = Craft::$app->getElements();
+
+        $savedElements = [];
+
+        foreach ($elements as $element) {
+            $entry = $elementService->getElementById($element['id']);
+
+            if ($entry) {
+                $entry->status = $status;
+                $elementService->saveElement($entry, false);
+
+                $savedElements[] = $entry;
+            }
+        }
+
+        return $this->asJson([
+            'elements' => $savedElements
         ]);
     }
 
@@ -95,37 +133,41 @@ class ElementsController  extends Controller
                 }
             }
 
-            $query->where(['sectionId' => $sectionIds]);
+            $query->andWhere(['sectionId' => $sectionIds]);
         } elseif ($source['type'] == 'channel') {
-            $query->where(['sectionId' => $source['id']]);
+            $query->andWhere(['sectionId' => $source['id']]);
         } elseif ($source['type'] == 'productType') {
-            $query->where(['productTypeId' => $source['id']]);
+            $query->andWhere(['productTypeId' => $source['id']]);
         }
     }
 
     private function _paginateCriteria($query, $currentPage)
     {
-        $paginator = new Paginator((clone $query)->limit(null), [
+        $pager = new Paginator((clone $query)->limit(null), [
             'currentPage' => $currentPage,
-            'pageSize' => $query->limit ?: 100,
+            'pageSize' => $query->limit ?: 100
         ]);
 
-        $elements = $paginator->getPageResults();
+        $elements = $pager->getPageResults();
 
         foreach($elements as $element) {
+            // Add geolocation
             $geolocation = Json::decode($element->geolocation);
             if (isset($geolocation['country_code'])) {
                 $element->geolocation = $geolocation;
             } else {
                 $element->geolocation = null;
             }
+
+            // Add Element
             $element['element'] = $element->getElement();
-            $element['elementType'] = $element->getElementType();
-            $element['elementSource'] = $element->getElementSource();
+
+            // Add Replies
+            $element['response'] = $element->reply;
         }
 
         return [
-            'pager' => Paginate::create($paginator),
+            'pager' => Paginate::create($pager),
             'entries' => $elements
         ];
     }

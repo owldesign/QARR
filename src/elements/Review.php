@@ -506,41 +506,48 @@ class Review extends Element
 
     public function getElement()
     {
-        return Craft::$app->elements->getElementById($this->elementId);
+        $element = Craft::$app->elements->getElementById($this->elementId);
+
+        return [
+            'id' => $element->id,
+            'source' => $this->getElementSource($element),
+            'type' => StringHelper::upperCaseFirst($this->getElementType($element)),
+            'element' => $element
+        ];
     }
 
-    public function getElementType()
+    public function getElementType($element)
     {
         switch (true) {
-            case $this->element instanceof Entry:
+            case $element instanceof Entry:
                 return 'entry';
                 break;
-            case $this->element instanceof Category:
+            case $element instanceof Category:
                 return 'category';
                 break;
-            case $this->element instanceof Asset:
+            case $element instanceof Asset:
                 return 'asset';
                 break;
-            case $this->element instanceof Product:
+            case $element instanceof Product:
                 return 'product';
                 break;
         }
     }
 
-    public function getElementSource()
+    public function getElementSource($element)
     {
         switch (true) {
-            case $this->element instanceof Entry:
-                return $this->element->section->type;
+            case $element instanceof Entry:
+                return $element->section->type;
                 break;
-            case $this->element instanceof Category:
+            case $element instanceof Category:
                 return 'category';
                 break;
-            case $this->element instanceof Asset:
+            case $element instanceof Asset:
                 return 'asset';
                 break;
-            case $this->element instanceof Product:
-                return $this->element->type->name;
+            case $element instanceof Product:
+                return $element->type->name;
                 break;
         }
     }
@@ -632,4 +639,5 @@ class Review extends Element
     public function afterMoveInStructure(int $structureId)
     {
     }
+    
 }

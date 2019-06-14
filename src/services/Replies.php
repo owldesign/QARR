@@ -48,8 +48,7 @@ class Replies extends Component
 
         $reply = ArrayHelper::toArray($record);
         $author = Craft::$app->users->getUserById($reply['authorId']);
-        $reply['author'] = $author->friendlyName;
-
+        $reply['author'] = $author;
         return $reply;
     }
 
