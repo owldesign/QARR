@@ -52,7 +52,7 @@ class QARR extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '1.0.2';
+    public $schemaVersion = '1.0.3';
     public $hasCpSettings = false;
     public $hasCpSection = true;
     public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';

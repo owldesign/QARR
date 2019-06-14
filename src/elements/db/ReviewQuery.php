@@ -34,7 +34,7 @@ class ReviewQuery extends ElementQuery
     public $abuse;
     public $votes;
     public $displayId;
-    public $productId;
+    public $elementId;
     public $productTypeId;
     public $geolocation;
     public $ipAddress;
@@ -44,14 +44,14 @@ class ReviewQuery extends ElementQuery
     // =========================================================================
 
     /**
-     * Return Product ID
+     * Return Element ID
      *
      * @param $value
      * @return $this
      */
-    public function productId($value)
+    public function elementId($value)
     {
-        $this->productId = $value;
+        $this->elementId = $value;
         return $this;
     }
 
@@ -131,7 +131,7 @@ class ReviewQuery extends ElementQuery
             'qarr_reviews.votes',
             'qarr_reviews.abuse',
             'qarr_reviews.displayId',
-            'qarr_reviews.productId',
+            'qarr_reviews.elementId',
             'qarr_reviews.productTypeId',
             'qarr_reviews.geolocation',
             'qarr_reviews.ipAddress',
@@ -168,8 +168,8 @@ class ReviewQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('qarr_reviews.displayId', $this->displayId));
         }
 
-        if ($this->productId) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_reviews.productId', $this->productId));
+        if ($this->elementId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_reviews.elementId', $this->elementId));
         }
 
         if ($this->productTypeId) {

@@ -115,7 +115,7 @@ class Review extends Element
     /**
      * @var
      */
-    public $productId;
+    public $elementId;
     /**
      * @var
      */
@@ -413,17 +413,18 @@ class Review extends Element
                 $markup .= '</div>';
                 return $markup;
                 break;
-            case 'productId':
-                $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
-                if (!$product) {
-                    return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
-                }
-                $markup = '<div class="product-wrapper">';
-                $markup .= '<div class="product-meta">';
-                $markup .= '<span class="product-name">'.$product->title.'</span><span class="product-type">'.$product->getType()->name.'</span>';
-                $markup .= '</div>';
-                $markup .= '</div">';
-                return $markup;
+            case 'elementId':
+//                $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
+//                if (!$product) {
+//                    return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
+//                }
+//                $markup = '<div class="product-wrapper">';
+//                $markup .= '<div class="product-meta">';
+//                $markup .= '<span class="product-name">'.$product->title.'</span><span class="product-type">'.$product->getType()->name.'</span>';
+//                $markup .= '</div>';
+//                $markup .= '</div">';
+//                return $markup;
+                return 'Element';
                 break;
             case 'rating':
                 $rating = (int)$this->rating;
@@ -467,7 +468,7 @@ class Review extends Element
             'qarr_reviews.status'       => QARR::t('Status'),
             'qarr_reviews.rating'       => QARR::t('Rating'),
             'qarr_reviews.fullName'     => QARR::t('Customer'),
-            'qarr_reviews.productId'    => QARR::t('Product'),
+            'qarr_reviews.elementId'    => QARR::t('Element'),
             'elements.dateCreated'      => QARR::t('Submitted')
         ];
 
@@ -485,7 +486,7 @@ class Review extends Element
         $attributes['guest'] = ['label' => QARR::t('Guest')];
         $attributes['rating'] = ['label' => QARR::t('Rating')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
-        $attributes['productId'] = ['label' => QARR::t('Product')];
+        $attributes['elementId'] = ['label' => QARR::t('Element')];
         $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
 
         return $attributes;
@@ -497,25 +498,25 @@ class Review extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'guest', 'rating', 'productId', 'dateCreated'];
+        return ['status', 'guest', 'rating', 'elementId', 'dateCreated'];
     }
 
     /**
      * @return \craft\commerce\elements\Product|null|string
      */
-    public function product()
-    {
-        $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
-
-        if (!$product) {
-            $product = new Product();
-            return $product;
-//            Craft::dd($product);
-//            return '<p>'.QARR::t('Product not found!').'</p>';
-        }
-
-        return $product;
-    }
+//    public function product()
+//    {
+//        $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
+//
+//        if (!$product) {
+//            $product = new Product();
+//            return $product;
+////            Craft::dd($product);
+////            return '<p>'.QARR::t('Product not found!').'</p>';
+//        }
+//
+//        return $product;
+//    }
 
     /**
      * @return mixed
@@ -611,7 +612,7 @@ class Review extends Element
         $record->status         = $this->status;
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
-        $record->productId      = $this->productId;
+        $record->elementId      = $this->elementId;
         $record->productTypeId  = $this->productTypeId;
         $record->ipAddress      = $this->ipAddress;
         $record->userAgent      = $this->userAgent;
