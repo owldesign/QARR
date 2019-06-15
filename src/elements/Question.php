@@ -103,7 +103,11 @@ class Question extends Element
     /**
      * @var
      */
-    public $productId;
+    public $elementId;
+    /**
+     * @var
+     */
+    public $sectionId;
     /**
      * @var
      */
@@ -508,7 +512,8 @@ class Question extends Element
         $record->status         = $this->status;
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
-        $record->productId      = $this->productId;
+        $record->elementId      = $this->elementId;
+        $record->sectionId      = $this->sectionId;
         $record->productTypeId  = $this->productTypeId;
         $record->ipAddress      = $this->ipAddress;
         $record->userAgent      = $this->userAgent;

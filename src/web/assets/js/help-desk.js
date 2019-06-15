@@ -1,3 +1,3 @@
 Garnish.$doc.ready(function () {
-    console.log('Coming Soon');
+  console.log('Coming Soon');
 });

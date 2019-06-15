@@ -52,9 +52,9 @@ class ElementsController extends Controller
         $type       = $request->getBodyParam('type');
         $limit      = $request->getBodyParam('limit');
         $offset     = $request->getBodyParam('offset');
-        $productId  = $request->getBodyParam('productId');
+        $elementId  = $request->getBodyParam('elementId');
 
-        $variables['entries'] = QARR::$plugin->elements->queryElements($type, $productId, $limit, $offset);
+        $variables['entries'] = QARR::$plugin->elements->queryElements($type, $elementId, $limit, $offset);
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);

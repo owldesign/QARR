@@ -15,27 +15,27 @@
         <div class="qarr-loader">
             {% include 'qarr/frontend/_includes/loader' ignore missing %}
         </div>
-        {% if includeReviews %}
-            {% set ratings = craft.qarr.getEntriesByRating(product.id) %}
 
-            <div id="qarr-tab-reviews" class="qarr-tab-content active pager-style-{{ pagination }}" {% if reviewsDisplay %}data-display-id="{{ reviewsDisplay.id }}"{% endif %} data-product-id="{{ product.id }}" data-qarr-reviews>
-                {# Product Title #}
-                {% include 'qarr/frontend/_includes/title' ignore missing with { product: product, type: 'Reviews' } %}
+        {% if includeReviews %}
+{#            {% set ratings = craft.qarr.getEntriesByRating(element.id) %}#}
+
+            <div id="qarr-tab-reviews" class="qarr-tab-content active pager-style-{{ pagination }}" {% if reviewsDisplay %}data-display-id="{{ reviewsDisplay.id }}"{% endif %} data-element-id="{{ element.id }}" data-qarr-reviews>
+                {% include 'qarr/frontend/_includes/title' ignore missing with { element: element, type: 'Reviews' } %}
 
                 <div class="qarr-tab-header">
-                    {# Over All Average Rating #}
-                    {% include 'qarr/frontend/_reviews/_includes/overall-rating' ignore missing %}
+{#                     Over All Average Rating#}
+{#                    {% include 'qarr/frontend/_reviews/_includes/overall-rating' ignore missing %}#}
 
-                    {# Star Rating Filter #}
-                    {% include 'qarr/frontend/_reviews/_includes/star-filter' ignore missing with { ratings: ratings } %}
+{#                     Star Rating Filter#}
+{#                    {% include 'qarr/frontend/_reviews/_includes/star-filter' ignore missing with { ratings: ratings } %}#}
 
-                    {# Leave Review Button #}
+{#                     Leave Review Button#}
                     <div class="qarr-header-actions">
                         {% include 'qarr/frontend/_includes/button' ignore missing with { type: 'reviews' } %}
                     </div>
                 </div>
 
-                {# Sort & Filters #}
+                 Sort & Filters
                 <div class="qarr-filer-actions">
                     <div class="qarr-filter-title">
                         {{ 'Sort By'|t('qarr') }}
@@ -49,31 +49,31 @@
             </div>
         {% endif %}
 
-        {% if includeQuestions %}
-            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-product-id="{{ product.id }}" data-qarr-questions>
-                <div class="qarr-tab-header">
-                    {% include 'qarr/frontend/_includes/title' ignore missing with { product: product, type: 'Questions' } %}
+{#        {% if includeQuestions %}#}
+{#            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-element-id="{{ element.id }}" data-qarr-questions>#}
+{#                <div class="qarr-tab-header">#}
+{#                    {% include 'qarr/frontend/_includes/title' ignore missing with { element: element, type: 'Questions' } %}#}
 
-                    {# Ask Question Button #}
-                    <div class="qarr-header-actions">
-                        {% include 'qarr/frontend/_includes/button' ignore missing with { type: 'questions' } %}
-                    </div>
+{#                     Ask Question Button#}
+{#                    <div class="qarr-header-actions">#}
+{#                        {% include 'qarr/frontend/_includes/button' ignore missing with { type: 'questions' } %}#}
+{#                    </div>#}
 
-                </div>
+{#                </div>#}
 
-                {# Sort & Filters #}
-                <div class="qarr-filer-actions">
-                    <div class="qarr-filter-title">
-                        {{ 'Sort By'|t('qarr') }}
-                    </div>
-                    {% include 'qarr/frontend/_includes/sort' ignore missing with { type: 'questions' } %}
-                </div>
+{#                 Sort & Filters#}
+{#                <div class="qarr-filer-actions">#}
+{#                    <div class="qarr-filter-title">#}
+{#                        {{ 'Sort By'|t('qarr') }}#}
+{#                    </div>#}
+{#                    {% include 'qarr/frontend/_includes/sort' ignore missing with { type: 'questions' } %}#}
+{#                </div>#}
 
-                <div class="qarr-entries-body">
-                    {% include 'qarr/frontend/_questions' ignore missing with { type: 'questions' } %}
-                </div>
-            </div>
-        {% endif %}
+{#                <div class="qarr-entries-body">#}
+{#                    {% include 'qarr/frontend/_questions' ignore missing with { type: 'questions' } %}#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endif %}#}
     </div>
 
 </section>
@@ -82,8 +82,8 @@
     window.QARR = {};
     QARR.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
     QARR.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
-    QARR.productId = "{{ product.id }}";
-    QARR.productTypeId = "{{ product.type.id }}";
+    QARR.elementId = "{{ element.id }}";
+    QARR.elementTypeId = "{{ element.type.id }}";
     QARR.actionUrl = "{{ actionUrl('') }}/";
     QARR.limit = "{{ limit }}";
 </script>

@@ -12,7 +12,9 @@ namespace owldesign\qarr\elements;
 
 use craft\commerce\elements\Product;
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use craft\models\Section;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\db\ReviewQuery;
 use owldesign\qarr\elements\actions\SetStatus;
@@ -29,6 +31,7 @@ use craft\behaviors\FieldLayoutBehavior;
 
 use craft\commerce\Plugin as CommercePlugin;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\validators\EmailValidator;
 
 /**
@@ -119,6 +122,14 @@ class Review extends Element
     /**
      * @var
      */
+    public $sectionId;
+    /**
+     * @var
+     */
+    public $structureId;
+    /**
+     * @var
+     */
     public $productTypeId;
     /**
      * @var
@@ -132,6 +143,11 @@ class Review extends Element
      * @var
      */
     public $userAgent;
+
+    /**
+     * @var Element|null
+     */
+    private $_element;
 
     // Static Methods
     // =========================================================================
@@ -227,6 +243,16 @@ class Review extends Element
     /**
      * @inheritdoc
      */
+    public function extraFields()
+    {
+        $names = parent::extraFields();
+        $names[] = 'element';
+        return $names;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -271,7 +297,14 @@ class Review extends Element
      */
     public function __toString()
     {
-        return $this->title ?: ((string)$this->id ?: static::class);
+//        return $this->title ?: ((string)$this->id ?: static::class);
+        $markup = '<p>Hello</p>';
+        return $markup;
+    }
+
+    public function modifyEntryTableAttributes(&$attributes, $source)
+    {
+        $attributes = [];
     }
 
     /**
@@ -353,25 +386,122 @@ class Review extends Element
      */
     protected static function defineSources(string $context = null): array
     {
+        if ($context === 'index') {
+            $sections = Craft::$app->getSections()->getEditableSections();
+        } else {
+            $sections = Craft::$app->getSections()->getAllSections();
+        }
+
+        $sectionIds = [];
+        $singleSectionIds = [];
+        $sectionsByType = [];
+
+        foreach ($sections as $section) {
+            $sectionIds[] = $section->id;
+
+            if ($section->type == Section::TYPE_SINGLE) {
+                $singleSectionIds[] = $section->id;
+            } else {
+                $sectionsByType[$section->type][] = $section;
+            }
+        }
+
         $sources = [
+            ['heading' => QARR::t('Sources')],
             [
-                'key'   => '*',
-                'label' => QARR::t('All Product Types')
+                'key' => '*',
+                'label' => Craft::t('app', 'All entries'),
+                'defaultSort' => ['postDate', 'desc']
             ]
         ];
 
-        $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
+        // Singles
+        if (!empty($singleSectionIds)) {
+            $sources[] = [
+                'key' => 'singles',
+                'label' => Craft::t('app', 'Singles'),
+                'criteria' => [
+                    'sectionId' => $singleSectionIds,
+                ],
+                'defaultSort' => ['title', 'asc']
+            ];
+        }
 
-        foreach ($productTypes as $type) {
-            $key = 'type:' . $type->id;
+        // Sections
+        $sectionTypes = [
+            Section::TYPE_CHANNEL => Craft::t('app', 'Channels'),
+//            Section::TYPE_STRUCTURE => Craft::t('app', 'Structures')
+        ];
+
+        foreach ($sectionTypes as $type => $heading) {
+            if (!empty($sectionsByType[$type])) {
+                $sources[] = ['heading' => $heading];
+
+                foreach ($sectionsByType[$type] as $section) {
+                    /** @var Section $section */
+                    $source = [
+                        'key' => 'section:' . $section->uid,
+                        'label' => Craft::t('site', $section->name),
+                        'sites' => $section->getSiteIds(),
+                        'data' => [
+                            'type' => $type,
+                            'handle' => $section->handle
+                        ],
+                        'criteria' => [
+                            'sectionId' => $section->id,
+                        ]
+                    ];
+
+//                    if ($type == Section::TYPE_STRUCTURE) {
+//                        $source['defaultSort'] = ['structure', 'asc'];
+//                        $source['structureId'] = $section->structureId;
+//                        $source['structureEditable'] = Craft::$app->getUser()->checkPermission('publishEntries:' . $section->uid);
+//                    } else {
+//                        $source['defaultSort'] = ['postDate', 'desc'];
+//                    }
+
+                    $sources[] = $source;
+                }
+            }
+        }
+
+        // Products
+        $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
+        $sources[] = ['heading' => QARR::t('Products')];
+
+        foreach ($productTypes as $productType) {
+            $key = 'type:' . $productType->uid;
+
             $sources[$key] = [
-                'key'      => $key,
-                'label'    => $type->name,
-                'criteria' => ['productTypeId' => $type->id]
+                'key' => $key,
+                'label' => $productType->name,
+                'criteria' => [
+                    'productTypeId' => $productType->id
+                ]
             ];
         }
 
         return $sources;
+
+//        $sources = [
+//            [
+//                'key'   => '*',
+//                'label' => QARR::t('All Product Types')
+//            ]
+//        ];
+//
+//        $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
+//
+//        foreach ($productTypes as $type) {
+//            $key = 'type:' . $type->id;
+//            $sources[$key] = [
+//                'key'      => $key,
+//                'label'    => $type->name,
+//                'criteria' => ['productTypeId' => $type->id]
+//            ];
+//        }
+//
+//        return $sources;
     }
 
     /**
@@ -386,14 +516,37 @@ class Review extends Element
         return $actions;
     }
 
-    /**
-     * @param string $attribute
-     * @return string
-     * @throws \yii\base\InvalidConfigException
-     */
+    public function setEagerLoadedElements(string $handle, array $elements)
+    {
+        if ($handle === 'element') {
+            $element = $elements[0] ?? null;
+            $this->setElement($element);
+        } else {
+            parent::setEagerLoadedElements($handle, $elements); // TODO: Change the autogenerated stub
+        }
+    }
+
     protected function tableAttributeHtml(string $attribute): string
     {
         switch($attribute) {
+            case 'reviewInfo':
+                $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim( $this->emailAddress)));
+                $variables = [
+                    'author' => [
+                        'fullName' => $this->fullName,
+                        'emailAddress' => $this->emailAddress,
+                        'avatarUrl' => $avatarUrl,
+                        'user' => $this->user
+                    ],
+                    'rating' => $this->rating,
+                    'geolocation' => Json::decode($this->geolocation),
+                    'status' => $this->status
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element', $variables) : $this->title;
+                break;
+            case 'reviewDetails':
+                return 'Review Details';
+                break;
             case 'flags':
                 $flags = self::getFlags();
                 $markup = '<div class="flags-container">';
@@ -414,6 +567,10 @@ class Review extends Element
                 return $markup;
                 break;
             case 'elementId':
+                $element = $this->getElement();
+                return $element ? Craft::$app->getView()->renderTemplate('_elements/element', ['element' => $element]) : '';
+                break;
+            case 'element':
 //                $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
 //                if (!$product) {
 //                    return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
@@ -481,13 +638,16 @@ class Review extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [];
+
         $attributes['status'] = ['label' => QARR::t('Title')];
-        $attributes['flags'] = ['label' => QARR::t('Flags')];
-        $attributes['guest'] = ['label' => QARR::t('Guest')];
-        $attributes['rating'] = ['label' => QARR::t('Rating')];
-        $attributes['feedback'] = ['label' => QARR::t('Feedback')];
-        $attributes['elementId'] = ['label' => QARR::t('Element')];
-        $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
+        $attributes['reviewInfo'] = ['label' => QARR::t('Review Info')];
+        $attributes['reviewDetails'] = ['label' => QARR::t('Review Details')];
+//        $attributes['flags'] = ['label' => QARR::t('Flags')];
+//        $attributes['guest'] = ['label' => QARR::t('Guest')];
+//        $attributes['rating'] = ['label' => QARR::t('Rating')];
+//        $attributes['feedback'] = ['label' => QARR::t('Feedback')];
+//        $attributes['elementId'] = ['label' => QARR::t('Element')];
+//        $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
 
         return $attributes;
     }
@@ -498,7 +658,7 @@ class Review extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'guest', 'rating', 'elementId', 'dateCreated'];
+        return ['status', 'reviewInfo', 'reviewDetails'];
     }
 
     /**
@@ -543,6 +703,33 @@ class Review extends Element
         return $customer;
     }
 
+    public function getElement()
+    {
+        if ($this->_element !== null) {
+            return $this->_element;
+        }
+
+        if ($this->elementId === null) {
+            return null;
+        }
+
+        if (($this->_element = Craft::$app->getElements()->getElementById($this->elementId)) === null) {
+            throw new InvalidConfigException('Invalid element ID: ' . $this->elementId);
+        }
+
+        return $this->_element;
+    }
+
+    public function setElement(Element $element = null)
+    {
+        $this->_element = $element;
+    }
+
+    public function getUser()
+    {
+        return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
+    }
+
     /**
      * @param $time
      * @return string
@@ -573,6 +760,24 @@ class Review extends Element
         $result = QARR::$plugin->rules->getFlagged($this->id);
 
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static function prepElementQueryForTableAttribute(ElementQueryInterface $elementQuery, string $attribute)
+    {
+        if ($attribute === 'elementId') {
+            $elementQuery->andWith('element');
+        } else {
+            parent::prepElementQueryForTableAttribute($elementQuery, $attribute);
+        }
+
+//        if ($attribute === 'author') {
+//            $elementQuery->andWith('author');
+//        } else {
+//            parent::prepElementQueryForTableAttribute($elementQuery, $attribute);
+//        }
     }
 
     // Events
@@ -613,6 +818,7 @@ class Review extends Element
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
         $record->elementId      = $this->elementId;
+        $record->sectionId      = $this->sectionId;
         $record->productTypeId  = $this->productTypeId;
         $record->ipAddress      = $this->ipAddress;
         $record->userAgent      = $this->userAgent;

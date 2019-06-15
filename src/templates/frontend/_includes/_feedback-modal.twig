@@ -11,11 +11,11 @@
 
 <form id="qarr-modal-{{ type }}" class="modal qarr-modal fitted prompt-modal">
     {{ csrfInput() }}
-    <input type="hidden" name="productId" value="{{ productId }}">
+    <input type="hidden" name="elementId" value="{{ elementId }}">
     {% if hasUser %}
         <input type="hidden" name="currentUser" value="{{ currentUser.id }}">
     {% endif %}
-    
+
     <div class="qarr-header">
         <span class="header-text">{{ title }}</span>
     </div>

@@ -1,0 +1,40 @@
+<div class="element-block element-info">
+    <div class="checkbox" title="Select"></div>
+
+    <div class="item-column user-info">
+        <div class="qarr-avatar qarr-avatar-square qarr-avatar-default">
+            <img src="{{ author.avatarUrl }}?s=200&amp;d=retro&amp;r=g" alt="{{ author.fullName }}"></div>
+        {% if author.user %}
+            <div class="user-name">{{ author.user.fullName }}</div>
+        {% else %}
+            <div class="user-name">{{ author.fullName }}</div>
+        {% endif %}
+        <div class="user-email">{{ author.emailAddress }}</div>
+        <div class="user-location">
+            <div>
+                <i class="fa fa-globe-americas"></i>
+                {% if geolocation['country_name'] %}
+                    <span>{{ geolocation['country_name'] }}, {{ geolocation['region'] }}</span>
+                {% else %}
+                    {{ 'Location Unknown'|t('qarr') }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="qarr-rating">
+        {% for i in 0..5 %}
+            {% if rating >= i %}
+                <span class="qarr-rating-star active"><i class="fa fa-star"></i></span>
+            {% else %}
+                <span class="qarr-rating-star"><i class="fa fa-star"></i></span>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="item-column element-status">
+        <div class="qarr-tag {{ status }}">
+            <span>approved</span>
+        </div>
+    </div>
+</div>

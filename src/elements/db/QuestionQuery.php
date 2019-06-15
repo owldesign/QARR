@@ -31,7 +31,8 @@ class QuestionQuery extends ElementQuery
     public $isNew;
     public $abuse;
     public $votes;
-    public $productId;
+    public $elementId;
+    public $sectionId;
     public $productTypeId;
     public $geolocation;
     public $ipAddress;
@@ -41,14 +42,26 @@ class QuestionQuery extends ElementQuery
     // =========================================================================
 
     /**
-     * Return Product ID
+     * Return Element ID
      *
      * @param $value
      * @return $this
      */
-    public function productId($value)
+    public function elementId($value)
     {
-        $this->productId = $value;
+        $this->elementId = $value;
+        return $this;
+    }
+
+    /**
+     * Return Section ID
+     *
+     * @param $value
+     * @return $this
+     */
+    public function sectionId($value)
+    {
+        $this->sectionId = $value;
         return $this;
     }
 
@@ -93,7 +106,8 @@ class QuestionQuery extends ElementQuery
             'qarr_questions.status',
             'qarr_questions.options',
             'qarr_questions.hasPurchased',
-            'qarr_questions.productId',
+            'qarr_questions.elementId',
+            'qarr_questions.sectionId',
             'qarr_questions.productTypeId',
             'qarr_questions.geolocation',
             'qarr_questions.ipAddress',
@@ -122,8 +136,12 @@ class QuestionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.options', $this->options));
         }
 
-        if ($this->productId) {
-            $this->subQuery->andWhere(Db::parseParam('qarr_questions.productId', $this->productId));
+        if ($this->elementId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.elementId', $this->elementId));
+        }
+
+        if ($this->sectionId) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.sectionId', $this->sectionId));
         }
 
         if ($this->productTypeId) {

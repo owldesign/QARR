@@ -91,17 +91,17 @@ class ReviewsController extends Controller
         $review->ipAddress      = $request->getUserIP();
         $review->userAgent      = $request->getHeaders()->get('user-agent');
 
-        // Get Display
+        // Set Display
         QARR::$plugin->elements->getDisplay($request, $fields, $review);
 
-        // Get Product
-        QARR::$plugin->elements->getProduct($request, $review);
+        // Set Element Data
+        QARR::$plugin->elements->setElementData($request, $review);
 
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $review->setFieldValuesFromRequest($fieldsLocation);
 
         $success = $review->validate();
-
+        
         if ($success && QARR::$plugin->reviews->saveReview($review)) {
             $saved = true;
         } else {

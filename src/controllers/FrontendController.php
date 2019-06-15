@@ -30,7 +30,7 @@ class FrontendController extends Controller
         $variables              = [];
         $variables['type']      = Craft::$app->getRequest()->getBodyParam('type');
         $variables['displayId'] = Craft::$app->getRequest()->getBodyParam('displayId');
-        $variables['productId'] = Craft::$app->getRequest()->getBodyParam('productId');
+        $variables['elementId'] = Craft::$app->getRequest()->getBodyParam('elementId');
 
         // Display
         if ($variables['displayId']) {

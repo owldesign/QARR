@@ -2,18 +2,16 @@
   max-width: 320px;
   margin: auto;
 }
-
 .qarr-correspondence-fe .button {
   position: relative;
   outline: none;
   text-transform: uppercase;
   text-align: center;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
   font-family: "Open Sans", sans-serif;
   font-size: 10px;
   font-weight: bold !important;
-  letter-spacing: .05em;
+  letter-spacing: 0.05em;
   color: white;
   background: #2fec94;
   padding: 10px 20px;
@@ -21,17 +19,14 @@
   border: none;
   width: 100%;
   cursor: pointer;
-  -webkit-transition: all .3s ease;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
 }
-
 .qarr-correspondence-fe .button:hover {
   background: #13d57b;
 }
-
 .qarr-correspondence-fe input {
   border: 1px solid #E9EFF4;
   border-radius: 5px;
@@ -39,6 +34,5 @@
   margin-bottom: 10px;
   outline: none;
   width: 100%;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
