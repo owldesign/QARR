@@ -1,0 +1,26 @@
+{# 
+	Template: Questions
+    Documentation: https://docs.qarr.tools/custom/templates/#display-questions
+#}
+
+<div class="qarr-custom-questions">
+    <div>
+        Total Questions: {{ total }}
+    </div>
+    <ul>
+        {% for question in questions %}
+        <li>
+            <strong>{{ question }}</strong><br>
+            Author: {{ question.author }}<br>
+            <ul class="qarr-question-answers">
+            {% for answer in question.answers %}
+                <li>
+                    Answered By: {{ answer.author }}<br>
+                    Answer: {{ answer }}
+                </li>
+            {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

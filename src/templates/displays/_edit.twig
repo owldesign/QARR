@@ -12,9 +12,6 @@
 
 {% block header %}
     {% include 'qarr/_includes/header' ignore missing %}
-    {% block actionButton %}
-        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
-    {% endblock %}
 {% endblock %}
 
 {% block content %}
@@ -112,6 +109,9 @@
                     </div>
                 </dif>
 
+            </div>
+            <div class="entry-actions">
+                <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
             </div>
         </div>
     </div>

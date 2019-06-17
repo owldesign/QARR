@@ -152,39 +152,10 @@
 {% endblock %}
 
 {% block details %}
-    {% set user = craft.app.users.getUserByUsernameOrEmail(entry.emailAddress) %}
-    {% if user %}
-        {% set customer = craft.commerce.customers.getCustomerByUserId(user.id) %}
-    {% endif %}
-
     <div id="settings">
-
         {% include 'qarr/_elements/element-abuse-reported' ignore missing with {entry: entry, type: 'questions'} %}
-
-        <div class="meta centered guest-meta white-bg">
-            <div class="guest-badge">
-                <span>{{ entry.fullName |first }}</span>
-            </div>
-            <div class="meta-item">
-                <h2>{{ entry.fullName }}</h2>
-                <div class="meta-label">{{ entry.emailAddress }}</div>
-                {% if entry.elementType == 'product' %}
-                    {% if customer is defined and customer %}
-                        <div class="badge-verified"><i class="fa fa-badge-check"></i> <span>Verified Customer</span></div>
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            {% include 'qarr/_elements/element-reply-by-email' ignore missing with {entry: entry, type: 'questions'} %}
-
-            <div class="loader-container">
-                {% include 'qarr/_includes/icons/_wave-loader' ignore missing %}
-            </div>
-        </div>
-
+        {% include 'qarr/_elements/element-entry-author' ignore missing with {entry: entry, type: 'questions'} %}
         {% include 'qarr/_elements/element-entry-info' ignore missing with {entry: entry} %}
-
         {% include 'qarr/_elements/element-entry-audit' ignore missing with {entry: entry} %}
-
     </div>
 {% endblock %}

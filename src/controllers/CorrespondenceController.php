@@ -23,6 +23,14 @@ class CorrespondenceController extends Controller
 {
     protected $allowAnonymous = ['actionGateKeeper', 'actionCheckPassword', 'actionIndex', 'actionIndex', 'actionSendMail'];
 
+    /**
+     * Gate keeper
+     * TODO: Under development
+     *
+     * @param null $variables
+     * @return Response
+     * @throws \yii\base\Exception
+     */
     public function actionGateKeeper($variables = null)
     {
         $params = Craft::$app->request->queryParams;
@@ -35,6 +43,15 @@ class CorrespondenceController extends Controller
         return $template;
     }
 
+    /**
+     * Check password
+     * TODO: Under development
+     *
+     * @return bool|Response
+     * @throws \craft\errors\MissingComponentException
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionCheckPassword()
     {
         $this->requirePostRequest();
@@ -66,6 +83,17 @@ class CorrespondenceController extends Controller
 
     }
 
+    /**
+     * Send Mail
+     * TODO: Under development + make dynamic and customizable
+     *
+     * @return bool|Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionSendMail()
     {
         $this->requirePostRequest();

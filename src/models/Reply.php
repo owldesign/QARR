@@ -16,15 +16,21 @@ class Reply extends Model
     public $authorId;
     public $dateCreated;
     public $dateUpdated;
-    public $author;
+
+    /**
+     * @inheritdoc
+     */
+    public function __toString()
+    {
+        return $this->reply ?: ((string)$this->reply ?: static::class);
+    }
 
     /**
      * Get author of the reply
      *
-     * @return \craft\elements\User|null
      */
     public function getAuthor()
     {
-        return Craft::$app->users->getUserById($this->author->id);
+        return Craft::$app->getusers()->getUserById($this->authorId);
     }
 }

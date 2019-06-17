@@ -1,0 +1,21 @@
+<div class="meta white-bg centered guest-meta">
+    <div class="guest-badge">
+        <span>{{ entry.fullName |first }}</span>
+    </div>
+    <div class="meta-item">
+        <h2>{{ entry.fullName }}</h2>
+        <div class="meta-label">{{ entry.emailAddress }}</div>
+
+        {% if entry.elementType == 'product' %}
+            {% if entry.customer %}
+                <div class="badge-verified"><i class="fa fa-badge-check"></i> <span>{{ 'Verified Customer'|t('qarr') }}</span></div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    {% include 'qarr/_elements/element-reply-by-email' ignore missing with {entry: entry, type: type} %}
+
+    <div class="loader-container">
+        {% include 'qarr/_includes/icons/_wave-loader' ignore missing %}
+    </div>
+</div>

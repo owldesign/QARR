@@ -23,6 +23,12 @@ class ChartsController extends ElementIndexesController
     // Public Methods
     // =========================================================================
 
+    /**
+     * Get status stats
+     *
+     * @return \yii\web\Response
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionGetStatusStats()
     {
         $this->requirePostRequest();
@@ -45,6 +51,12 @@ class ChartsController extends ElementIndexesController
         ]);
     }
 
+    /**
+     * Reviews stats
+     *
+     * @return \yii\web\Response
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionGetReviewsStats()
     {
         $this->requireAcceptsJson();
@@ -151,6 +163,12 @@ class ChartsController extends ElementIndexesController
     // Private Methods
     // =========================================================================
 
+    /**
+     * Set count
+     *
+     * @param $variables
+     * @param $entries
+     */
     private function _setCount(&$variables, $entries)
     {
         $variables['total'] = $this->getElementQuery()->count();
@@ -165,6 +183,11 @@ class ChartsController extends ElementIndexesController
         $variables['entries']['2']['percent'] = 0;
     }
 
+    /**
+     * Set color
+     *
+     * @param $variables
+     */
     private function _setStatColors(&$variables)
     {
         $variables['entries']['0']['color'] = '#4da1ff';
@@ -172,6 +195,11 @@ class ChartsController extends ElementIndexesController
         $variables['entries']['2']['color'] = '#f07575';
     }
 
+    /**
+     * Set handle
+     *
+     * @param $variables
+     */
     private function _setHandle(&$variables)
     {
         $variables['entries']['0']['handle'] = 'pending';
@@ -179,6 +207,11 @@ class ChartsController extends ElementIndexesController
         $variables['entries']['2']['handle'] = 'rejected';
     }
 
+    /**
+     * Set percentages
+     *
+     * @param $variables
+     */
     private function _setPercentages(&$variables)
     {
         $variables['entries']['0']['percent'] = ($variables['entries']['0']['count'] / $variables['total']);

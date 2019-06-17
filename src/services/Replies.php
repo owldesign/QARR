@@ -33,8 +33,10 @@ class Replies extends Component
     // =========================================================================
 
     /**
+     * Reply
+     *
      * @param $elementId
-     * @return array|null
+     * @return Reply|null
      */
     public function getReply($elementId)
     {
@@ -46,14 +48,11 @@ class Replies extends Component
             return null;
         }
 
-        $reply = ArrayHelper::toArray($record);
-        $author = Craft::$app->users->getUserById($reply['authorId']);
-        $reply['author'] = $author->friendlyName;
-
-        return $reply;
+        return new Reply($record->toArray(['id', 'reply', 'elementId', 'authorId', 'author', 'dateCreated', 'dateUpdated']));
     }
 
-    /**
+    /** Reply by id
+     *
      * @param int $id
      * @return array|null|\yii\db\ActiveRecord
      */
@@ -71,6 +70,8 @@ class Replies extends Component
     }
 
     /**
+     * Reply model by id
+     *
      * @param int $id
      * @return null|Reply
      */
@@ -88,6 +89,8 @@ class Replies extends Component
     }
 
     /**
+     * Save
+     *
      * @param Reply $reply
      * @param $author
      * @return bool|null|ReplyRecord
@@ -165,27 +168,21 @@ class Replies extends Component
      */
     public function deleteReplyById(int $replyId): bool
     {
-//        $reply = $this->getReplyModelById($replyId);
-//
-//        if (!$reply) {
-//            return false;
-//        }
-
         return $this->delete($replyId);
     }
 
     /**
-     * Delete element
+     * Delete
      *
+     * @param int $replyId
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws \Exception
      */
     public function delete(int $replyId): bool
     {
         $transaction = Craft::$app->db->beginTransaction();
 
         try {
-
             Craft::$app->getDb()->createCommand()
                 ->delete('{{%qarr_reviews_replies}}', ['id' => $replyId])
                 ->execute();

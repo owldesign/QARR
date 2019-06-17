@@ -23,6 +23,13 @@ class Answer extends Model
     public $dateCreated;
     public $dateUpdated;
 
+    /**
+     * @inheritdoc
+     */
+    public function __toString()
+    {
+        return $this->answer ?: ((string)$this->answer ?: static::class);
+    }
 
     /**
      * Get author of the reply

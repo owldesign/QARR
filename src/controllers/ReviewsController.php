@@ -40,6 +40,8 @@ class ReviewsController extends Controller
     // =========================================================================
 
     /**
+     * Edit
+     *
      * @param int|null $reviewId
      * @return Response
      * @throws NotFoundHttpException
@@ -72,6 +74,8 @@ class ReviewsController extends Controller
     }
 
     /**
+     * Save
+     *
      * @return Response
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\web\BadRequestHttpException
@@ -135,6 +139,8 @@ class ReviewsController extends Controller
     }
 
     /**
+     * Delete
+     *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException

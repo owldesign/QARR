@@ -32,6 +32,14 @@ class QuestionsController extends Controller
     // Public Methods
     // =========================================================================
 
+    /**
+     * Edit
+     *
+     * @param int|null $questionId
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     */
     public function actionEdit(int $questionId = null): Response
     {
         if ($questionId) {
@@ -58,6 +66,16 @@ class QuestionsController extends Controller
         return $this->renderTemplate('qarr/questions/_edit', $variables);
     }
 
+    /**
+     * Save
+     *
+     * @return Response
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionSave()
     {
         $this->requirePostRequest();
@@ -117,6 +135,8 @@ class QuestionsController extends Controller
     }
 
     /**
+     * Delete
+     *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException

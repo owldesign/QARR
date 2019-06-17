@@ -14,9 +14,9 @@
 
 {% block header %}
     {% include 'qarr/_includes/header' ignore missing %}
-    {% block actionButton %}
-        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
-    {% endblock %}
+{#    {% block actionButton %}#}
+{#        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>#}
+{#    {% endblock %}#}
 {% endblock %}
 
 {% block content %}
@@ -95,6 +95,11 @@
                 </div>
                 <p class="small-text muted">See <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a> for icon names.</p>
             </div>
+
+            <div class="entry-actions">
+                <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
+            </div>
+
         </div>
     </div>
 

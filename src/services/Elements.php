@@ -89,7 +89,7 @@ class Elements extends Component
      * @param init|null $offset
      * @return \craft\elements\db\ElementQueryInterface|null
      */
-    public function queryStarFilteredElements(string $type, int $elementId, int $rating, int $limit = null, init $offset = null)
+    public function queryStarFilteredElements(string $type, int $elementId, int $rating, int $limit = null, int $offset = null)
     {
         $query = $this->_getElementQuery($type);
         $query->elementId($elementId);
@@ -179,32 +179,13 @@ class Elements extends Component
         }
     }
 
-    // TODO: remove
-//    /**
-//     * Get commerce product
-//     *
-//     * @param $request
-//     * @param $review
-//     * @return string
-//     */
-//    public function getProduct($request, &$review)
-//    {
-//        $elementId = $request->getRequiredBodyParam('elementId');
-//
-//        if (!$elementId) {
-//            return QARR::t('Product ID is required.');
-//        }
-//
-//        $product = Product::find()->id($elementId)->one();
-//
-//        if (!$product) {
-//            return QARR::t('Product not found.');
-//        }
-//
-//        $review->elementId = $elementId;
-//        $review->productTypeId = $product->type->id;
-//    }
-
+    /**
+     * Set element data
+     *
+     * @param $request
+     * @param $review
+     * @return string
+     */
     public function setElementData($request, &$review)
     {
         $elementId = $request->getRequiredBodyParam('elementId');

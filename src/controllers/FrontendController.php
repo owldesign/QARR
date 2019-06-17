@@ -23,6 +23,16 @@ class FrontendController extends Controller
 {
     protected $allowAnonymous = true;
 
+    /**
+     * Build modal
+     *
+     * @return \yii\web\Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionGetModalContent()
     {
         $this->requirePostRequest();

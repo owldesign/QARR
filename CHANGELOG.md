@@ -1,15 +1,32 @@
 # QARR Changelog
 
+## 1.1.0 - 2019-06-17
+
+### Improved
+- Channels and Single pages can now have reviews and questions!!!
+- CP UI updates
+- Use html form to submit Reviews [Reviews](https://docs.qarr.tools/custom/reviews) 
+- Use html form to submit Questions [Questions](https://docs.qarr.tools/custom/questions)
+- A bunch of housekeeping and code cleanup.
+
+### Added
+- Custom templates for frontend [Usage](https://docs.qarr.tools/custom/templates)
+- Added jQuery plugin for frontend built-in templates + jQuery will be automatically added if not already. [Details](https://docs.qarr.tools/core/details)
+
+### Added
+- Bug fixes
+
+
 ## 1.0.9 - 2019-02-16
 
 ### Fixed
--- Fixed errors when product would be missing
--- Fixed bug on Questions that do not have rules assigned to them
+- Fixed errors when product would be missing
+- Fixed bug on Questions that do not have rules assigned to them
 
 ## 1.0.8 - 2019-01-29
 
 ### Fixed
--- Fixed a bug where checking pending entries would break the plugin and cp in PHP 7.3
+- Fixed a bug where checking pending entries would break the plugin and cp in PHP 7.3
 
 ## 1.0.7 - 2019-01-24
 

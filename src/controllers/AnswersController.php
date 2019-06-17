@@ -25,6 +25,16 @@ class AnswersController extends Controller
 {
     protected $allowAnonymous = ['actionSave', 'actionGetHudModal', 'actionPerformAction'];
 
+    /**
+     * Create modal
+     *
+     * @return Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionGetHudModal()
     {
         $this->requirePostRequest();
@@ -44,6 +54,12 @@ class AnswersController extends Controller
         ]);
     }
 
+    /**
+     * Perform action method
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionPerformAction()
     {
         $this->requirePostRequest();
@@ -64,6 +80,16 @@ class AnswersController extends Controller
         ]);
     }
 
+    /**
+     * Save entry
+     *
+     * @return Response|null
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionSave()
     {
         $this->requirePostRequest();
@@ -108,6 +134,12 @@ class AnswersController extends Controller
         }
     }
 
+    /**
+     * Remove replies
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionRemoveReplies()
     {
         $this->requirePostRequest();

@@ -30,16 +30,26 @@ class DashboardController extends Controller
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Index page
+     * @param array $variables
+     * @return Response
+     */
     public function actionIndex(array $variables = []): Response
     {
         $variables = [];
 
-
         return $this->renderTemplate('qarr/index', $variables);
     }
 
-
-
+    /**
+     * New user data
+     *
+     * @return Response
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionGetNewUsersData(): Response
     {
         $userGroupId = Craft::$app->getRequest()->getRequiredBodyParam('userGroupId');
@@ -54,9 +64,9 @@ class DashboardController extends Controller
         }
 
         // Start at midnight on the start date, end at midnight after the end date
-        $timeZone = new \DateTimeZone(Craft::$app->getTimeZone());
-        $startDate = new \DateTime($startDate->format('Y-m-d'), $timeZone);
-        $endDate = new \DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
+        $timeZone = new DateTimeZone(Craft::$app->getTimeZone());
+        $startDate = new DateTime($startDate->format('Y-m-d'), $timeZone);
+        $endDate = new DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
 
         $intervalUnit = 'day';
 

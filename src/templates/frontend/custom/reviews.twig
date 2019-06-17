@@ -1,0 +1,27 @@
+{# 
+	Template: Reviews
+    Documentation: https://docs.qarr.tools/custom/templates/#display-reviews
+#}
+
+<div class="qarr-custom-reviews">
+    <div>
+        Total Reviews: {{ total }}
+    </div>
+    <ul>
+        {% for review in reviews %}
+        <li>
+            <strong>{{ review }}</strong><br>
+            Rated: {{ review.rating }}<br>
+            Author: {{ review.author }}<br>
+            {% if review.reply %}
+                <ul>
+                    <li>
+                        Response Author: {{ review.reply.author }}<br>
+                        Response: {{ review.reply }}
+                    </li>
+                </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>

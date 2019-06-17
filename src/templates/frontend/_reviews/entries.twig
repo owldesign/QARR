@@ -16,10 +16,10 @@
             {{ review.feedback }}
         </div>
 
-        {% if review.getReply() %}
+        {% if review.reply %}
             <div class="qarr-entry-admin-response">
                 <div class="qarr-entry-ar-title">{{ 'Response'|t('qarr') }}</div>
-                <span class="qarr-entry-ar-text">{{ review.reply.reply }}</span>
+                <span class="qarr-entry-ar-text">{{ review.reply }}</span>
             </div>
         {% endif %}
 

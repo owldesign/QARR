@@ -43,7 +43,7 @@
 
     {% if reply and type == 'review' %}
         <div class="response">
-            <span class="reply-date"><strong>{{ reply.author }}</strong> {{ 'replied on'|t('qarr') }} <time datetime="{{ reply.dateCreated }}">{{ reply.dateCreated |date() }}</time></span>
+            <span class="reply-date"><strong>{{ reply.author }}</strong> {{ 'replied on'|t('qarr') }} <time datetime="{{ reply.dateCreated.date }}">{{ reply.dateCreated |date() }}</time></span>
             <div class="response-wrapper">
                 <p>{{ reply.reply }}</p>
             </div>

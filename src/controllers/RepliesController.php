@@ -23,6 +23,15 @@ class RepliesController extends Controller
 {
     protected $allowAnonymous = ['actionSave', 'actionGetMarkup'];
 
+    /**
+     * Generate reply markup
+     *
+     * @return Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionGetMarkup()
     {
         $this->requirePostRequest();
@@ -45,6 +54,13 @@ class RepliesController extends Controller
         ]);
     }
 
+    /**
+     * Save
+     *
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionSave()
     {
         $this->requirePostRequest();
@@ -93,6 +109,12 @@ class RepliesController extends Controller
         }
     }
 
+    /**
+     * Remove reply
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionRemoveReplies()
     {
         $this->requirePostRequest();

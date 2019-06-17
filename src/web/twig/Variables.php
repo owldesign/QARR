@@ -18,32 +18,17 @@ use yii\base\Behavior;
 
 class Variables extends Behavior
 {
+    public $defaultTemplateExtensions = ['html', 'twig'];
+
     /**
-     * Displays reviews & questions form and entries on the page
-     *
-     * At minimum you must provide commerce product model.
-     *
-     * Basic usage:
-     *
-     * {{ craft.qarr.display(product) }}
-     *
-     * Advanced usage:
-     *
-     *
-     * {{ craft.qarr.display(product, {
-     *     limit: 3,
-     *     pagination: 'infinite',
-     *     reviews: {
-     *         display: 'displayForProductReviews'
-     *     },
-     *     questions: false
-     * }) }}
-     *
+     * Render pre-build templates
      *
      * @param $element
      * @param null $variables
-     * @return string|\Twig_Markup
-     * @throws \Twig_Error_Loader
+     * @return \Twig\Markup
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      */
     public function display($element, $variables = null)
@@ -147,7 +132,130 @@ class Variables extends Behavior
         return $query;
     }
 
-    // TODO: update comment
+    /**
+     * Display rating template
+     *
+     * @param $element
+     * @return \Twig\Markup
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     */
+    public function displayRating($element)
+    {
+        $view           = Craft::$app->getView();
+        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
+        $customFile     = $this->_resolveTemplate($path, 'rating');
+
+        $variables      = [
+            'averageRating' => $this->getAverageRating($element->id),
+            'total' => $this->getCount('reviews', 'approved', $element->id)
+        ];
+
+        if ($customFile) {
+            $html = Craft::$app->view->renderTemplate($customFile, $variables);
+        } else {
+            $oldPath = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+            $html = Craft::$app->view->renderTemplate('qarr/frontend/custom/rating', $variables);
+            Craft::$app->view->setTemplateMode($oldPath);
+        }
+
+        return Template::raw($html);
+    }
+
+    /**
+     * Display reviews
+     *
+     * @param $element
+     * @return \Twig\Markup
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     */
+    public function displayReviews($element)
+    {
+        $view           = Craft::$app->getView();
+        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
+        $customFile     = $this->_resolveTemplate($path, 'reviews');
+
+        $query          = QARR::$plugin->elements->queryElements('reviews', $element->id, null, null, 'approved');
+
+        $variables      = [
+            'reviews'   => $query,
+            'total'     => $query->count()
+        ];
+
+        if ($customFile) {
+            $html = Craft::$app->view->renderTemplate($customFile, $variables);
+        } else {
+            $oldPath = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+            $html = Craft::$app->view->renderTemplate('qarr/frontend/custom/reviews', $variables);
+            Craft::$app->view->setTemplateMode($oldPath);
+        }
+
+        return Template::raw($html);
+    }
+
+    /**
+     * Display questions
+     *
+     * @param $element
+     * @return \Twig\Markup
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\base\Exception
+     */
+    public function displayQuestions($element)
+    {
+        $view           = Craft::$app->getView();
+        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
+        $customFile     = $this->_resolveTemplate($path, 'questions');
+
+        $query          = QARR::$plugin->elements->queryElements('questions', $element->id, null, null, 'approved');
+
+        $variables      = [
+            'questions' => $query,
+            'total'     => $query->count()
+        ];
+
+        if ($customFile) {
+            $html = Craft::$app->view->renderTemplate($customFile, $variables);
+        } else {
+            $oldPath = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+            $html = Craft::$app->view->renderTemplate('qarr/frontend/custom/questions', $variables);
+            Craft::$app->view->setTemplateMode($oldPath);
+        }
+
+        return Template::raw($html);
+    }
+
+
+    /**
+     * Function to get custom templates path
+     *
+     * @param string $path
+     * @param string $name
+     * @return string
+     */
+    private function _resolveTemplate(string $path, string $name)
+    {
+        foreach ($this->defaultTemplateExtensions as $extension) {
+            $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+
+            if (is_file($testPath)) {
+                return 'qarr' . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+            }
+        }
+    }
+
+
+
     /**
      * * Get count of elements by **elementId**, **productTypeId** and **status**
      *

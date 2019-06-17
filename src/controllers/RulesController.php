@@ -35,6 +35,12 @@ class RulesController extends Controller
     // Public Methods
     // =========================================================================
 
+    /**
+     * Index
+     *
+     * @param array $variables
+     * @return Response
+     */
     public function actionIndex(array $variables = []): Response
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
@@ -42,6 +48,15 @@ class RulesController extends Controller
         return $this->renderTemplate('qarr/rules/index', $variables);
     }
 
+    /**
+     * Edit
+     *
+     * @param int|null $ruleId
+     * @param Rule|null $rule
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     */
     public function actionEdit(int $ruleId = null, Rule $rule = null): Response
     {
         $variables = [
@@ -76,6 +91,14 @@ class RulesController extends Controller
         return $this->renderTemplate('qarr/rules/_edit', $variables);
     }
 
+    /**
+     * Save
+     *
+     * @return Response|null
+     * @throws \craft\errors\MissingComponentException
+     * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     */
     public function actionSave()
     {
         $this->requirePostRequest();
@@ -128,6 +151,8 @@ class RulesController extends Controller
     }
 
     /**
+     * Delete
+     *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException

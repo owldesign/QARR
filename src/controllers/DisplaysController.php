@@ -32,7 +32,10 @@ class DisplaysController extends Controller
 
     // Public Methods
     // =========================================================================
+
     /**
+     * Index page
+     *
      * @param array $variables
      * @return Response
      */
@@ -44,10 +47,13 @@ class DisplaysController extends Controller
     }
 
     /**
+     * Edit
+     *
      * @param int|null $displayId
      * @param Display|null $display
      * @return Response
      * @throws NotFoundHttpException
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function actionEdit(int $displayId = null, Display $display = null): Response
     {
@@ -86,9 +92,12 @@ class DisplaysController extends Controller
     }
 
     /**
-     * @return null|Response
+     * Save
+     *
+     * @return Response|null
      * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function actionSave()
     {
@@ -135,6 +144,8 @@ class DisplaysController extends Controller
     }
 
     /**
+     * Delete
+     *
      * @return Response
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException

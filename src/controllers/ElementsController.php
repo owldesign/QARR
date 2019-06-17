@@ -40,7 +40,9 @@ class ElementsController extends Controller
      * Query builder for elements
      *
      * @return Response
-     * @throws \Twig_Error_Loader
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
@@ -75,9 +77,9 @@ class ElementsController extends Controller
         $type       = $request->getBodyParam('type');
         $value      = $request->getBodyParam('value');
         $limit      = $request->getBodyParam('limit');
-        $productId  = $request->getBodyParam('productId');
+        $elementId  = $request->getBodyParam('elementId');
 
-        $variables['entries'] = QARR::$plugin->elements->querySortElements($type, $productId, $value, $limit);
+        $variables['entries'] = QARR::$plugin->elements->querySortElements($type, $elementId, $value, $limit);
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
@@ -95,7 +97,9 @@ class ElementsController extends Controller
      * Star filtered elements
      *
      * @return Response
-     * @throws \Twig_Error_Loader
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
@@ -107,9 +111,9 @@ class ElementsController extends Controller
         $type       = $request->getBodyParam('type');
         $rating     = $request->getBodyParam('rating');
         $limit      = $request->getBodyParam('limit');
-        $productId  = $request->getBodyParam('productId');
-
-        $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $productId, $rating, $limit);
+        $elementId  = $request->getBodyParam('elementId');
+        
+        $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $elementId, $rating, $limit != '');
         
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
@@ -169,6 +173,15 @@ class ElementsController extends Controller
         return $this->asJson($data);
     }
 
+    /**
+     * Fetch pending items
+     *
+     * @return Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionFetchPendingItems()
     {
         $this->requirePostRequest();
@@ -191,6 +204,8 @@ class ElementsController extends Controller
     }
 
     /**
+     * Report abuse
+     *
      * @return bool|Response
      * @throws \yii\web\BadRequestHttpException
      */
@@ -225,6 +240,8 @@ class ElementsController extends Controller
     }
 
     /**
+     * Clear abuse
+     *
      * @return bool|Response
      * @throws \yii\web\BadRequestHttpException
      */
@@ -254,6 +271,8 @@ class ElementsController extends Controller
     }
 
     /**
+     * Update status
+     *
      * @return null|Response
      * @throws \yii\web\BadRequestHttpException
      */
