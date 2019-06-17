@@ -30,10 +30,17 @@
   font-family: "OpenSans-BoldItalic";
   src: url("../fonts/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans-BoldItalic.ttf") format("truetype");
 }
+.qarr-rules .element {
+  padding: 15px;
+}
+
 #norules {
   padding: 24px;
 }
 
+.qarr-rule-edit #sidebar {
+  border-right: 1px solid #E9EFF4;
+}
 .qarr-rule-edit #data-list-container {
   margin-top: 30px;
 }

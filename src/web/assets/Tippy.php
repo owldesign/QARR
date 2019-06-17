@@ -18,6 +18,7 @@ class Tippy extends AssetBundle
         ];
 
         $this->js = [
+            'tippy/popper.min.js',
             'tippy/tippy.all.min.js',
         ];
 

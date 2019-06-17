@@ -2,7 +2,7 @@ Garnish.$doc.ready(function () {
   console.log('UTILITIES!!');
   $('#update-geolocations').on('click', function (e) {
     e.preventDefault();
-    Craft.postActionRequest('qarr/tools/utilities/update-geolocations', {}, $.proxy(function (response, textStatus) {
+    Craft.postActionRequest('qarr/settings/utilities/update-geolocations', {}, $.proxy(function (response, textStatus) {
       console.log(response);
 
       if (response) {

@@ -27,14 +27,19 @@
                                     <a href="{{ entry.url }}">{{ entry.title }}</a>
                                 </div>
                                 <div class="item-meta">
-                                    <span class="item-meta-icon"><i class="far fa-tags"></i></span>
-                                    <span class="item-meta-title">{{ entry.product.title }}</span>
+                                    <span class="item-meta-icon">
+                                        {% include 'qarr/_elements/element-type-icon' ignore missing with {entry: entry} %}
+                                    </span>
+
+                                    <span class="item-meta-title">{{ entry.element.title }}</span>
                                     <span class="item-pipe">|</span>
                                     <span class="item-meta-icon">
-                                        {% if entry.customer is defined %}
-                                            <span class="badge-verified"><i class="fa fa-badge-check"></i></span>
-                                        {% else %}
-                                            <i class="far fa-user"></i>
+                                        {% if entry.elementType == 'product' %}
+                                            {% if entry.customer is defined %}
+                                                <span class="badge-verified" title="{{ 'Verified Customer'|t('qarr') }}"><i class="fa fa-badge-check"></i></span>
+                                            {% else %}
+                                                <i class="far fa-user"></i>
+                                            {% endif %}
                                         {% endif %}
                                     </span>
                                     <span class="item-meta-title">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }}</span>

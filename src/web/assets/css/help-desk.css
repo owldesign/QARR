@@ -30,10 +30,24 @@
   font-family: "OpenSans-BoldItalic";
   src: url("../fonts/OpenSans-BoldItalic.woff") format("woff"), url("../fonts/OpenSans-BoldItalic.ttf") format("truetype");
 }
+.qarr-reviews table thead, .qarr-questions table thead {
+  display: none;
+}
+.qarr-reviews table tbody tr td:nth-child(2), .qarr-questions table tbody tr td:nth-child(2) {
+  display: none !important;
+}
+
 .qarr .toolbar {
   background: white;
   border-radius: 4px;
   padding: 7px 1px 0;
+}
+.qarr .toolbar .flex > * {
+  margin: 0 !important;
+}
+.qarr .toolbar .search input {
+  border: none;
+  padding: 12px 30px;
 }
 .qarr .toolbar .btn {
   height: 100%;
@@ -61,6 +75,7 @@
 .qarr .toolbar .elements-selected-count {
   font-family: "OpenSans-SemiBold", "Helvetica", sans-serif;
   font-size: 12px;
+  padding: 10px 10px;
 }
 .qarr .selectallcontainer .btn {
   background: none !important;
@@ -206,24 +221,6 @@
 .qarr .flags-wrapper {
   display: inline-block;
 }
-.qarr .flags-wrapper svg {
-  font-size: 16px;
-  margin-right: 7px;
-}
-.qarr .flags-wrapper .flagged-item {
-  display: flex;
-  align-items: center;
-  text-transform: uppercase;
-  font-family: "OpenSans-Bold", "Helvetica", sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  line-height: 1;
-  padding: 4px 8px;
-  border: 1px solid #E9EFF4;
-  border-radius: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-}
 .qarr .rating-wrapper span {
   padding-right: 2px;
 }
@@ -233,18 +230,18 @@
 .qarr .rating-wrapper .active svg {
   color: #FFD012;
 }
-.qarr .product-wrapper {
+.qarr .element-wrapper {
   display: flex;
 }
-.qarr .product-wrapper .product-meta {
+.qarr .element-wrapper .element-meta {
   display: flex;
   flex-direction: column;
 }
-.qarr .product-wrapper .product-meta span {
+.qarr .element-wrapper .element-meta span {
   display: block;
   line-height: 1;
 }
-.qarr .product-wrapper .product-badge-wrapper .product-badge {
+.qarr .element-wrapper .element-badge-wrapper .element-badge {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -254,11 +251,11 @@
   height: 28px;
   font-weight: 600;
 }
-.qarr .product-wrapper .product-name {
+.qarr .element-wrapper .element-name {
   font-weight: 600;
   padding-bottom: 4px;
 }
-.qarr .product-wrapper .product-type {
+.qarr .element-wrapper .element-type {
   color: #a5a6a8;
   font-size: 10px;
 }
@@ -312,16 +309,13 @@
   border-collapse: separate;
   border-spacing: 0 5px;
 }
-.qarr table thead {
-  display: none;
-}
 .qarr table thead th {
   font-family: "OpenSans-Bold", "Helvetica", sans-serif;
   font-size: 10px;
   color: #a5a6a8;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 15px 0 15px 15px !important;
+  padding: 15px 0 15px 0 !important;
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
@@ -338,12 +332,12 @@
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
 }
+.qarr table tbody .thin .delete {
+  padding: 5px 15px;
+}
 .qarr table tbody tr td.checkbox-cell {
   display: none !important;
   padding-right: 25px !important;
-}
-.qarr table tbody tr td:nth-child(2) {
-  display: none;
 }
 .qarr table tbody tr td:first-child {
   border-top-left-radius: 3px;
@@ -353,7 +347,8 @@
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
 }
-.qarr table tbody tr.sel [data-attr=reviewInfo] > div:before {
+.qarr table tbody tr.sel [data-attr=reviewInfo] > div:before,
+.qarr table tbody tr.sel [data-attr=questionInfo] > div:before {
   background: #B289EF;
 }
 .qarr table tbody tr.sel .checkbox {
@@ -363,9 +358,15 @@
   background: white !important;
   box-shadow: none !important;
 }
+.qarr [data-attr=questionDetails],
+.qarr [data-attr=reviewDetails] {
+  vertical-align: top;
+}
+.qarr [data-attr=questionInfo],
 .qarr [data-attr=reviewInfo] {
   width: 200px;
 }
+.qarr [data-attr=questionInfo] > div:before,
 .qarr [data-attr=reviewInfo] > div:before {
   content: "";
   position: absolute;
@@ -377,8 +378,7 @@
   transition: all 0.3s ease;
 }
 .qarr .element-block {
-  position: relative;
-  padding: 15px 30px;
+  padding: 15px;
 }
 .qarr .element-block .checkbox {
   position: absolute;
@@ -386,73 +386,152 @@
   left: 10px;
   transition: all 0.3s ease;
 }
-.qarr .element-block.element-info {
+.qarr .element-info {
   align-self: center;
   text-align: center;
   line-height: 1;
+  padding: 15px 30px;
 }
-.qarr .element-block.element-info .qarr-avatar {
+.qarr .element-info .qarr-avatar {
   width: 32px;
   height: 32px;
   border-radius: 5px;
   overflow: hidden;
   margin: 0 auto 10px auto;
 }
-.qarr .element-block.element-info .qarr-avatar img {
+.qarr .element-info .qarr-avatar img {
   width: 100%;
 }
-.qarr .element-block.element-info .user-name {
+.qarr .element-info .user-name {
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 0.02em;
   margin-bottom: 3px;
 }
-.qarr .element-block.element-info .user-email {
+.qarr .element-info .user-email {
   font-size: 10px;
   color: rgba(0, 0, 0, 0.7);
 }
-.qarr .element-block.element-info .user-location {
+.qarr .element-info .user-location {
   font-size: 10px;
   margin-top: 18px;
   color: rgba(0, 0, 0, 0.4);
 }
-.qarr .element-block.element-info .qarr-rating {
+.qarr .element-info .qarr-rating {
   display: flex;
   justify-content: space-evenly;
-  margin: 20px 0;
+  margin: 20px 0 0 0;
 }
-.qarr .element-block.element-info .qarr-rating .qarr-rating-star {
+.qarr .element-info .qarr-rating .qarr-rating-star {
   display: block;
 }
-.qarr .element-block.element-info .qarr-rating .qarr-rating-star svg path {
+.qarr .element-info .qarr-rating .qarr-rating-star svg path {
   fill: #E9EFF4;
 }
-.qarr .element-block.element-info .qarr-rating .qarr-rating-star.active svg path {
+.qarr .element-info .qarr-rating .qarr-rating-star.active svg path {
   fill: #FFD012;
 }
-.qarr .element-block.element-info .element-status .qarr-tag {
+.qarr .element-info .status-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.qarr .element-info .element-status {
+  margin-top: 15px;
+}
+.qarr .element-info .element-status .qarr-tag {
   display: inline-block;
   height: 22px;
   line-height: 22px;
   margin: 2px 4px 2px 0;
   padding: 0 8px;
-  border: 1px solid #e8eaec;
   border-radius: 3px;
   background: #f7f7f7;
-  font-size: 12px;
   vertical-align: middle;
   opacity: 1;
   overflow: hidden;
   color: white;
+  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 700;
 }
-.qarr .element-block.element-info .element-status .qarr-tag.pending {
+.qarr .element-info .element-status .qarr-tag.pending {
   background: #4da1ff;
 }
-.qarr .element-block.element-info .element-status .qarr-tag.approved {
+.qarr .element-info .element-status .qarr-tag.approved {
   background: #2fec94;
 }
-.qarr .element-block.element-info .element-status .qarr-tag.rejected {
+.qarr .element-info .element-status .qarr-tag.rejected {
   background: #f07575;
+}
+.qarr .element-details .flagged-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.qarr .element-details .element-object a {
+  color: #B289EF;
+  transition: all 0.3s ease;
+}
+.qarr .element-details .element-object a:hover {
+  color: #772fe3;
+}
+.qarr .element-details .element-title {
+  margin: 0;
+}
+.qarr .element-details .posted-date {
+  color: #989898;
+}
+.qarr .element-details .feedback {
+  font-size: 14px;
+  margin-top: 20px;
+}
+.qarr .element-details .feedback .feedback-text .matched-word {
+  background: rgba(255, 208, 18, 0.4);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+.qarr .element-details .response {
+  margin-top: 20px;
+}
+.qarr .element-details .response .reply-date {
+  font-size: 9px;
+  color: #989898;
+}
+.qarr .element-details .response .response-wrapper {
+  padding: 13px;
+  background: rgba(152, 152, 152, 0.1);
+  border-radius: 5px;
+}
+.qarr .element-details .response .response-wrapper p {
+  margin: 0;
+}
+.qarr .element-details .response .abuse-reported {
+  font-style: italic;
+  font-size: 10px;
+  color: #989898;
+}
+.qarr .element-details .feedback-instructions {
+  font-style: italic;
+  font-size: 12px;
+  color: #989898;
+}
+.qarr .element-details .flags-container {
+  display: flex;
+}
+.qarr .element-details .flags-container .flagged-item {
+  padding: 7px 7px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+  border-radius: 3px;
+  border: 1px dashed #f07575;
+  margin-right: 7px;
+}
+.qarr .element-details .flags-container .flagged-item span {
+  display: inline-block;
+  margin-left: 5px;
 }
 
 .qarr .draghelper.fld-tab .tabs, .qarr .fld-tab .tabs {

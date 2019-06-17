@@ -8,7 +8,6 @@
 
                     <div class="continent-list full-col">
                         {% set geolocations = craft.geolocations.all() %}
-
                         {% if geolocations %}
                             {% for continent, location in geolocations.byContinent %}
                                 <div class="list-item has-hover pad tippy-with-html">
@@ -43,7 +42,7 @@
                                     </div>
 
                                     <div class="details-actions">
-                                        <a href="#" class="btns btn-rounded btn-purple btn-disabled create-campaign">Create Email Campaign</a>
+                                        <a href="#" class="btns btn-rounded btn-purple btn-disabled create-campaign">{{ 'Create Email Campaign'|t('qarr') }}</a>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -54,9 +53,9 @@
 
                                     <div class="item-actions">
                                         {% if craft.qarrElements.getTotalApproved() > 0 %}
-                                            <a href="#" class="btn btn-rounded btn-purple reset-geolocation-stats">Reset Stats</a>
+                                            <a href="#" class="btns btn-rounded btn-purple btn-icon update-status-btn reset-geolocation-stats">{{ 'Reset Stats'|t('qarr') }}</a>
                                         {% endif %}
-                                        <p>{{ 'You have no approved submissions'|t('qarr') }}</p>
+                                        <p>{{ 'Geolocation data is not available'|t('qarr') }}</p>
                                     </div>
                                 </div>
                             </div>

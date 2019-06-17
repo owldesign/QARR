@@ -1,0 +1,7 @@
+{% if entry.elementType == 'product'  %}
+    <i class="fal fa-tags"></i>
+{% elseif entry.elementType == 'single' %}
+    <i class="fal fa-file-alt"></i>
+{% elseif entry.elementType == 'channel' %}
+    <i class="fal fa-newspaper"></i>
+{% endif %}

@@ -9,7 +9,6 @@
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Displays") %}
 
-
 {% block header %}
     {% include 'qarr/_includes/header' ignore missing %}
     {% block actionButton %}
@@ -21,7 +20,6 @@
         {% endif %}
     {% endblock %}
 {% endblock %}
-
 
 {% block content %}
     <div id="nodisplays"{% if displays %} class="hidden"{% endif %}>
@@ -60,9 +58,7 @@
 {% endblock %}
 
 {% js %}
-
     var displayMenu = new Garnish.MenuBtn($('.dropdown-menu', this.$container));
-
 
     var adminTable = new Craft.AdminTable({
     tableSelector: '#displays',

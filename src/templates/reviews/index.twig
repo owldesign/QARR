@@ -20,14 +20,14 @@
             <ul>
                 {% for key, source in sources %}
                     {% if source.heading is defined %}
-                        <li class="heading"><span>{{ source.heading|t('form-builder') }}</span></li>
+                        <li class="heading"><span>{{ source.heading|t('qarr') }}</span></li>
                     {% else %}
                         <li {% if source.key != '*' %}class="group-item"{% endif %}>
                             <a data-label="{{ source.label }}" data-key="{{ source.key is defined ? source.key : key }}" {%- if source.defaultSort is defined %}{% set defaultSort = source.defaultSort %} data-default-sort="{{ defaultSort is iterable ? defaultSort|join(':') : defaultSort }}"{% endif %}{%- if source.data is defined -%}{% for dataKey, dataVal in source.data %} data-{{ dataKey }}="{{ dataVal }}"{% endfor %}{%- endif %}>
                                 <span class="source-text">{{- source.label -}}</span>
-                                {% if source.criteria is defined %}
-{#                                    {% set count = craft.qarr.getCount('reviews', '*', null, source.criteria.productTypeId) %}#}
-                                    <span class="badge">{{ count is defined and count > 0 ? count : '' }}</span>
+                                {% if source.id is defined %}
+                                    {% set count = craft.qarr.getCount('reviews', '*', null, source.type, source.id) %}
+                                    <span class="badge-count">{{ count is defined and count > 0 ? count : '' }}</span>
                                 {% endif %}
                             </a>
                         </li>
@@ -37,7 +37,7 @@
         </nav>
 
         {% if customizableSources %}
-            <a class="customize-sources" title="{{ 'Customize sources'|t('form-builder') }}">{{ 'Customize Sidebar'|t('form-builder') }}</a>
+            <a class="customize-sources" title="{{ 'Customize sources'|t('qarr') }}">{{ 'Customize Sidebar'|t('qarr') }}</a>
         {% endif %}
 
         <div class="elements-data">
@@ -63,90 +63,3 @@
 
     {% endif %}
 {% endblock %}
-
-{#{% block content %}#}
-{#    <div class="elementindex">#}
-{#        {% from "_includes/forms" import text -%}#}
-
-{#        {% do view.registerTranslations('app', [#}
-{#            "Sort by {attribute}",#}
-{#            "Score",#}
-{#            "Structure",#}
-{#            "Display in a table",#}
-{#            "Display hierarchically",#}
-{#            "Display as thumbnails",#}
-{#        ]) %}#}
-
-{#        {% set elementInstance = craft.app.elements.createElement(elementType) %}#}
-{#        {% set context = context is defined ? context : 'index' %}#}
-{#        {% set showStatusMenu = (showStatusMenu is defined and showStatusMenu != 'auto' ? showStatusMenu : elementInstance.hasStatuses()) %}#}
-{#        {% set showSiteMenu = (craft.app.getIsMultiSite() ? (showSiteMenu ?? 'auto') : false) %}#}
-{#        {% if showSiteMenu == 'auto' %}#}
-{#            {% set showSiteMenu = elementInstance.isLocalized() %}#}
-{#        {% endif %}#}
-{#        {% set sortOptions = elementInstance.sortOptions() %}#}
-
-{#        {% macro sortOptionLabel(sortOption) %}#}
-{#            {{ sortOption.label ?? sortOption  }}#}
-{#        {% endmacro %}#}
-{#        {% from _self import sortOptionLabel %}#}
-
-{#        <div class="main">#}
-{#            <div class="toolbar">#}
-{#                <div class="flex">#}
-{#                    {% if showStatusMenu %}#}
-{#                        <div>#}
-{#                            <div class="btn menubtn statusmenubtn">{{ "All"|t('app') }}</div>#}
-{#                            <div class="menu">#}
-{#                                <ul class="padded">#}
-{#                                    <li><a data-status="" class="sel">{{ "All"|t('app') }}</a></li>#}
-{#                                    {% for status, info in elementInstance.statuses() %}#}
-{#                                        {% set label = info.label ?? info %}#}
-{#                                        {% set color = info.color ?? '' %}#}
-{#                                        <li><a data-status="{{ status }}"><span class="status {{ status }} {{ color }}"></span>{{ label }}</a></li>#}
-{#                                    {% endfor %}#}
-{#                                </ul>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-
-{#                    <div class="qarr-field custom-field flex-grow search icon clearable">#}
-{#                        <input class="text fullwidth" type="text" id="search-element" autocomplete="off">#}
-{#                        <label for="search-element">{{ 'Search'|t('qarr') }}</label>#}
-{#                        <div class="clear hidden" title="{{ 'Clear'|t('app') }}"></div>#}
-{#                    </div>#}
-{#                    <div>#}
-{#                        <div class="btn menubtn sortmenubtn"{% if sortOptions %} title="{{ 'Sort by {attribute}'|t('app', { attribute: sortOptionLabel(sortOptions|first) }) }}"{% endif %} data-icon="asc">{{ sortOptions ? sortOptionLabel(sortOptions|first) }}</div>#}
-{#                        <div class="menu">#}
-{#                            <ul class="padded sort-attributes">#}
-{#                                {% for key, sortOption in sortOptions %}#}
-{#                                    <li><a{% if loop.first %} class="sel"{% endif %} data-attr="{{ sortOption.attribute ?? sortOption.orderBy ?? key }}">{{ sortOptionLabel(sortOption) }}</a></li>#}
-{#                                {% endfor %}#}
-{#                            </ul>#}
-{#                            <hr>#}
-{#                            <ul class="padded sort-directions">#}
-{#                                <li><a data-dir="asc" class="sel">{{ "Ascending"|t('app') }}</a></li>#}
-{#                                <li><a data-dir="desc">{{ "Descending"|t('app') }}</a></li>#}
-{#                            </ul>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="spinner invisible"></div>#}
-{#                    <div class="elements-selected-count"></div>#}
-{#                </div>#}
-{#            </div>#}
-
-{#            <div class="elements"></div>#}
-{#        </div>#}
-
-{#    </div>#}
-{#{% endblock %}#}
-
-{#{% block initJs %}#}
-{#    Craft.elementIndex = Craft.createElementIndex('{{ elementType|e("js") }}', $('#main'), {#}
-{#        context:        'index',#}
-{#        storageKey:     'elementindex.{{ elementType }}',#}
-{#        criteria:       Craft.defaultIndexCriteria#}
-{#    });#}
-{#{% endblock %}#}
-
-{#{% js block('initJs') %}#}

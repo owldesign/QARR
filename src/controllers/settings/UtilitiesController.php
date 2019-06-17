@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 Vadim Goncharov
  */
 
-namespace owldesign\qarr\controllers\tools;
+namespace owldesign\qarr\controllers\settings;
 
 use owldesign\qarr\QARR;
 use owldesign\qarr\jobs\GeolocationTask;
@@ -44,7 +44,7 @@ class UtilitiesController extends Controller
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
-        return $this->renderTemplate('qarr/tools/utilities/index', $variables);
+        return $this->renderTemplate('qarr/settings/utilities/index', $variables);
     }
 
     /**

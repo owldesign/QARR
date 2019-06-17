@@ -160,11 +160,11 @@ class Elements extends Component
      */
     public function getDisplay($request, $fields, &$entry)
     {
-        $displayId = $request->getBodyParam('displayId');
+        $displayHandle = $request->getBodyParam('displayHandle');
 
-        if ($displayId) {
-            $display = Display::find()->id($displayId)->anyStatus()->one();
-            $entry->displayId = $displayId;
+        if ($displayHandle) {
+            $display = Display::find()->handle($displayHandle)->anyStatus()->one();
+            $entry->displayId = $display->id;
             $entry->displayHandle = $display->handle;
 
             if (isset($display->titleFormat) && $display->titleFormat != '') {
@@ -281,10 +281,11 @@ class Elements extends Component
      * @param $type
      * @param $status
      * @param $elementId
-     * @param $productTypeId
+     * @param $elementType
+     * @param $elementTypeId
      * @return int|null
      */
-    public function getCount($type, $status, $elementId = null, $productTypeId = null)
+    public function getCount($type, $status, $elementId = null, $elementType = null, $elementTypeId = null)
     {
         $query = $this->_getElementQuery($type);
 
@@ -292,8 +293,10 @@ class Elements extends Component
             return null;
         }
 
-        if ($productTypeId) {
-            $query->productTypeId($productTypeId);
+        if ($elementType != '*') {
+            if ($elementType && $elementTypeId) {
+                $query->{$elementType}($elementTypeId);
+            }
         }
 
         if ($elementId) {

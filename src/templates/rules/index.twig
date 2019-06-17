@@ -4,7 +4,7 @@
 {% set title = "Rules"|t('qarr') %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 {% set bodyClass = 'qarr qarr-rules' %}
-{% set selectedSubnavItem = "tools" %}
+{% set selectedSubnavItem = "rules" %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
@@ -13,15 +13,11 @@
     {% include 'qarr/_includes/header' ignore missing %}
 
     {% block actionButton %}
-        <a href="{{ url('qarr/tools/rules/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
+        <a href="{{ url('qarr/rules/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
             <span class="icon"><i class="fa fa-plus"></i></span>
             <span class="btn-text">{{ "New Rule"|t('qarr') }}</span>
         </a>
     {% endblock %}
-{% endblock %}
-
-{% block sidebar %}
-    {% include 'qarr/tools/_includes/sidebar' ignore missing %}
 {% endblock %}
 
 {% block content %}
@@ -43,7 +39,7 @@
                 <tr data-id="{{ rule.id }}" data-name="{{ rule.name}}">
                     <td scope="row" data-title="{{ 'Name'|t('qarr') }}">
                         <div class="element">
-                            <a href="{{ url('qarr/tools/rules/' ~ rule.id) }}">{{ rule.name }}</a>
+                            <a href="{{ url('qarr/rules/' ~ rule.id) }}">{{ rule.name }}</a>
                         </div>
                     </td>
                     <td data-title="{{ 'Handle'|t('qarr') }}"><code>{{ rule.handle }}</code></td>

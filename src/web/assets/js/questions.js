@@ -65,10 +65,14 @@ AnswerItem = Garnish.Base.extend({
 Garnish.$doc.ready(function () {
   if ($('#reply-email-btn').length > 0) {
     var emailCorrespondence = new QarrEmailCorrespondence('#reply-email-btn');
-  } // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  } // Tippy
+
+
+  var tippies = tippy('.tippy', {
+    theme: 'light'
+  }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Clear Entry Abuse
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
   $('.abuse-reported-meta .btns').on('click', function (e) {
     e.preventDefault();

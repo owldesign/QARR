@@ -20,6 +20,7 @@ class Qarr extends AssetBundle
         $this->depends = [
             CpAsset::class,
             Fontawesome::class,
+            Tippy::class,
             Greensock::class,
             Wavify::class,
             Select2::class,

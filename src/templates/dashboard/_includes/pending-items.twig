@@ -5,8 +5,10 @@
                 <a href="{{ entry.url }}">{{ entry.title }}</a>
             </div>
             <div class="item-meta">
-                <span class="item-meta-icon"><i class="far fa-tags"></i></span>
-                <span class="item-meta-title">{{ entry.product.title }}</span>
+                <span class="item-meta-icon">
+                    <i class="far fa-tags"></i>
+                </span>
+                <span class="item-meta-title">{{ entry.element.title }}</span>
                 <span class="item-pipe">|</span>
                 <span class="item-meta-icon">
                     {% if entry.customer is defined %}

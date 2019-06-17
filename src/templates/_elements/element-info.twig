@@ -13,17 +13,24 @@
         <div class="user-location">
             <div>
                 <i class="fa fa-globe-americas"></i>
-                {% if geolocation['country_name'] %}
-                    <span>{{ geolocation['country_name'] }}, {{ geolocation['region'] }}</span>
+                {% if geolocation %}
+                    {% if geolocation is defined and geolocation['country_name'] %}
+                        <span>{{ geolocation['country_name'] }}, {{ geolocation['region'] }}</span>
+                    {% else %}
+                        {{ 'Location Unknown'|t('qarr') }}
+                    {% endif %}
                 {% else %}
-                    {{ 'Location Unknown'|t('qarr') }}
+                    {# TODO: add geolcoation action here #}
+                    <a href="#"> Check location</a>
                 {% endif %}
             </div>
         </div>
     </div>
 
+    {% if rating is defined %}
     <div class="qarr-rating">
-        {% for i in 0..5 %}
+        {% for i in 1..5 %}
+
             {% if rating >= i %}
                 <span class="qarr-rating-star active"><i class="fa fa-star"></i></span>
             {% else %}
@@ -31,10 +38,11 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% endif %}
 
-    <div class="item-column element-status">
+    <div class="item-column element-status {% if status == 'pending' %}pulse{% endif %}">
         <div class="qarr-tag {{ status }}">
-            <span>approved</span>
+            <span>{{ status }}</span>
         </div>
     </div>
 </div>

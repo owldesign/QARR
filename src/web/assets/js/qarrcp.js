@@ -12,7 +12,8 @@ var QarrCP = Garnish.Base.extend({
     this.navIconSvg = this.$navIcon.find('svg');
     this.$navLabel.append($('<span class="qarr-pending-count-badge">0</span>'));
     this.$navLabelBadge = this.$navLabel.find('span'); // TODO: fix this
-    // this._getPendingEntries();
+
+    this._getPendingEntries();
   },
   handleResponse: function handleResponse(response) {
     this.totalPending = response.totalPending;

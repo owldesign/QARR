@@ -49,10 +49,12 @@ Garnish.$doc.ready(function () {
     });
     Craft.elementIndex.on('updateElements', function (e) {
       if (e.target.elementType === 'owldesign\\qarr\\elements\\Review' || e.target.elementType === 'owldesign\\qarr\\elements\\Question') {
-        var count = Craft.elementIndex.view.elementSelect.$selectedItems.length;
+        if (Craft.elementIndex.view.elementSelect) {
+          var count = Craft.elementIndex.view.elementSelect.$selectedItems.length;
 
-        if (count === 0) {
-          $('.elements-selected-count').remove();
+          if (count === 0) {
+            $('.elements-selected-count').remove();
+          }
         } // TODO: fix this
         // Craft.postActionRequest('qarr/elements/check-pending', {}, $.proxy(((response, textStatus) => {
         //     if (response.success) {

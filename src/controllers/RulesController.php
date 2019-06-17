@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 Vadim Goncharov
  */
 
-namespace owldesign\qarr\controllers\tools;
+namespace owldesign\qarr\controllers;
 
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
@@ -39,7 +39,7 @@ class RulesController extends Controller
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
-        return $this->renderTemplate('qarr/tools/rules/index', $variables);
+        return $this->renderTemplate('qarr/rules/index', $variables);
     }
 
     public function actionEdit(int $ruleId = null, Rule $rule = null): Response
@@ -70,10 +70,10 @@ class RulesController extends Controller
 
         $this->_enforceEditRulePermissions($variables['rule']);
         $variables['fullPageForm'] = true;
-        $variables['continueEditingUrl'] = 'qarr/tools/rules/{id}';
+        $variables['continueEditingUrl'] = 'qarr/rules/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
-        return $this->renderTemplate('qarr/tools/rules/_edit', $variables);
+        return $this->renderTemplate('qarr/rules/_edit', $variables);
     }
 
     public function actionSave()

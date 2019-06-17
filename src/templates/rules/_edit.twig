@@ -6,7 +6,7 @@
 {% set bodyClass = 'qarr qarr-edit qarr-rule-edit' %}
 {% set pluginCpUrl = url('qarr') %}
 {% set title = 'Rules' %}
-{% set selectedSubnavItem = "tools" %}
+{% set selectedSubnavItem = "rules" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 {% set qarrumbs = true %}
 
@@ -19,24 +19,20 @@
     {% endblock %}
 {% endblock %}
 
-{% block sidebar %}
-    {% include 'qarr/tools/_includes/sidebar' ignore missing %}
-{% endblock %}
-
 {% block content %}
     {% if rule.id %}
         {% set name = rule.name %}
     {% else %}
         {% set name = 'New Rule'|t('qarr') %}
     {% endif %}
-    {% include 'qarr/tools/_includes/sub-header' ignore missing with { name: name, icon: 'flag', on: rule.enabled  } %}
+    {% include 'qarr/settings/_includes/sub-header' ignore missing with { name: name, icon: 'flag', on: rule.enabled  } %}
 
     <div class="flex-container">
 
         <div id="content-fields" class="third-col">
             <div class="widget transparent">
-                <input type="hidden" name="action" value="qarr/tools/rules/save">
-                {{ redirectInput('qarr/tools/rules') }}
+                <input type="hidden" name="action" value="qarr/rules/save">
+                {{ redirectInput('qarr/rules') }}
 
                 {% if rule.id %}
                     <input type="hidden" name="ruleId" value="{{ rule.id }}">

@@ -1,0 +1,11 @@
+{% if entry.abuse %}
+    <div class="meta abuse-reported-meta">
+        <h2><i class="fa fa-exclamation-circle"></i>{{ 'Abuse Reported'|t('qarr') }}</h2>
+
+        <div class="meta-actions">
+            <a href="#" class="btns btn-rounded btn-on-red-bg" data-entry-id="{{ entry.id }}" data-type="{{ type }}">
+                <span class="link-text">{{ 'Clear' |t('qarr') }}</span>
+            </a>
+        </div>
+    </div>
+{% endif %}

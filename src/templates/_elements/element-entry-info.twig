@@ -1,0 +1,9 @@
+<div class="meta purple-bg icon-right element-meta">
+    <div class="meta-item single">
+        <div class="meta-label">{{ entry.elementType|t('qarr')|upper }}</div>
+        <h2>{{ entry.element }}</h2>
+    </div>
+    <div class="icon">
+        {% include 'qarr/_elements/element-type-icon' ignore missing with { entry: entry } %}
+    </div>
+</div>

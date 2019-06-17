@@ -155,6 +155,7 @@
   color: #d8e3ec;
 }
 .qarr .widget .no-submissions .item-actions, .widget.craft-widget-recent-questions .no-submissions .item-actions, .widget.craft-widget-recent-reviews .no-submissions .item-actions {
+  text-align: center;
   margin-top: 30px;
 }
 .qarr .widget .list .list-item, .widget.craft-widget-recent-questions .list .list-item, .widget.craft-widget-recent-reviews .list .list-item {

@@ -126,10 +126,6 @@ class Review extends Element
     /**
      * @var
      */
-    public $structureId;
-    /**
-     * @var
-     */
     public $productTypeId;
     /**
      * @var
@@ -250,18 +246,21 @@ class Review extends Element
         return $names;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        $behaviors['fieldLayout'] = [
-            'class' => FieldLayoutBehavior::class,
-            'elementType' => Display::class
-        ];
-        return $behaviors;
-    }
+
+    // TODO: figure this out for field layouts?
+//    /**
+//     * @inheritdoc
+//     */
+//    public function behaviors()
+//    {
+//        $behaviors = parent::behaviors();
+//        $behaviors['fieldLayout'] = [
+//            'class' => FieldLayoutBehavior::class,
+//            // TODO: why is this here?
+////            'elementType' => Display::class
+//        ];
+//        return $behaviors;
+//    }
 
     /**
      * @inheritdoc
@@ -297,14 +296,8 @@ class Review extends Element
      */
     public function __toString()
     {
-//        return $this->title ?: ((string)$this->id ?: static::class);
-        $markup = '<p>Hello</p>';
+        return $this->title ?: ((string)$this->id ?: static::class);
         return $markup;
-    }
-
-    public function modifyEntryTableAttributes(&$attributes, $source)
-    {
-        $attributes = [];
     }
 
     /**
@@ -409,7 +402,9 @@ class Review extends Element
         $sources = [
             ['heading' => QARR::t('Sources')],
             [
+                'id' => '*',
                 'key' => '*',
+                'type' => '*',
                 'label' => Craft::t('app', 'All entries'),
                 'defaultSort' => ['postDate', 'desc']
             ]
@@ -418,8 +413,10 @@ class Review extends Element
         // Singles
         if (!empty($singleSectionIds)) {
             $sources[] = [
+                'id' => $singleSectionIds,
                 'key' => 'singles',
                 'label' => Craft::t('app', 'Singles'),
+                'type' => 'sectionId',
                 'criteria' => [
                     'sectionId' => $singleSectionIds,
                 ],
@@ -430,7 +427,6 @@ class Review extends Element
         // Sections
         $sectionTypes = [
             Section::TYPE_CHANNEL => Craft::t('app', 'Channels'),
-//            Section::TYPE_STRUCTURE => Craft::t('app', 'Structures')
         ];
 
         foreach ($sectionTypes as $type => $heading) {
@@ -440,25 +436,15 @@ class Review extends Element
                 foreach ($sectionsByType[$type] as $section) {
                     /** @var Section $section */
                     $source = [
+                        'id' => $section->id,
                         'key' => 'section:' . $section->uid,
                         'label' => Craft::t('site', $section->name),
                         'sites' => $section->getSiteIds(),
-                        'data' => [
-                            'type' => $type,
-                            'handle' => $section->handle
-                        ],
+                        'type' => 'sectionId',
                         'criteria' => [
                             'sectionId' => $section->id,
                         ]
                     ];
-
-//                    if ($type == Section::TYPE_STRUCTURE) {
-//                        $source['defaultSort'] = ['structure', 'asc'];
-//                        $source['structureId'] = $section->structureId;
-//                        $source['structureEditable'] = Craft::$app->getUser()->checkPermission('publishEntries:' . $section->uid);
-//                    } else {
-//                        $source['defaultSort'] = ['postDate', 'desc'];
-//                    }
 
                     $sources[] = $source;
                 }
@@ -466,6 +452,7 @@ class Review extends Element
         }
 
         // Products
+        // TODO: Add a check if commerce plugin is installed
         $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
         $sources[] = ['heading' => QARR::t('Products')];
 
@@ -473,8 +460,10 @@ class Review extends Element
             $key = 'type:' . $productType->uid;
 
             $sources[$key] = [
+                'id' => $productType->id,
                 'key' => $key,
                 'label' => $productType->name,
+                'type' => 'productTypeId',
                 'criteria' => [
                     'productTypeId' => $productType->id
                 ]
@@ -482,26 +471,6 @@ class Review extends Element
         }
 
         return $sources;
-
-//        $sources = [
-//            [
-//                'key'   => '*',
-//                'label' => QARR::t('All Product Types')
-//            ]
-//        ];
-//
-//        $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
-//
-//        foreach ($productTypes as $type) {
-//            $key = 'type:' . $type->id;
-//            $sources[$key] = [
-//                'key'      => $key,
-//                'label'    => $type->name,
-//                'criteria' => ['productTypeId' => $type->id]
-//            ];
-//        }
-//
-//        return $sources;
     }
 
     /**
@@ -532,6 +501,7 @@ class Review extends Element
             case 'reviewInfo':
                 $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim( $this->emailAddress)));
                 $variables = [
+                    'type' => 'review',
                     'author' => [
                         'fullName' => $this->fullName,
                         'emailAddress' => $this->emailAddress,
@@ -542,10 +512,20 @@ class Review extends Element
                     'geolocation' => Json::decode($this->geolocation),
                     'status' => $this->status
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-info', $variables) : $this->title;
                 break;
             case 'reviewDetails':
-                return 'Review Details';
+                $variables = [
+                    'type' => 'review',
+                    'element' => $this->element,
+                    'feedback' => $this->feedback,
+                    'datePosted' => $this->dateCreated,
+                    'reply' => $this->reply,
+                    'flags' => $this->flags,
+                    'abuse' => $this->abuse,
+                    'entryUrl' => $this->url,
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-details', $variables) : $this->title;
                 break;
             case 'flags':
                 $flags = self::getFlags();
@@ -701,6 +681,22 @@ class Review extends Element
         }
 
         return $customer;
+    }
+
+    public function getElementType()
+    {
+        $class = get_class($this->element);
+
+        if ($class == 'craft\commerce\elements\Product') {
+            return 'product';
+        }
+
+        if ($class == 'craft\elements\Entry') {
+            $section = $this->element->section->type;
+
+            return $section;
+        }
+
     }
 
     public function getElement()

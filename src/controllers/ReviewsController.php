@@ -64,7 +64,7 @@ class ReviewsController extends Controller
 
         $this->_enforceEditPermissions($variables['entry']);
 
-        $variables['fullPageForm'] = true;
+        $variables['fullPageForm'] = false;
         $variables['continueEditingUrl'] = 'qarr/reviews/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
@@ -115,9 +115,7 @@ class ReviewsController extends Controller
                     'message' => QARR::t('Submission successful.')
                 ]);
             } else {
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'review' => $review
-                ]);
+                $this->redirectToPostedUrl($review);
             }
         } else {
             if (Craft::$app->getRequest()->getIsAjax()) {

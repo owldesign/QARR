@@ -21,17 +21,24 @@
             <div class="body">
                 <div class="list">
                     {% for entry in entries %}
+                        {% set flags = entry.getFlags() %}
                         <div class="list-item has-hover pad" id="item-{{ type }}-{{ loop.index }}" data-id="{{ entry.id }}">
                             <div class="item-wrapper">
+                                {% if flags or entry.abuse %}
+                                    <div class="pulse round warning flagged-indicator"></div>
+                                {% endif %}
+
                                 <div class="item-title">
                                     <a href="{{ entry.url }}">{{ entry.title }}</a>
                                 </div>
                                 <div class="item-meta">
-                                    <span class="item-meta-icon"><i class="far fa-tags"></i></span>
-                                    {% if entry.product.id %}
-                                        <span class="item-meta-title">{{ entry.product.title }}</span>
+                                    <span class="item-meta-icon">
+                                        {% include 'qarr/_elements/element-type-icon' ignore missing with { entry: entry } %}
+                                    </span>
+                                    {% if entry.element.id %}
+                                        <span class="item-meta-title">{{ entry.element.title }}</span>
                                     {% else %}
-                                        <span class="item-meta-title color-danger">{{ 'Product does not exist!'|t('qarr') }}</span>
+                                        <span class="item-meta-title color-danger">{{ 'Element does not exist!'|t('qarr') }}</span>
                                     {% endif %}
                                     <span class="item-pipe">|</span>
                                     <span class="item-meta-icon">
@@ -44,8 +51,7 @@
                                     <span class="item-meta-title">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }}</span>
                                 </div>
 
-                                {% set flags = entry.getFlags() %}
-                                {% if flags %}
+                                {% if flags or entry.abuse %}
                                     <div class="primary-meta rules-meta">
                                         <div class="flagged-rules">
                                             {% for flag in flags %}
@@ -54,6 +60,13 @@
                                                     <span>{{ flag.rule.name }}</span>
                                                 </div>
                                             {% endfor %}
+
+                                            {% if entry.abuse %}
+                                                <div class="flagged-item">
+                                                    <i class="fal fa-exclamation"></i>
+                                                    <span>{{ 'Abuse reported'|t('qarr') }}</span>
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 {% endif %}

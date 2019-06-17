@@ -48,11 +48,6 @@ class Variables extends Behavior
      */
     public function display($element, $variables = null)
     {
-        // TODO: remove
-//        if(!$element instanceof Product) {
-//            return QARR::t('Product required, please provide craft\commerce\elements\Product instance.');
-//        }
-
         $limit              = null;
         $pagination         = 'arrows';
         $removePagination   = false;
@@ -161,12 +156,13 @@ class Variables extends Behavior
      * @param string $type
      * @param string $status
      * @param int|null $elementId
+     * @param int|null $elementType
      * @param int|null $elementTypeId
      * @return mixed
      */
-    public function getCount(string $type, string $status, int $elementId = null, int $elementTypeId = null)
+    public function getCount(string $type, string $status, int $elementId = null, $elementType = null, $elementTypeId = null)
     {
-        $count = QARR::$plugin->elements->getCount($type, $status, $elementId, $elementTypeId);
+        $count = QARR::$plugin->elements->getCount($type, $status, $elementId, $elementType, $elementTypeId);
 
         return $count;
     }

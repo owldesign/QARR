@@ -15,11 +15,13 @@ use Craft;
 use craft\base\Element;
 use craft\commerce\elements\Product;
 use craft\elements\db\ElementQueryInterface;
+use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\commerce\Plugin as CommercePlugin;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\StringHelper;
 
+use craft\models\Section;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\db\QuestionQuery;
 use owldesign\qarr\elements\actions\SetStatus;
@@ -29,6 +31,7 @@ use owldesign\qarr\jobs\GeolocationTask;
 use owldesign\qarr\jobs\RulesTask;
 
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\validators\EmailValidator;
 
 /**
@@ -124,6 +127,11 @@ class Question extends Element
      * @var
      */
     public $userAgent;
+
+    /**
+     * @var Element|null
+     */
+    private $_element;
 
     // Static Methods
     // =========================================================================
@@ -266,21 +274,94 @@ class Question extends Element
      */
     protected static function defineSources(string $context = null): array
     {
+        if ($context === 'index') {
+            $sections = Craft::$app->getSections()->getEditableSections();
+        } else {
+            $sections = Craft::$app->getSections()->getAllSections();
+        }
+
+        $sectionIds = [];
+        $singleSectionIds = [];
+        $sectionsByType = [];
+
+        foreach ($sections as $section) {
+            $sectionIds[] = $section->id;
+
+            if ($section->type == Section::TYPE_SINGLE) {
+                $singleSectionIds[] = $section->id;
+            } else {
+                $sectionsByType[$section->type][] = $section;
+            }
+        }
+
         $sources = [
+            ['heading' => QARR::t('Sources')],
             [
-                'key'   => '*',
-                'label' => QARR::t('All Product Types')
+                'id' => '*',
+                'key' => '*',
+                'type' => '*',
+                'label' => Craft::t('app', 'All entries'),
+                'defaultSort' => ['postDate', 'desc']
             ]
         ];
 
-        $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
+        // Singles
+        if (!empty($singleSectionIds)) {
+            $sources[] = [
+                'id' => $singleSectionIds,
+                'key' => 'singles',
+                'label' => Craft::t('app', 'Singles'),
+                'type' => 'sectionId',
+                'criteria' => [
+                    'sectionId' => $singleSectionIds,
+                ],
+                'defaultSort' => ['title', 'asc']
+            ];
+        }
 
-        foreach ($productTypes as $type) {
-            $key = 'type:' . $type->id;
+        // Sections
+        $sectionTypes = [
+            Section::TYPE_CHANNEL => Craft::t('app', 'Channels'),
+        ];
+
+        foreach ($sectionTypes as $type => $heading) {
+            if (!empty($sectionsByType[$type])) {
+                $sources[] = ['heading' => $heading];
+
+                foreach ($sectionsByType[$type] as $section) {
+                    /** @var Section $section */
+                    $source = [
+                        'id' => $section->id,
+                        'key' => 'section:' . $section->uid,
+                        'label' => Craft::t('site', $section->name),
+                        'sites' => $section->getSiteIds(),
+                        'type' => 'sectionId',
+                        'criteria' => [
+                            'sectionId' => $section->id,
+                        ]
+                    ];
+
+                    $sources[] = $source;
+                }
+            }
+        }
+
+        // Products
+        // TODO: Add a check if commerce plugin is installed
+        $productTypes = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
+        $sources[] = ['heading' => QARR::t('Products')];
+
+        foreach ($productTypes as $productType) {
+            $key = 'type:' . $productType->uid;
+
             $sources[$key] = [
-                'key'      => $key,
-                'label'    => $type->name,
-                'criteria' => ['productTypeId' => $type->id]
+                'id' => $productType->id,
+                'key' => $key,
+                'label' => $productType->name,
+                'type' => 'productTypeId',
+                'criteria' => [
+                    'productTypeId' => $productType->id
+                ]
             ];
         }
 
@@ -299,14 +380,47 @@ class Question extends Element
         return $actions;
     }
 
-    /**
-     * @param string $attribute
-     * @return string
-     * @throws \yii\base\InvalidConfigException
-     */
+    public function setEagerLoadedElements(string $handle, array $elements)
+    {
+        if ($handle === 'element') {
+            $element = $elements[0] ?? null;
+            $this->setElement($element);
+        } else {
+            parent::setEagerLoadedElements($handle, $elements); // TODO: Change the autogenerated stub
+        }
+    }
+
     protected function tableAttributeHtml(string $attribute): string
     {
         switch($attribute) {
+            case 'questionInfo':
+                $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim( $this->emailAddress)));
+                $variables = [
+                    'type' => 'question',
+                    'author' => [
+                        'fullName' => $this->fullName,
+                        'emailAddress' => $this->emailAddress,
+                        'avatarUrl' => $avatarUrl,
+                        'user' => $this->user
+                    ],
+                    'geolocation' => Json::decode($this->geolocation),
+                    'status' => $this->status
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-info', $variables) : $this->title;
+                break;
+            case 'questionDetails':
+                $variables = [
+                    'type' => 'question',
+                    'element' => $this->element,
+                    'feedback' => $this->question,
+                    'datePosted' => $this->dateCreated,
+                    'reply' => $this->answers,
+                    'flags' => $this->flags,
+                    'abuse' => $this->abuse,
+                    'entryUrl' => $this->url,
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-details', $variables) : $this->title;
+                break;
             case 'flags':
                 $flags = self::getFlags();
                 $markup = '<div class="flags-container">';
@@ -334,21 +448,21 @@ class Question extends Element
                 $markup .= '</div>';
                 return $markup;
                 break;
-            case 'productId':
-                $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
-                if (!$product) {
-                    return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
-                }
-                $markup = '<div class="product-wrapper">';
-                $markup .= '<div class="product-badge-wrapper">';
-                $markup .= '<div class="product-badge purple"><span>'.StringHelper::first($product->getType()->name, 1).'</span></div>';
-                $markup .= '</div>';
-                $markup .= '<div class="product-meta">';
-                $markup .= '<span class="product-name">'.$product->title.'</span><span class="product-type">'.$product->getType()->name.'</span>';
-                $markup .= '</div>';
-                $markup .= '</div">';
-                return $markup;
-                break;
+//            case 'productId':
+//                $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
+//                if (!$product) {
+//                    return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
+//                }
+//                $markup = '<div class="product-wrapper">';
+//                $markup .= '<div class="product-badge-wrapper">';
+//                $markup .= '<div class="product-badge purple"><span>'.StringHelper::first($product->getType()->name, 1).'</span></div>';
+//                $markup .= '</div>';
+//                $markup .= '<div class="product-meta">';
+//                $markup .= '<span class="product-name">'.$product->title.'</span><span class="product-type">'.$product->getType()->name.'</span>';
+//                $markup .= '</div>';
+//                $markup .= '</div">';
+//                return $markup;
+//                break;
             case 'rating':
                 $rating = (int)$this->rating;
                 $markup = '<div class="rating-wrapper">';
@@ -397,13 +511,16 @@ class Question extends Element
     protected static function defineTableAttributes(): array
     {
         $attributes = [];
+
         $attributes['status'] = ['label' => QARR::t('Title')];
-        $attributes['reports'] = ['label' => QARR::t('Reports')];
-        $attributes['guest'] = ['label' => QARR::t('Guest')];
-        $attributes['question'] = ['label' => QARR::t('Question')];
-        $attributes['answer'] = ['label' => QARR::t('Answer')];
-        $attributes['productId'] = ['label' => QARR::t('Product')];
-        $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
+        $attributes['questionInfo'] = ['label' => QARR::t('Question Info')];
+        $attributes['questionDetails'] = ['label' => QARR::t('Question Details')];
+//        $attributes['reports'] = ['label' => QARR::t('Reports')];
+//        $attributes['guest'] = ['label' => QARR::t('Guest')];
+//        $attributes['question'] = ['label' => QARR::t('Question')];
+//        $attributes['answer'] = ['label' => QARR::t('Answer')];
+//        $attributes['elementId'] = ['label' => QARR::t('Element')];
+//        $attributes['dateCreated'] = ['label' => QARR::t('Submitted')];
 
         return $attributes;
     }
@@ -414,24 +531,24 @@ class Question extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'guest', 'question', 'productId', 'dateCreated'];
+        return ['status', 'questionInfo', 'questionDetails'];
     }
 
-    /**
-     * @return \craft\commerce\elements\Product|null|string
-     */
-    public function product()
-    {
-        $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
-
-        if (!$product) {
-            $product = new Product();
-            return $product;
-            return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
-        }
-
-        return $product;
-    }
+//    /**
+//     * @return \craft\commerce\elements\Product|null|string
+//     */
+//    public function product()
+//    {
+//        $product = CommercePlugin::getInstance()->products->getProductById($this->productId);
+//
+//        if (!$product) {
+//            $product = new Product();
+//            return $product;
+//            return '<p>'.QARR::t('Commerce Plugin is required!').'</p>';
+//        }
+//
+//        return $product;
+//    }
 
     /**
      * @param $status
@@ -474,6 +591,49 @@ class Question extends Element
         $result = QARR::$plugin->rules->getFlagged($this->id);
 
         return $result;
+    }
+
+    public function getElement()
+    {
+        if ($this->_element !== null) {
+            return $this->_element;
+        }
+
+        if ($this->elementId === null) {
+            return null;
+        }
+
+        if (($this->_element = Craft::$app->getElements()->getElementById($this->elementId)) === null) {
+            throw new InvalidConfigException('Invalid element ID: ' . $this->elementId);
+        }
+
+        return $this->_element;
+    }
+
+    public function setElement(Element $element = null)
+    {
+        $this->_element = $element;
+    }
+
+    public function getUser()
+    {
+        return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
+    }
+
+    public function getElementType()
+    {
+        $class = get_class($this->element);
+
+        if ($class == 'craft\commerce\elements\Product') {
+            return 'product';
+        }
+
+        if ($class == 'craft\elements\Entry') {
+            $section = $this->element->section->type;
+
+            return $section;
+        }
+
     }
 
 

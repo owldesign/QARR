@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2018 Vadim Goncharov
  */
 
-namespace owldesign\qarr\controllers\tools;
+namespace owldesign\qarr\controllers\settings;
 
 use craft\helpers\Json;
 use owldesign\qarr\models\Rule;
@@ -38,7 +38,7 @@ class HelpDeskController extends Controller
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
-        return $this->renderTemplate('qarr/tools/help-desk/index', $variables);
+        return $this->renderTemplate('qarr/settings/help-desk/index', $variables);
     }
 
 }

@@ -31,9 +31,11 @@ class QuestionQuery extends ElementQuery
     public $isNew;
     public $abuse;
     public $votes;
+
     public $elementId;
     public $sectionId;
     public $productTypeId;
+
     public $geolocation;
     public $ipAddress;
     public $userAgent;

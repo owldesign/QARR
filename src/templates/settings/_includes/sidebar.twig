@@ -3,21 +3,14 @@
 <nav id="settings-sidebar">
     <ul>
         <li>
-            <a href="{{ url('qarr/tools') }}" class="{{ currentSettingsPage == null ? 'sel' }}">
+            <a href="{{ url('qarr/settings') }}" class="{{ currentSettingsPage == null ? 'sel' }}">
                 <i class="{{ currentSettingsPage == null ? 'fas' : 'far' }} fa-exclamation-circle icon"></i>
                 <span class="label">{{ 'Info'|t('qarr') }}</span>
             </a>
         </li>
 
         <li>
-            <a href="{{ url('qarr/tools/rules') }}" class="{{ currentSettingsPage == 'rules' ? 'sel' }}">
-                <i class="{{ currentSettingsPage == 'rules' ? 'fas' : 'far' }} fa-flag icon"></i>
-                <span class="label">{{ 'Rules'|t('qarr') }}</span>
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ url('qarr/tools/helpdesk') }}" class="{{ currentSettingsPage == 'helpdesk' ? 'sel' }}">
+            <a href="{{ url('qarr/settings/helpdesk') }}" class="{{ currentSettingsPage == 'helpdesk' ? 'sel' }}">
                 <i class="{{ currentSettingsPage == 'helpdesk' ? 'fas' : 'far' }} fa-comments-alt icon"></i>
                 <span class="label">{{ 'Help Desk'|t('qarr') }}</span>
                 <div class="badge">1</div>
@@ -25,7 +18,7 @@
         </li>
 
         <li>
-            <a href="{{ url('qarr/tools/utilities') }}" class="{{ currentSettingsPage == 'utilities' ? 'sel' }}">
+            <a href="{{ url('qarr/settings/utilities') }}" class="{{ currentSettingsPage == 'utilities' ? 'sel' }}">
                 <i class="{{ currentSettingsPage == 'utilities' ? 'fas' : 'far' }} fa-layer-group icon"></i>
                 <span class="label">{{ 'Utilities'|t('qarr') }}</span>
             </a>

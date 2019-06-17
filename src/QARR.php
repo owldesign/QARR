@@ -122,7 +122,7 @@ class QARR extends Plugin
 
     protected function settingsHtml()
     {
-        return \Craft::$app->getView()->renderTemplate('qarr/settings/index', [
+        return Craft::$app->getView()->renderTemplate('qarr/settings/index', [
             'settings' => $this->getSettings()
         ]);
     }
@@ -161,9 +161,13 @@ class QARR extends Plugin
                     'label' => QARR::t('Displays'),
                     'url' => 'qarr/displays'
                 ],
-                'tools' => [
-                    'label' => QARR::t('Tools'),
-                    'url' => 'qarr/tools'
+                'rules' => [
+                    'label' => QARR::t('Rules'),
+                    'url' => 'qarr/rules'
+                ],
+                'settings' => [
+                    'label' => QARR::t('Settings'),
+                    'url' => 'qarr/settings'
                 ]
             ]
         ]);

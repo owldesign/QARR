@@ -80,7 +80,7 @@ class CorrespondenceController extends Controller
 
         $entry = QARR::$plugin->reviews->getEntryById($variables['entryId']);
         $variables['entry'] = $entry;
-        $variables['product'] = $entry->product();
+        $variables['element'] = $entry->element;
 
         $variables['websiteName'] = Craft::$app->sites->currentSite->name;
 
