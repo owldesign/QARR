@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.1.1 - 2019-06-17
+
+### Fixed
+- Version bump, missing schema version required for migrations
+
 ## 1.1.0 - 2019-06-17
 
 ### Improved
