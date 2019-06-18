@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.1.3 - 2019-06-17
+
+### Fixed
+- Updating missing columns from the Install.php file, again. Ooops.
+
 ## 1.1.2 - 2019-06-17
 
 ### Fixed
