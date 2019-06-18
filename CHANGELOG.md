@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.1.2 - 2019-06-17
+
+### Fixed
+- Missing `hasPurchased` column from the Install.php file
+
 ## 1.1.1 - 2019-06-17
 
 ### Fixed
