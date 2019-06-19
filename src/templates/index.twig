@@ -1,22 +1,22 @@
 {% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Geolocation") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Geolocation") %}#}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}#}
 
 {% set title = "Dashboard"|t('qarr') %}
-{% set bodyClass = 'qarr qarr-dashboard' %}
+{% set bodyClass = 'qarr-global' %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
-{% set content %}
+{% block main %}
+{#<div id="dashboard-grid" class="grid">#}
 
-<div id="dashboard-grid" class="grid">
-    
     <div class="item" data-colspan="6">
         {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {type: 'reviews' } %}
     </div>
@@ -37,5 +37,5 @@
         {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Questions'|t('qarr'), type: 'questions', limit: 5, class: 'inwards no-footer' } %}
     </div>
 
-</div>
-{% endset %}
+{#</div>#}
+{% endblock %}

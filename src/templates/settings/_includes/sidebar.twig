@@ -18,6 +18,14 @@
         </li>
 
         <li>
+            <a href="{{ url('qarr/settings/email-templates') }}" class="{{ currentSettingsPage == 'email-templates' ? 'sel' }}">
+                <i class="{{ currentSettingsPage == 'email-templates' ? 'fas' : 'far' }} fa-at icon"></i>
+                <span class="label">{{ 'Email Templates'|t('qarr') }}</span>
+            </a>
+        </li>
+
+
+        <li>
             <a href="{{ url('qarr/settings/utilities') }}" class="{{ currentSettingsPage == 'utilities' ? 'sel' }}">
                 <i class="{{ currentSettingsPage == 'utilities' ? 'fas' : 'far' }} fa-layer-group icon"></i>
                 <span class="label">{{ 'Utilities'|t('qarr') }}</span>

@@ -1,0 +1,68 @@
+.qarr-global #main-container {
+  font-family: Open Sans, sans-serif;
+}
+
+.qarr-global #main-container #main #header {
+  background: white;
+  padding: 0 25px !important;
+  box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.1);
+}
+
+.qarr-global #main-container #main #header * {
+  margin: 0;
+}
+
+.qarr-global #navigation a {
+  display: block;
+  position: relative;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-weight: 100;
+  letter-spacing: 0.05em;
+  color: #718096;
+}
+
+.qarr-global #navigation a:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 0.25rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.qarr-global #navigation a:hover {
+  color: #2d3748;
+}
+
+.qarr-global #navigation a:hover:before {
+  background-color: #d6bcfa;
+}
+
+.qarr-global #navigation .active-link:before {
+  background-color: #9f7aea;
+}
+
+.qarr-global #navigation .badge {
+  display: inline-block;
+  background-color: #edf2f7;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  text-align: center;
+  line-height: 1;
+  color: #a0aec0;
+}
+
+.qarr-global a {
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}

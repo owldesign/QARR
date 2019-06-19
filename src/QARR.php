@@ -308,15 +308,16 @@ class QARR extends Plugin
      */
     private function _registerCpAssets()
     {
-        if (Craft::$app->getRequest()->getIsCpRequest()) {
-            Event::on(
-                View::class,
-                View::EVENT_BEFORE_RENDER_TEMPLATE,
-                function (TemplateEvent $event) {
-                    Craft::$app->getView()->registerAssetBundle(QarrCp::class);
-                }
-            );
-        }
+        // TODO: take a look at this, does it need to exist?
+//        if (Craft::$app->getRequest()->getIsCpRequest()) {
+//            Event::on(
+//                View::class,
+//                View::EVENT_BEFORE_RENDER_TEMPLATE,
+//                function (TemplateEvent $event) {
+//                    Craft::$app->getView()->registerAssetBundle(QarrCp::class);
+//                }
+//            );
+//        }
     }
 
     private function _registerFieldTypes()

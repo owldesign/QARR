@@ -1,1 +1,0 @@
-Garnish.$doc.ready(function(){console.log("UTILITIES!!"),$("#update-geolocations").on("click",function(t){t.preventDefault(),Craft.postActionRequest("qarr/settings/utilities/update-geolocations",{},$.proxy(function(t,o){console.log(t),t&&Craft.cp.displayNotice(Craft.t("qarr",t.message))},this))})});

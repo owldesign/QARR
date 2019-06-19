@@ -1,1 +1,0 @@
-Garnish.$doc.ready(function(){});

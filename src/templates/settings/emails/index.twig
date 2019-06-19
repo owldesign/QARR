@@ -1,0 +1,57 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Emails") %}
+
+{% set title = "Utilities"|t('qarr') %}
+{% set bodyClass = 'qarr qarr-tools' %}
+{% set selectedSubnavItem = "emails" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block header %}
+    {% include 'qarr/_includes/header' ignore missing %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+
+    {% if rules|length %}
+        <table id="rules" class="data fullwidth collapsible">
+            <thead>
+            <th scope="col">{{ "Name"|t('qarr') }}</th>
+            <th scope="col">{{ "Handle"|t('qarr') }}</th>
+            <th scope="col">{{ "Enabled"|t('qarr') }}</th>
+            <th scope="col">{{ "Flagged Count"|t('qarr') }}</th>
+            <td class="thin"></td>
+            </thead>
+            <tbody>
+            {% for rule in rules %}
+                <tr data-id="{{ rule.id }}" data-name="{{ rule.name}}">
+                    <td scope="row" data-title="{{ 'Name'|t('qarr') }}">
+                        <div class="element">
+                            <a href="{{ url('qarr/rules/' ~ rule.id) }}">{{ rule.name }}</a>
+                        </div>
+                    </td>
+                    <td data-title="{{ 'Handle'|t('qarr') }}"><code>{{ rule.handle }}</code></td>
+                    <td data-title="{{ 'Enabled'|t('qarr') }}">
+                        {% if rule.enabled %}
+                            <span class="status approved"></span>
+                        {% else %}
+                            <span class="status rejected"></span>
+                        {% endif %}
+                    </td>
+                    <td data-title="{{ 'Flagged Count'|t('qarr') }}">{{ craft.qarrRules.getFlaggedCountByRuleId(rule.id) }}</td>
+                    <td class="thin">
+                        {% if currentUser.can('qarr:deleteRules') %}
+                            <a class="delete icon" title="{{ 'Delete'|t('qarr') }}" role="button"></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endset %}
