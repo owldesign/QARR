@@ -1,3 +1,40 @@
+.qarr-elementindex #sidebar {
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+.qarr-elementindex #sidebar li a {
+  display: block;
+  margin: 0;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: #718096;
+}
+
+.qarr-elementindex #sidebar li a:hover {
+  color: #9f7aea;
+}
+
+.qarr-elementindex #sidebar .heading {
+  margin: 0;
+  padding: 0;
+  margin-top: 1.25rem;
+}
+
+.qarr-elementindex #sidebar .heading span {
+  display: block;
+  margin: 0;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  color: #2d3748;
+  font-size: 0.875rem;
+}
+
 .qarr-global #main-container {
   font-family: Open Sans, sans-serif;
 }

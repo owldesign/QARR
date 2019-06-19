@@ -1,4 +1,4 @@
 {% extends "_layouts/elementindex" %}
-
+{% set currentPage = craft.app.request.getSegment(2) %}
 {% set bodyClass = 'qarr-global ' ~ (pageBodyClass is defined ? pageBodyClass~' ' : '')  %}
 
