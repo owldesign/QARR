@@ -476,7 +476,7 @@ class Review extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
-            case 'reviewInfo':
+            case 'information':
                 $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
                 $variables = [
                     'type' => 'review',
@@ -492,7 +492,21 @@ class Review extends Element
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-info', $variables) : $this->title;
                 break;
-            case 'reviewDetails':
+            case 'feedback':
+                $variables = [
+                    'type' => 'review',
+                    'entry' => $this,
+                    'element' => $this->element,
+                    'feedback' => $this->feedback,
+                    'datePosted' => $this->dateCreated,
+                    'reply' => $this->reply,
+                    'flags' => $this->flags,
+                    'abuse' => $this->abuse,
+                    'entryUrl' => $this->url,
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-details', $variables) : $this->title;
+                break;
+            case 'element':
                 $variables = [
                     'type' => 'review',
                     'element' => $this->element,
@@ -503,7 +517,7 @@ class Review extends Element
                     'abuse' => $this->abuse,
                     'entryUrl' => $this->url,
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-details', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-element', $variables) : $this->title;
                 break;
             default:
                 return parent::tableAttributeHtml($attribute);
@@ -534,8 +548,9 @@ class Review extends Element
         $attributes = [];
 
         $attributes['status'] = ['label' => QARR::t('Title')];
-        $attributes['reviewInfo'] = ['label' => QARR::t('Review Info')];
-        $attributes['reviewDetails'] = ['label' => QARR::t('Review Details')];
+        $attributes['information'] = ['label' => QARR::t('Information')];
+        $attributes['feedback'] = ['label' => QARR::t('Feedback')];
+        $attributes['element'] = ['label' => QARR::t('Element')];
 
         return $attributes;
     }
@@ -545,7 +560,7 @@ class Review extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'reviewInfo', 'reviewDetails'];
+        return ['status', 'information', 'feedback', 'element'];
     }
 
     /**

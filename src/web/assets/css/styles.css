@@ -1,86 +1,51 @@
-.qarr-elementindex #sidebar {
-  background-color: #fff;
-  margin: 0;
+.qarr-menu {
   padding: 0;
 }
 
-.qarr-elementindex #sidebar li a {
-  display: block;
-  margin: 0;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-  color: #757575;
-  letter-spacing: 0.025em;
-  transition-duration: 0.525s;
+.qarr-menu ul li a {
+  padding: 10px 14px;
 }
 
-.qarr-elementindex #sidebar li a:hover {
-  background-color: #faf5ff;
+.qarr-menu ul li a.sel:hover {
+  background: #9f7aea !important;
 }
 
-.qarr-elementindex #sidebar li a.sel {
+.qarr-menu ul li a:hover {
+  background: #faf5ff !important;
+}
+
+.qarr-menu ul.padded {
+  margin: 0 !important;
+}
+
+.qarr-menu hr, .qarr-menu hr.padded {
+  margin: 0 -14px 0 -14px !important;
+}
+
+.qarr-menu .sel {
   background-color: #9f7aea;
   color: #fff;
 }
 
-.qarr-elementindex #sidebar .heading {
-  margin: 0;
-  padding: 0;
+.qarr-status-menu a:before, .qarr-sort-menu a:before {
+  display: none !important;
 }
 
-.qarr-elementindex #sidebar .heading span {
-  display: block;
-  margin: 0;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  color: #424242;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.qarr-elementindex #sidebar .customize-sources:hover {
-  color: #9f7aea;
-}
-
-.qarr-elementindex .toolbar input.text {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  border-width: 1px;
-  border-color: #eeeeee;
-  border-radius: 0.25rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  color: #616161;
-  line-height: 1.25;
-}
-
-.qarr-elementindex .toolbar input.text:focus {
-  outline: 0;
+.qarr-status-menu a .status, .qarr-sort-menu a .status {
   background-color: #fff;
-  border-color: #9f7aea;
+  border-width: 0;
 }
 
-.qarr-elementindex .toolbar .menubtn {
-  background-image: none;
-  box-shadow: none;
-  background-color: #f5f5f5;
-  color: #757575;
+.qarr-status-menu a .status.pending, .qarr-sort-menu a .status.pending {
+  background-color: #63b3ed;
 }
 
-.qarr-elementindex .toolbar .menubtn:after {
-  transition: all 0.2s ease;
+.qarr-status-menu a .status.approved, .qarr-sort-menu a .status.approved {
+  background-color: #68d391;
 }
 
-.qarr-elementindex .toolbar .menubtn.active:after {
-  transform: scale(-1);
+.qarr-status-menu a .status.rejected, .qarr-sort-menu a .status.rejected {
+  background-color: #fc8181;
 }
 
 .qarr-global #main-container {

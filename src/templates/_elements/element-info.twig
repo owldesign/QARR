@@ -1,5 +1,5 @@
 <div class="element-block element-info">
-    <div class="checkbox" title="Select"></div>
+{#    <div class="checkbox" title="Select"></div>#}
 
     <div class="item-column user-info">
         <div class="qarr-avatar qarr-avatar-square qarr-avatar-default">
@@ -11,20 +11,19 @@
         {% endif %}
         <div class="user-email">{{ author.emailAddress }}</div>
         <div class="user-location">
-            <div>
-                <i class="fa fa-globe-americas"></i>
-                {% if geolocation %}
-                    {% if geolocation is defined and geolocation['country_name'] %}
-                        <span>{{ geolocation['country_name'] }}, {{ geolocation['region'] }}</span>
-                    {% else %}
-                        {{ 'Location Unknown'|t('qarr') }}
-                    {% endif %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20"><path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm2-2.25a8 8 0 0 0 4-2.46V9a2 2 0 0 1-2-2V3.07a7.95 7.95 0 0 0-3-1V3a2 2 0 0 1-2 2v1a2 2 0 0 1-2 2v2h3a2 2 0 0 1 2 2v5.75zm-4 0V15a2 2 0 0 1-2-2v-1h-.5A1.5 1.5 0 0 1 4 10.5V8H2.25A8.01 8.01 0 0 0 8 17.75z"/></svg>
+
+            {% if geolocation %}
+                {% if geolocation is defined and geolocation['country_name'] %}
+                    <span>{{ geolocation['country_name'] }}, {{ geolocation['region'] }}</span>
                 {% else %}
-                    {# TODO: add geolcoation action here #}
                     {{ 'Location Unknown'|t('qarr') }}
-{#                    <a href="#"> Check location</a>#}
                 {% endif %}
-            </div>
+            {% else %}
+                {# TODO: add geolcoation action here #}
+                {{ 'Location Unknown'|t('qarr') }}
+{#                    <a href="#"> Check location</a>#}
+            {% endif %}
         </div>
     </div>
 
@@ -33,9 +32,9 @@
         {% for i in 1..5 %}
 
             {% if rating >= i %}
-                <span class="qarr-rating-star active"><i class="fa fa-star"></i></span>
+                <span class="qarr-rating-star active"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg></span>
             {% else %}
-                <span class="qarr-rating-star"><i class="fa fa-star"></i></span>
+                <span class="qarr-rating-star"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg></span>
             {% endif %}
         {% endfor %}
     </div>

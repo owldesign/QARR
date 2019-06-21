@@ -5,7 +5,7 @@ namespace owldesign\qarr\web\assets;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-class Qarr extends AssetBundle
+class ElementIndex extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -19,21 +19,14 @@ class Qarr extends AssetBundle
 
         $this->depends = [
             CpAsset::class,
-//            Fontawesome::class,
-//            Tippy::class,
-//            Greensock::class,
-//            Wavify::class,
-//            Select2::class,
-//            VelocityUI::class,
-        ];
-
-        $this->js = [
-//            'js/utilities-cp.js',
-            'js/qarr.js',
         ];
 
         $this->css = [
-//            'css/qarr.css',
+            'css/elementindex.css'
+        ];
+
+        $this->js = [
+            'js/elementindex.js'
         ];
 
         parent::init();
