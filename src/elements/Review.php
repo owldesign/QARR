@@ -39,9 +39,9 @@ class Review extends Element
     // Constants
     // =========================================================================
 
-    const STATUS_PENDING    = 'pending';
-    const STATUS_APPROVED   = 'approved';
-    const STATUS_REJECTED   = 'rejected';
+    const STATUS_PENDING = 'pending';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
 
     // Properties
     // =========================================================================
@@ -304,7 +304,7 @@ class Review extends Element
     public function getCpEditUrl()
     {
         return UrlHelper::cpUrl(
-            'qarr/reviews/'.$this->id
+            'qarr/reviews/' . $this->id
         );
     }
 
@@ -314,7 +314,7 @@ class Review extends Element
     public function getUrl()
     {
         return UrlHelper::cpUrl(
-            'qarr/reviews/'.$this->id
+            'qarr/reviews/' . $this->id
         );
     }
 
@@ -324,9 +324,9 @@ class Review extends Element
     public static function statuses(): array
     {
         return [
-            self::STATUS_PENDING    => QARR::t('Pending'),
-            self::STATUS_APPROVED   => QARR::t('Approved'),
-            self::STATUS_REJECTED   => QARR::t('Rejected'),
+            self::STATUS_PENDING => QARR::t('Pending'),
+            self::STATUS_APPROVED => QARR::t('Approved'),
+            self::STATUS_REJECTED => QARR::t('Rejected'),
         ];
     }
 
@@ -335,9 +335,9 @@ class Review extends Element
      */
     public function rules()
     {
-        $rules      = parent::rules();
-        $rules[]    = [['fullName', 'emailAddress', 'rating', 'feedback'], 'required'];
-        $rules[]    = [['emailAddress'], EmailValidator::class];
+        $rules = parent::rules();
+        $rules[] = [['fullName', 'emailAddress', 'rating', 'feedback'], 'required'];
+        $rules[] = [['emailAddress'], EmailValidator::class];
 
         return $rules;
     }
@@ -475,9 +475,9 @@ class Review extends Element
      */
     protected function tableAttributeHtml(string $attribute): string
     {
-        switch($attribute) {
+        switch ($attribute) {
             case 'reviewInfo':
-                $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim( $this->emailAddress)));
+                $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
                 $variables = [
                     'type' => 'review',
                     'author' => [
@@ -517,10 +517,10 @@ class Review extends Element
     protected static function defineSortOptions(): array
     {
         $attributes = [
-            'qarr_reviews.status'       => QARR::t('Status'),
-            'qarr_reviews.rating'       => QARR::t('Rating'),
-            'qarr_reviews.fullName'     => QARR::t('Author'),
-            'elements.dateCreated'      => QARR::t('Submitted')
+            'qarr_reviews.status' => QARR::t('Status'),
+            'qarr_reviews.rating' => QARR::t('Rating'),
+            'qarr_reviews.fullName' => QARR::t('Author'),
+            'elements.dateCreated' => QARR::t('Submitted')
         ];
 
         return $attributes;
@@ -660,19 +660,19 @@ class Review extends Element
     public function getTimeAgo($time)
     {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-        $lengths = array("60","60","24","7","4.35","12","10");
+        $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
 
         $now = time();
-        $difference     = $now - strtotime($time);
+        $difference = $now - strtotime($time);
 
-        for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+        for ($j = 0; $difference >= $lengths[$j] && $j < count($lengths) - 1; $j++) {
             $difference /= $lengths[$j];
         }
 
         $difference = round($difference);
 
-        if($difference != 1) {
-            $periods[$j].= "s";
+        if ($difference != 1) {
+            $periods[$j] .= "s";
         }
 
         return "$difference $periods[$j]";
@@ -738,25 +738,25 @@ class Review extends Element
             $record = ReviewRecord::findOne($this->id);
 
             if (!$record) {
-                throw new Exception('Invalid Review ID: '.$this->id);
+                throw new Exception('Invalid Review ID: ' . $this->id);
             }
         } else {
             $record = new ReviewRecord();
             $record->id = $this->id;
         }
 
-        $record->fullName       = $this->fullName;
-        $record->emailAddress   = $this->emailAddress;
-        $record->feedback       = $this->feedback;
-        $record->rating         = $this->rating;
-        $record->status         = $this->status;
-        $record->options        = $this->options;
-        $record->displayId      = $this->displayId;
-        $record->elementId      = $this->elementId;
-        $record->sectionId      = $this->sectionId;
-        $record->productTypeId  = $this->productTypeId;
-        $record->ipAddress      = $this->ipAddress;
-        $record->userAgent      = $this->userAgent;
+        $record->fullName = $this->fullName;
+        $record->emailAddress = $this->emailAddress;
+        $record->feedback = $this->feedback;
+        $record->rating = $this->rating;
+        $record->status = $this->status;
+        $record->options = $this->options;
+        $record->displayId = $this->displayId;
+        $record->elementId = $this->elementId;
+        $record->sectionId = $this->sectionId;
+        $record->productTypeId = $this->productTypeId;
+        $record->ipAddress = $this->ipAddress;
+        $record->userAgent = $this->userAgent;
 
         $record->save(false);
 

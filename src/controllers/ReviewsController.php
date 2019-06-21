@@ -17,7 +17,7 @@ use yii\web\Response;
 
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Review;
-use owldesign\qarr\rules\ProfanityCheck;
+use owldesign\qarr\rules\RuleChecker;
 
 /**
  * Class ReviewsController
