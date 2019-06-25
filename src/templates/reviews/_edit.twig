@@ -48,12 +48,6 @@
                     entry: entry
                 } %}
             {% endif %}
-            {% js %}
-                new FeedbackResponse({
-                    'id': "{{ entry.reply ? entry.reply.id }}",
-                    'elementId': "{{ entry.id }}",
-                });
-            {% endjs %}
         </div>
 
         <div class="panel-actions">

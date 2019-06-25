@@ -83,17 +83,24 @@ class RepliesController extends Controller
         $model->reply       = $text;
         $model->elementId   = $elementId;
         $model->authorId    = $user->id;
-
+        
         $response = QARR::$plugin->replies->save($model, $author);
 
         if ($response) {
-            $array = ArrayHelper::toArray($response);
+            $model->id = $response->id;
+            $model->uid = $response->uid;
+            $model->dateCreated = $response->dateCreated;
+            $model->dateUpdated = $response->dateUpdated;
 
-            $array['author'] = $author->friendlyName;
+            $template = Craft::$app->view->renderTemplate('qarr/_elements/element-review-reply', [
+                'response' => $model
+            ]);
 
             return $this->asJson([
                 'success' => true,
-                'response'   => $array
+                'author'   => $model->author,
+                'response' => $model,
+                'template' => $template
             ]);
         } else {
             return $this->asJson([

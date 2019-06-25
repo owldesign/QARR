@@ -2,26 +2,30 @@ var QarrEmailCorrespondence, QarrEmailModal, QarrPrompt; // Replies
 
 var FeedbackResponse = Garnish.Base.extend({
   $replyBtn: null,
+  $replyDeleteBtn: null,
+  $replyEditBtn: null,
   $container: null,
   $spinner: null,
   id: null,
   elementId: null,
   modal: null,
-  init: function init(obj) {
-    this.id = obj.id;
-    this.elementId = obj.elementId;
-
-    if (this.id) {
-      console.log('ID: ', this.id);
-    }
-
-    console.log('Element ID: ', this.elementId);
-    this.$replyBtn = Garnish.$doc.find('.feedback-reply');
-    this.$container = Garnish.$doc.find('.response'); // this.$spinner = $('.spinner')
-
-    if (this.$replyBtn.is(':visible')) {
-      this.addListener(this.$replyBtn, 'click', 'showReplyModal');
-    }
+  init: function init(container) {
+    console.log(container); // this.id = obj.id
+    // this.elementId = obj.elementId
+    // this.$replyBtn = Garnish.$doc.find('.feedback-reply')
+    // this.$container = Garnish.$doc.find('.response')
+    //
+    // if (this.$replyBtn.is(':visible')) {
+    //     this.addListener(this.$replyBtn, 'click', 'showReplyModal')
+    // }
+    //
+    // if (this.id) {
+    //     this.$replyEditBtn = this.$container.find('#edit-feedback-btn')
+    //     this.$replyDeleteBtn = this.$container.find('#delete-feedback-btn')
+    //
+    //     this.addListener(this.$replyEditBtn, 'click', 'editReplyModal')
+    //     this.addListener(this.$replyDeleteBtn, 'click', 'deleteReply')
+    // }
   },
   showReplyModal: function showReplyModal() {
     if (this.modal) {
@@ -36,25 +40,65 @@ var FeedbackResponse = Garnish.Base.extend({
   updateReply: function updateReply(payload) {
     var _this = this;
 
-    // this.$spinner.removeClass('hidden');
-    // this.$container.addClass('faded')
+    this.$spinner = $('<div class="spinner hidden"/>').appendTo(this.$container);
+    this.$spinner.removeClass('hidden');
+    this.$container.addClass('faded');
     data = {
       id: this.id,
       reply: payload.reply,
       elementId: this.elementId
     };
-    console.log(data);
     Craft.postActionRequest('qarr/replies/save', data, $.proxy(function (response, textStatus) {
       if (textStatus === 'success') {
-        // $('.feedback-panel').addClass('has-response')
-        _this.updateFeedbackHtml(response.response);
+        _this.updateFeedbackHtml(response);
       }
     }, this));
     this.modal.hide();
   },
-  updateFeedbackHtml: function updateFeedbackHtml(reply) {
-    this.id = reply.id;
-    console.log('Template: ', reply);
+  updateFeedbackHtml: function updateFeedbackHtml(data) {
+    this.id = data.response.id;
+    var that = this;
+
+    if (data.success) {
+      setTimeout($.proxy(function () {
+        this.$container.html(data.template);
+        Craft.cp.displayNotice(Craft.t('qarr', 'Reply added'));
+        this.$spinner.addClass('hidden');
+        this.$container.removeClass('faded');
+        this.$replyEditBtn = this.$container.find('#edit-feedback-btn');
+        this.$replyDeleteBtn = this.$container.find('#delete-feedback-btn');
+        this.addListener(this.$replyEditBtn, 'click', 'editReplyModal');
+        this.addListener(this.$replyDeleteBtn, 'click', 'deleteReply'); // new QarrReplyToFeedback({
+        //     id: data.response.id,
+        //     elementId: data.response.elementId
+        // })
+        // this.$replyBtn.velocity({opacity: 0}, 500, function () {  })
+
+        that.$replyBtn.addClass('opacity-50 cursor-not-allowed');
+      }, this), 1000);
+    }
+  },
+  editReplyModal: function editReplyModal(e) {
+    e.preventDefault();
+    console.log('editing reply');
+  },
+  deleteReply: function deleteReply(e) {
+    var _this2 = this;
+
+    e.preventDefault();
+    console.log('deleting reply');
+    var data = {
+      id: this.id
+    };
+    Craft.postActionRequest('qarr/replies/delete', data, $.proxy(function (response, textStatus) {
+      if (response.success) {
+        Craft.cp.displayNotice(Craft.t('qarr', 'Reply deleted'));
+
+        _this2.$container.html('');
+
+        _this2.$replyBtn.removeClass('opacity-50 cursor-not-allowed');
+      }
+    }, this));
   }
 }); // let FeedbackResponse = Garnish.Base.extend({
 //     $btn: null,
@@ -147,17 +191,12 @@ var ReplyModal = Garnish.Modal.extend({
     self = this;
     this.base();
     this.parent = parent;
-    console.log('widget: ', this.parent);
     this.$form = $('<form class="modal fitted qarr-modal prompt-modal">').appendTo(Garnish.$bod);
     this.setContainer(this.$form);
-    body = $(['<div class="body">', '<header class="header">', '<span class="header-text tracking-wider text-lg font-normal text-gray-700">' + Craft.t('qarr', 'Replying to Feedback') + '</span>', '</header>', '<label class="block text-gray-700 text-sm font-medium mb-2">' + Craft.t('qarr', 'Reply message') + '</label>', '<textarea id="reply-text" class="outline-none rounded p-4 bg-gray-100 text-gray-700" rows="6" cols="70" placeholder="' + Craft.t('qarr', 'Leave a reply...') + '"></textarea>', '<div class="error-container relative">', '<span class="error-message absolute font-xs text-red-400 pt-2" data-error-message="' + Craft.t('qarr', 'Reply message cannot be blank.') + '"></span>', '</div>', '<div class="buttons">', '<button type="button" class="cancel bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded mr-2 ml-auto">' + Craft.t('qarr', 'Cancel') + '</button>', '<button type="submit" class="btn-modal submit bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded">' + Craft.t('qarr', 'Set reply') + '</button>', '</div>', '</div>'].join('')).appendTo(this.$form);
+    body = $(['<div class="body">', '<header class="header">', '<span class="header-text tracking-wider text-lg font-normal text-gray-700">' + Craft.t('qarr', 'Replying to Feedback') + '</span>', '</header>', '<label class="block text-gray-700 text-sm font-medium mb-2">' + Craft.t('qarr', 'Reply message') + '</label>', '<textarea id="reply-text" class="outline-none rounded p-4 bg-gray-100 text-gray-700" rows="6" cols="70" placeholder="' + Craft.t('qarr', 'Leave a reply...') + '"></textarea>', '<div class="error-container relative">', '<span class="error-message absolute font-xs text-red-400 pt-2" data-error-message="' + Craft.t('qarr', 'Reply message cannot be blank.') + '"></span>', '</div>', '<div class="buttons">', '<button type="button" class="cancel bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded mr-2 ml-auto">' + Craft.t('qarr', 'Cancel') + '</button>', '<button type="submit" class="btn-modal submit bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded">' + Craft.t('qarr', 'Add reply') + '</button>', '</div>', '</div>'].join('')).appendTo(this.$form);
     this.show();
     this.$cancelBtn = body.find('.cancel');
-    this.$replyTextarea = body.find('#reply-text'); // new QarrTextareaField(this.$replyTextarea.parent())
-    // if (this.parent.placeholder) {
-    //     this.$replyTextarea.val(this.parent.placeholder)
-    // }
-
+    this.$replyTextarea = body.find('#reply-text');
     setTimeout($.proxy(function () {
       self.$replyTextarea.focus();
     }, this), 100);
@@ -166,8 +205,7 @@ var ReplyModal = Garnish.Modal.extend({
   },
   save: function save(e) {
     e.preventDefault();
-    this.reply = this.$replyTextarea.val(); // this.parent.reply = this.reply
-
+    this.reply = this.$replyTextarea.val();
     var messageLabel = this.$replyTextarea.parent().find('.error-message');
 
     if (this.reply === '') {
@@ -280,7 +318,7 @@ QarrEmailCorrespondence = Garnish.Base.extend({
     this.modal.on('save', $.proxy(this, 'sendEmail'));
   },
   sendEmail: function sendEmail(data) {
-    var _this2 = this;
+    var _this3 = this;
 
     var that = this;
     var email = data.email;
@@ -295,7 +333,7 @@ QarrEmailCorrespondence = Garnish.Base.extend({
     this.$waveLoader = $('.wave-loader').wavify(this.wavifyOptions);
     Craft.postActionRequest('qarr/correspondence/send-mail', data, $.proxy(function (response, textStatus) {
       if (textStatus === 'success') {
-        _this2.$waveLoaderContainer.velocity({
+        _this3.$waveLoaderContainer.velocity({
           height: '150%'
         }, 2000, function () {
           that.$waveLoaderContainer.css({
@@ -305,7 +343,7 @@ QarrEmailCorrespondence = Garnish.Base.extend({
           that.$waveLoader.kill();
         });
 
-        _this2.emailSent();
+        _this3.emailSent();
       }
     }, this));
     this.modal.hide();
