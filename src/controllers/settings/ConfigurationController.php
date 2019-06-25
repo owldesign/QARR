@@ -16,6 +16,7 @@ use owldesign\qarr\jobs\GeolocationTask;
 use Craft;
 use craft\web\Controller;
 use craft\helpers\Json;
+use craft\commerce\Plugin as CommercePlugin;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -23,7 +24,7 @@ use yii\web\Response;
  * Class RulesController
  * @package owldesign\qarr\controllers
  */
-class EmailTemplatesController extends Controller
+class ConfigurationController extends Controller
 {
     // Protected Properties
     // =========================================================================
@@ -42,9 +43,29 @@ class EmailTemplatesController extends Controller
      */
     public function actionIndex(array $variables = []): Response
     {
-        $variables['rules'] = QARR::$plugin->rules->getAllRules();
+        $settings = QARR::$plugin->settings;
+        $sections = Craft::$app->getSections()->getAllSections();
 
-        return $this->renderTemplate('qarr/settings/emails/index', $variables);
+        foreach ($sections as $section) {
+            if ($section->type == 'single') {
+                $variables['sections']['singles'][] = $section;
+            }
+            if ($section->type == 'channel') {
+                $variables['sections']['channels'][] = $section;
+            }
+        }
+
+        $commerce = Craft::$app->getPlugins()->isPluginEnabled('commerce');
+        if ($commerce) {
+            $variables['sections']['products'] = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
+        }
+
+        // Check for element images
+
+
+        $variables['settings'] = $settings;
+
+        return $this->renderTemplate('qarr/settings/configuration/index', $variables);
     }
 
 }

@@ -6,14 +6,11 @@ use craft\base\Model;
 
 class Settings extends Model
 {
-    public $foo = 'defaultFooValue';
-    public $bar = 'defaultBarValue';
+    public $elementAssetHandleName;
 
     public function rules()
     {
         return [
-            [['foo', 'bar'], 'required'],
-            // ...
         ];
     }
 }

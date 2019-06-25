@@ -477,20 +477,20 @@ class Review extends Element
     {
         switch ($attribute) {
             case 'information':
-                $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
                 $variables = [
                     'type' => 'review',
+                    'entry' => $this,
                     'author' => [
                         'fullName' => $this->fullName,
                         'emailAddress' => $this->emailAddress,
-                        'avatarUrl' => $avatarUrl,
+                        'avatarUrl' => $this->avatarUrl(),
                         'user' => $this->user
                     ],
                     'rating' => $this->rating,
                     'geolocation' => Json::decode($this->geolocation),
                     'status' => $this->status
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-info', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-information', $variables) : $this->title;
                 break;
             case 'feedback':
                 $variables = [
@@ -500,22 +500,19 @@ class Review extends Element
                     'feedback' => $this->feedback,
                     'datePosted' => $this->dateCreated,
                     'reply' => $this->reply,
-                    'flags' => $this->flags,
-                    'abuse' => $this->abuse,
+//                    'flags' => $this->flags,
+//                    'abuse' => $this->abuse,
                     'entryUrl' => $this->url,
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-details', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
                 break;
             case 'element':
                 $variables = [
                     'type' => 'review',
+                    'entry' => $this,
+                    'settings' => $this->settings,
                     'element' => $this->element,
-                    'feedback' => $this->feedback,
-                    'datePosted' => $this->dateCreated,
-                    'reply' => $this->reply,
-                    'flags' => $this->flags,
-                    'abuse' => $this->abuse,
-                    'entryUrl' => $this->url,
+                    'elementType' => $this->elementType
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-element', $variables) : $this->title;
                 break;
@@ -700,23 +697,16 @@ class Review extends Element
         return $result;
     }
 
-//    /**
-//     * @inheritdoc
-//     */
-//    protected static function prepElementQueryForTableAttribute(ElementQueryInterface $elementQuery, string $attribute)
-//    {
-//        if ($attribute === 'elementId') {
-//            $elementQuery->andWith('element');
-//        } else {
-//            parent::prepElementQueryForTableAttribute($elementQuery, $attribute);
-//        }
-//
-////        if ($attribute === 'author') {
-////            $elementQuery->andWith('author');
-////        } else {
-////            parent::prepElementQueryForTableAttribute($elementQuery, $attribute);
-////        }
-//    }
+    public function avatarUrl()
+    {
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
+    }
+
+    public function getSettings()
+    {
+        return QARR::$plugin->settings;
+    }
+
 
     /**
      * Check for commerce plugin

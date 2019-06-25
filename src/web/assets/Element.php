@@ -3,8 +3,9 @@
 namespace owldesign\qarr\web\assets;
 
 use craft\web\AssetBundle;
+use craft\web\assets\cp\CpAsset;
 
-class Utilities extends AssetBundle
+class Element extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -17,15 +18,17 @@ class Utilities extends AssetBundle
         $this->sourcePath = __DIR__;
 
         $this->depends = [
-            Tippy::class
+            CpAsset::class,
         ];
 
         $this->css = [
-            'css/utilities.css',
+            'css/element-shared.css',
+            'css/element-edit.css'
         ];
 
         $this->js = [
-            'js/utilities.js',
+            'js/element-func.js',
+            'js/element-edit.js'
         ];
 
         parent::init();

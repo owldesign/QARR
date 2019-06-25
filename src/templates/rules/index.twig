@@ -3,14 +3,14 @@
 {% extends "_layouts/cp" %}
 {% set title = "Rules"|t('qarr') %}
 {% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'qarr qarr-rules' %}
+{% set bodyClass = 'qarr-global qarr-rules' %}
 {% set selectedSubnavItem = "rules" %}
 
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block content %}

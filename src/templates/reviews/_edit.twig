@@ -1,15 +1,15 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Reviews") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Element") %}
 
-{% set bodyClass = 'qarr qarr-edit' %}
+{% set bodyClass = 'qarr-global qarr-element-edit' %}
 {% set pluginCpUrl = url('qarr') %}
 {% set selectedSubnavItem = "reviews" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block content %}
@@ -20,108 +20,60 @@
         <input type="hidden" name="displayId" value="{{ entry.displayId }}">
     {% endif %}
 
-    {% set feedbackResponse = entry.getReply() %}
+    <div class="{% if entry.reply %}has-response{% endif %} py-6">
 
-    {% include 'qarr/_elements/element-status-and-postdate' ignore missing with {entry: entry} %}
-
-    {% set flags = entry.getFlags() %}
-    {% set flaggedWords = flaggedWords(flags) %}
-    {% if flags %}
-    <div class="primary-meta rules-meta">
-        <div class="flagged-rules">
-            {% for flag in flags %}
-                <div class="flagged-item flagged-{{ flag.rule.handle }} tippy-with-html"
-                     data-index="{{ loop.index }}"
-                     data-rule="{{ flag.rule.handle }}">
-                    <i class="fal fa-{{ flag.rule.icon }}"></i>
-                    <span>{{ flag.rule.name }}</span>
-                </div>
-
-                <div id="flag-template-{{ loop.index }}" class="tippy-html-content" style="display: none;">
-                    <div class="tippy-content-wrapper">
-                        <div class="tippy-icon">
-                            <i class="fal fa-{{ flag.rule.icon }}"></i>
-                        </div>
-                        <div class="tippy-content">
-                            Found <span class="">{{ flag.details.matched |length }}</span> matching words
-                        </div>
-                        <div class="tippy-actions">
-                            <a href="#" class="btns btn-rounded btn-purple btn-mini btn-disabled">Apply Filter (coming soon)</a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+        <div class="panel-header mb-2">
+            <h3 class="font-medium m-0 tracking-wider text-lg">{{ 'Feedback'|t('qarr') }}</h3>
+            {% include 'qarr/_elements/element-postdate' ignore missing with {entry: entry} %}
         </div>
-    </div>
-    {% endif %}
 
-    <div class="panel feedback-panel {% if feedbackResponse is defined and feedbackResponse %}has-response{% endif %}">
+        <div class="feedback">
+            {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry } %}
 
-        <div class="panel-wrapper">
-            {% if flaggedWords %}
-                {% set feedback = entry.feedback|occurrence(flaggedWords)  %}
-            {% else %}
-                {% set feedback = entry.feedback  %}
-            {% endif %}
 
-            <p class="large-text"><span>{{ feedback |raw }}</span></p>
-
-            <div class="panel-response">
-                <span class="spinner hidden"></span>
-                {% if feedbackResponse %}
-                    <div class="response-container">
-                        <div class="response-wrapper">
-                            <div class="response-author">
-                                <div>{{ feedbackResponse.author }} {{ 'responded'|t('qarr') }} - <span>{{ feedbackResponse.dateCreated |date() }}</span></div>
-                                {% if not feedbackResponse.dateCreated|date() is same as(feedbackResponse.dateUpdated|date()) %}
-                                    <div class="last">{{ 'Updated on'|t('qarr') }} <span>{{ feedbackResponse.dateUpdated |date() }}</span></div>
-                                {% endif %}
-                            </div>
-                            <span class="response-text">{{ feedbackResponse.reply }}</span>
-                        </div>
-                        <div class="response-actions">
-                            <a href="#" class="btns btn-rounded btn-basic" id="reply-to-feedback-btn" data-type="review" data-reply-id="{{ feedbackResponse.id }}" data-element-id="{{ entry.id }}" data-author-id="{{ feedbackResponse.authorId }}" data-placeholder="{{ feedbackResponse.reply }}">
-                                {{ 'Edit reply'|t('qarr') }}
-                            </a>
-                            <a href="#" class="btns btn-rounded btn-basic" id="delete-feedback-btn" data-type="review" data-reply-id="{{ feedbackResponse.id }}" data-element-id="{{ entry.id }}" data-author-id="{{ feedbackResponse.authorId }}">
-                                <i class="fal fa-trash-alt"></i>
-                            </a>
-                        </div>
-                    </div>
+            {% set flaggedWords = flaggedWords(entry.flags) %}
+                {% if flaggedWords %}
+                    {% set feedback = entry.feedback|occurrence(flaggedWords) %}
+                {% else %}
+                    {% set feedback = entry.feedback %}
                 {% endif %}
-            </div>
 
+            <p class="feedback-text text-lg">{{ feedback |raw }}</p>
+        </div>
+
+        <div class="response">
+            {% if entry.reply %}
+                {% include 'qarr/_elements/element-review-reply' ignore missing with {
+                    response: entry.reply,
+                    entry: entry
+                } %}
+            {% endif %}
+            {% js %}
+                new FeedbackResponse({
+                    'id': "{{ entry.reply ? entry.reply.id }}",
+                    'elementId': "{{ entry.id }}",
+                });
+            {% endjs %}
         </div>
 
         <div class="panel-actions">
-            <div class="panel-progress"></div>
-            {% if not feedbackResponse %}
-                <a href="#" class="btns btn-rounded btn-gray btn-icon" id="reply-to-feedback-btn" data-type="review" data-element-id="{{ entry.id }}" data-author-id="{{ currentUser.id }}">
-                    <span class="icon"><i class="fa fa-reply"></i></span>
-                    <span class="btn-text">{{ 'Reply to feedback'|t('qarr') }}</span>
-                    <span class="loader"></span>
-                </a>
-            {% endif %}
+            <div class="my-6">
+                {% if not entry.reply %}
+                    <button class="inline-flex items-center bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded tracking-wide feedback-reply"
+                        data-type="review"
+                        data-element-id="{{ entry.id }}"
+                        data-author-id="{{ currentUser.id }}">
+                        <span><svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M15 17v-2.99A4 4 0 0 0 11 10H8v5L2 9l6-6v5h3a6 6 0 0 1 6 6v3h-2z"/></svg></span>
+                        <span>{{ 'Reply to feedback'|t('qarr') }}</span>
+                        <span class="spinner hidden"></span>
+                    </button>
+                {% endif %}
+            </div>
+            <hr>
 
-            <div class="pull-right">
-                <a href="#" class="btns btn-rounded btn-green btn-icon update-status-btn" data-type="reviews" data-status="approved" data-element-id="{{ entry.id }}">
-                    <span class="icon"><i class="fa fa-thumbs-up"></i></span>
-                    <span class="btn-text">{{ 'Approve'|t('qarr') }}</span>
-                    <span class="loader"></span>
-                </a>
-                <a href="#" class="btns btn-rounded btn-red btn-icon update-status-btn" data-type="reviews" data-status="rejected" data-element-id="{{ entry.id }}">
-                    <span class="icon"><i class="fa fa-thumbs-down"></i></span>
-                    <span class="btn-text">{{ 'Reject'|t('qarr') }}</span>
-                    <span class="loader"></span>
-                </a>
-            </div>
-            {% if currentUser.can('qarr:deleteReviews') %}
-            <div class="remove-entry">
-                <a href="#" class="btns btn-rounded btn-gray btn-icon delete-entry" data-type="reviews" data-element-id="{{ entry.id }}">
-                    <span class="icon"><i class="fal fa-trash-alt"></i></span>
-                </a>
-            </div>
-            {% endif %}
+
+            {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry } %}
+
         </div>
     </div>
 
@@ -133,62 +85,72 @@
                     <span class="header-icon"><i class="fa fa-clipboard-list"></i></span>
                 </div>
                 <div class="panel-body">
-                {% for tab in fieldLayoutTabs %}
-                    {% set fields = tab.getFields() %}
-                    {% for field in fields %}
-                        {% set type = field|getClass %}
-                        {% set allowed = craft.qarr.allowedFields %}
-                        {% if type in allowed %}
-                            {% set value = entry.getFieldValue(field.handle) %}
+                    {% for tab in fieldLayoutTabs %}
+                        {% set fields = tab.getFields() %}
+                        {% for field in fields %}
+                            {% set type = field|getClass %}
+                            {% set allowed = craft.qarr.allowedFields %}
+                            {% if type in allowed %}
+                                {% set value = entry.getFieldValue(field.handle) %}
 
-                            {% if value is iterable %}
-                                {% set value = craft.qarr.getArrayValue(value.options) %}
-                            {% endif %}
+                                {% if value is iterable %}
+                                    {% set value = craft.qarr.getArrayValue(value.options) %}
+                                {% endif %}
 
 
-                            {% if value and value != '' %}
-                                <div class="panel-item">
-                                    <div class="qarr-field-readonly">
-                                        <label>{{ field.name }}</label>
-                                        <div class="field-value">{{ value }}</div>
+                                {% if value and value != '' %}
+                                    <div class="panel-item">
+                                        <div class="qarr-field-readonly">
+                                            <label>{{ field.name }}</label>
+                                            <div class="field-value">{{ value }}</div>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
                 </div>
             </div>
         </div>
     {% endif %}
 
     {% if correspondences %}
-    <div class="panel panel-correspondence panel-blue">
-        <div class="panel-wrapper">
-            <div class="panel-header">
-                <h2>{{ 'Email Correspondence'|t('qarr') }}</h2>
-                <span class="header-icon"><i class="fa fa-mail-bulk"></i></span>
-            </div>
-            <div class="panel-body">
-                {% for correspondence in correspondences %}
-                    <div class="panel-item">
-                        <span class="panel-meta">{{ 'Sent on'|t('qarr') }} {{ correspondence.dateCreated |date() }}</span>
-                        <p>{{ correspondence.email }}</p>
-                    </div>
-                {% endfor %}
+        <div class="panel panel-correspondence panel-blue">
+            <div class="panel-wrapper">
+                <div class="panel-header">
+                    <h2>{{ 'Email Correspondence'|t('qarr') }}</h2>
+                    <span class="header-icon"><i class="fa fa-mail-bulk"></i></span>
+                </div>
+                <div class="panel-body">
+                    {% for correspondence in correspondences %}
+                        <div class="panel-item">
+                            <span class="panel-meta">{{ 'Sent on'|t('qarr') }} {{ correspondence.dateCreated |date() }}</span>
+                            <p>{{ correspondence.email }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
-    </div>
     {% endif %}
 
 {% endblock %}
 
 {% block details %}
+
     <div id="settings">
-        {% include 'qarr/_elements/element-abuse-reported' ignore missing with {entry: entry, type: 'reviews'} %}
-        {% include 'qarr/_elements/element-entry-rating' ignore missing with {entry: entry} %}
-        {% include 'qarr/_elements/element-entry-author' ignore missing with {entry: entry, type: 'reviews'} %}
-        {% include 'qarr/_elements/element-entry-info' ignore missing with {entry: entry} %}
+        {% include 'qarr/_elements/element-information' ignore missing with {entry: entry, type: 'reviews', status: entry.status, geolocation: entry.geolocation|json_decode, author: {
+            fullName: entry.author.fullName,
+            emailAddress: entry.emailAddress,
+            avatarUrl: entry.avatarUrl,
+            user: entry.author
+        }} %}
+
+        {% include 'qarr/_elements/element-element' ignore missing with {entry: entry, type: 'reviews', element: entry.element, elementType: entry.elementType, settings: entry.settings} %}
+
+        {#        {% include 'qarr/_elements/element-abuse-reported' ignore missing with {entry: entry, type: 'reviews'} %}#}
+        {#        {% include 'qarr/_elements/element-entry-rating' ignore missing with {entry: entry} %}#}
+        {#        {% include 'qarr/_elements/element-entry-author' ignore missing with {entry: entry, type: 'reviews'} %}#}
+        {#        {% include 'qarr/_elements/element-entry-info' ignore missing with {entry: entry} %}#}
         {% include 'qarr/_elements/element-entry-audit' ignore missing with {entry: entry} %}
     </div>
 {% endblock %}

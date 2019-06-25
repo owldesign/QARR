@@ -396,24 +396,24 @@ class Question extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch($attribute) {
-            case 'questionInfo':
-                $avatarUrl = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim( $this->emailAddress)));
+            case 'information':
                 $variables = [
                     'type' => 'question',
                     'author' => [
                         'fullName' => $this->fullName,
                         'emailAddress' => $this->emailAddress,
-                        'avatarUrl' => $avatarUrl,
+                        'avatarUrl' => $this->avatarUrl(),
                         'user' => $this->user
                     ],
                     'geolocation' => Json::decode($this->geolocation),
                     'status' => $this->status
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-info', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-information', $variables) : $this->title;
                 break;
-            case 'questionDetails':
+            case 'feedback':
                 $variables = [
                     'type' => 'question',
+                    'entry' => $this,
                     'element' => $this->element,
                     'feedback' => $this->question,
                     'datePosted' => $this->dateCreated,
@@ -422,7 +422,16 @@ class Question extends Element
                     'abuse' => $this->abuse,
                     'entryUrl' => $this->url,
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-details', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
+                break;
+            case 'element':
+                $variables = [
+                    'type' => 'question',
+                    'settings' => QARR::$plugin->settings,
+                    'element' => $this->element,
+                    'elementType' => $this->elementType
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-element', $variables) : $this->title;
                 break;
             default:
                 return parent::tableAttributeHtml($attribute);
@@ -452,8 +461,9 @@ class Question extends Element
         $attributes = [];
 
         $attributes['status'] = ['label' => QARR::t('Title')];
-        $attributes['questionInfo'] = ['label' => QARR::t('Question Info')];
-        $attributes['questionDetails'] = ['label' => QARR::t('Question Details')];
+        $attributes['information'] = ['label' => QARR::t('Information')];
+        $attributes['feedback'] = ['label' => QARR::t('Feedback')];
+        $attributes['element'] = ['label' => QARR::t('Element')];
 
         return $attributes;
     }
@@ -463,7 +473,7 @@ class Question extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'questionInfo', 'questionDetails'];
+        return ['status', 'information', 'feedback', 'element'];
     }
 
     /**
@@ -509,6 +519,11 @@ class Question extends Element
         $result = QARR::$plugin->rules->getFlagged($this->id);
 
         return $result;
+    }
+
+    public function avatarUrl()
+    {
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
     }
 
     /**

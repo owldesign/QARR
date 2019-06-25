@@ -11,6 +11,7 @@ class Reply extends Model
     // =========================================================================
 
     public $id;
+    public $uid;
     public $reply;
     public $elementId;
     public $authorId;

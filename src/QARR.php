@@ -144,6 +144,7 @@ class QARR extends Plugin
         $parent = parent::getCpNavItem();
 
         $navigation = ArrayHelper::merge($parent, [
+            'badgeCount' => QARR::getInstance()->elements->getTotalPending(),
             'subnav' => [
                 'dashboard' => [
                     'label' => QARR::t('Dashboard'),

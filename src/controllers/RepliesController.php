@@ -26,27 +26,21 @@ class RepliesController extends Controller
     /**
      * Generate reply markup
      *
-     * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\web\BadRequestHttpException
      */
     public function actionGetMarkup()
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $variables = [];
-        $variables['id'] = Craft::$app->getRequest()->getBodyParam('id');
-        $variables['placeholder'] = Craft::$app->getRequest()->getBodyParam('reply');
-        $variables['elementId'] = Craft::$app->getRequest()->getBodyParam('elementId');
-        $variables['authorId'] = Craft::$app->getRequest()->getBodyParam('authorId');
-        $variables['author'] = Craft::$app->getRequest()->getBodyParam('author');
-        $variables['dateCreated'] = Craft::$app->getRequest()->getBodyParam('dateCreated');
-        $variables['dateUpdated'] = Craft::$app->getRequest()->getBodyParam('dateUpdated');
+        $replyId    = Craft::$app->getRequest()->getBodyParam('id');
+        $reply      = QARR::$plugin->replies->getReplyModelById($replyId);
 
-        $template = Craft::$app->view->renderTemplate('qarr/reviews/_includes/_modal', $variables);
+        $variables = [
+            'response' => $reply
+        ];
+
+        $template = Craft::$app->view->renderTemplate('qarr/_elements/element-review-reply', $variables);
+
 
         return $this->asJson([
             'success' => true,
@@ -69,7 +63,8 @@ class RepliesController extends Controller
         $id         = Craft::$app->getRequest()->getBodyParam('id');
         $text       = Craft::$app->getRequest()->getBodyParam('reply');
         $elementId  = Craft::$app->getRequest()->getBodyParam('elementId');
-        $authorId   = Craft::$app->getRequest()->getBodyParam('authorId');
+
+        $user       = Craft::$app->getUser()->getIdentity();
 
         if ($id) {
             $record = QARR::$plugin->replies->getReplyById($id);
@@ -87,7 +82,7 @@ class RepliesController extends Controller
 
         $model->reply       = $text;
         $model->elementId   = $elementId;
-        $model->authorId    = $authorId;
+        $model->authorId    = $user->id;
 
         $response = QARR::$plugin->replies->save($model, $author);
 

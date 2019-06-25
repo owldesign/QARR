@@ -1,0 +1,58 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
+
+{% set title = "Settings"|t('qarr') %}
+{% set bodyClass = 'qarr-global qarr-configuration' %}
+{% set selectedSubnavItem = "settings" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block header %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+
+    <h1>Configuration</h1>
+
+    <div class="settings-block">
+        <div class="seeings-header mb-2">
+            <p class="text-xl m-0">{{ 'Element Index'|t('qarr') }}</p>
+            <p class="text-xs m-0 mt-1 text-gray-500 font-light">{{ 'Set asset field handle name if you want to display images next to your submissions.'|t('qarr') }}</p>
+        </div>
+
+        <form class="w-full" method="post">
+            {{ csrfInput() }}
+            {{ actionInput('plugins/save-plugin-settings') }}
+            <input type="hidden" name="pluginHandle" value="qarr">
+
+
+            {% for type, items in sections %}
+                <div class="section-wrapper mb-8">
+                    <h3>{{ type |capitalize }}</h3>
+                    {% for item in items %}
+                        <div class="section-item mb-2">
+                            <label>{{ item.name }}</label>
+                            <input name="settings[elementAssetHandleName][{{ item.handle }}]"
+                                   value="{{ settings.elementAssetHandleName[item.handle] is defined ? settings.elementAssetHandleName[item.handle] : '' }}"
+                                   class="appearance-none bg-white text-gray-700 border border-gray-200 rounded py-1 px-2 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                   type="text" placeholder="Handle Name">
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+
+            <hr>
+
+
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save</button>
+        </form>
+    </div>
+
+
+{% endset %}

@@ -3,14 +3,14 @@
 {% extends "_layouts/cp" %}
 {% set title = "Displays"|t('qarr') %}
 {% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'qarr qarr-noelements qarr-displays' %}
+{% set bodyClass = 'qarr-global qarr-noelements qarr-displays' %}
 {% set selectedSubnavItem = "displays" %}
 
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Displays") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block content %}

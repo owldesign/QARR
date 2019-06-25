@@ -10,12 +10,19 @@
         </li>
 
         <li>
-            <a href="{{ url('qarr/settings/helpdesk') }}" class="{{ currentSettingsPage == 'helpdesk' ? 'sel' }}">
-                <i class="{{ currentSettingsPage == 'helpdesk' ? 'fas' : 'far' }} fa-comments-alt icon"></i>
-                <span class="label">{{ 'Help Desk'|t('qarr') }}</span>
-                <div class="badge">1</div>
+            <a href="{{ url('qarr/settings/configuration') }}" class="{{ currentSettingsPage == 'configuration' ? 'sel' }}">
+                <i class="{{ currentSettingsPage == 'configuration' ? 'fas' : 'far' }} fa-layer-group icon"></i>
+                <span class="label">{{ 'Configuration'|t('qarr') }}</span>
             </a>
         </li>
+
+{#        <li>#}
+{#            <a href="{{ url('qarr/settings/helpdesk') }}" class="{{ currentSettingsPage == 'helpdesk' ? 'sel' }}">#}
+{#                <i class="{{ currentSettingsPage == 'helpdesk' ? 'fas' : 'far' }} fa-comments-alt icon"></i>#}
+{#                <span class="label">{{ 'Help Desk'|t('qarr') }}</span>#}
+{#                <div class="badge">1</div>#}
+{#            </a>#}
+{#        </li>#}
 
         <li>
             <a href="{{ url('qarr/settings/email-templates') }}" class="{{ currentSettingsPage == 'email-templates' ? 'sel' }}">
@@ -28,7 +35,7 @@
         <li>
             <a href="{{ url('qarr/settings/utilities') }}" class="{{ currentSettingsPage == 'utilities' ? 'sel' }}">
                 <i class="{{ currentSettingsPage == 'utilities' ? 'fas' : 'far' }} fa-layer-group icon"></i>
-                <span class="label">{{ 'Utilities'|t('qarr') }}</span>
+                <span class="label">{{ 'Settings'|t('qarr') }}</span>
             </a>
         </li>
     </ul>

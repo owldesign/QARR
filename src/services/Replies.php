@@ -17,7 +17,6 @@ use owldesign\qarr\records\Reply as ReplyRecord;
 
 use Craft;
 use craft\base\Component;
-use craft\helpers\ArrayHelper;
 use yii\base\Exception;
 
 /**
@@ -48,7 +47,7 @@ class Replies extends Component
             return null;
         }
 
-        return new Reply($record->toArray(['id', 'reply', 'elementId', 'authorId', 'author', 'dateCreated', 'dateUpdated']));
+        return new Reply($record->toArray());
     }
 
     /** Reply by id

@@ -1,14 +1,14 @@
 {% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Info") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Info") %}#}
 
 {% set title = "Settings"|t('qarr') %}
-{% set bodyClass = 'qarr qarr-tools' %}
+{% set bodyClass = 'qarr-global qarr-settings' %}
 {% set selectedSubnavItem = "settings" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block sidebar %}

@@ -1,9 +1,9 @@
 {% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
 
 {% set fullPageForm = true %}
-{% set bodyClass = 'qarr qarr-edit qarr-rule-edit' %}
+{% set bodyClass = 'qarr-global qarr-edit qarr-rule-edit' %}
 {% set pluginCpUrl = url('qarr') %}
 {% set title = 'Rules' %}
 {% set selectedSubnavItem = "rules" %}
@@ -13,10 +13,7 @@
 {% import "_includes/forms" as forms %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
-{#    {% block actionButton %}#}
-{#        <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>#}
-{#    {% endblock %}#}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block content %}
@@ -76,25 +73,25 @@
             </div>
         </div>
         <div class="quarter-col">
-            <div class="entry-settings">
-                <div class="col-header">
-                    <h2>{{ 'Customize'|t('qarr') }}</h2>
-                </div>
+{#            <div class="entry-settings">#}
+{#                <div class="col-header">#}
+{#                    <h2>{{ 'Customize'|t('qarr') }}</h2>#}
+{#                </div>#}
 
-                <div class="qarr-field custom-field has-value">
-                    {% if rule.icon %}
-                        {% set icon = rule.icon %}
-                    {% else %}
-                        {% set icon = 'exclamation' %}
-                    {% endif %}
-                    <input class="text fullwidth" type="text" id="rule-icon" name="icon" value="{{ icon }}" autocomplete="off">
-                    <label id="rule-icon-label" for="rule-icon" >
-                        {{ 'Icon'|t('qarr') }}
-                    </label>
-                    <span class="qarr-input-icon"><i class="fal fa-{{ icon }}"></i></span>
-                </div>
-                <p class="small-text muted">See <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a> for icon names.</p>
-            </div>
+{#                <div class="qarr-field custom-field has-value">#}
+{#                    {% if rule.icon %}#}
+{#                        {% set icon = rule.icon %}#}
+{#                    {% else %}#}
+{#                        {% set icon = 'exclamation' %}#}
+{#                    {% endif %}#}
+{#                    <input class="text fullwidth" type="text" id="rule-icon" name="icon" value="{{ icon }}" autocomplete="off">#}
+{#                    <label id="rule-icon-label" for="rule-icon" >#}
+{#                        {{ 'Icon'|t('qarr') }}#}
+{#                    </label>#}
+{#                    <span class="qarr-input-icon"><i class="fal fa-{{ icon }}"></i></span>#}
+{#                </div>#}
+{#                <p class="small-text muted">See <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a> for icon names.</p>#}
+{#            </div>#}
 
             <div class="entry-actions">
                 <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>

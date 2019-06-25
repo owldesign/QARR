@@ -1,0 +1,25 @@
+<div class="relative response-container bg-gray-100 rounded p-6 mt-6">
+    <div class="response-wrapper">
+        <div class="response-author text-gray-500 font-medium text-xs tracking-wide">
+            <div>{{ response.author.fullName }} {{ 'responded'|t('qarr') }} -
+                <span>{{ response.dateCreated |date() }}</span></div>
+            {% if not response.dateCreated|date() is same as(response.dateUpdated|date()) %}
+                <div class="last">{{ 'Updated on'|t('qarr') }} <span>{{ response.dateUpdated |date() }}</span></div>
+            {% endif %}
+        </div>
+        <span class="response-text block py-4 text-lg font-light">{{ response }}</span>
+    </div>
+
+    <div class="response-actions">
+        <a href="#" class="text-indigo-300 hover:text-indigo-500 text-xs tracking-wide" id="reply-to-feedback-btn" data-reply-id="{{ response.id }}"
+           data-element-id="{{ response.elementId }}" data-author-id="{{ response.author.id }}"
+           data-placeholder="{{ response }}">
+            {{ 'Edit'|t('qarr') }}
+        </a>
+        <span class="text-gray-400">|</span>
+        <a href="#" class="text-indigo-300 hover:text-indigo-500 text-xs tracking-wide" id="delete-feedback-btn" data-type="review"
+           data-reply-id="{{ response.id }}" data-element-id="{{ response.elementId }}">
+            {{ 'Remove'|t('qarr') }}
+        </a>
+    </div>
+</div>

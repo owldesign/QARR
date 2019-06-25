@@ -3,6 +3,7 @@
 namespace owldesign\qarr\web\assets;
 
 use craft\web\AssetBundle;
+use craft\web\assets\cp\CpAsset;
 
 class Rules extends AssetBundle
 {
@@ -17,7 +18,7 @@ class Rules extends AssetBundle
         $this->sourcePath = __DIR__;
 
         $this->depends = [
-//            Select2::class,
+            CpAsset::class,
             Tags::class
         ];
 

@@ -303,6 +303,20 @@ class Elements extends Component
         return $total;
     }
 
+    /**
+     * Get total count of pending elements
+     *
+     * @return int
+     */
+    public function getTotalPending()
+    {
+        $reviews    = Review::find()->where(['status' => 'pending'])->count();
+        $questions  = Question::find()->where(['status' => 'pending'])->count();
+        $total      = $reviews + $questions;
+
+        return $total;
+    }
+
     public function getEntriesByRating($status, $elementId)
     {
         $query = new Query();

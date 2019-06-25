@@ -35,7 +35,7 @@ class UtilitiesController extends Controller
     // =========================================================================
 
     /**
-     * Utilities index
+     * Settings index
      *
      * @param array $variables
      * @return Response

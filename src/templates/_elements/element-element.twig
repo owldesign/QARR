@@ -1,6 +1,44 @@
 <div class="element-block element-element">
     <div class="element-object">
-        <a href="{{ entryUrl }}"><h2 class="element-title">{{ element }}</h2></a>
-        <span class="posted-date"><time datetime="{{ datePosted.date }}">{{ datePosted.date |date() }}</time></span>
+
+        {% set assetHandleExist = attribute(settings.elementAssetHandleName, element.type.handle) is not empty %}
+        {% if assetHandleExist %}
+            {% set assetHandle = attribute(settings.elementAssetHandleName, element.type.handle) %}
+            {% set asset = attribute(element, assetHandle) %}
+        {% endif %}
+
+        <div class="element-image">
+            {% if asset is defined %}
+                {% if asset.count() %}
+                    <img src="{{ asset.one().url }}" alt="{{ element.title }}">
+                {% else %}
+                    <span class="text-xs text-gray-300">{{ 'Image not available'|t('qarr') }}</span>
+                {% endif %}
+            {% else %}
+                <div class="element-image-edit">
+                    {% if elementType == 'product' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20"><path d="M0 10V2l2-2h8l10 10-10 10L0 10zm4.5-4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></svg>
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 20 20"><path d="M0 6c0-1.1.9-2 2-2h3l2-2h6l2 2h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6zm10 10a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                    {% endif %}
+
+                    <a href="{{ url('/admin/qarr/settings/configuration') }}">{{ 'Configure'|t('qarr') }}</a>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if elementType == 'single' %}
+            <span class="element-type uppercase tracking-widest font-semibold text-gray-600">
+                {{ element.type.name }}
+            </span>
+        {% else %}
+            <span class="element-type uppercase tracking-widest font-semibold text-gray-600">
+                {{ element.type.name }}
+            </span>
+            <h2 class="element-title font-medium text-sm">
+                {{ element }}
+            </h2>
+        {% endif %}
+
     </div>
 </div>

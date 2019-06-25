@@ -11,7 +11,7 @@
 }
 
 .qarr-menu ul li a:hover {
-  background: #faf5ff !important;
+  background: #F7FAFC !important;
 }
 
 .qarr-menu ul.padded {
@@ -48,6 +48,89 @@
   background-color: #fc8181;
 }
 
+.pulse {
+  display: inline-block;
+  border-radius: 0.5rem;
+  background-color: #667eea;
+  box-shadow: 0 0 0 rgba(66, 153, 225, 0.4);
+  -webkit-animation: pulse-blue 2s infinite;
+          animation: pulse-blue 2s infinite;
+}
+
+.pulse.round {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.pulse.warning {
+  background-color: #f56565;
+  box-shadow: 0 0 0 rgba(245, 101, 101, 0.4);
+  -webkit-animation: pulse-red 2s infinite;
+          animation: pulse-red 2s infinite;
+}
+
+.pulse:hover {
+  -webkit-animation: none;
+          animation: none;
+}
+
+@-webkit-keyframes pulse-blue {
+  0% {
+    box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(66, 153, 225, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);
+  }
+}
+
+@keyframes pulse-blue {
+  0% {
+    box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(66, 153, 225, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);
+  }
+}
+
+@-webkit-keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(245, 101, 101, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 101, 101, 0);
+  }
+}
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(245, 101, 101, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 101, 101, 0);
+  }
+}
+
 .qarr-global #main-container {
   font-family: Open Sans, sans-serif;
 }
@@ -56,6 +139,25 @@
   background: white;
   padding: 0 25px !important;
   box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.1);
+  z-index: 5;
+}
+
+.qarr-global .btn {
+  background-image: none !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+}
+
+.qarr-global.showing-nav #nav-toggle:before {
+  content: "remove";
+}
+
+.qarr-global .page-title-wrapper {
+  transition: padding 0.3s ease;
+}
+
+.qarr-global .page-title-wrapper > * {
+  margin-bottom: 0;
 }
 
 .qarr-global #navigation a {
@@ -112,4 +214,31 @@
 .qarr-global a {
   text-decoration: none !important;
   transition: all 0.3s ease;
+}
+
+.qarr-global button {
+  transition: all 0.3s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.qarr-global button:focus {
+  outline: none;
+}
+
+@media only screen and (max-width: 1223px) {
+  #crumbs {
+    padding: 0 !important;
+  }
+
+  #nav-toggle {
+    position: absolute;
+    z-index: 100;
+    margin-left: 8px !important;
+    top: 18px;
+  }
+
+  .page-title-wrapper {
+    padding-left: 30px;
+  }
 }

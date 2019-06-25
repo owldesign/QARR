@@ -3,9 +3,8 @@
 namespace owldesign\qarr\web\assets;
 
 use craft\web\AssetBundle;
-use craft\web\assets\cp\CpAsset;
 
-class ElementIndex extends AssetBundle
+class Settings extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -17,17 +16,15 @@ class ElementIndex extends AssetBundle
     {
         $this->sourcePath = __DIR__;
 
-        $this->depends = [
-            CpAsset::class,
-        ];
+//        $this->depends = [
+//            Tippy::class
+//        ];
 
         $this->css = [
-            'css/element-shared.css',
-            'css/element-index.css'
+            'css/configuration.css',
         ];
 
         $this->js = [
-            'js/element-index.js'
         ];
 
         parent::init();

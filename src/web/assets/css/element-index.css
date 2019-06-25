@@ -67,6 +67,10 @@
   color: #9f7aea;
 }
 
+.qarr-elementindex .toolbar {
+  z-index: 2;
+}
+
 .qarr-elementindex .toolbar input.text {
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -153,14 +157,77 @@
   display: none !important;
 }
 
-.qarr-elementindex [data-attr=element],
-.qarr-elementindex [data-attr=information],
+.qarr-elementindex .tableview tbody tr td {
+  padding: 0 !important;
+  border-bottom: 3px dotted #EDF2F7;
+}
+
+.qarr-elementindex .tableview tbody tr.sel td {
+  background: transparent !important;
+}
+
+.qarr-elementindex .tableview tbody tr.sel .checkbox {
+  background-color: #9f7aea;
+}
+
+.qarr-elementindex .tableview tbody tr.sel .checkbox:before {
+  color: #9f7aea;
+}
+
+.qarr-elementindex .tableview tbody .checkbox {
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  top: 0 !important;
+  padding-left: 3px !important;
+  z-index: 1;
+}
+
+.qarr-elementindex .tableview tbody .checkbox:before {
+  font-family: "Craft";
+  speak: none;
+  -webkit-font-feature-settings: "liga", "dlig";
+  -ms-font-feature-settings: "liga", "dlig";
+  -o-font-feature-settings: "liga", "dlig";
+  font-feature-settings: "liga", "dlig";
+  text-rendering: optimizeLegibility;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  text-align: center;
+  font-style: normal;
+  vertical-align: middle;
+  word-wrap: normal !important;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  line-height: 12px;
+  content: "check";
+  left: 10px;
+  top: 10px;
+  box-shadow: none;
+  font-size: 15px;
+  background: none;
+  color: #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.qarr-elementindex .noelements {
+  color: #757575;
+}
+
 .qarr-elementindex [data-attr=feedback] {
   vertical-align: top;
 }
 
 .qarr-elementindex [data-attr=element] {
   width: 200px;
+  text-align: center;
 }
 
 .qarr-elementindex [data-attr=information] {
@@ -178,120 +245,6 @@
   transition: all 0.3s ease;
 }
 
-.qarr-elementindex .element-block {
-  padding: 15px;
-}
-
-.qarr-elementindex .element-block .checkbox {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  transition: all 0.3s ease;
-}
-
-.qarr-elementindex .element-info {
-  align-self: center;
-  text-align: center;
-  line-height: 1;
-  padding: 15px 30px;
-}
-
-.qarr-elementindex .element-info .qarr-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 5px;
-  overflow: hidden;
-  margin: 0 auto 10px auto;
-}
-
-.qarr-elementindex .element-info .qarr-avatar img {
-  width: 100%;
-}
-
-.qarr-elementindex .element-info .user-name {
-  font-weight: 500;
-  font-size: 1.125rem;
-  letter-spacing: 0.025em;
-  margin-bottom: 0.25rem;
-}
-
-.qarr-elementindex .element-info .user-email {
-  font-weight: 300;
-  color: #616161;
-  letter-spacing: 0.08em;
-  font-size: 9px;
-}
-
-.qarr-elementindex .element-info .user-location {
-  display: flex;
-  font-size: 0.75rem;
-  color: #9e9e9e;
-  margin-top: 1rem;
-  justify-content: center;
-  font-weight: 300;
-}
-
-.qarr-elementindex .element-info .user-location svg {
-  margin-right: 0.25rem;
-  fill: #A0AEC0;
-  vertical-align: middle;
-}
-
-.qarr-elementindex .element-info .qarr-rating {
-  display: flex;
-  justify-content: space-evenly;
-  margin: 20px 0 0 0;
-}
-
-.qarr-elementindex .element-info .qarr-rating .qarr-rating-star {
-  display: block;
-}
-
-.qarr-elementindex .element-info .qarr-rating .qarr-rating-star svg path {
-  fill: #EDF2F7;
-}
-
-.qarr-elementindex .element-info .qarr-rating .qarr-rating-star.active svg path {
-  fill: #F6E05E;
-}
-
-.qarr-elementindex .element-info .status-indicator {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.qarr-elementindex .element-info .element-status {
-  margin-top: 15px;
-}
-
-.qarr-elementindex .element-info .element-status .qarr-tag {
-  display: inline;
-  letter-spacing: 0.1em;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  border-radius: 0.25rem;
-  background-color: #f5f5f5;
-  color: #fff;
-  text-transform: uppercase;
-  font-weight: 600;
-  font-size: 9px;
-}
-
-.qarr-elementindex .element-info .element-status .qarr-tag.pending {
-  background-color: #4299e1;
-}
-
-.qarr-elementindex .element-info .element-status .qarr-tag.approved {
-  background-color: #48bb78;
-}
-
-.qarr-elementindex .element-info .element-status .qarr-tag.rejected {
-  background-color: #f56565;
-}
-
 .qarr-elementindex .element-details .flagged-indicator {
   position: absolute;
   top: 10px;
@@ -299,41 +252,26 @@
 }
 
 .qarr-elementindex .element-details .element-object a {
-  color: #9f7aea;
+  color: #667eea;
   transition: all 0.3s ease;
 }
 
 .qarr-elementindex .element-details .element-object a:hover {
-  color: #6b46c1;
+  color: #4c51bf;
 }
 
 .qarr-elementindex .element-details .element-object a h2 {
-  font-weight: 200;
+  font-weight: 500;
 }
 
 .qarr-elementindex .element-details .element-title {
   margin: 0;
+  font-size: 0.875rem;
 }
 
 .qarr-elementindex .element-details .posted-date {
   color: #bdbdbd;
-}
-
-.qarr-elementindex .element-details .feedback {
-  font-size: 14px;
-  margin-top: 20px;
-}
-
-.qarr-elementindex .element-details .feedback .feedback-text {
-  color: #616161;
-  line-height: 1.625;
-  font-weight: 300;
-}
-
-.qarr-elementindex .element-details .feedback .feedback-text .matched-word {
-  background: rgba(246, 224, 94, 0.4);
-  padding: 2px 5px;
-  border-radius: 4px;
+  font-size: 0.75rem;
 }
 
 .qarr-elementindex .element-details .response {
@@ -365,24 +303,4 @@
   font-style: italic;
   font-size: 12px;
   color: #eeeeee;
-}
-
-.qarr-elementindex .element-details .flags-container {
-  display: flex;
-}
-
-.qarr-elementindex .element-details .flags-container .flagged-item {
-  padding: 7px 7px;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  line-height: 1;
-  border-radius: 3px;
-  border: 1px dashed #E53E3E;
-  margin-right: 7px;
-}
-
-.qarr-elementindex .element-details .flags-container .flagged-item span {
-  display: inline-block;
-  margin-left: 5px;
 }
