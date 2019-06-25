@@ -185,8 +185,14 @@ var FeedbackResponse = Garnish.Base.extend({
 // })
 
 var ReplyModal = Garnish.Modal.extend({
+  $container: null,
+  $form: null,
+  $errorContainer: null,
+  type: null,
   parent: null,
-  init: function init(parent) {
+  init: function init(parent, type) {
+    this.$container = Garnish.$bod.find('.response');
+    this.type = type;
     var body, self;
     self = this;
     this.base();
@@ -206,20 +212,24 @@ var ReplyModal = Garnish.Modal.extend({
   save: function save(e) {
     e.preventDefault();
     this.reply = this.$replyTextarea.val();
-    var messageLabel = this.$replyTextarea.parent().find('.error-message');
+    this.$errorContainer = this.$form.find('.error-message');
 
     if (this.reply === '') {
       Garnish.shake(this.$container);
 
       if (this.$replyTextarea.val() === '') {
-        this.$replyTextarea.parent().addClass('has-error');
         this.$replyTextarea.addClass('border border-solid border-red-200');
-        messageLabel.html(messageLabel.data('error-message'));
+        this.$errorContainer.html(this.$errorContainer.data('error-message'));
       }
     } else {
-      this.trigger('save', {
-        reply: this.reply
-      });
+      if (this.type === 'new') {
+        console.log('append to container');
+        this.$container.html();
+      } else {
+        this.trigger('save', {
+          reply: this.reply
+        });
+      }
     }
   }
 }); // Emails

@@ -1,12 +1,15 @@
 Garnish.$doc.ready(function () {
-  // Feedback Reply Instance
+  // Feedback Reply
   // new FeedbackResponse();
-  // if ($('#reply-to-feedback-btn').length > 0) {
+  $('.feedback-reply').on('click', function (e) {
+    new ReplyModal(null, 'new');
+  }); // if ($('#reply-to-feedback-btn').length > 0) {
   //     new QarrReplyToFeedback('#reply-to-feedback-btn');
   // }
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Update Entry Status
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   var $statusContainer = $('.element-status');
   $('.update-status-btn').on('click', function (e) {
     e.preventDefault();
