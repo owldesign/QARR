@@ -39,8 +39,8 @@ class Rule extends Model
     public function rules()
     {
         return [
-            [['name'], 'unique', 'targetAttribute' => ['name']],
-            [['handle'], 'unique', 'targetAttribute' => ['handle']],
+            [['name'], 'unique', 'targetClass' => RuleRecord::class],
+            [['handle'], 'unique', 'targetClass' => RuleRecord::class],
             [['name', 'handle'], 'required'],
             [['name', 'handle'], 'string', 'max' => 255],
             [['handle'], HandleValidator::class, 'reservedWords' => [

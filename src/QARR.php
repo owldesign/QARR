@@ -263,6 +263,9 @@ class QARR extends Plugin
                 $permissions['qarr:accessReviews'] = [
                     'label' => QARR::t('Access Reviews'),
                     'nested' => [
+                        'qarr:editReviews' => [
+                            'label' => QARR::t('Edit reviews')
+                        ],
                         'qarr:deleteReviews' => [
                             'label' => QARR::t('Delete reviews')
                         ]
@@ -271,6 +274,9 @@ class QARR extends Plugin
                 $permissions['qarr:accessQuestions'] = [
                     'label' => QARR::t('Access Questions'),
                     'nested' => [
+                        'qarr:editQuestions' => [
+                            'label' => QARR::t('Edit questions')
+                        ],
                         'qarr:deleteQuestions' => [
                             'label' => QARR::t('Delete questions')
                         ]
@@ -279,8 +285,22 @@ class QARR extends Plugin
                 $permissions['qarr:accessDisplays'] = [
                     'label' => QARR::t('Access Displays'),
                     'nested' => [
+                        'qarr:editDisplays' => [
+                            'label' => QARR::t('Edit displays')
+                        ],
                         'qarr:deleteDisplays' => [
                             'label' => QARR::t('Delete displays')
+                        ]
+                    ]
+                ];
+                $permissions['qarr:accessRules'] = [
+                    'label' => QARR::t('Access Rules'),
+                    'nested' => [
+                        'qarr:editRules' => [
+                            'label' => QARR::t('Edit rules')
+                        ],
+                        'qarr:deleteRules' => [
+                            'label' => QARR::t('Delete rules')
                         ]
                     ]
                 ];

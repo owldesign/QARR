@@ -1,18 +1,5 @@
 Garnish.$doc.ready(function () {
-  // Icons
-  $('#rule-icon').on('keyup', function (e) {
-    var value = $(this).val();
-    var html = $(this).parent().find('.qarr-input-icon');
-    var icon = window.FontAwesome.icon({
-      prefix: 'fal',
-      iconName: value
-    });
-
-    if (icon) {
-      html.html(icon.html);
-    }
-  }); // Data List
-
+  // Data List
   if ($('#rule-data').length > 0) {
     var dataInput = document.getElementById('rule-data');
     var tagify = new Tagify(dataInput);
@@ -32,5 +19,31 @@ Garnish.$doc.ready(function () {
         $('.tags--removeAllBtn').addClass('btn-disabled');
       }
     });
-  }
+  } // Delete Rule
+
+
+  $('#delete-rule').on('click', function (e) {
+    e.preventDefault();
+    var data = {
+      id: $(this).data('id')
+    };
+    var message = Craft.t('qarr', 'Deleting this rule will also remove all its flagged entries?');
+    var deletePrompt = new QarrPrompt(message, null);
+    deletePrompt.on('response', function (response) {
+      var _this = this;
+
+      if (response && response.response === 'ok') {
+        Craft.postActionRequest('qarr/rules/delete', data, $.proxy(function (response, textStatus) {
+          if (response.success) {
+            setTimeout($.proxy(function () {
+              Craft.cp.displayNotice(Craft.t('qarr', 'Rule deleted, redirecting...'));
+              setTimeout($.proxy(function () {
+                Craft.redirectTo(Craft.getCpUrl() + '/qarr/rules');
+              }, this), 1000);
+            }, _this), 1000);
+          }
+        }, this));
+      }
+    });
+  });
 });

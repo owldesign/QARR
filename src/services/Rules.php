@@ -15,8 +15,6 @@ use craft\helpers\StringHelper;
 use owldesign\qarr\models\Flagged;
 use owldesign\qarr\models\Rule;
 use owldesign\qarr\QARR;
-use owldesign\qarr\elements\Review;
-use owldesign\qarr\records\Review as ReviewRecord;
 use owldesign\qarr\records\Flagged as FlaggedRecord;
 use owldesign\qarr\records\Rule as RuleRecord;
 
@@ -277,6 +275,32 @@ class Rules extends Component
 
         if ($isNewRule) {
             $rule->id = $record->id;
+        }
+
+        return true;
+    }
+
+    /**
+     * Delete rule by id
+     *
+     * @param $id
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function deleteRuleById($id)
+    {
+        $record = RuleRecord::find()
+            ->where(['id' => $id])
+            ->one();
+
+        if (!$record) {
+            return true;
+        }
+
+        // Delete all flagged records
+        if ($this->removeRecord($id)) {
+            $record->delete();
         }
 
         return true;

@@ -16,12 +16,12 @@
 {% block content %}
 
     <a href="{{ url('qarr/rules/new') }}" class="qarr-btn">
-        <span class="icon"><i class="fa fa-plus"></i></span>
+        <span class="icon mr-3 font-bold">+</span>
         <span class="btn-text">{{ "New Rule"|t('qarr') }}</span>
     </a>
 
-    <div id="norules"{% if rules %} class="hidden"{% endif %}>
-        <p>{{ "No rules exist yet."|t('qarr') }}</p>
+    <div id="noelements" class="text-gray-600 mt-6 {% if rules %}hidden{% endif %}">
+        {{ "No rules exist yet."|t('qarr') }}
     </div>
 
     {% if rules|length %}
@@ -31,7 +31,7 @@
                 {% set status = rule.enabled ? 'enabled' : 'disabled' %}
                 <div class="element-item">
 
-                    <div class="element-header w-64">
+                    <div class="element-header w-1/2">
                         <a href="{{ url('qarr/rules/' ~ rule.id) }}"><h2>{{ rule.name }}</h2></a>
                         <span class="block font-mono text-xs element-handle">{{ rule.handle }}</span>
                     </div>

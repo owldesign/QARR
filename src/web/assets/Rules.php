@@ -23,6 +23,7 @@ class Rules extends AssetBundle
         ];
 
         $this->js = [
+            'js/element-func.js',
             'js/rules.js',
         ];
 

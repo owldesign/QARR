@@ -83,6 +83,7 @@ class DisplaysController extends Controller
         }
 
         $this->_enforceEditDisplayPermissions($display);
+
         $variables['display'] = $display;
         $variables['fullPageForm'] = true;
         $variables['continueEditingUrl'] = 'qarr/displays/{id}';

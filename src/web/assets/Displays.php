@@ -3,6 +3,7 @@
 namespace owldesign\qarr\web\assets;
 
 use craft\web\AssetBundle;
+use craft\web\assets\cp\CpAsset;
 
 class Displays extends AssetBundle
 {
@@ -16,8 +17,8 @@ class Displays extends AssetBundle
     {
         $this->sourcePath = __DIR__;
 
-        $this->css = [
-            'css/displays.css',
+        $this->depends = [
+            CpAsset::class,
         ];
 
         $this->js = [

@@ -180,6 +180,14 @@
   background-color: #bdbdbd;
 }
 
+.qarr-btn.btn-small {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.75rem;
+}
+
 .qarr-btn-link {
   color: #a3bffa;
   font-size: 0.75rem;
@@ -188,6 +196,54 @@
 
 .qarr-btn-link:hover {
   color: #667eea;
+}
+
+.qarr-label {
+  display: block;
+  color: #212121;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.qarr-input, .qarr-textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border-width: 1px;
+  border-radius: 0.25rem;
+  width: 100%;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  outline: 0;
+}
+
+.qarr-input:focus, .qarr-textarea:focus {
+  border-color: #d6bcfa;
+}
+
+.qarr-input.has-error, .qarr-textarea.has-error {
+  margin-bottom: 0.25rem;
+  border-color: #feb2b2;
+}
+
+.qarr-lightswitch .label.off {
+  background: #E9D8FD !important;
+}
+
+.qarr-lightswitch .label.on {
+  background: #E9D8FD !important;
+}
+
+.qarr-lightswitch.on .label.on, .qarr-lightswitch.on .label.off {
+  background: #805AD5 !important;
+}
+
+.error-message {
+  color: #fc8181;
+  font-size: 0.75rem;
 }
 
 .tagify {
@@ -215,7 +271,7 @@
   right: 0 !important;
   bottom: 0 !important;
   left: 0 !important;
-  background: #A3BFFA !important;
+  background: #B794F4 !important;
 }
 
 .tagify tag:hover div span {
@@ -232,7 +288,7 @@
 }
 
 .tagify .tagify--notAllowed > div:before {
-  background: #FED7D7 !important;
+  background: #E53E3E !important;
 }
 
 .tagify .tagify--notAllowed > div span {
@@ -248,32 +304,6 @@
 .tagify__input:before {
   line-height: normal;
   top: 2px;
-}
-
-.qarr-label {
-  display: block;
-  color: #616161;
-  font-size: 0.875rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.qarr-input, .qarr-textarea {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  border-width: 1px;
-  border-radius: 0.25rem;
-  width: 100%;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  outline: 0;
-}
-
-.qarr-input:focus, .qarr-textarea:focus {
-  border-color: #d6bcfa;
 }
 
 .qarr-modal {

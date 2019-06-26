@@ -1,9 +1,10 @@
 {% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Displays") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
 
 {% set fullPageForm = true %}
-{% set bodyClass = 'qarr qarr-edit qarr-display-edit' %}
+{% set bodyClass = 'qarr-global qarr-static-elements qarr-edit' %}
 {% set pluginCpUrl = url('qarr') %}
 {% set selectedSubnavItem = "displays" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
@@ -11,110 +12,114 @@
 {% import "_includes/forms" as forms %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block content %}
-    <div class="flex-container">
-        <div id="content-fields" class="third-col">
-            <div class="widget transparent">
-                <input type="hidden" name="action" value="qarr/displays/save">
-                {{ redirectInput('qarr/displays') }}
+    <input type="hidden" name="action" value="qarr/displays/save">
+    {{ redirectInput('qarr/displays') }}
 
-                {% if display.id %}<input type="hidden" name="displayId" value="{{ display.id }}">{% endif %}
+    {% if display.id %}
+        <input type="hidden" name="displayId" value="{{ display.id }}">
+    {% endif %}
 
-                <div class="qarr-field custom-field {% if display.getErrors('name') %}has-error{% endif %} {% if display.name %}has-value{% endif %}">
-                    <input class="text fullwidth" type="text" id="name" name="name" value="{{ display.name }}"
-                           maxlength="255" autocomplete="off">
-                    <label id="name-label" for="name" data-label="{{ 'Name'|t('qarr') }}"
-                           data-error-message="{% if display.getErrors('name') %}{{ display.getErrors('name')[0] }}{% endif %}">
-                        {% if display.getErrors('name') %}
-                            {{ display.getErrors('name')[0] }}
-                        {% else %}
-                            {{ 'Name'|t('qarr') }}
-                        {% endif %}
-                    </label>
-                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
-                </div>
+    <a href="{{ url('qarr/displays') }}" class="inline-flex items-center text-xs text-indigo-400 mb-3 hover:text-indigo-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="fill-current mr-0" width="20" height="20" viewBox="0 0 20 20"><path d="M7.05 9.293L6.343 10 12 15.657l1.414-1.414L9.172 10l4.242-4.243L12 4.343z"/></svg>
+        <span>{{ 'Back to displays'|t('qarr') }}</span>
+    </a>
 
-                <div class="qarr-field custom-field {% if display.getErrors('handle') %}has-error{% endif %} {% if display.handle %}has-value{% endif %}">
-                    <input class="text fullwidth" type="text" id="handle" name="handle" value="{{ display.handle }}"
-                           autocomplete="off">
-                    <label id="handle-label" for="handle" data-label="{{ 'Handle'|t('qarr') }}"
-                           data-error-message="{% if display.getErrors('name') %}{{ display.getErrors('name')[0] }}{% endif %}">
-                        {% if display.getErrors('handle') %}
-                            {{ display.getErrors('handle')[0] }}
-                        {% else %}
-                            {{ 'Handle'|t('qarr') }}
-                        {% endif %}
-                    </label>
-                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
-                </div>
-
-                <div class="qarr-field custom-field {% if display.titleFormat %}has-value{% endif %}">
-                    <input class="text fullwidth" type="text" id="titleFormat" name="titleFormat"
-                           value="{{ display.titleFormat }}" maxlength="255" autocomplete="off">
-                    <label id="titleFormat-label" for="titleFormat">{{ 'Title Format'|t('qarr') }}</label>
-                </div>
-
-                <div id="title-format-items">
-                    <div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"
-                         data-field="{dateCreated}">Date Created
-                    </div>
-                    <div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"
-                         data-field="{fullName}">Full Name
-                    </div>
-                    <div class="tag-link format-item btns btn-rounded btn-gray btn-mini" data-target="#titleFormat"
-                         data-field="{emailAddress}">Email Address
-                    </div>
-                    <div class="format-item format-example">
-                        eg. Review from {fullName} submitted on {dateCreated}
-                    </div>
-                </div>
-
-                <div class="fields-wrapper">
-                    <h1>{{ 'Additional Fields'|t('qarr') }}</h1>
-
-                    {% include "qarr/displays/_includes/fieldlayoutdesigner" with {
-                        fieldLayout: display.getFieldLayout(),
-                        customizableTabs: true,
-                        display: display
-                    } only %}
-                </div>
-            </div>
+    <div class="element-container">
+        <div class="mb-4">
+            <label for="name" class="qarr-label">{{ 'Name'|t('qarr') }}</label>
+            <input class="qarr-input {% if display.getErrors('name') %}has-error{% endif %}" type="text" id="name" name="name" value="{{ display.name }}" maxlength="255" autocomplete="off">
+            {% if display.getErrors('name') %}<span class="error-message">{{ display.getErrors('name')[0] }}</span>{% endif %}
         </div>
 
-        <div class="quarter-col">
-            <div class="entry-settings">
-                <div class="col-header">
-                    <h2>{{ 'Settings'|t('qarr') }}</h2>
-                </div>
+        <div class="mb-4">
+            <label for="handle" class="qarr-label">{{ 'Handle'|t('qarr') }}</label>
+            <input class="qarr-input {% if display.getErrors('handle') %}has-error{% endif %}" type="text" id="handle" name="handle" value="{{ display.handle }}" autocomplete="off">
+            {% if display.getErrors('handle') %}<span class="error-message">{{ display.getErrors('handle')[0] }}</span>{% endif %}
+        </div>
 
-                {%- set on = (display.enabled is defined ? display.enabled : false) %}
-                {%- set value = (value is defined ? value : '1') %}
-                <dif class="field">
-                    <div class="heading">
-                        <label for="">{{ 'Enabled'|t('qarr') }}</label>
-                    </div>
-                    <div class="input">
+        <div class="mb-4">
+            <label for="titleFormat" class="qarr-label">{{ 'Title Format'|t('qarr') }}</label>
+            <input class="qarr-input {% if display.getErrors('handle') %}has-error{% endif %}" type="text" id="titleFormat" name="titleFormat" value="{{ display.titleFormat }}" autocomplete="off">
 
-                        <div class="lightswitch {% if on %} on{% endif %} small">
-                            <div class="lightswitch-container">
-                                <div class="label on"></div>
-                                <div class="handle"></div>
-                                <div class="label off"></div>
-                            </div>
-                            <input type="hidden" name="enabled" value="{{ on ? value }}">
-                        </div>
-                    </div>
-                </dif>
-
+            <div id="title-format-items" class="flex mt-1">
+                <button type="button" class="tag-link qarr-btn btn-small" data-target="#titleFormat"
+                     data-field="{dateCreated}">Date Created
+                </button>
+                <button type="button" class="tag-link qarr-btn btn-small" data-target="#titleFormat"
+                     data-field="{fullName}">Full Name
+                </button>
+                <button type="button" class="tag-link qarr-btn btn-small" data-target="#titleFormat"
+                     data-field="{emailAddress}">Email Address
+                </button>
             </div>
-            <div class="entry-actions">
-                <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
+
+            <div class="text-xs opacity-50 font-mono">
+                eg. Review from {fullName} submitted on {dateCreated}
             </div>
         </div>
     </div>
+
+    <div class="element-container mt-6">
+        <div class="fields-wrapper">
+            <h2>{{ 'Additional Fields'|t('qarr') }}</h2>
+
+            {% include "qarr/_elements/element-field-layout-designer" with {
+                fieldLayout: display.getFieldLayout(),
+                customizableTabs: true,
+                display: display
+            } only %}
+        </div>
+    </div>
+
+
+
+{#                <div class="fields-wrapper">#}
+{#                    <h1>{{ 'Additional Fields'|t('qarr') }}</h1>#}
+
+{#                    {% include "qarr/displays/_includes/fieldlayoutdesigner" with {#}
+{#                        fieldLayout: display.getFieldLayout(),#}
+{#                        customizableTabs: true,#}
+{#                        display: display#}
+{#                    } only %}#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+
+{#        <div class="quarter-col">#}
+{#            <div class="entry-settings">#}
+{#                <div class="col-header">#}
+{#                    <h2>{{ 'Settings'|t('qarr') }}</h2>#}
+{#                </div>#}
+
+{#                {%- set on = (display.enabled is defined ? display.enabled : false) %}#}
+{#                {%- set value = (value is defined ? value : '1') %}#}
+{#                <dif class="field">#}
+{#                    <div class="heading">#}
+{#                        <label for="">{{ 'Enabled'|t('qarr') }}</label>#}
+{#                    </div>#}
+{#                    <div class="input">#}
+
+{#                        <div class="lightswitch {% if on %} on{% endif %} small">#}
+{#                            <div class="lightswitch-container">#}
+{#                                <div class="label on"></div>#}
+{#                                <div class="handle"></div>#}
+{#                                <div class="label off"></div>#}
+{#                            </div>#}
+{#                            <input type="hidden" name="enabled" value="{{ on ? value }}">#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </dif>#}
+
+{#            </div>#}
+{#            <div class="entry-actions">#}
+{#                <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
 
 {% endblock %}
 

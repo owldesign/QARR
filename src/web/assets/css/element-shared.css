@@ -126,6 +126,10 @@
   font-size: 9px;
 }
 
+.qarr-global .element-status .qarr-tag span {
+  line-height: normal;
+}
+
 .qarr-global .element-element {
   text-align: center;
 }
@@ -257,4 +261,32 @@
 
 .qarr-global .flags-container .flagged-item a span {
   margin: 0;
+}
+
+.qarr-global #fieldlayoutform {
+  background-image: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.qarr-global #fieldlayoutform.fieldlayoutform, .qarr-global #fieldlayoutform .fld-tab, .qarr-global #fieldlayoutform .fld-field {
+  color: black;
+}
+
+.qarr-global #fieldlayoutform .unusedfields {
+  margin: 0;
+}
+
+.qarr-global #fieldlayoutform .newtabbtn-container {
+  margin: 0;
+}
+
+.qarr-global #fieldlayoutform .newtabbtn-container .btn {
+  padding: 0;
+  height: auto;
+  color: #718096;
+}
+
+.qarr-global #fieldlayoutform .newtabbtn-container .btn:hover {
+  color: #4A5568;
 }

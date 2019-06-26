@@ -143,7 +143,7 @@ class RulesController extends Controller
             return $this->redirectToPostedUrl($model);
         }
 
-        Craft::$app->getSession()->setError(QARR::t('Couldn’t save rule.'));
+        Craft::$app->getSession()->setError(QARR::t('Cannot save rule.'));
 
         Craft::$app->getUrlManager()->setRouteParams([
             'rule' => $model,
@@ -168,11 +168,11 @@ class RulesController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $this->requirePermission('qarr:deleteDisplays');
+        $this->requirePermission('qarr:deleteRules');
 
-        $displayId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $ruleId = Craft::$app->getRequest()->getRequiredBodyParam('id');
 
-        QARR::$plugin->displays->deleteDisplayById($displayId);
+        QARR::$plugin->rules->deleteRuleById($ruleId);
 
         return $this->asJson(['success' => true]);
     }
@@ -193,22 +193,22 @@ class RulesController extends Controller
      * @return Rule
      * @throws NotFoundHttpException
      */
-    private function _getRuleModel(): Rule
-    {
-        $ruleId = Craft::$app->getRequest()->getBodyParam('ruleId');
-
-        if ($ruleId) {
-            $rule = QARR::$plugin->displays->getDisplayById($ruleId);
-
-            if (!$rule) {
-                throw new NotFoundHttpException('Rule not found');
-            }
-        } else {
-            $display = new Rule();
-        }
-
-        return $rule;
-    }
+//    private function _getRuleModel(): Rule
+//    {
+//        $ruleId = Craft::$app->getRequest()->getBodyParam('ruleId');
+//
+//        if ($ruleId) {
+//            $rule = QARR::$plugin->displays->getDisplayById($ruleId);
+//
+//            if (!$rule) {
+//                throw new NotFoundHttpException('Rule not found');
+//            }
+//        } else {
+//            $display = new Rule();
+//        }
+//
+//        return $rule;
+//    }
 
     /**
      * @param Rule $rule

@@ -30,12 +30,12 @@
                 {% set allowed = craft.qarr.allowedFields %}
 
                 {% if type in allowed %}
-                <div class="fld-field{% if field.required %} fld-required{% endif %}" data-id="{{ field.id }}">
-                    <a class="settings icon" title="{{ 'Edit'|t('app') }}"></a>
-                    <span title="{{ field.handle }}">{{ field.name|t('site') }}</span>
-                    <input class="id-input" type="hidden" name="fieldLayout[{{ tabName|e('url') }}][]" value="{{ field.id }}">
-                    {% if field.required %}<input class="required-input" type="hidden" name="requiredFields[]" value="{{ field.id }}">{% endif %}
-                </div>
+                    <div class="fld-field{% if field.required %} fld-required{% endif %}" data-id="{{ field.id }}">
+                        <a class="settings icon" title="{{ 'Edit'|t('app') }}"></a>
+                        <span title="{{ field.handle }}">{{ field.name|t('site') }}</span>
+                        <input class="id-input" type="hidden" name="fieldLayout[{{ tabName|e('url') }}][]" value="{{ field.id }}">
+                        {% if field.required %}<input class="required-input" type="hidden" name="requiredFields[]" value="{{ field.id }}">{% endif %}
+                    </div>
                 {% endif %}
             {% endfor %}
         </div>
@@ -50,8 +50,8 @@
 
     {% if customizableTabs %}
         <div class="newtabbtn-container">
-            <div class="btn btns btn-gray btn-rounded btn-icon">
-                <span class="icon"><i class="fa fa-plus"></i></span>
+            <div class="btn border border-dashed border-gray-200">
+                <span class="icon mr-1 font-bold">+</span>
                 <span class="btn-text">{{ "New Fieldset"|t('qarr') }}</span>
             </div>
         </div>
@@ -73,9 +73,7 @@
 
 
     <div class="unusedfields">
-        <div class="heading">
-            <p class="text-small muted">{{ 'Unused Fields'|t('qarr') }}</p>
-        </div>
+        <h3>{{ 'Unused Fields'|t('qarr') }}</h3>
         {% for group in groups %}
             {% set totalUnselected = 0 %}
             {% for field in group.fields %}
@@ -98,9 +96,9 @@
                         {% set selected = fieldLayout and field.id in fieldLayout.getFieldIds() %}
 
                         {% if type in allowed %}
-                        <div class="fld-field unused{% if selected %} hidden{% endif %}" data-id="{{ field.id }}">
-                            <span title="{{ field.handle }}">{{ field.name|t('site') }}</span>
-                        </div>
+                            <div class="fld-field unused{% if selected %} hidden{% endif %}" data-id="{{ field.id }}">
+                                <span title="{{ field.handle }}">{{ field.name|t('site') }}</span>
+                            </div>
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -114,23 +112,23 @@
 
 {% js %}
     var initFLD = function() {
-            new Craft.FieldLayoutDesigner('#{{ "fieldlayoutform"|namespaceInputId }}', {
-            customizableTabs: {{ customizableTabs ? 'true' : 'false' }},
-            fieldInputName: '{{ "fieldLayout[__TAB_NAME__][]"|namespaceInputName|e("js") }}',
-            requiredFieldInputName: '{{ "requiredFields[]"|namespaceInputName|e("js") }}'
-        });
+    new Craft.FieldLayoutDesigner('#{{ "fieldlayoutform"|namespaceInputId }}', {
+    customizableTabs: {{ customizableTabs ? 'true' : 'false' }},
+    fieldInputName: '{{ "fieldLayout[__TAB_NAME__][]"|namespaceInputName|e("js") }}',
+    requiredFieldInputName: '{{ "requiredFields[]"|namespaceInputName|e("js") }}'
+    });
     };
 
     {% if tab is defined %}
         var $fldTab = $('#{{ ("tab-"~tab)|namespaceInputId }}');
 
         if ($fldTab.hasClass('sel')) {
-            initFLD();
+        initFLD();
         } else {
-            $fldTab.on('activate.fld', function() {
-                initFLD();
-                $fldTab.off('activate.fld');
-            });
+        $fldTab.on('activate.fld', function() {
+        initFLD();
+        $fldTab.off('activate.fld');
+        });
         }
     {% else %}
         initFLD();

@@ -3,27 +3,25 @@
 {% extends "_layouts/cp" %}
 {% set title = "Displays"|t('qarr') %}
 {% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'qarr-global qarr-noelements qarr-displays' %}
+{% set bodyClass = 'qarr-global qarr-static-elements' %}
 {% set selectedSubnavItem = "displays" %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
 
 {% block header %}
     {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block content %}
-    <a href="{{ url('qarr/displays/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
-        <span class="icon"><i class="fa fa-plus"></i></span>
+
+    <a href="{{ url('qarr/displays/new') }}" class="qarr-btn">
+        <span class="icon mr-3 font-bold">+</span>
         <span class="btn-text">{{ "New Display"|t('qarr') }}</span>
     </a>
 
-    <div id="nodisplays"{% if displays %} class="hidden"{% endif %}>
-        <div class="empty-icon">
-            <i class="fa fa-magic"></i>
-        </div>
-        <h2>{{ "No displays exist yet."|t('qarr') }}</h2>
+    <div id="noelements" class="text-gray-600 mt-6 {% if displays %}hidden{% endif %}">
+        {{ "No displays exist yet."|t('qarr') }}
     </div>
 
     {% if displays|length %}
