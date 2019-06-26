@@ -51,7 +51,6 @@
 .pulse {
   display: inline-block;
   border-radius: 0.5rem;
-  background-color: #667eea;
   box-shadow: 0 0 0 rgba(66, 153, 225, 0.4);
   -webkit-animation: pulse-blue 2s infinite;
           animation: pulse-blue 2s infinite;
@@ -131,6 +130,156 @@
   }
 }
 
+.qarr-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #9e9e9e;
+  color: #fff;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  border-radius: 0.25rem;
+  letter-spacing: 0.025em;
+}
+
+.qarr-btn:hover {
+  background-color: #757575;
+}
+
+.qarr-btn.btn-green {
+  background-color: #68d391;
+}
+
+.qarr-btn.btn-green:hover {
+  background-color: #48bb78;
+}
+
+.qarr-btn.btn-red {
+  background-color: #fc8181;
+}
+
+.qarr-btn.btn-red:hover {
+  background-color: #f56565;
+}
+
+.qarr-btn.btn-purple {
+  background-color: #9f7aea;
+}
+
+.qarr-btn.btn-purple:hover {
+  background-color: #805ad5;
+}
+
+.qarr-btn.cursor-not-allowed {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.qarr-btn.cursor-not-allowed:hover {
+  background-color: #bdbdbd;
+}
+
+.qarr-btn-link {
+  color: #a3bffa;
+  font-size: 0.75rem;
+  letter-spacing: 0.025em;
+}
+
+.qarr-btn-link:hover {
+  color: #667eea;
+}
+
+.tagify {
+  margin-left: -5px;
+  margin-top: 10px;
+  border: none !important;
+}
+
+.tagify.tagify--outside {
+  border-radius: 0.25rem;
+}
+
+.tagify tag > div:before {
+  background: #EDF2F7 !important;
+}
+
+.tagify tag > div span {
+  color: #718096;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+}
+
+.tagify tag:hover div:before {
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  background: #A3BFFA !important;
+}
+
+.tagify tag:hover div span {
+  color: white;
+}
+
+.tagify tag x {
+  border-radius: 3px;
+  color: #CBD5E0;
+}
+
+.tagify tag x:hover {
+  background: transparent !important;
+}
+
+.tagify .tagify--notAllowed > div:before {
+  background: #FED7D7 !important;
+}
+
+.tagify .tagify--notAllowed > div span {
+  color: white;
+}
+
+.tagify__input {
+  border: none;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.tagify__input:before {
+  line-height: normal;
+  top: 2px;
+}
+
+.qarr-label {
+  display: block;
+  color: #616161;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.qarr-input, .qarr-textarea {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border-width: 1px;
+  border-radius: 0.25rem;
+  width: 100%;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  outline: 0;
+}
+
+.qarr-input:focus, .qarr-textarea:focus {
+  border-color: #d6bcfa;
+}
+
+.qarr-modal {
+  font-family: Open Sans, sans-serif;
+}
+
 .qarr-global #main-container {
   font-family: Open Sans, sans-serif;
 }
@@ -146,6 +295,26 @@
   background-image: none !important;
   box-shadow: none !important;
   border-radius: 4px;
+}
+
+.qarr-global #notifications .notification {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  padding: 7px 12px;
+  border-radius: 0 0 3px 3px;
+  color: #fff !important;
+  pointer-events: auto;
+  box-shadow: none;
+  border: none;
+}
+
+.qarr-global #notifications .notification.notice {
+  background-color: #7f9cf5;
+}
+
+.qarr-global #notifications .notification.error {
+  background-color: #fc8181;
 }
 
 .qarr-global.showing-nav #nav-toggle:before {

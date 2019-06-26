@@ -1,11 +1,20 @@
 {% extends "_layouts/cp" %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
 
 {% set fullPageForm = true %}
-{% set bodyClass = 'qarr-global qarr-edit qarr-rule-edit' %}
+{% set bodyClass = 'qarr-global qarr-static-elements qarr-edit' %}
 {% set pluginCpUrl = url('qarr') %}
-{% set title = 'Rules' %}
+
+{% if rule.id %}
+    {% set title = rule.name %}
+{% else %}
+    {% set title = 'New Rule'|t('qarr') %}
+{% endif %}
+
+
+{#{% set title = 'Rules' %}#}
 {% set selectedSubnavItem = "rules" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 {% set qarrumbs = true %}
@@ -17,87 +26,68 @@
 {% endblock %}
 
 {% block content %}
+    <input type="hidden" name="action" value="qarr/rules/save">
+    {{ redirectInput('qarr/rules') }}
+
     {% if rule.id %}
-        {% set name = rule.name %}
-    {% else %}
-        {% set name = 'New Rule'|t('qarr') %}
+        <input type="hidden" name="ruleId" value="{{ rule.id }}">
     {% endif %}
-    {% include 'qarr/settings/_includes/sub-header' ignore missing with { name: name, icon: 'flag', on: rule.enabled  } %}
 
-    <div class="flex-container">
+    {{ d(rule) }}
 
-        <div id="content-fields" class="third-col">
-            <div class="widget transparent">
-                <input type="hidden" name="action" value="qarr/rules/save">
-                {{ redirectInput('qarr/rules') }}
-
-                {% if rule.id %}
-                    <input type="hidden" name="ruleId" value="{{ rule.id }}">
+    <div class="element-container">
+        <div class="mb-4">
+            <label for="name" class="qarr-label">
+                {% if rule.getErrors('name') %}
+                    {{ rule.getErrors('name')[0] }}
+                {% else %}
+                    {{ 'Name'|t('qarr') }}
                 {% endif %}
+            </label>
+            <input class="qarr-input" type="text" id="name" name="name" value="{{ rule.name }}" maxlength="255" autocomplete="off">
+        </div>
 
-                <div class="qarr-field custom-field {% if rule.getErrors('name') %}has-error{% endif %} {% if rule.name %}has-value{% endif %}">
-                    <input class="text fullwidth" type="text" id="name" name="name" value="{{ rule.name }}"
-                           maxlength="255" autocomplete="off">
-                    <label id="name-label" for="name" data-label="{{ 'Name'|t('qarr') }}"
-                           data-error-message="{% if rule.getErrors('name') %}{{ rule.getErrors('name')[0] }}{% endif %}">
-                        {% if rule.getErrors('name') %}
-                            {{ rule.getErrors('name')[0] }}
-                        {% else %}
-                            {{ 'Name'|t('qarr') }}
-                        {% endif %}
-                    </label>
-                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
+        <div class="mb-4">
+            <label for="handle" class="qarr-label">
+                {% if rule.getErrors('handle') %}
+                    {{ rule.getErrors('handle')[0] }}
+                {% else %}
+                    {{ 'Handle'|t('qarr') }}
+                {% endif %}
+            </label>
+            <input class="qarr-input" type="text" id="handle" name="handle" value="{{ rule.handle }}" autocomplete="off">
+        </div>
+
+        <div class="mb-4">
+            <label class="qarr-label">{{ 'Enable rule'|t('qarr') }}</label>
+
+            {%- set on = (rule.enabled is defined ? rule.enabled : false) %}
+            {%- set value = (value is defined ? value : '1') %}
+            <div class="lightswitch {% if rule.enabled %} on{% endif %} small">
+                <div class="lightswitch-container">
+                    <div class="label on"></div>
+                    <div class="handle"></div>
+                    <div class="label off"></div>
                 </div>
-
-                <div class="qarr-field custom-field {% if rule.getErrors('handle') %}has-error{% endif %} {% if rule.handle %}has-value{% endif %}">
-                    <input class="text fullwidth" type="text" id="handle" name="handle" value="{{ rule.handle }}"
-                           autocomplete="off">
-                    <label id="handle-label" for="handle" data-label="{{ 'Handle'|t('qarr') }}"
-                           data-error-message="{% if rule.getErrors('name') %}{{ rule.getErrors('name')[0] }}{% endif %}">
-                        {% if rule.getErrors('handle') %}
-                            {{ rule.getErrors('handle')[0] }}
-                        {% else %}
-                            {{ 'Handle'|t('qarr') }}
-                        {% endif %}
-                    </label>
-                    <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
-                </div>
-
-                <div id="data-list-container">
-                    <h2>{{ 'Data List'|t('qarr') }}</h2>
-                    <p class="small-text muted">{{ 'Enter a list of words to look out for'|t('qarr') }}</p>
-                    <input class="tagify--outside" id="rule-data" type="text" name="data" placeholder="Enter words here. eg. boring, broken..." value="{{ rule.data }}">
-
-                    <a class="btns btn-rounded btn-mini btn-gray tags--removeAllBtn {% if rule.data == '' %}btn-disabled{% endif %}">Clear All</a>
-                </div>
+                <input type="hidden" name="enabled" value="{{ rule.enabled ? value }}">
             </div>
         </div>
-        <div class="quarter-col">
-{#            <div class="entry-settings">#}
-{#                <div class="col-header">#}
-{#                    <h2>{{ 'Customize'|t('qarr') }}</h2>#}
-{#                </div>#}
 
-{#                <div class="qarr-field custom-field has-value">#}
-{#                    {% if rule.icon %}#}
-{#                        {% set icon = rule.icon %}#}
-{#                    {% else %}#}
-{#                        {% set icon = 'exclamation' %}#}
-{#                    {% endif %}#}
-{#                    <input class="text fullwidth" type="text" id="rule-icon" name="icon" value="{{ icon }}" autocomplete="off">#}
-{#                    <label id="rule-icon-label" for="rule-icon" >#}
-{#                        {{ 'Icon'|t('qarr') }}#}
-{#                    </label>#}
-{#                    <span class="qarr-input-icon"><i class="fal fa-{{ icon }}"></i></span>#}
-{#                </div>#}
-{#                <p class="small-text muted">See <a href="https://fontawesome.com/icons" target="_blank">FontAwesome</a> for icon names.</p>#}
-{#            </div>#}
 
-            <div class="entry-actions">
-                <button type="submit" class="btns btn-purple btn-rounded">{{ "Save"|t('qarr') }}</button>
-            </div>
 
+        <div id="data-list-container">
+            <h2 class="mb-0">{{ 'Words List'|t('qarr') }}</h2>
+            <p class="text-sm opacity-50 mt-1">{{ 'Enter a list of words to catch'|t('qarr') }}</p>
+            <input class="tagify--outside" id="rule-data" type="text" name="data" placeholder="eg. boring, broken, sucks, lame, golden, funny..." value="{{ rule.data }}">
+
+            <a class="block qarr-btn-link my-2 tags--removeAllBtn {% if rule.data == '' %}btn-disabled{% endif %}">{{ 'Clear All'|t('qarr') }}</a>
         </div>
+
+
+        <div class="entry-actions mt-10">
+            <button type="submit" class="qarr-btn btn-purple">{{ "Save"|t('qarr') }}</button>
+        </div>
+
     </div>
 
 {% endblock %}
@@ -106,9 +96,9 @@
     {% if rule is defined and not rule.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
 
     $('#name').on('keyup', function(e) {
-        var text = $(this).val();
-        var titleEl = $('.entry-title h1');
+    var text = $(this).val();
+    var titleEl = $('.entry-title h1');
 
-        titleEl.html(text);
+    titleEl.html(text);
     });
 {% endjs %}

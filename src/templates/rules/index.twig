@@ -3,11 +3,11 @@
 {% extends "_layouts/cp" %}
 {% set title = "Rules"|t('qarr') %}
 {% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'qarr-global qarr-rules' %}
+{% set bodyClass = 'qarr-global qarr-static-elements' %}
 {% set selectedSubnavItem = "rules" %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
 
 {% block header %}
     {% include 'qarr/_ui/page-header' ignore missing %}
@@ -15,7 +15,7 @@
 
 {% block content %}
 
-    <a href="{{ url('qarr/rules/new') }}" class="btns btn-white btn-rounded btn-icon btn-icon-left dropdown-menu">
+    <a href="{{ url('qarr/rules/new') }}" class="qarr-btn">
         <span class="icon"><i class="fa fa-plus"></i></span>
         <span class="btn-text">{{ "New Rule"|t('qarr') }}</span>
     </a>
@@ -25,57 +25,30 @@
     </div>
 
     {% if rules|length %}
-        <table id="rules" class="data fullwidth collapsible">
-            <thead>
-            <th scope="col">{{ "Name"|t('qarr') }}</th>
-            <th scope="col">{{ "Handle"|t('qarr') }}</th>
-            <th scope="col">{{ "Enabled"|t('qarr') }}</th>
-            <th scope="col">{{ "Flagged Count"|t('qarr') }}</th>
-            <td class="thin"></td>
-            </thead>
-            <tbody>
+        <div class="elements-list">
+
             {% for rule in rules %}
-                <tr data-id="{{ rule.id }}" data-name="{{ rule.name}}">
-                    <td scope="row" data-title="{{ 'Name'|t('qarr') }}">
-                        <div class="element">
-                            <a href="{{ url('qarr/rules/' ~ rule.id) }}">{{ rule.name }}</a>
-                        </div>
-                    </td>
-                    <td data-title="{{ 'Handle'|t('qarr') }}"><code>{{ rule.handle }}</code></td>
-                    <td data-title="{{ 'Enabled'|t('qarr') }}">
-                        {% if rule.enabled %}
-                            <span class="status approved"></span>
-                        {% else %}
-                            <span class="status rejected"></span>
-                        {% endif %}
-                    </td>
-                    <td data-title="{{ 'Flagged Count'|t('qarr') }}">{{ craft.qarrRules.getFlaggedCountByRuleId(rule.id) }}</td>
-                    <td class="thin">
-                        {% if currentUser.can('qarr:deleteRules') %}
-                            <a class="delete icon" title="{{ 'Delete'|t('qarr') }}" role="button"></a>
-                        {% endif %}
-                    </td>
-                </tr>
+                {% set status = rule.enabled ? 'enabled' : 'disabled' %}
+                <div class="element-item">
+
+                    <div class="element-header w-64">
+                        <a href="{{ url('qarr/rules/' ~ rule.id) }}"><h2>{{ rule.name }}</h2></a>
+                        <span class="block font-mono text-xs element-handle">{{ rule.handle }}</span>
+                    </div>
+
+                    <div class="element-body text-center">
+                        <h3 class="font-normal text-gray-500">{{ 'Flagged Entries'|t('qarr') }}</h3>
+                        <span class="block font-mono element-count">
+                            {{ craft.qarrRules.getFlaggedCountByRuleId(rule.id) }}
+                        </span>
+                    </div>
+
+                    <div class="element-status {{ status }} ">
+                        <div class="qarr-tag"><span>{{ status }}</span></div>
+                    </div>
+
+                </div>
             {% endfor %}
-            </tbody>
-        </table>
+        </div>
     {% endif %}
 {% endblock %}
-
-{% js %}
-
-    var ruleMenu = new Garnish.MenuBtn($('.dropdown-menu', this.$container));
-
-
-    var adminTable = new Craft.AdminTable({
-    tableSelector: '#rules',
-    noItemsSelector: '#norules',
-    deleteAction: 'qarr/rules/delete',
-    confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}” and all its settings?"|t('qarr') }}',
-    onDeleteItem: function() {
-    if (adminTable.totalItems == 0) {
-    $('#nav-entries').remove();
-    }
-    }
-    });
-{% endjs %}

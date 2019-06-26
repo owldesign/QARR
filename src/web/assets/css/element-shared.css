@@ -38,8 +38,8 @@
 .qarr-global .element-info .user-email {
   font-weight: 300;
   color: #616161;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
-  font-size: 9px;
 }
 
 .qarr-global .element-info .user-location {
@@ -49,6 +49,7 @@
   margin-top: 1rem;
   justify-content: center;
   font-weight: 300;
+  letter-spacing: 0.05em;
 }
 
 .qarr-global .element-info .user-location svg {
@@ -82,37 +83,46 @@
   right: 10px;
 }
 
-.qarr-global .element-info .element-status {
-  letter-spacing: 0.1em;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+.qarr-global .element-status {
+  display: inline-block;
   margin-top: 1rem;
-  margin-bottom: 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
   padding-left: 1rem;
   padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   border-radius: 0.25rem;
-  background-color: #f5f5f5;
-  color: #fff;
   text-transform: uppercase;
   font-weight: 600;
-  line-height: 1.4;
+  letter-spacing: 0.1em;
+  border-style: dashed;
+  border-width: 1px;
+  border-color: #757575;
+  color: #757575;
+  line-height: 1;
 }
 
-.qarr-global .element-info .element-status.pending {
-  background-color: #4299e1;
+.qarr-global .element-status.pending {
+  color: #3182ce;
+  border-color: #3182ce;
 }
 
-.qarr-global .element-info .element-status.approved {
-  background-color: #48bb78;
+.qarr-global .element-status.approved {
+  color: #48bb78;
+  border-color: #48bb78;
 }
 
-.qarr-global .element-info .element-status.rejected {
-  background-color: #f56565;
+.qarr-global .element-status.rejected {
+  color: #f56565;
+  border-color: #f56565;
 }
 
-.qarr-global .element-info .element-status .qarr-tag {
+.qarr-global .element-status.enabled {
+  color: #48bb78;
+  border-color: #48bb78;
+}
+
+.qarr-global .element-status .qarr-tag {
   font-size: 9px;
 }
 
@@ -181,6 +191,7 @@
 }
 
 .qarr-global .feedback {
+  position: relative;
   font-size: 14px;
   margin-top: 20px;
 }
@@ -210,6 +221,7 @@
 }
 
 .qarr-global .flags-container .flagged-item {
+  cursor: pointer;
   padding: 7px 7px;
   font-size: 9px;
   font-weight: 700;
@@ -218,4 +230,31 @@
   border-radius: 3px;
   border: 1px dashed #E53E3E;
   margin-right: 7px;
+  transform-origin: 50% 50%;
+  transition: all 0.3s ease;
+}
+
+.qarr-global .flags-container .flagged-item .flag-text {
+  transition: opacity 0.3s ease;
+}
+
+.qarr-global .flags-container .flagged-item.zap {
+  transform: scale(0);
+}
+
+.qarr-global .flags-container .flagged-item:hover a {
+  opacity: 1;
+  z-index: 1;
+}
+
+.qarr-global .flags-container .flagged-item:hover .flag-text {
+  opacity: 0;
+}
+
+.qarr-global .flags-container .flagged-item a {
+  opacity: 0;
+}
+
+.qarr-global .flags-container .flagged-item a span {
+  margin: 0;
 }

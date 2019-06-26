@@ -62,14 +62,14 @@ class Reviews extends Component
      * @param $productId
      * @return \craft\elements\db\ElementQueryInterface
      */
-    public function getReviewsByProductId($productId)
-    {
-        $query = Review::find();
-        $query->productId($productId);
-        $query->status('approved');
-
-        return $query;
-    }
+//    public function getReviewsByProductId($productId)
+//    {
+//        $query = Review::find();
+//        $query->productId($productId);
+//        $query->status('approved');
+//
+//        return $query;
+//    }
 
     /**
      * @param int $entryId

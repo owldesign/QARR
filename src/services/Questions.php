@@ -48,46 +48,46 @@ class Questions extends Component
      * @param null $productType
      * @return array
      */
-    public function getAllReviews($productId = null, $productType = null): array
-    {
-        if ($this->_allQuestions !== null) {
-            return $this->_allQuestions;
-        }
-
-        $this->_allQuestions = Review::findAll();
-        $this->_questionsById = ArrayHelper::index($this->_allQuestions, 'id');
-
-        return $this->_allQuestions;
-    }
+//    public function getAllReviews($productId = null, $productType = null): array
+//    {
+//        if ($this->_allQuestions !== null) {
+//            return $this->_allQuestions;
+//        }
+//
+//        $this->_allQuestions = Review::findAll();
+//        $this->_questionsById = ArrayHelper::index($this->_allQuestions, 'id');
+//
+//        return $this->_allQuestions;
+//    }
 
     /**
      * @param $productId
      * @param int $offset
      * @return \craft\elements\db\ElementQueryInterface
      */
-    public function paginateQuestionsByProductId($productId, $offset = 0)
-    {
-        $query = Question::find();
-        $query->productId($productId);
-        $query->limit(4);
-        $query->offset($offset);
-        $query->status('approved');
-
-        return $query;
-    }
+//    public function paginateQuestionsByProductId($productId, $offset = 0)
+//    {
+//        $query = Question::find();
+//        $query->productId($productId);
+//        $query->limit(4);
+//        $query->offset($offset);
+//        $query->status('approved');
+//
+//        return $query;
+//    }
 
     /**
      * @param $productId
      * @return \craft\elements\db\ElementQueryInterface
      */
-    public function getQuestionsByProductId($productId)
-    {
-        $query = Question::find();
-        $query->productId($productId);
-        $query->status('approved');
-
-        return $query;
-    }
+//    public function getQuestionsByProductId($productId)
+//    {
+//        $query = Question::find();
+//        $query->productId($productId);
+//        $query->status('approved');
+//
+//        return $query;
+//    }
 
     /**
      * @param int $entryId

@@ -1,15 +1,15 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Questions") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Element") %}
 
-{% set bodyClass = 'qarr qarr-edit' %}
+{% set bodyClass = 'qarr-global qarr-element-edit' %}
 {% set pluginCpUrl = url('qarr') %}
 {% set selectedSubnavItem = "questions" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
 {% endblock %}
 
 {% block content %}
@@ -22,37 +22,64 @@
 
     {% set answers = entry.getAnswers() %}
 
-    {% include 'qarr/_elements/element-status-and-postdate' ignore missing with {entry: entry} %}
+    <div class="panel-header mb-2">
+        <h3 class="font-medium m-0 tracking-wider text-lg">{{ 'Question'|t('qarr') }}</h3>
+        {% include 'qarr/_elements/element-postdate' ignore missing with {entry: entry} %}
+    </div>
 
-    <div class="panel feedback-panel {% if answers is defined and answers %}has-answers{% endif %}">
+    <div class="feedback">
+        {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'questions' } %}
 
-        <div class="panel-wrapper">
-            <p class="large-text"><span>{{ entry.question }}</span></p>
-        </div>
+        {% set flaggedWords = flaggedWords(entry.flags) %}
+        {% if flaggedWords %}
+            {% set feedback = entry.question|occurrence(flaggedWords) %}
+        {% else %}
+            {% set feedback = entry.question %}
+        {% endif %}
+
+        <p class="feedback-text text-lg">{{ feedback |raw }}</p>
+
 
         <div class="panel-actions">
-            <div class="panel-progress"></div>
+{#            <div class="my-6">#}
+{#                <button class="inline-flex items-center bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded tracking-wide {% if entry.reply %}opacity-50 cursor-not-allowed{% endif %}"#}
+{#                        id="reply-to-feedback"#}
+{#                        data-type="question"#}
+{#                        data-element-id="{{ entry.id }}"#}
+{#                        {% if entry.reply %}disabled{% endif %}>#}
+{#                    <span><svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M15 17v-2.99A4 4 0 0 0 11 10H8v5L2 9l6-6v5h3a6 6 0 0 1 6 6v3h-2z"/></svg></span>#}
+{#                    <span>{{ 'Reply to feedback'|t('qarr') }}</span>#}
+{#                    <span class="spinner hidden"></span>#}
+{#                </button>#}
+{#            </div>#}
+            <hr>
 
-            <div class="pull-right">
-                <a href="#" class="btns btn-rounded btn-green btn-icon update-status-btn" data-type="questions" data-status="approved" data-element-id="{{ entry.id }}">
-                    <span class="icon"><i class="fa fa-thumbs-up"></i></span>
-                    <span class="btn-text">{{ 'Approve'|t('qarr') }}</span>
-                    <span class="loader"></span>
-                </a>
-                <a href="#" class="btns btn-rounded btn-red btn-icon update-status-btn" data-type="questions" data-status="rejected" data-element-id="{{ entry.id }}">
-                    <span class="icon"><i class="fa fa-thumbs-down"></i></span>
-                    <span class="btn-text">{{ 'Reject'|t('qarr') }}</span>
-                    <span class="loader"></span>
-                </a>
-            </div>
-            {% if currentUser.can('qarr:deleteQuestions') %}
-            <div class="remove-entry">
-                <a href="#" class="btns btn-rounded btn-gray btn-icon delete-entry" data-type="questions" data-element-id="{{ entry.id }}">
-                    <span class="icon"><i class="fal fa-trash-alt"></i></span>
-                </a>
-            </div>
-            {% endif %}
+            {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry, type: 'questions' } %}
         </div>
+
+{#        <div class="panel-actions">#}
+{#            <div class="panel-progress"></div>#}
+
+{#            <div class="pull-right">#}
+{#                <a href="#" class="btns btn-rounded btn-green btn-icon update-status-btn" data-type="questions" data-status="approved" data-element-id="{{ entry.id }}">#}
+{#                    <span class="icon"><i class="fa fa-thumbs-up"></i></span>#}
+{#                    <span class="btn-text">{{ 'Approve'|t('qarr') }}</span>#}
+{#                    <span class="loader"></span>#}
+{#                </a>#}
+{#                <a href="#" class="btns btn-rounded btn-red btn-icon update-status-btn" data-type="questions" data-status="rejected" data-element-id="{{ entry.id }}">#}
+{#                    <span class="icon"><i class="fa fa-thumbs-down"></i></span>#}
+{#                    <span class="btn-text">{{ 'Reject'|t('qarr') }}</span>#}
+{#                    <span class="loader"></span>#}
+{#                </a>#}
+{#            </div>#}
+{#            {% if currentUser.can('qarr:deleteQuestions') %}#}
+{#            <div class="remove-entry">#}
+{#                <a href="#" class="btns btn-rounded btn-gray btn-icon delete-entry" data-type="questions" data-element-id="{{ entry.id }}">#}
+{#                    <span class="icon"><i class="fal fa-trash-alt"></i></span>#}
+{#                </a>#}
+{#            </div>#}
+{#            {% endif %}#}
+{#        </div>#}
     </div>
 
     {% if answers %}
@@ -153,9 +180,13 @@
 
 {% block details %}
     <div id="settings">
-        {% include 'qarr/_elements/element-abuse-reported' ignore missing with {entry: entry, type: 'questions'} %}
-        {% include 'qarr/_elements/element-entry-author' ignore missing with {entry: entry, type: 'questions'} %}
-        {% include 'qarr/_elements/element-entry-info' ignore missing with {entry: entry} %}
+        {% include 'qarr/_elements/element-information' ignore missing with {entry: entry, type: 'questions', status: entry.status, geolocation: entry.geolocation|json_decode, author: {
+            fullName: entry.fullName,
+            emailAddress: entry.emailAddress,
+            avatarUrl: entry.avatarUrl,
+            user: entry.author
+        }} %}
+        {% include 'qarr/_elements/element-element' ignore missing with {entry: entry, type: 'questions', element: entry.element, elementType: entry.elementType, settings: entry.settings} %}
         {% include 'qarr/_elements/element-entry-audit' ignore missing with {entry: entry} %}
     </div>
 {% endblock %}

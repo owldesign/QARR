@@ -1,36 +1,31 @@
 <div class="element-block element-details">
-
-    {% if entry.flags or entry.abuse %}
-        <div class="pulse round warning flagged-indicator"></div>
-    {% endif %}
-
     <div class="element-object">
         <a href="{{ entryUrl }}"><h2 class="element-title">{{ entry }}</h2></a>
         <span class="posted-date">{{ 'Posted on'|t('qarr') }} <time datetime="{{ datePosted.date }}">{{ datePosted.date |date() }}</time></span>
     </div>
 
     <div class="feedback">
-        {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry } %}
+        {% if entry.flags or entry.abuse %}
+            <div class="pulse round warning flagged-indicator"></div>
+        {% endif %}
+        {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: type } %}
 
         {% set flaggedWords = flaggedWords(entry.flags) %}
         {% if flaggedWords %}
             {% set feedback = feedback|occurrence(flaggedWords) %}
         {% endif %}
 
-        <p class="feedback-text">{{ feedback |raw }}</p>
+        <p class="feedback-text text-lg">{{ feedback |raw }}</p>
     </div>
 
-    {% if reply and type == 'review' %}
-        <div class="response">
-            <span class="reply-date"><strong>{{ reply.author }}</strong> {{ 'replied on'|t('qarr') }} <time
-                        datetime="{{ reply.dateCreated.date }}">{{ reply.dateCreated |date() }}</time></span>
-            <div class="response-wrapper">
-                <p>{{ reply.reply }}</p>
-            </div>
+    {% if reply and type == 'reviews' %}
+        <div class="response relative response-container bg-gray-100 rounded p-6 mt-6">
+            <span class="reply-date response-author text-gray-500 font-medium text-xs tracking-wide"><strong>{{ reply.author }}</strong> {{ 'replied on'|t('qarr') }} <time datetime="{{ reply.dateCreated.date }}">{{ reply.dateCreated |date() }}</time></span>
+            <span class="response-wrapper block pt-4 text-sm font-normal">{{ reply.reply }}</span>
         </div>
     {% endif %}
 
-    {% if reply and type == 'question' %}
+    {% if reply and type == 'questions' %}
         <div class="response">
             <div class="response-wrapper">
 

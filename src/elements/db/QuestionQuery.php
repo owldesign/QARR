@@ -106,6 +106,7 @@ class QuestionQuery extends ElementQuery
             'qarr_questions.emailAddress',
             'qarr_questions.question',
             'qarr_questions.status',
+            'qarr_questions.abuse',
             'qarr_questions.options',
             'qarr_questions.hasPurchased',
             'qarr_questions.elementId',
@@ -148,6 +149,10 @@ class QuestionQuery extends ElementQuery
 
         if ($this->productTypeId) {
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.productTypeId', $this->productTypeId));
+        }
+
+        if ($this->abuse) {
+            $this->subQuery->andWhere(Db::parseParam('qarr_questions.abuse', $this->abuse));
         }
 
         return parent::beforePrepare();

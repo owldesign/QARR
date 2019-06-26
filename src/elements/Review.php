@@ -494,14 +494,12 @@ class Review extends Element
                 break;
             case 'feedback':
                 $variables = [
-                    'type' => 'review',
+                    'type' => 'reviews',
                     'entry' => $this,
                     'element' => $this->element,
                     'feedback' => $this->feedback,
                     'datePosted' => $this->dateCreated,
                     'reply' => $this->reply,
-//                    'flags' => $this->flags,
-//                    'abuse' => $this->abuse,
                     'entryUrl' => $this->url,
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
@@ -690,6 +688,11 @@ class Review extends Element
         return "$difference $periods[$j]";
     }
 
+    /**
+     * Get entry flags
+     *
+     * @return mixed
+     */
     public function getFlags()
     {
         $result = QARR::$plugin->rules->getFlagged($this->id);
@@ -697,16 +700,25 @@ class Review extends Element
         return $result;
     }
 
+    /**
+     * Get author avatar url from gravatar.com
+     *
+     * @return string
+     */
     public function avatarUrl()
     {
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
     }
 
+    /**
+ * Get settings
+ *
+ * @return mixed
+ */
     public function getSettings()
     {
         return QARR::$plugin->settings;
     }
-
 
     /**
      * Check for commerce plugin

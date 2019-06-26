@@ -28,15 +28,15 @@
         </div>
 
         <div class="feedback">
-            {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry } %}
+            {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'reviews' } %}
 
 
             {% set flaggedWords = flaggedWords(entry.flags) %}
-                {% if flaggedWords %}
-                    {% set feedback = entry.feedback|occurrence(flaggedWords) %}
-                {% else %}
-                    {% set feedback = entry.feedback %}
-                {% endif %}
+            {% if flaggedWords %}
+                {% set feedback = entry.feedback|occurrence(flaggedWords) %}
+            {% else %}
+                {% set feedback = entry.feedback %}
+            {% endif %}
 
             <p class="feedback-text text-lg">{{ feedback |raw }}</p>
         </div>
@@ -52,25 +52,24 @@
 
         <div class="panel-actions">
             <div class="my-6">
-                {% if not entry.reply %}
-                    <button class="inline-flex items-center bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded tracking-wide feedback-reply"
-                        data-type="review"
-                        data-element-id="{{ entry.id }}"
-                        data-author-id="{{ currentUser.id }}">
-                        <span><svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M15 17v-2.99A4 4 0 0 0 11 10H8v5L2 9l6-6v5h3a6 6 0 0 1 6 6v3h-2z"/></svg></span>
-                        <span>{{ 'Reply to feedback'|t('qarr') }}</span>
-                        <span class="spinner hidden"></span>
-                    </button>
-                {% endif %}
+                <button class="qarr-btn {% if entry.reply %}opacity-50 cursor-not-allowed{% endif %}"
+                    id="reply-to-feedback"
+                    data-type="review"
+                    data-element-id="{{ entry.id }}"
+                    {% if entry.reply %}disabled{% endif %}>
+                    <span><svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M15 17v-2.99A4 4 0 0 0 11 10H8v5L2 9l6-6v5h3a6 6 0 0 1 6 6v3h-2z"/></svg></span>
+                    <span>{{ 'Reply to feedback'|t('qarr') }}</span>
+                    <span class="spinner hidden"></span>
+                </button>
             </div>
             <hr>
 
-
-            {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry } %}
+            {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry, type: 'reviews' } %}
 
         </div>
     </div>
 
+    {# TODO: QA THIS #}
     {% if fieldLayoutTabs is defined is not empty %}
         <div class="panel panel-fields panel-blue">
             <div class="panel-wrapper">
@@ -108,6 +107,7 @@
         </div>
     {% endif %}
 
+    {# TODO: QA THIS #}
     {% if correspondences %}
         <div class="panel panel-correspondence panel-blue">
             <div class="panel-wrapper">
@@ -138,13 +138,7 @@
             avatarUrl: entry.avatarUrl,
             user: entry.author
         }} %}
-
         {% include 'qarr/_elements/element-element' ignore missing with {entry: entry, type: 'reviews', element: entry.element, elementType: entry.elementType, settings: entry.settings} %}
-
-        {#        {% include 'qarr/_elements/element-abuse-reported' ignore missing with {entry: entry, type: 'reviews'} %}#}
-        {#        {% include 'qarr/_elements/element-entry-rating' ignore missing with {entry: entry} %}#}
-        {#        {% include 'qarr/_elements/element-entry-author' ignore missing with {entry: entry, type: 'reviews'} %}#}
-        {#        {% include 'qarr/_elements/element-entry-info' ignore missing with {entry: entry} %}#}
         {% include 'qarr/_elements/element-entry-audit' ignore missing with {entry: entry} %}
     </div>
 {% endblock %}

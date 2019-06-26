@@ -23,16 +23,18 @@
         </div>
     </div>
 
-    {% if entry.rating is defined %}
-    <div class="qarr-rating">
-        {% for i in 1..5 %}
-            {% if entry.rating >= i %}
-                <span class="qarr-rating-star active"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg></span>
-            {% else %}
-                <span class="qarr-rating-star"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg></span>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% if type == 'reviews' %}
+        {% if entry.rating is defined %}
+            <div class="qarr-rating">
+                {% for i in 1..5 %}
+                    {% if entry.rating >= i %}
+                        <span class="qarr-rating-star active"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg></span>
+                    {% else %}
+                        <span class="qarr-rating-star"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg></span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
     {% endif %}
 
     <div class="item-column element-status {{ status }} {% if status == 'pending' %}pulse{% endif %}">

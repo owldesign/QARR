@@ -412,14 +412,12 @@ class Question extends Element
                 break;
             case 'feedback':
                 $variables = [
-                    'type' => 'question',
+                    'type' => 'questions',
                     'entry' => $this,
                     'element' => $this->element,
                     'feedback' => $this->question,
                     'datePosted' => $this->dateCreated,
                     'reply' => $this->answers,
-                    'flags' => $this->flags,
-                    'abuse' => $this->abuse,
                     'entryUrl' => $this->url,
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
@@ -427,6 +425,7 @@ class Question extends Element
             case 'element':
                 $variables = [
                     'type' => 'question',
+                    'entry' => $this,
                     'settings' => QARR::$plugin->settings,
                     'element' => $this->element,
                     'elementType' => $this->elementType
@@ -514,6 +513,11 @@ class Question extends Element
         return "$difference $periods[$j]";
     }
 
+    /**
+     * Get entry flags
+     *
+     * @return mixed
+     */
     public function getFlags()
     {
         $result = QARR::$plugin->rules->getFlagged($this->id);
@@ -521,9 +525,24 @@ class Question extends Element
         return $result;
     }
 
+    /**
+     * Get author avatar url from gravatar.com
+     *
+     * @return string
+     */
     public function avatarUrl()
     {
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
+    }
+
+    /**
+     * Get settings
+     *
+     * @return mixed
+     */
+    public function getSettings()
+    {
+        return QARR::$plugin->settings;
     }
 
     /**

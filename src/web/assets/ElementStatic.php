@@ -5,7 +5,7 @@ namespace owldesign\qarr\web\assets;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-class Rules extends AssetBundle
+class ElementStatic extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -19,12 +19,15 @@ class Rules extends AssetBundle
 
         $this->depends = [
             CpAsset::class,
-            Tags::class
         ];
 
-        $this->js = [
-            'js/rules.js',
+        $this->css = [
+            'css/element-shared.css',
+            'css/element-static.css',
         ];
+
+//        $this->js = [
+//        ];
 
         parent::init();
     }

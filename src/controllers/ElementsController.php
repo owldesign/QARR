@@ -15,6 +15,7 @@ use craft\web\View;
 use craft\web\Controller;
 use craft\helpers\Template;
 use craft\controllers\ElementIndexesController;
+use owldesign\qarr\elements\Question;
 use yii\web\Response;
 
 use owldesign\qarr\QARR;
@@ -300,5 +301,56 @@ class ElementsController extends Controller
             'success' => true,
             'entry' => $entry
         ]);
+    }
+
+    /**
+     * Delete
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     */
+    public function actionDelete()
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+        $request = Craft::$app->getRequest();
+        $elementId = $request->getBodyParam('id');
+
+        $element = Craft::$app->elements->getElementById($elementId);
+
+        $this->_enforceEditPermissions();
+
+        if ($element instanceof Question) {
+            $type = 'question';
+            $responseDeleted = QARR::$plugin->answers->deleteAnswersByElement($element);
+            $elementDeleted = QARR::$plugin->questions->deleteEntry($element);
+        } else {
+            $responseDeleted = QARR::$plugin->replies->deleteRepliesByElement($element);
+            $elementDeleted = QARR::$plugin->reviews->deleteEntry($element);
+        }
+
+        $correspondenceIsDeleted = QARR::$plugin->correspondence->deleteCorrespondenceByElement($element);
+
+        if ($elementDeleted && $correspondenceIsDeleted && $responseDeleted) {
+            return $this->asJson([
+                'success' => true
+            ]);
+        }
+
+        return $this->asJson([
+            'success' => false
+        ]);
+    }
+
+    // Private Methods
+    // =========================================================================
+
+    /**
+     * @throws \yii\web\ForbiddenHttpException
+     */
+    private function _enforceEditPermissions()
+    {
+        $this->requirePermission('qarr:accessReviews');
     }
 }

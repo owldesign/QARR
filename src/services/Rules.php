@@ -264,12 +264,15 @@ class Rules extends Component
         $record->enabled = $rule->enabled;
         $record->data = $rule->data;
         $record->icon = $rule->icon;
+
         if ($rule->settings) {
             $record->settings = $rule->settings;
         }
+
         if ($rule->options) {
             $record->options = $rule->options;
         }
+
         $record->save(false);
 
         if ($isNewRule) {

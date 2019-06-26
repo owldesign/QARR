@@ -55,19 +55,17 @@ class RulesController extends Controller
      * @param Rule|null $rule
      * @return Response
      * @throws NotFoundHttpException
+     * @throws \yii\base\ExitException
      * @throws \yii\web\ForbiddenHttpException
      */
     public function actionEdit(int $ruleId = null, Rule $rule = null): Response
     {
-        $variables = [
-            'ruleId' => $ruleId,
-            'brandNewRule' => false
-        ];
+        $variables = [];
+        $variables['brandNewRule'] = false;
 
         if ($ruleId !== null) {
             if ($rule === null) {
                 $rule = QARR::$plugin->rules->getRuleById($ruleId);
-                $variables['rule'] = $rule;
                 if ($rule->options) {
                     $variables['rule']['options'] = Json::decode($rule->options);
                 }
@@ -76,14 +74,23 @@ class RulesController extends Controller
                     throw new NotFoundHttpException(QARR::t('Rule not found'));
                 }
             }
+
+            $variables['title'] = trim($rule->name) ?: QARR::t('Edit Rule');
         } else {
             if ($rule === null) {
-                $variables['rule'] = new Rule();
+                $rule = new Rule();
                 $variables['brandNewRule'] = true;
             }
+
+            $variables['title'] = QARR::t('Create a new rule');
         }
 
-        $this->_enforceEditRulePermissions($variables['rule']);
+        $variables['ruleId'] = $ruleId;
+        $variables['rule'] = $rule;
+
+
+        $this->_enforceEditRulePermissions($rule);
+
         $variables['fullPageForm'] = true;
         $variables['continueEditingUrl'] = 'qarr/rules/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
@@ -128,26 +135,25 @@ class RulesController extends Controller
         // Permission enforcement
         $this->_enforceEditRulePermissions($model);
 
-        if (!QARR::$plugin->rules->saveRule($model)) {
-            if ($request->getAcceptsJson()) {
-                return $this->asJson([
-                    'success' => false,
-                    'errors' => $model->getErrors(),
-                ]);
-            }
+        // Validate
+        $model->validate();
 
-            Craft::$app->getSession()->setError(QARR::t('Couldn’t save rule.'));
-
-            Craft::$app->getUrlManager()->setRouteParams([
-                'rule' => $model
-            ]);
-
-            return null;
+        if (!$model->hasErrors() && QARR::$plugin->rules->saveRule($model)) {
+            Craft::$app->getSession()->setNotice(QARR::t('Rule saved.'));
+            return $this->redirectToPostedUrl($model);
         }
 
-        Craft::$app->getSession()->setNotice(QARR::t('Rule saved.'));
+        Craft::$app->getSession()->setError(QARR::t('Couldn’t save rule.'));
 
-        return $this->redirectToPostedUrl($model);
+        Craft::$app->getUrlManager()->setRouteParams([
+            'rule' => $model,
+            'errors' => $model->getErrors(),
+        ]);
+
+
+
+
+        return null;
     }
 
     /**

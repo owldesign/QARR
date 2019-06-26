@@ -563,7 +563,7 @@ pre,
 code,
 kbd,
 samp {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 }
 
 /**
@@ -3557,6 +3557,10 @@ video {
 
 .font-global {
   font-family: Open Sans, sans-serif;
+}
+
+.font-mono {
+  font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
 }
 
 .font-hairline {
@@ -10474,6 +10478,10 @@ video {
 
   .sm\:font-global {
     font-family: Open Sans, sans-serif;
+  }
+
+  .sm\:font-mono {
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   }
 
   .sm\:font-hairline {
@@ -17394,6 +17402,10 @@ video {
     font-family: Open Sans, sans-serif;
   }
 
+  .md\:font-mono {
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  }
+
   .md\:font-hairline {
     font-weight: 100;
   }
@@ -24312,6 +24324,10 @@ video {
     font-family: Open Sans, sans-serif;
   }
 
+  .lg\:font-mono {
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  }
+
   .lg\:font-hairline {
     font-weight: 100;
   }
@@ -31228,6 +31244,10 @@ video {
 
   .xl\:font-global {
     font-family: Open Sans, sans-serif;
+  }
+
+  .xl\:font-mono {
+    font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   }
 
   .xl\:font-hairline {

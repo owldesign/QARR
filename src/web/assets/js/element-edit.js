@@ -1,8 +1,9 @@
 Garnish.$doc.ready(function () {
   // Feedback Reply
   // new FeedbackResponse();
-  $('.feedback-reply').on('click', function (e) {
-    new ReplyModal(null, 'new');
+  $('#reply-to-feedback').on('click', function (e) {
+    var elementId = $(this).data('element-id');
+    new ReplyModal(null, 'new', elementId);
   }); // if ($('#reply-to-feedback-btn').length > 0) {
   //     new QarrReplyToFeedback('#reply-to-feedback-btn');
   // }
@@ -19,7 +20,7 @@ Garnish.$doc.ready(function () {
       type: $(this).data('type')
     };
     Craft.postActionRequest('qarr/elements/update-status', data, $.proxy(function (response, textStatus) {
-      if (response.success) {
+      if (response && response.success) {
         Craft.cp.displayNotice(Craft.t('qarr', 'Status updated'));
 
         if (response.entry.status === 'approved') {
@@ -57,26 +58,6 @@ Garnish.$doc.ready(function () {
   //     }), this))
   // });
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  // Clear Entry Abuse
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  $('.abuse-reported-meta .btns').on('click', function (e) {
-    e.preventDefault();
-    var data = {
-      id: $(this).data('entry-id'),
-      type: $(this).data('type')
-    };
-    Craft.postActionRequest('qarr/elements/clear-abuse', data, $.proxy(function (response, textStatus) {
-      if (response.success) {
-        Craft.cp.displayNotice(Craft.t('qarr', 'Abuse cleared'));
-        $('.abuse-reported-meta').velocity({
-          opacity: 0
-        }, 500, function () {
-          $('.abuse-reported-meta').remove();
-        });
-      }
-    }, this));
-  }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Delete Entry
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -87,17 +68,22 @@ Garnish.$doc.ready(function () {
       type: $(this).data('type')
     };
     var message = Craft.t('qarr', 'Deleting this review will also remove all its responses and correspondence?');
+
+    if (data.type === 'questions') {
+      message = Craft.t('qarr', 'Deleting this question will also remove all its answers and correspondence?');
+    }
+
     var deletePrompt = new QarrPrompt(message, null);
     deletePrompt.on('response', function (response) {
       var _this = this;
 
-      if (response.response === 'ok') {
-        Craft.postActionRequest('qarr/reviews/delete', data, $.proxy(function (response, textStatus) {
+      if (response && response.response === 'ok') {
+        Craft.postActionRequest('qarr/elements/delete', data, $.proxy(function (response, textStatus) {
           if (response.success) {
             setTimeout($.proxy(function () {
               Craft.cp.displayNotice(Craft.t('qarr', 'Entry deleted, redirecting...'));
               setTimeout($.proxy(function () {
-                Craft.redirectTo(Craft.getCpUrl() + '/qarr/reviews');
+                Craft.redirectTo(Craft.getCpUrl() + '/qarr/' + data.type);
               }, this), 1000);
             }, _this), 1000);
           }
