@@ -10,13 +10,10 @@
     }).all() %}
 {% endif %}
 
-
-
-
-<div class="widget-header">
+<div class="widget-header flex-container">
     <h2>{{ title }}</h2>
+    <a href="{{ url('qarr/' ~ type) }}" class="qarr-btn-link ml-auto">{{ 'View all'|t('qarr') }}</a>
 </div>
-
 
 <div class="element-list">
     {% for entry in entries %}
@@ -25,14 +22,15 @@
             <div class="element-object text-base font-mono">{{ entry.element.title }}</div>
             <div class="item-meta-title text-xs text-gray-500 mb-2">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }} {{ 'on'|t('qarr') }} {{ entry.dateCreated |date() }}</div>
 
-            {% include 'qarr/_includes/star-rating' ignore missing with { rating: entry.rating } %}
-
+            {% if type == 'reviews' %}
+                {% include 'qarr/_includes/star-rating' ignore missing with { rating: entry.rating } %}
+            {% endif %}
 
             <div class="entry-feedback text-gray-700 mt-2">
                 {% if type == 'reviews' %}
-                    <div>{{ entry.feedback |truncate(150) }} <a href="{{ entry.url }}" class="qarr-btn-link">read the rest</a></div>
+                    <div>{{ entry.feedback |truncate(150, 'read the rest'|t('qarr'), entry.url) |raw }}</div>
                 {% else %}
-                    <div>{{ entry.question |truncate(150) }} <a href="{{ entry.url }}" class="qarr-btn-link">read the rest</a></div>
+                    <div>{{ entry.question |truncate(150, 'read the rest'|t('qarr'), entry.url) |raw }}</div>
                 {% endif %}
             </div>
         </div>

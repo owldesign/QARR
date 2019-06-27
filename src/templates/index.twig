@@ -25,9 +25,14 @@
             {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {title: 'Questions'|t('qarr'), type: 'questions' } %}
         </div>
 
+        <div class="widget-item-wrapper flex-container items-baseline">
+            <div class="widget-item w-1/2 mr-6">
+                {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Reviews'|t('qarr'),  type: 'reviews', limit: 5 } %}
+            </div>
 
-        <div class="widget-item">
-            {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Reviews'|t('qarr'),  type: 'reviews', limit: 5 } %}
+            <div class="widget-item w-1/2">
+                {% include 'qarr/dashboard/_includes/widget-recent' ignore missing with { title: 'Pending Questions'|t('qarr'),  type: 'questions', limit: 5 } %}
+            </div>
         </div>
 
 {#        <div class="element-item self-start">#}

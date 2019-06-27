@@ -184,14 +184,21 @@ class Extensions extends \Twig_Extension
      *
      * @param $text
      * @param int $chars
+     * @param string $readMore
+     * @param null $url
      * @return bool|string
      */
-    function truncate($text, $chars = 120) {
+    function truncate($text, $chars = 120, $readMore = 'read the rest', $url = null) {
         if(strlen($text) > $chars) {
             $text = $text.' ';
             $text = substr($text, 0, $chars);
             $text = substr($text, 0, strrpos($text ,' '));
-            $text = $text.'...';
+
+            if ($url) {
+                $url = '<a href="'. $url .'" class="qarr-btn-link">'. $readMore .'</a>';
+            }
+
+            $text = $text . '... ' . ($url ? $url : $url);
         }
         return $text;
     }
