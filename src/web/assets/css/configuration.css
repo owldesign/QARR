@@ -1,7 +1,9 @@
-.qarr-configuration table {
-  width: 100%;
+.qarr-configuration .elements-list {
+  display: flex;
+  align-items: flex-start;
 }
 
-.qarr-configuration table td {
-  text-align: left !important;
+.qarr-configuration .elements-list .element-item {
+  margin-right: 25px;
+  margin-bottom: 25px;
 }

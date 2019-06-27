@@ -105,9 +105,8 @@
             </div>
         {% endfor %}
     </div>
-    <p class="field-warning">{{ 'If you do not see your field here, it could be because its not allowed.'|t('qarr') }}
-        <a href="#">See a list of allowed fields here.</a></p>
-    {# TODO: add url to allowed fields docs #}
+    <p class="field-warning opacity-50 text-xs">{{ 'If you do not see your field here, it could be because its not compatible.'|t('qarr') }}
+        <a href="https://docs.qarr.tools/elements/displays/#fields">{{ 'See a list of allowed fields here.'|t('qarr') }}</a></p>
 </div>
 
 {% js %}

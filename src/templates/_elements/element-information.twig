@@ -37,9 +37,9 @@
         {% endif %}
     {% endif %}
 
-    <div class="item-column element-status {{ status }} {% if status == 'pending' %}pulse{% endif %}">
+    <div class="item-column element-status {{ entry.status }} {% if entry.status == 'pending' %}pulse{% endif %}">
         <div class="qarr-tag">
-            <span>{{ status }}</span>
+            <span>{{ entry.status }}</span>
         </div>
     </div>
 </div>

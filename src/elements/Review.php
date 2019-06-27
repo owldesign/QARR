@@ -478,7 +478,7 @@ class Review extends Element
         switch ($attribute) {
             case 'information':
                 $variables = [
-                    'type' => 'review',
+                    'type' => 'reviews',
                     'entry' => $this,
                     'author' => [
                         'fullName' => $this->fullName,
@@ -486,9 +486,7 @@ class Review extends Element
                         'avatarUrl' => $this->avatarUrl(),
                         'user' => $this->user
                     ],
-                    'rating' => $this->rating,
                     'geolocation' => Json::decode($this->geolocation),
-                    'status' => $this->status
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-information', $variables) : $this->title;
                 break;
@@ -497,20 +495,15 @@ class Review extends Element
                     'type' => 'reviews',
                     'entry' => $this,
                     'element' => $this->element,
-                    'feedback' => $this->feedback,
-                    'datePosted' => $this->dateCreated,
                     'reply' => $this->reply,
-                    'entryUrl' => $this->url,
+                    'feedback' => $this->feedback,
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
                 break;
             case 'element':
                 $variables = [
-                    'type' => 'review',
+                    'type' => 'reviews',
                     'entry' => $this,
-                    'settings' => $this->settings,
-                    'element' => $this->element,
-                    'elementType' => $this->elementType
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-element', $variables) : $this->title;
                 break;

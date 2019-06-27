@@ -21,6 +21,7 @@ class Dashboard extends AssetBundle
         ];
 
         $this->css = [
+            'css/widget-plugin.css',
             'css/dashboard.css',
         ];
 

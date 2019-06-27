@@ -274,11 +274,11 @@
 }
 
 .qarr-global #fieldlayoutform .unusedfields {
-  margin: 0;
+  margin: 20px 0 0 0;
 }
 
 .qarr-global #fieldlayoutform .newtabbtn-container {
-  margin: 0;
+  margin: 0 0 20px 0;
 }
 
 .qarr-global #fieldlayoutform .newtabbtn-container .btn {
@@ -289,4 +289,98 @@
 
 .qarr-global #fieldlayoutform .newtabbtn-container .btn:hover {
   color: #4A5568;
+}
+
+.qarr-global #fieldlayoutform .fld-tabs {
+  margin: 0;
+}
+
+.qarr-global #fieldlayoutform .fld-tab {
+  margin: 0 1rem 1rem 0 !important;
+}
+
+.draghelper .fld-field span {
+  color: #212121;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .settings, .draghelper .settings {
+  outline: 0;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .settings:before, .draghelper .settings:before {
+  transition: all 0.3s ease;
+  color: #e0e0e0;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .settings:hover:before, .draghelper .settings:hover:before {
+  color: #fff;
+}
+
+.qarr-global #fieldlayoutform .fld-tab, .draghelper {
+  margin: 0;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .tabs, .draghelper .tabs {
+  padding: 0;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .tabs .tab, .draghelper .tabs .tab {
+  border-width: 1px;
+  border-bottom-width: 0;
+  border-style: solid;
+  border-color: #e0e0e0;
+  color: #212121;
+  font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  letter-spacing: 0.05em;
+  background-color: #fff;
+  font-weight: 700;
+  margin-bottom: -1px;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .settings, .draghelper .settings {
+  margin-left: 25px;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .settings:hover:before, .draghelper .settings:hover:before {
+  color: #9f7aea;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .fld-field, .draghelper .fld-field {
+  border-width: 0;
+  border-radius: 0.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  line-height: normal;
+  transition: all 0.3s ease;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .fld-field:hover, .draghelper .fld-field:hover {
+  background-color: #e9d8fd;
+  color: #fff;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .fld-field:hover .settings:before, .draghelper .fld-field:hover .settings:before {
+  color: #fff;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .fld-required.fld-field span, .draghelper .fld-required.fld-field span {
+  position: relative;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .fld-required.fld-field span:after, .draghelper .fld-required.fld-field span:after {
+  position: absolute;
+  color: #fc8181;
+}
+
+.qarr-global #fieldlayoutform .fld-tab .fld-tabcontent, .draghelper .fld-tabcontent {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #e0e0e0;
+  color: #616161;
+  font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  letter-spacing: 0.05em;
 }

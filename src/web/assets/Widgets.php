@@ -46,7 +46,6 @@ class Widgets extends AssetBundle
 
         $this->depends = [
             CpAsset::class,
-            Fontawesome::class,
             Charts::class,
         ];
 
@@ -55,6 +54,7 @@ class Widgets extends AssetBundle
         ];
 
         $this->css = [
+            'css/widget-shared.css',
             'css/widgets.css',
         ];
 

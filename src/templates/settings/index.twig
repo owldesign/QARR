@@ -1,9 +1,10 @@
 {% extends "_layouts/cp" %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Info") %}#}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
 
 {% set title = "Settings"|t('qarr') %}
-{% set bodyClass = 'qarr-global qarr-settings' %}
+{% set bodyClass = 'qarr-global qarr-static-elements qarr-settings' %}
 {% set selectedSubnavItem = "settings" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
@@ -21,17 +22,14 @@
 
     <div class="flex-container">
 
-        <div class="quarter-col utility-widget utility-info"
-             data-tippy-arrow="true"
-             data-tippy-theme="light"
-            data-tippy="{{ craft.app.plugins.getPluginLicenseKey('qarr') }}">
+        <div class="quarter-col utility-widget utility-info" data-tippy-arrow="true" data-tippy-theme="light" data-tippy="{{ craft.app.plugins.getPluginLicenseKey('qarr') }}">
             <div class="pane">
                 <div class="license-status">
                     {% switch craft.app.plugins.getPluginLicenseKeyStatus('qarr') %}
                         {% case 'valid' %}
                         <div>
                             <h2>{{ 'License Valid'|t('qarr') }}</h2>
-                            <p>{{ 'Thanks for your support!'|t('qarr') }}</p>
+                            <ptext-gray-600>{{ 'Thanks for your support!'|t('qarr') }}</ptext-gray-600>
                         </div>
                         <div class="utility-icon license-status-valid">
                             <i class="fal fa-grimace"></i>
@@ -39,7 +37,7 @@
                         {% case 'invalid' %}
                         <div>
                             <h2>{{ 'License Invalid'|t('qarr') }}</h2>
-                            <p class="small-text muted">{{ 'Dont forget to purchase license'|t('qarr') }}</p>
+                            <p class="text-xs text-gray-600 opacity-50">{{ 'Dont forget to purchase license'|t('qarr') }}</p>
                         </div>
                         <div class="utility-icon license-status-invalid">
                             <i class="fal fa-sad-tear"></i>
@@ -47,7 +45,7 @@
                         {% case 'mismatched' %}
                         <div>
                             <h2>{{ 'License Mismatched'|t('qarr') }}</h2>
-                            <p>{{ 'Dont forget to purchase license'|t('qarr') }}</p>
+                            <p class="text-gray-600">{{ 'Dont forget to purchase license'|t('qarr') }}</p>
                         </div>
                         <div class="utility-icon license-status-mismatched">
                             <i class="fal fa-dizzy"></i>
@@ -55,7 +53,7 @@
                         {% default %}
                         <div>
                             <h2>{{ 'License Mismatched'|t('qarr') }}</h2>
-                            <p>{{ 'Please contact support'|t('qarr') }}</p>
+                            <ptext-gray-600>{{ 'Please contact support'|t('qarr') }}</ptext-gray-600>
                         </div>
                         <div class="utility-icon">
                             <i class="fal fa-dizzy"></i>

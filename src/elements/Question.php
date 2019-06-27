@@ -398,7 +398,8 @@ class Question extends Element
         switch($attribute) {
             case 'information':
                 $variables = [
-                    'type' => 'question',
+                    'type' => 'questions',
+                    'entry' => $this,
                     'author' => [
                         'fullName' => $this->fullName,
                         'emailAddress' => $this->emailAddress,
@@ -416,9 +417,7 @@ class Question extends Element
                     'entry' => $this,
                     'element' => $this->element,
                     'feedback' => $this->question,
-                    'datePosted' => $this->dateCreated,
                     'reply' => $this->answers,
-                    'entryUrl' => $this->url,
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
                 break;

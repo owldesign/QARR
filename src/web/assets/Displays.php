@@ -22,6 +22,7 @@ class Displays extends AssetBundle
         ];
 
         $this->js = [
+            'js/element-func.js',
             'js/displays.js',
         ];
 

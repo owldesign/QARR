@@ -11,6 +11,7 @@
 namespace owldesign\qarr\controllers;
 
 use Craft;
+use craft\db\Query;
 use craft\controllers\ElementIndexesController;
 use craft\helpers\ArrayHelper;
 use craft\helpers\ChartHelper;
@@ -22,6 +23,7 @@ class ChartsController extends ElementIndexesController
 {
     // Public Methods
     // =========================================================================
+
 
     /**
      * Get status stats
@@ -108,53 +110,64 @@ class ChartsController extends ElementIndexesController
         $endDateParam = $request->getBodyParam('endDate');
         $elementType = $request->getBodyParam('elementType');
 
-        $startDate = DateTimeHelper::toDateTime($startDateParam, true);
-        $endDate = DateTimeHelper::toDateTime($endDateParam, true);
-        $endDate->modify('+1 day');
+        $startDate = DateTimeHelper::toDateTime($startDateParam);
+        $endDate = DateTimeHelper::toDateTime($endDateParam);
 
-        $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
 
-        $query = clone $this->getElementQuery()
-            ->search(null);
+        $timeZone = new \DateTimeZone(Craft::$app->getTimeZone());
+        $startDate = new \DateTime($startDate->format('Y-m-d'), $timeZone);
+        $endDate = new \DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
+
+//        $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
+        $intervalUnit = 'day';
+
+
+//        $query = clone $this->getElementQuery()
+//            ->search(null);
 
         if ($elementType == 'owldesign\\qarr\\elements\\Review') {
-            $table = 'qarr_reviews';
+            $table = '{{%qarr_reviews}} db';
         } else {
-            $table = 'qarr_questions';
+            $table = '{{%qarr_questions}} db';
         }
 
-        $dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, $table . '.dateCreated', 'count', '[[' . $table . '.dateCreated]]', [
+        $query = (new Query())
+            ->from([$table]);
+
+//        $dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, $table . '.dateCreated', 'count', '[[' . $table . '.dateCreated]]', [
+
+        $dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, 'db.dateCreated', 'count', '*', [
             'intervalUnit' => $intervalUnit,
             'valueLabel' => QARR::t('Entries'),
-            'valueType' => 'number',
+//            'valueType' => 'number',
         ]);
 
         $total = 0;
 
         foreach ($dataTable['rows'] as $row) {
-            $total = $total + $row[1];
+            $total += $row[1];
         }
 
-        $totalHtml = Craft::$app->getFormatter()->asInteger($total);
+//        $totalHtml = Craft::$app->getFormatter()->asInteger($total);
 
-        $formats = [
-            'shortDateFormats' => [
-                'day' => '%-m/%-d',
-                'month' => '%-m/%Y',
-                'year' => '%Y',
-            ],
-            'currencyFormat' => '$,.2f',
-            'number' => ',',
-            'numberFormat' => ',.0f',
-            'percentFormat' => ',.2%'
-        ];
+//        $formats = [
+//            'shortDateFormats' => [
+//                'day' => '%-m/%-d',
+//                'month' => '%-m/%Y',
+//                'year' => '%Y',
+//            ],
+//            'currencyFormat' => '$,.2f',
+//            'number' => ',',
+//            'numberFormat' => ',.0f',
+//            'percentFormat' => ',.2%'
+//        ];
 
         return $this->asJson([
             'dataTable' => $dataTable,
             'total' => $total,
-            'totalHtml' => $totalHtml,
+//            'totalHtml' => $totalHtml,
 
-            'formats' => $formats,
+            'formats' => ChartHelper::formats(),
             'orientation' => Craft::$app->locale->getOrientation(),
             'scale' => $intervalUnit
         ]);

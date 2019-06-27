@@ -198,6 +198,10 @@
   color: #667eea;
 }
 
+.qarr-btn-link.btn-active {
+  color: #667eea;
+}
+
 .qarr-label {
   display: block;
   color: #212121;
@@ -321,12 +325,6 @@
   z-index: 5;
 }
 
-.qarr-global .btn {
-  background-image: none !important;
-  box-shadow: none !important;
-  border-radius: 4px;
-}
-
 .qarr-global #notifications .notification {
   font-size: 0.75rem;
   font-weight: 700;
@@ -345,6 +343,10 @@
 
 .qarr-global #notifications .notification.error {
   background-color: #fc8181;
+}
+
+.qarr-global .flex-container {
+  display: flex;
 }
 
 .qarr-global.showing-nav #nav-toggle:before {
