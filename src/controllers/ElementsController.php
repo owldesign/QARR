@@ -226,7 +226,7 @@ class ElementsController extends Controller
         $entry  = QARR::$plugin->reviews->getEntryById($elementId);
 
         if ($result) {
-            // TODO: Setup up sometype of front end cookies
+            // TODO: Setup up some type of front end cookies
             // QARR::$plugin->cookies->set('reported', $elementId);
 
             return $this->asJson([

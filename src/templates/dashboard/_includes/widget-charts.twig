@@ -2,14 +2,16 @@
     <div class="widget-header">
         <h2>{{ title }}</h2>
     </div>
-    <div class="chart-explorer-container chart-{{ type }}"></div>
+    <div class="widget-body">
+        <div class="chart-explorer-container chart-{{ type }}"></div>
+    </div>
 </div>
 
 <div class="w-3/12 text-center" id="widget-{{ type }}">
     <div class="widget-header">
         <h2>{{ 'Total'|t('qarr') }}</h2>
     </div>
-    <div class="widget-pie">
+    <div class="widget-pie widget-body">
         <div class="pie-area">
             <div id="{{ type }}-donut"></div>
         </div>

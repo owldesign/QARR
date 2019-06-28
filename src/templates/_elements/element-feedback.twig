@@ -1,3 +1,11 @@
+{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
+{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
+{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
+{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
+{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
+{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
+{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
+
 <div class="element-block element-details">
     <div class="element-object">
         <a href="{{ entry.url }}"><h2 class="element-title">{{ entry }}</h2></a>
@@ -17,13 +25,13 @@
             {% set feedback = feedback %}
         {% endif %}
 
-        <p class="feedback-text text-lg">{{ feedback |raw }}</p>
+        <p class="feedback-text text-sm">{{ feedback |raw }}</p>
     </div>
 
     {% if reply and type == 'reviews' %}
-        <div class="response relative response-container bg-gray-100 rounded p-6 mt-6">
+        <div class="response relative response-container bg-gray-100 rounded p-4 mt-4">
             <span class="reply-date response-author text-gray-500 font-medium text-xs tracking-wide"><strong>{{ reply.author }}</strong> {{ 'replied on'|t('qarr') }} <time datetime="{{ reply.dateCreated.date }}">{{ reply.dateCreated |date() }}</time></span>
-            <span class="response-wrapper block pt-4 text-sm font-normal">{{ reply.reply }}</span>
+            <span class="response-wrapper block pt-4 text-sm leading-relaxed">{{ reply.reply }}</span>
         </div>
     {% endif %}
 

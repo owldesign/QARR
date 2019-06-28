@@ -324,17 +324,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 /***/ }),
 
-/***/ "./development/scss/widgets.scss":
-/*!***************************************!*\
-  !*** ./development/scss/widgets.scss ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ "./development/scss/widgets/widget-cp.scss":
 /*!*************************************************!*\
   !*** ./development/scss/widgets/widget-cp.scss ***!
@@ -369,26 +358,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 /***/ }),
 
 /***/ 0:
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./development/js/qarr-plugin.js ./development/scss/dashboard.scss ./development/scss/widgets.scss ./development/scss/frontend.scss ./development/scss/ui.scss ./development/scss/styles.scss ./development/scss/widgets/widget-cp.scss ./development/scss/widgets/widget-plugin.scss ./development/scss/widgets/widget-shared.scss ./development/scss/elements/element-static.scss ./development/scss/elements/element-shared.scss ./development/scss/elements/element-index.scss ./development/scss/elements/element-edit.scss ./development/scss/pages/configuration.scss ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./development/js/qarr-plugin.js ./development/scss/dashboard.scss ./development/scss/frontend.scss ./development/scss/ui.scss ./development/scss/styles.scss ./development/scss/widgets/widget-cp.scss ./development/scss/widgets/widget-plugin.scss ./development/scss/widgets/widget-shared.scss ./development/scss/elements/element-static.scss ./development/scss/elements/element-shared.scss ./development/scss/elements/element-index.scss ./development/scss/elements/element-edit.scss ./development/scss/pages/configuration.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/js/qarr-plugin.js */"./development/js/qarr-plugin.js");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/dashboard.scss */"./development/scss/dashboard.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/widgets.scss */"./development/scss/widgets.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/frontend.scss */"./development/scss/frontend.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/ui.scss */"./development/scss/ui.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/styles.scss */"./development/scss/styles.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/widgets/widget-cp.scss */"./development/scss/widgets/widget-cp.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/widgets/widget-plugin.scss */"./development/scss/widgets/widget-plugin.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/widgets/widget-shared.scss */"./development/scss/widgets/widget-shared.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/elements/element-static.scss */"./development/scss/elements/element-static.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/elements/element-shared.scss */"./development/scss/elements/element-shared.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/elements/element-index.scss */"./development/scss/elements/element-index.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/elements/element-edit.scss */"./development/scss/elements/element-edit.scss");
-module.exports = __webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/pages/configuration.scss */"./development/scss/pages/configuration.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/js/qarr-plugin.js */"./development/js/qarr-plugin.js");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/dashboard.scss */"./development/scss/dashboard.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/frontend.scss */"./development/scss/frontend.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/ui.scss */"./development/scss/ui.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/styles.scss */"./development/scss/styles.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/widgets/widget-cp.scss */"./development/scss/widgets/widget-cp.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/widgets/widget-plugin.scss */"./development/scss/widgets/widget-plugin.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/widgets/widget-shared.scss */"./development/scss/widgets/widget-shared.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/elements/element-static.scss */"./development/scss/elements/element-static.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/elements/element-shared.scss */"./development/scss/elements/element-shared.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/elements/element-index.scss */"./development/scss/elements/element-index.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/elements/element-edit.scss */"./development/scss/elements/element-edit.scss");
+module.exports = __webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/pages/configuration.scss */"./development/scss/pages/configuration.scss");
 
 
 /***/ })

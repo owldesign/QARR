@@ -9,97 +9,20 @@
         status: 'pending',
     }).all() %}
 {% endif %}
+<div id="widget-pending-{{ type }}">
 
-<div class="widget-header flex-container">
-    <h2>{{ title }}</h2>
-    <a href="{{ url('qarr/' ~ type) }}" class="qarr-btn-link ml-auto">{{ 'View all'|t('qarr') }}</a>
+    <div class="widget-header flex-container">
+        <h2 class="relative flex-container">
+            <div class="mr-2">{{ title }}</div>
+            <div class="loader hidden ml-auto"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"></circle><path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(217.494 18 18)"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"></animateTransform></path></g></g></svg></div>
+        </h2>
+        <a href="{{ url('qarr/' ~ type) }}" class="qarr-btn-link ml-auto">{{ 'View all'|t('qarr') }}</a>
+    </div>
+
+    <div class="element-list widget-body" id="widget-pending-{{ type }}">
+        {% include 'qarr/dashboard/_includes/pending-items' ignore missing with { enries: entries } %}
+    </div>
 </div>
-
-<div class="element-list">
-    {% for entry in entries %}
-        <div class="element-item mb-2 pb-2 border-b border-gray-200 border-solid">
-
-            <div class="element-object text-base font-mono">{{ entry.element.title }}</div>
-            <div class="item-meta-title text-xs text-gray-500 mb-2">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }} {{ 'on'|t('qarr') }} {{ entry.dateCreated |date() }}</div>
-
-            {% if type == 'reviews' %}
-                {% include 'qarr/_includes/star-rating' ignore missing with { rating: entry.rating } %}
-            {% endif %}
-
-            <div class="entry-feedback text-gray-700 mt-2">
-                {% if type == 'reviews' %}
-                    <div>{{ entry.feedback |truncate(150, 'read the rest'|t('qarr'), entry.url) |raw }}</div>
-                {% else %}
-                    <div>{{ entry.question |truncate(150, 'read the rest'|t('qarr'), entry.url) |raw }}</div>
-                {% endif %}
-            </div>
-        </div>
-    {% endfor %}
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-{#<div class="widget-recent-items">#}
-
-{#    <div class="widget-header">#}
-{#        <h2>{{ title }}</h2>#}
-{#        <a href="{{ url('qarr') ~ '/' ~ type }}" class="qarr-btn-link">See all {{ type }}</a>#}
-{#    </div>#}
-
-{#    {% for entry in entries %}#}
-{#        <div class="flex-item flex-container">#}
-{#            <div class="w-1/6">#}
-{#                {% include 'qarr/_elements/element-element' ignore missing with { entry: entry, settings: entry.settings } %}#}
-
-{#                {% if type == 'reviews' %}#}
-{#                    {% include 'qarr/_includes/star-rating' ignore missing with { rating: entry.rating } %}#}
-{#                {% endif %}#}
-{#            </div>#}
-{#            <div class="w-5/6">#}
-{#                {% include 'qarr/_elements/element-feedback' ignore missing with { entry: entry } %}#}
-
-{#                <div class="item-actions">#}
-{#                    <button class="qarr-btn-link btn-green update-status-btn" data-type="{{ type }}" data-status="approved" data-element-id="{{ entry.id }}">#}
-{#                        <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 0h1v3l3 7v8a2 2 0 0 1-2 2H5c-1.1 0-2.31-.84-2.7-1.88L0 12v-2a2 2 0 0 1 2-2h7V2a2 2 0 0 1 2-2zm6 10h3v10h-3V10z"/></svg>#}
-{#                        {{ 'Approve'|t('qarr') }}#}
-{#                    </button>#}
-
-{#                    <button class="qarr-btn-link btn-red update-status-btn" data-type="{{ type }}" data-status="rejected" data-element-id="{{ entry.id }}">#}
-{#                        <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 20a2 2 0 0 1-2-2v-6H2a2 2 0 0 1-2-2V8l2.3-6.12A3.11 3.11 0 0 1 5 0h8a2 2 0 0 1 2 2v8l-3 7v3h-1zm6-10V0h3v10h-3z"/></svg>#}
-{#                        {{ 'Reject'|t('qarr') }}#}
-{#                    </button>#}
-
-{#                    {% if currentUser.can('qarr:deleteReviews') %}#}
-{#                        <button class="qarr-btn-link delete-entry float-right" data-type="{{ type }}" data-element-id="{{ entry.id }}">#}
-{#                            {{ 'Delete'|t('qarr') }}#}
-{#                        </button>#}
-{#                    {% endif %}#}
-{#                </div>#}
-{#            </div>#}
-{#            {% include 'qarr/_elements/element-information' ignore missing with { entry: entry, type: 'reviews', status: entry.status, geolocation: entry.geolocation|json_decode, author: #}{#}#}
-{#                fullName: entry.author.fullName,#}
-{#                emailAddress: entry.emailAddress,#}
-{#                avatarUrl: entry.avatarUrl,#}
-{#                user: entry.author#}
-{#            }} %}#}
-
-{#        </div>#}
-{#    {% else %}#}
-{#        <div class="list-item excluded no-submissions">#}
-{#            <div class="item-wrapper">#}
-{#                {% include 'qarr/_includes/icons/icon-' ~ type ignore missing %}#}
-{#                <p>{{ 'No recent submissions'|t('qarr') }}</p>#}
-{#            </div>#}
-{#        </div>#}
-{#    {% endfor %}#}
-{#</div>#}
+{% js %}
+    new QARR.Widgets.PendingItemsWidget('#widget-pending-'+"{{ type }}");
+{% endjs %}

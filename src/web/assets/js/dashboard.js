@@ -30,32 +30,34 @@ Garnish.$doc.ready(function () {
     $.each(e.data, function (i, item) {
       mother.find('.stat-' + item.handle).find('.stat-value').html(Math.round(item.percent * 100) + '%');
     });
-  });
-
-  if ($('#widget-top-country-submissions').length > 0) {
-    $('.reset-geolocation-stats').on('click', function (e) {
-      e.preventDefault();
-      Craft.postActionRequest('qarr/geolocations/reset', {}, $.proxy(function (response, textStatus) {
-        if (response) {
-          window.location.reload();
-        }
-      }, this));
-    });
-    var tip = tippy('.tippy-with-html', {
-      onShow: function onShow(e) {
-        var id = e.id;
-        var template = document.getElementById('country-details-' + id).cloneNode(true);
-        $(template).show();
-        e.setContent(template);
-      },
-      // onHide(e) {
-      //     return false;
-      // },
-      placement: 'top',
-      interactive: true,
-      theme: 'light',
-      duration: 400,
-      arrow: true
-    });
-  }
+  }); // if ($('#widget-top-country-submissions').length > 0) {
+  //
+  //     $('.reset-geolocation-stats').on('click', function(e) {
+  //         e.preventDefault();
+  //
+  //         Craft.postActionRequest('qarr/geolocations/reset', {}, $.proxy(((response, textStatus) => {
+  //             if (response) {
+  //                 window.location.reload();
+  //             }
+  //         }), this))
+  //     });
+  //
+  //
+  //     const tip = tippy('.tippy-with-html', {
+  //         onShow(e) {
+  //             const id = e.id;
+  //             const template = document.getElementById('country-details-'+id).cloneNode(true);
+  //             $(template).show();
+  //             e.setContent(template);
+  //         },
+  //         // onHide(e) {
+  //         //     return false;
+  //         // },
+  //         placement: 'top',
+  //         interactive: true,
+  //         theme: 'light',
+  //         duration: 400,
+  //         arrow: true
+  //     });
+  // }
 });

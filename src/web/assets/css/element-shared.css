@@ -61,7 +61,7 @@
 .qarr-global .element-info .qarr-rating {
   display: flex;
   margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
   justify-content: space-evenly;
 }
 
@@ -203,7 +203,7 @@
 .qarr-global .feedback .feedback-text {
   color: #616161;
   line-height: 1.625;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .qarr-global .feedback .feedback-text .matched-word {
@@ -284,7 +284,10 @@
 .qarr-global #fieldlayoutform .newtabbtn-container .btn {
   padding: 0;
   height: auto;
-  color: #718096;
+  color: #c1c1c1;
+  box-shadow: none;
+  background-image: none;
+  transition: all 0.3s ease;
 }
 
 .qarr-global #fieldlayoutform .newtabbtn-container .btn:hover {

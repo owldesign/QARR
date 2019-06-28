@@ -28,7 +28,7 @@
         </div>
 
         {% if entry.elementType == 'single' %}
-            <span class="element-type uppercase tracking-widest font-semibold text-gray-600">
+            <span class="element-type block uppercase tracking-widest font-semibold text-gray-600">
                 {{ entry.element.type.name }}
             </span>
         {% else %}
@@ -38,6 +38,10 @@
             <h2 class="element-title font-medium text-sm">
                 {{ entry.element }}
             </h2>
+        {% endif %}
+
+        {% if link is defined and link %}
+            <a href="{{ entry.element.cpEditUrl }}" class="qarr-btn-link" target="_blank">{{ 'View Entry'|t('qarr') }}</a>
         {% endif %}
 
     </div>

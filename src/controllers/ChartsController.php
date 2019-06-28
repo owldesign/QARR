@@ -113,17 +113,11 @@ class ChartsController extends ElementIndexesController
         $startDate = DateTimeHelper::toDateTime($startDateParam);
         $endDate = DateTimeHelper::toDateTime($endDateParam);
 
-
         $timeZone = new \DateTimeZone(Craft::$app->getTimeZone());
         $startDate = new \DateTime($startDate->format('Y-m-d'), $timeZone);
         $endDate = new \DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
 
-//        $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
         $intervalUnit = 'day';
-
-
-//        $query = clone $this->getElementQuery()
-//            ->search(null);
 
         if ($elementType == 'owldesign\\qarr\\elements\\Review') {
             $table = '{{%qarr_reviews}} db';
@@ -134,12 +128,9 @@ class ChartsController extends ElementIndexesController
         $query = (new Query())
             ->from([$table]);
 
-//        $dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, $table . '.dateCreated', 'count', '[[' . $table . '.dateCreated]]', [
-
         $dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, 'db.dateCreated', 'count', '*', [
             'intervalUnit' => $intervalUnit,
             'valueLabel' => QARR::t('Entries'),
-//            'valueType' => 'number',
         ]);
 
         $total = 0;
@@ -148,24 +139,9 @@ class ChartsController extends ElementIndexesController
             $total += $row[1];
         }
 
-//        $totalHtml = Craft::$app->getFormatter()->asInteger($total);
-
-//        $formats = [
-//            'shortDateFormats' => [
-//                'day' => '%-m/%-d',
-//                'month' => '%-m/%Y',
-//                'year' => '%Y',
-//            ],
-//            'currencyFormat' => '$,.2f',
-//            'number' => ',',
-//            'numberFormat' => ',.0f',
-//            'percentFormat' => ',.2%'
-//        ];
-
         return $this->asJson([
             'dataTable' => $dataTable,
             'total' => $total,
-//            'totalHtml' => $totalHtml,
 
             'formats' => ChartHelper::formats(),
             'orientation' => Craft::$app->locale->getOrientation(),

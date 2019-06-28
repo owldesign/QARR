@@ -1,54 +1,47 @@
-{% for entry in entries.all() %}
-    <div class="list-item has-hover pad" id="item-{{ type }}-{{ loop.index }}" data-id="{{ entry.id }}">
-        <div class="item-wrapper">
-            <div class="item-title">
-                <a href="{{ entry.url }}">{{ entry.title }}</a>
-            </div>
-            <div class="item-meta">
-                <span class="item-meta-icon">
-                    <i class="far fa-tags"></i>
-                </span>
-                <span class="item-meta-title">{{ entry.element.title }}</span>
-                <span class="item-pipe">|</span>
-                <span class="item-meta-icon">
-                    {% if entry.customer is defined %}
-                        <span class="badge-verified"><i class="fa fa-badge-check"></i></span>
-                    {% else %}
-                        <i class="far fa-user"></i>
-                    {% endif %}
-                </span>
-                <span class="item-meta-title">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }}</span>
-            </div>
+{% for entry in entries %}
+    <div class="element-item mb-4 pb-4 border-b border-gray-200 border-solid widget-recent-element-item" data-type="{{ type }}" data-element-id="{{ entry.id }}">
 
-            <div class="item-feedback">
-                {% if type == 'reviews' %}
-                    {% include 'qarr/_includes/star-rating' ignore missing with { rating: entry.rating } %}
-                {% endif %}
+        <div class="element-object text-base font-mono flex-container items-center" data-tippy-id="{{ entry.id }}">
+            <div>{{ entry.element }}</div>
+            <div class="icon tippy-with-html ml-2" data-tippy-id="{{ entry.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="fill-current opacity-50" viewBox="0 0 20 20"><path d="M.2 10a11 11 0 0 1 19.6 0A11 11 0 0 1 .2 10zm9.8 4a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0-2a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+            </div>
+        </div>
+        <div class="item-meta-title text-xs text-gray-500 mb-2">{{ 'Posted by '|t('qarr') }}{{ entry.fullName }} {{ 'on'|t('qarr') }} {{ entry.dateCreated |date() }}</div>
 
-                <div class="feedback-text">
-                    {% if type == 'reviews' %}
-                        <p>{{ entry.feedback |truncate(150)}}</p>
-                    {% else %}
-                        <p>{{ entry.question |truncate(150)}}</p>
-                    {% endif %}
-                </div>
-            </div>
+        {% if type == 'reviews' %}
+            {% include 'qarr/_includes/star-rating' ignore missing with { rating: entry.rating } %}
+        {% endif %}
+
+        <div class="entry-feedback text-gray-700 mt-2">
+            {% if type == 'reviews' %}
+                <div>{{ entry.feedback |truncate(150, 'read the rest'|t('qarr'), entry.url) |raw }}</div>
+            {% else %}
+                <div>{{ entry.question |truncate(150, 'read the rest'|t('qarr'), entry.url) |raw }}</div>
+            {% endif %}
         </div>
-        <div class="item-actions">
-            <div class="action-approve">
-                <a href="#" class="approve-btn action-btn" data-action-type="approve"><i class="fal fa-check-circle"></i></a>
-            </div>
-            <div class="action-other">
-                <a href="#" class="delete-btn action-btn" data-action-type="delete"><span><i class="fal fa-trash-alt"></i></span></a>
-                <a href="#" class="reject-btn action-btn" data-action-type="reject"><span><i class="fal fa-times-circle"></i></span></a>
-            </div>
+
+        <div class="item-actions flex-container mt-2 opacity-25">
+            <button class="action-btn text-indigo-400 hover:text-green-600 text-xs flex-container items-center mr-4" data-type="{{ type }}" data-status="approved" data-action-type="status" data-element-id="{{ entry.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 0h1v3l3 7v8a2 2 0 0 1-2 2H5c-1.1 0-2.31-.84-2.7-1.88L0 12v-2a2 2 0 0 1 2-2h7V2a2 2 0 0 1 2-2zm6 10h3v10h-3V10z"/></svg>
+                {{ 'Approve'|t('qarr') }}
+            </button>
+
+            <button class="action-btn text-indigo-400 hover:text-red-600 text-xs flex-container items-center" data-type="{{ type }}" data-status="rejected" data-action-type="status" data-element-id="{{ entry.id }}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 20a2 2 0 0 1-2-2v-6H2a2 2 0 0 1-2-2V8l2.3-6.12A3.11 3.11 0 0 1 5 0h8a2 2 0 0 1 2 2v8l-3 7v3h-1zm6-10V0h3v10h-3z"/></svg>
+                {{ 'Reject'|t('qarr') }}
+            </button>
+
+            {% if currentUser.can('qarr:deleteReviews') %}
+                <button class="action-btn text-gray-300 hover:text-red-600 text-xs ml-auto" data-type="{{ type }}" data-action-type="delete" data-element-id="{{ entry.id }}">
+                    {{ 'Delete'|t('qarr') }}
+                </button>
+            {% endif %}
         </div>
-    </div>
-{% else %}
-    <div class="list-item excluded no-submissions">
-        <div class="item-wrapper">
-            {% include 'qarr/_includes/icons/icon-' ~ type ignore missing %}
-            <p>{{ 'No recent submissions'|t('qarr') }}</p>
+
+        <div id="element-popup-{{ entry.id }}" style="display: none;">
+            {% include 'qarr/_elements/element-element' ignore missing with { entry: entry, link: true } %}
         </div>
+
     </div>
 {% endfor %}

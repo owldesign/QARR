@@ -37,15 +37,31 @@
 }
 
 .qarr-status-menu a .status.pending, .qarr-sort-menu a .status.pending {
-  background-color: #63b3ed;
+  background: #63B3ED !important;
 }
 
 .qarr-status-menu a .status.approved, .qarr-sort-menu a .status.approved {
-  background-color: #68d391;
+  background: #68D391 !important;
 }
 
 .qarr-status-menu a .status.rejected, .qarr-sort-menu a .status.rejected {
-  background-color: #fc8181;
+  background: #FC8181 !important;
+}
+
+.qarr-hud {
+  text-align: center;
+}
+
+.qarr-hud .qarr-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: none;
+  box-shadow: none;
+}
+
+.qarr-hud .qarr-footer > * {
+  margin: 0 4px;
 }
 
 .pulse {
@@ -347,6 +363,23 @@
 
 .qarr-global .flex-container {
   display: flex;
+}
+
+.qarr-global .status {
+  background-color: #fff;
+  border-width: 0;
+}
+
+.qarr-global .status.pending {
+  background: #63B3ED !important;
+}
+
+.qarr-global .status.approved {
+  background: #68D391 !important;
+}
+
+.qarr-global .status.rejected {
+  background: #FC8181 !important;
 }
 
 .qarr-global.showing-nav #nav-toggle:before {

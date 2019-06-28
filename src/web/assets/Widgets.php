@@ -50,12 +50,11 @@ class Widgets extends AssetBundle
         ];
 
         $this->js = [
-            'js/widgets.js',
+            'js/widget-func.js',
         ];
 
         $this->css = [
             'css/widget-shared.css',
-            'css/widgets.css',
         ];
 
         parent::init();

@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\widgets;
 
+use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Review;
@@ -38,6 +39,7 @@ class Stats extends Widget
     // =========================================================================
 
     public $type;
+    public $elementType;
 
     // Static Methods
     // =========================================================================
@@ -92,17 +94,18 @@ class Stats extends Widget
      */
     public function getBodyHtml()
     {
+        Craft::dd($this);
         $view = Craft::$app->getView();
-
         $view->registerAssetBundle(Widgets::class);
 
-        if ($this->type == 'reviews') {
-            $variables['title'] = QARR::t('Reviews');
-            $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Review")';
-        } else {
-            $variables['title'] = QARR::t('Questions');
-            $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Question")';
-        }
+        $this->elementType = $this->_getElementType($this->type);
+
+        $variables['stats'] = $this->_getStatusStats();
+        $variables['title'] = QARR::t('Reviews');
+
+
+        $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Review")';
+        $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Question")';
 
         $view->registerJs($js);
 
@@ -110,5 +113,89 @@ class Stats extends Widget
         $variables['id'] = $this->id;
 
         return Craft::$app->getView()->renderTemplate('qarr/widgets/_stats/body', $variables);
+    }
+
+    private function _getElementType($type)
+    {
+        if ($type == 'reviews') {
+            return Review::find();
+        } else {
+            return Question::find();
+        }
+    }
+
+    /**
+     * Get status stats
+     */
+    private function _getStatusStats()
+    {
+        $data = [];
+        $entries = $this->elementType->find();
+
+        $this->_setCount($data, $entries);
+        $this->_setHandle($data);
+        $this->_setStatColors($data);
+
+        if ($data['total'] > 0) {
+            $this->_setPercentages($data);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Set count
+     *
+     * @param $variables
+     * @param $entries
+     */
+    private function _setCount(&$variables, $entries)
+    {
+        $variables['total'] = $this->elementType->count();
+
+        $variables['entries']['0']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'pending', true));
+        $variables['entries']['1']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'approved', true));
+        $variables['entries']['2']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'rejected', true));
+
+        // Set empty percentages
+        $variables['entries']['0']['percent'] = 0;
+        $variables['entries']['1']['percent'] = 0;
+        $variables['entries']['2']['percent'] = 0;
+    }
+
+    /**
+     * Set color
+     *
+     * @param $variables
+     */
+    private function _setStatColors(&$variables)
+    {
+        $variables['entries']['0']['color'] = '#4da1ff';
+        $variables['entries']['1']['color'] = '#2fec94';
+        $variables['entries']['2']['color'] = '#f07575';
+    }
+
+    /**
+     * Set handle
+     *
+     * @param $variables
+     */
+    private function _setHandle(&$variables)
+    {
+        $variables['entries']['0']['handle'] = 'pending';
+        $variables['entries']['1']['handle'] = 'approved';
+        $variables['entries']['2']['handle'] = 'rejected';
+    }
+
+    /**
+     * Set percentages
+     *
+     * @param $variables
+     */
+    private function _setPercentages(&$variables)
+    {
+        $variables['entries']['0']['percent'] = ($variables['entries']['0']['count'] / $variables['total']);
+        $variables['entries']['1']['percent'] = ($variables['entries']['1']['count'] / $variables['total']);
+        $variables['entries']['2']['percent'] = ($variables['entries']['2']['count'] / $variables['total']);
     }
 }

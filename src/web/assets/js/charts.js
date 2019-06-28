@@ -105,6 +105,7 @@ QarrLineChart = Garnish.Base.extend({
             bottom: 30,
             left: 10
           } // this.chart.settings.formats = response.formats
+          // TODO: check back if responsive has been fixed for multiple charts!
 
         };
         this.chart.draw(chartDataTable, chartSettings);

@@ -195,7 +195,7 @@ class Extensions extends \Twig_Extension
             $text = substr($text, 0, strrpos($text ,' '));
 
             if ($url) {
-                $url = '<a href="'. $url .'" class="qarr-btn-link">'. $readMore .'</a>';
+                $url = '<a href="'. $url .'" class="qarr-btn-link" target="_blank">'. $readMore .'</a>';
             }
 
             $text = $text . '... ' . ($url ? $url : $url);

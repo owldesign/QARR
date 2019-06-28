@@ -1,7 +1,3 @@
-.qarr-widgets .widget-header {
-  margin-bottom: 1rem;
-}
-
 .qarr-widgets .widget-pie svg {
   margin: auto;
 }
@@ -24,4 +20,19 @@
 
 .qarr-widgets .pie-stats .stat-value {
   @applpy text-gray-800;
+}
+
+.qarr-widgets .star-rating .star:first-child {
+  margin-left: 0;
+}
+
+.qarr-widgets .element-list .element-item {
+  transform-origin: 50% 50%;
+  transition: all 0.3s ease;
+}
+
+.qarr-widgets .element-list .element-item:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border: none;
 }

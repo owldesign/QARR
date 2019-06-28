@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\services;
 
+use function Couchbase\defaultDecoder;
 use Craft;
 use craft\base\Component;
 use craft\commerce\elements\Product;
