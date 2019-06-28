@@ -257,13 +257,13 @@ QarrDonutChart = Garnish.Base.extend({
   setMouseEvents: function setMouseEvents() {
     var that = this;
     this.svg.selectAll('path').on('mouseover', function (d, i) {
-      d3.select(this).transition().duration(300).ease(d3.easeExpOut).attr('transform', 'scale(1.1)');
+      d3.select(this).transition().duration(300).ease(d3.easeExpOut).style('opacity', 0.5);
       that.totalContainer.transition().duration(300).style('opacity', 0).transition().duration(300).style('opacity', 1).text(that.data.entries[i].count);
       that.trigger('pieIn', {
         data: that.data.entries[i]
       });
     }).on('mouseout', function (d, i) {
-      d3.select(this).transition().duration(300).ease(d3.easeExpIn).attr('transform', 'scale(1)');
+      d3.select(this).transition().duration(300).ease(d3.easeExpIn).style('opacity', 1);
       that.totalContainer.transition().duration(300).style('opacity', 0).transition().duration(300).style('opacity', 1).text(that.data.total);
       that.trigger('pieOut', {
         data: that.data.entries[i]
@@ -274,7 +274,7 @@ QarrDonutChart = Garnish.Base.extend({
   settings: {
     width: 100,
     height: 100,
-    radius: 50
+    radius: 60
   }
 });
 QarrPieChart = Garnish.Base.extend({

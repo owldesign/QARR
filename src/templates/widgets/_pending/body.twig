@@ -1,0 +1,28 @@
+{% if type == 'reviews' %}
+    {% set entries = craft.qarr.reviews({
+        limit: limit,
+        status: 'pending',
+    }).all() %}
+{% else %}
+    {% set entries = craft.qarr.questions({
+        limit: limit,
+        status: 'pending',
+    }).all() %}
+{% endif %}
+<div id="widget-pending-{{ type }}">
+
+    <div class="widget-header flex-container">
+        <h2 class="relative flex-container">
+            <div class="mr-2">{{ type |capitalize }}</div>
+            <div class="loader hidden ml-auto"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"></circle><path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(217.494 18 18)"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"></animateTransform></path></g></g></svg></div>
+        </h2>
+        <a href="{{ url('qarr/' ~ type) }}" class="qarr-btn-link ml-auto">{{ 'View all'|t('qarr') }}</a>
+    </div>
+
+    <div class="element-list widget-body" id="widget-pending-{{ type }}">
+        {% include 'qarr/dashboard/_includes/pending-items' ignore missing with { enries: entries } %}
+    </div>
+</div>
+{% js %}
+    new QARR.Widgets.PendingItemsWidget('#widget-pending-'+"{{ type }}");
+{% endjs %}

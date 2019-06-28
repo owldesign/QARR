@@ -1,3 +1,7 @@
+.qarr-element-edit #content {
+  background: transparent !important;
+}
+
 .qarr-element-edit .response .spinner {
   position: absolute;
   top: 0;
@@ -22,4 +26,39 @@
 
 .qarr-element-edit .element-element {
   background-color: #f5f5f5;
+}
+
+.qarr-element-edit .block-element {
+  background-color: #fff;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  padding-bottom: 1rem !important;
+}
+
+.qarr-element-edit .block-element h2 {
+  margin: 0;
+}
+
+.qarr-element-edit .block-header {
+  padding: 1rem;
+  border-bottom-width: 1px;
+  border-color: #eeeeee;
+  border-style: solid;
+}
+
+.qarr-element-edit .block-body {
+  padding: 1rem;
+}
+
+.qarr-element-edit .block-field {
+  margin-bottom: 0.5rem;
+}
+
+.qarr-element-edit .block-field:last-child {
+  margin-bottom: 0;
+}
+
+.qarr-element-edit .block-field label {
+  font-weight: 700;
 }

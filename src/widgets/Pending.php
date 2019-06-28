@@ -11,6 +11,8 @@
 namespace owldesign\qarr\widgets;
 
 use craft\helpers\Json;
+use owldesign\qarr\elements\Question;
+use owldesign\qarr\elements\Review;
 use owldesign\qarr\QARR;
 use owldesign\qarr\web\assets\Widgets;
 
@@ -29,13 +31,14 @@ use craft\base\Widget;
  * @package   QARR
  * @since     1.0.0
  */
-class Recent extends Widget
+class Pending extends Widget
 {
 
     // Public Properties
     // =========================================================================
 
     public $type;
+    public $elementType;
     public $limit = 5;
     public $status = 'pending';
     public $colspan = 2;
@@ -48,7 +51,7 @@ class Recent extends Widget
      */
     public static function displayName(): string
     {
-        return QARR::t('Recent Submissions');
+        return QARR::t('Pending Entries');
     }
 
     /**
@@ -90,7 +93,7 @@ class Recent extends Widget
         $id = Craft::$app->getView()->formatInputId('type');
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
-        return Craft::$app->getView()->renderTemplate('qarr/widgets/_recent/settings', [
+        return Craft::$app->getView()->renderTemplate('qarr/widgets/_pending/settings', [
                 'id'        => $namespacedId,
                 'widget'    => $this
             ]
@@ -103,24 +106,38 @@ class Recent extends Widget
     public function getBodyHtml()
     {
         $view = Craft::$app->getView();
-
         $view->registerAssetBundle(Widgets::class);
 
+        $this->elementType = $this->_getElementType($this->type);
+
         if ($this->type == 'reviews') {
-            $variables['title'] = QARR::t('Reviews');
             $js = 'new QARR.Widgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         } else {
-            $variables['title'] = QARR::t('Questions');
             $js = 'new QARR.Widgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         }
 
         $view->registerJs($js);
 
-        $variables['type'] = $this->type;
-        $variables['limit'] = $this->limit;
-        $variables['status'] = $this->status;
-        $variables['id'] = $this->id;
+        $variables['type']      = $this->type;
+        $variables['limit']     = $this->limit;
+        $variables['status']    = $this->status;
+        $variables['id']        = $this->id;
 
-        return Craft::$app->getView()->renderTemplate('qarr/widgets/_recent/body', $variables);
+        return Craft::$app->getView()->renderTemplate('qarr/widgets/_pending/body', $variables);
+    }
+
+    /**
+     * Get element instance
+     *
+     * @param $type
+     * @return \craft\elements\db\ElementQueryInterface
+     */
+    private function _getElementType($type)
+    {
+        if ($type == 'reviews') {
+            return Review::find();
+        } else {
+            return Question::find();
+        }
     }
 }

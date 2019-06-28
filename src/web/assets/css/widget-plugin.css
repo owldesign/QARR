@@ -8,6 +8,12 @@
   justify-content: center;
 }
 
+.qarr-widgets .pie-stats .pie-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .qarr-widgets .pie-stats .stat-item {
   margin-left: 0.5rem;
   margin-right: 0.5rem;
@@ -19,7 +25,7 @@
 }
 
 .qarr-widgets .pie-stats .stat-value {
-  @applpy text-gray-800;
+  color: #424242;
 }
 
 .qarr-widgets .star-rating .star:first-child {

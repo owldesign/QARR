@@ -249,6 +249,16 @@
   border-color: #feb2b2;
 }
 
+.qarr-errors {
+  padding-left: 20px;
+}
+
+.qarr-errors li {
+  color: #e53e3e;
+  font-size: 12px;
+  list-style-type: disc;
+}
+
 .qarr-lightswitch .label.off {
   background: #E9D8FD !important;
 }
@@ -328,6 +338,15 @@
 
 .qarr-modal {
   font-family: Open Sans, sans-serif;
+}
+
+.qarr-modal .header {
+  background-image: none;
+  box-shadow: none;
+  border-bottom-width: 1px;
+  border-style: solid;
+  border-color: #f5f5f5;
+  padding: 1rem;
 }
 
 .qarr-global #main-container {

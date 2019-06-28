@@ -94,27 +94,33 @@ class Stats extends Widget
      */
     public function getBodyHtml()
     {
-        Craft::dd($this);
         $view = Craft::$app->getView();
         $view->registerAssetBundle(Widgets::class);
 
         $this->elementType = $this->_getElementType($this->type);
 
         $variables['stats'] = $this->_getStatusStats();
-        $variables['title'] = QARR::t('Reviews');
-
-
-        $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Review")';
-        $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Question")';
+        
+        if ($this->type == 'reviews') {
+            $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Review")';
+        } else {
+            $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Question")';
+        }
 
         $view->registerJs($js);
 
-        $variables['type'] = $this->type;
-        $variables['id'] = $this->id;
+        $variables['type']  = $this->type;
+        $variables['id']    = $this->id;
 
         return Craft::$app->getView()->renderTemplate('qarr/widgets/_stats/body', $variables);
     }
 
+    /**
+     * Get element instance
+     * 
+     * @param $type
+     * @return \craft\elements\db\ElementQueryInterface
+     */
     private function _getElementType($type)
     {
         if ($type == 'reviews') {
@@ -130,7 +136,7 @@ class Stats extends Widget
     private function _getStatusStats()
     {
         $data = [];
-        $entries = $this->elementType->find();
+        $entries = $this->elementType->all();
 
         $this->_setCount($data, $entries);
         $this->_setHandle($data);
@@ -194,8 +200,8 @@ class Stats extends Widget
      */
     private function _setPercentages(&$variables)
     {
-        $variables['entries']['0']['percent'] = ($variables['entries']['0']['count'] / $variables['total']);
-        $variables['entries']['1']['percent'] = ($variables['entries']['1']['count'] / $variables['total']);
-        $variables['entries']['2']['percent'] = ($variables['entries']['2']['count'] / $variables['total']);
+        $variables['entries']['0']['percent'] = round(($variables['entries']['0']['count'] / $variables['total']) * 100) . '%';
+        $variables['entries']['1']['percent'] = round(($variables['entries']['1']['count'] / $variables['total']) * 100) . '%';
+        $variables['entries']['2']['percent'] = round(($variables['entries']['2']['count'] / $variables['total']) * 100) . '%';
     }
 }

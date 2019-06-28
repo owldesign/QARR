@@ -3,6 +3,7 @@
 namespace owldesign\qarr\web\assets;
 
 use craft\web\AssetBundle;
+use craft\web\assets\garnish\GarnishAsset;
 use craft\web\assets\velocity\VelocityAsset;
 use yii\web\JqueryAsset;
 
@@ -19,14 +20,14 @@ class Frontend extends AssetBundle
         $this->sourcePath = __DIR__;
 
         $this->depends = [
+            GarnishAsset::class,
             JqueryAsset::class,
             VelocityAsset::class,
         ];
 
         $this->js = [
             'js/qarr-plugin.js',
-            'js/element-resize-detector.min.js',
-            'js/garnish.min.js',
+//            'js/element-resize-detector.min.js',
             'js/utilities-web.js',
             'js/frontend.js',
         ];

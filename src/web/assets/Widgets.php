@@ -47,6 +47,7 @@ class Widgets extends AssetBundle
         $this->depends = [
             CpAsset::class,
             Charts::class,
+            Tippy::class,
         ];
 
         $this->js = [

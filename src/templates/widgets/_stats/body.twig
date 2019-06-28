@@ -1,24 +1,25 @@
 <div id="qarr-widget-{{ type }}-{{ id }}" class="widget widget-{{ type }}-donut" data-id="{{ type }}" data-type="{{ type }}" data-title="{{ type |capitalize|t('qarr') }}">
-    <h2>{{ type|capitalize|t('qarr') }}</h2>
     <div class="widget-pie">
         <div class="pie-area">
             <div id="{{ type }}-donut-{{ id }}"></div>
+            <h2>{{ type|capitalize|t('qarr') }}</h2>
+            <a href="{{ url('qarr/' ~ type) }}">View All</a>
         </div>
         <div class="pie-stats">
             <div class="stat-item stat-pending">
                 <div class="stat-icon"></div>
-                <div class="stat-label">Pending</div>
-                <div class="stat-value">0%</div>
+                <div class="stat-label">{{ 'Pending'|t('qarr') }}</div>
+                <div class="stat-value">{{ stats.entries[0].percent }}</div>
             </div>
             <div class="stat-item stat-approved">
                 <div class="stat-icon"></div>
-                <div class="stat-label">Approved</div>
-                <div class="stat-value">0%</div>
+                <div class="stat-label">{{ 'Approved'|t('qarr') }}</div>
+                <div class="stat-value">{{ stats.entries[1].percent }}</div>
             </div>
             <div class="stat-item stat-rejected">
                 <div class="stat-icon"></div>
-                <div class="stat-label">Rejected</div>
-                <div class="stat-value">0%</div>
+                <div class="stat-label">{{ 'Rejected'|t('qarr') }}</div>
+                <div class="stat-value">{{ stats.entries[2].percent }}</div>
             </div>
         </div>
     </div>

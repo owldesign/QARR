@@ -6,8 +6,15 @@ Garnish.$doc.ready(function () {
     var elementId = $(this).data('element-id');
     new ReplyModal(null, 'new', elementId);
   }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  // Email Correspondence
+  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  if ($('#reply-email-btn').length > 0) {
+    var emailCorrespondence = new QarrEmailCorrespondence('#reply-email-btn');
+  } // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Update Entry Status
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
   var $statusContainer = $('.element-status');
   $('.update-status-btn').on('click', function (e) {
@@ -20,6 +27,7 @@ Garnish.$doc.ready(function () {
     Craft.postActionRequest('qarr/elements/update-status', data, $.proxy(function (response, textStatus) {
       if (response && response.success) {
         Craft.cp.displayNotice(Craft.t('qarr', 'Status updated'));
+        $statusContainer.removeClass('pulse');
 
         if (response.entry.status === 'approved') {
           $statusContainer.removeClass('pending');

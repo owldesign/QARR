@@ -16,12 +16,13 @@
     </div>
 
     <div class="hud-form-wrapper">
-        <div class="qarr-field custom-field custom-textarea">
-            <textarea id="answer-textarea-{{ id }}" name="answer" cols="30" rows="4"></textarea>
+        <div class="qarr-field">
             <label for="answer-textarea-{{ id }}" class="qarr-label" data-label="{{ 'Answer'|t('qarr') }}" data-error-message="{{ 'Answer is required'|t('qarr') }}">{{ 'Answer'|t('qarr') }}</label>
-            <span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>
+            <textarea id="answer-textarea-{{ id }}" name="answer" cols="30" rows="4"></textarea>
         </div>
     </div>
+
+    <ul class="qarr-errors"></ul>
 </section>
 
 <section class="hud-footer qarr-footer">

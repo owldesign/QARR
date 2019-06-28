@@ -22,16 +22,14 @@
 
     <div class="qarr-body">
         {# Default Fields #}
-        <div class="qarr-field custom-field has-value" id="fields-fullName-{{ type }}">
+        <div class="qarr-field has-value" id="fields-fullName-{{ type }}">
+            <label class="qarr-label" for="qarr-full-name-{{ type }}" data-label="{{ 'Full Name'|t('qarr') }}" data-error-message="{{ 'Full Name is required'|t('qarr') }}">{{ 'Full Name'|t('qarr') }}</label>
             <input type="text" name="fields[fullName]" id="qarr-full-name-{{ type }}" value="{{ hasUser ? currentUser.name : null }}" {{ readonly ? 'readonly' : null }}>
-            <label for="qarr-full-name-{{ type }}" data-label="{{ 'Full Name'|t('qarr') }}" data-error-message="{{ 'Full Name is required'|t('qarr') }}">{{ 'Full Name'|t('qarr') }}</label>
-            <span class="qarr-error-icon">{% include 'qarr/frontend/_includes/_error-icon' ignore missing %}</span>
         </div>
 
-        <div class="qarr-field custom-field has-value" id="fields-emailAddress-{{ type }}">
+        <div class="qarr-field has-value" id="fields-emailAddress-{{ type }}">
+            <label class="qarr-label" for="qarr-email-address-{{ type }}" data-label="{{ 'Email Address'|t('qarr') }}" data-error-message="{{ 'Email Address is required'|t('qarr') }}">{{ 'Email Address'|t('qarr') }}</label>
             <input type="text" name="fields[emailAddress]" id="qarr-email-address-{{ type }}" value="{{ hasUser ? currentUser.email : null }}" {{ readonly ? 'readonly' : null }}>
-            <label for="qarr-email-address-{{ type }}" data-label="{{ 'Email Address'|t('qarr') }}" data-error-message="{{ 'Email Address is required'|t('qarr') }}">{{ 'Email Address'|t('qarr') }}</label>
-            <span class="qarr-error-icon">{% include 'qarr/frontend/_includes/_error-icon' ignore missing %}</span>
         </div>
 
         {% if type == 'review' %}
@@ -40,25 +38,23 @@
 
                 <div class="qarr-star-container">
                     {% for i in 1..5 %}
-                        <div class="qarr-star {% if loop.first %}selected{% endif %}" data-star-count="{{ i }}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 83.91"><path d="M43.91 0a2 2 0 0 0-1.82 1.39l-9.42 29.19L2 30.52a2 2 0 0 0-1.17 3.62l24.85 18-9.54 29.15a2 2 0 0 0 3.08 2.23L44 65.44l24.78 18.08a2 2 0 0 0 3.08-2.23l-9.54-29.17 24.85-18a2 2 0 0 0-1.17-3.6l-30.67.06-9.43-29.2A2 2 0 0 0 43.91 0z" /></svg></div>
+                        <div class="qarr-star {% if loop.first %}selected{% endif %}" data-star-count="{{ i }}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="fill-current" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/></svg></div>
                     {% endfor %}
                     <input type="hidden" id="qarr-rating-input" name="fields[rating]" value="1">
                 </div>
             </div>
 
-            <div class="qarr-field custom-field custom-textarea" id="fields-feedback-{{ type }}">
-                <textarea name="fields[feedback]" cols="30" rows="10" id="qarr-feedback-{{ type }}"></textarea>
-                <label for="qarr-feedback-{{ type }}" data-label="{{ 'Your Feedback'|t('qarr') }}" data-error-message="{{ 'Your Feedback is required'|t('qarr') }}">{{ 'Your Feedback'|t('qarr') }}</label>
-                <span class="qarr-error-icon">{% include 'qarr/frontend/_includes/_error-icon' ignore missing %}</span>
+            <div class="qarr-field" id="fields-feedback-{{ type }}">
+                <label for="qarr-feedback-{{ type }}" class="qarr-label" data-label="{{ 'Your Feedback'|t('qarr') }}" data-error-message="{{ 'Your Feedback is required'|t('qarr') }}">{{ 'Your Feedback'|t('qarr') }}</label>
+                <textarea name="fields[feedback]" cols="50" rows="10" id="qarr-feedback-{{ type }}"></textarea>
             </div>
 
         {% endif %}
 
         {% if type == 'question' %}
-            <div class="qarr-field custom-field custom-textarea" id="fields-question-{{ type }}">
-                <textarea name="fields[question]" cols="30" rows="10" id="qarr-question-{{ type }}"></textarea>
-                <label for="qarr-question-{{ type }}" data-label="{{ 'Your Question'|t('qarr') }}" data-error-message="{{ 'Your Question is required'|t('qarr') }}">{{ 'Your Question'|t('qarr') }}</label>
-                <span class="qarr-error-icon">{% include 'qarr/frontend/_includes/_error-icon' ignore missing %}</span>
+            <div class="qarr-field" id="fields-question-{{ type }}">
+                <label for="qarr-question-{{ type }}" class="qarr-label" data-label="{{ 'Your Question'|t('qarr') }}" data-error-message="{{ 'Your Question is required'|t('qarr') }}">{{ 'Your Question'|t('qarr') }}</label>
+                <textarea name="fields[question]" cols="50" rows="10" id="qarr-question-{{ type }}"></textarea>
             </div>
         {% endif %}
 
@@ -78,15 +74,11 @@
                         {% set allowed = craft.qarr.allowedFields %}
                         {% if fieldType in allowed %}
                             <div class="qarr-field {% if fieldType == 'PlainText' or fieldType == 'Url' %}custom-field{% endif %}" data-field-type="{{ fieldType|lower }}" id="{{ field.handle }}-{{ type }}">
+                                <label for="{{ field.handle }}" class="qarr-label" {% if field.required %}data-label="{{ field.name }}" data-error-message="{{ field.name }} {{ 'is required'|t('qarr') }}"{% endif %}>{{ field.name }}</label>
                                 {% if fieldType == 'PlainText' or fieldType == 'Url' %}
                                     {{ field.getInputHtml('') |raw }}
-                                    <label for="{{ field.handle }}" {% if field.required %}data-label="{{ field.name }}" data-error-message="{{ field.name }} {{ 'is required'|t('qarr') }}"{% endif %}>{{ field.name }}</label>
                                 {% else %}
-                                    <label for="{{ field.handle }}" class="qarr-label" {% if field.required %}data-label="{{ field.name }}" data-error-message="{{ field.name }} {{ 'is required'|t('qarr') }}"{% endif %}>{{ field.name }}</label>
                                     {{ field.getInputHtml('') |replace({'id=""': ''})|raw }}
-                                {% endif %}
-                                {% if fieldType == 'PlainText' or fieldType == 'Url' %}
-                                    <span class="qarr-error-icon">{% include 'qarr/frontend/_includes/_error-icon' ignore missing %}</span>
                                 {% endif %}
                             </div>
 
@@ -95,6 +87,8 @@
                 {% endfor %}
             {% endnamespace %}
         {% endif %}
+
+        <ul class="qarr-errors"></ul>
     </div>
 
     <div class="qarr-footer">

@@ -19,7 +19,7 @@ use owldesign\qarr\services\Elements as QarrElements;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
 use owldesign\qarr\web\assets\QarrCp;
 use owldesign\qarr\widgets\Stats;
-use owldesign\qarr\widgets\Recent;
+use owldesign\qarr\widgets\Pending;
 use owldesign\qarr\plugin\Routes;
 use owldesign\qarr\plugin\Services;
 use owldesign\qarr\web\twig\Variables;
@@ -319,7 +319,7 @@ class QARR extends Plugin
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
                 $event->types[] = Stats::class;
-                $event->types[] = Recent::class;
+                $event->types[] = Pending::class;
             }
         );
     }

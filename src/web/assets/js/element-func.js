@@ -1,5 +1,4 @@
-var QarrEmailCorrespondence, QarrEmailModal, QarrPrompt; // Feedback Reply
-
+// Feedback Reply
 var FeedbackResponse = Garnish.Base.extend({
   $replyBtn: null,
   $replyDeleteBtn: null,
@@ -79,7 +78,7 @@ var ReplyModal = Garnish.Modal.extend({
       btnText = Craft.t('qarr', 'Update reply');
     }
 
-    this.$modalContainer = $(['<div class="body">', '<header class="header">', '<span class="header-text tracking-wider text-lg font-normal text-gray-700">' + Craft.t('qarr', 'Replying to Feedback') + '</span>', '</header>', '<label class="block text-gray-700 text-sm font-medium mb-2">' + Craft.t('qarr', 'Reply message') + '</label>', '<textarea id="reply-text" class="qarr-textarea" rows="6" cols="70" placeholder="' + Craft.t('qarr', 'Leave a reply...') + '"></textarea>', '<div class="error-container relative">', '<span class="error-message absolute font-xs text-red-400 pt-2" data-error-message="' + Craft.t('qarr', 'Reply message cannot be blank.') + '"></span>', '</div>', '<div class="buttons">', '<span class="spinner hidden"></span>', '<button type="button" class="cancel bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded mr-2 ml-auto">' + Craft.t('qarr', 'Cancel') + '</button>', '<button type="submit" class="btn-modal submit bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded">' + btnText + '</button>', '</div>', '</div>'].join('')).appendTo(this.$form);
+    this.$modalContainer = $(['<div class="body">', '<header class="header">', '<h2>' + Craft.t('qarr', 'Replying to Feedback') + '</h2>', '</header>', '<label class="qarr-label">' + Craft.t('qarr', 'Reply message') + '</label>', '<textarea id="reply-text" class="qarr-textarea" rows="6" cols="70" placeholder="' + Craft.t('qarr', 'Leave a reply...') + '"></textarea>', '<div class="error-container relative">', '<span class="error-message absolute font-xs text-red-400 pt-2" data-error-message="' + Craft.t('qarr', 'Reply message cannot be blank.') + '"></span>', '</div>', '<div class="buttons right">', '<span class="spinner hidden"></span>', '<button type="button" class="cancel qarr-btn mr-2">' + Craft.t('qarr', 'Cancel') + '</button>', '<button type="submit" class="btn-modal submit qarr-btn btn-purple">' + btnText + '</button>', '</div>', '</div>'].join('')).appendTo(this.$form);
     this.show();
     this.$cancelBtn = this.$modalContainer.find('.cancel');
     this.$replyTextarea = this.$modalContainer.find('#reply-text');
@@ -149,87 +148,21 @@ var ReplyModal = Garnish.Modal.extend({
   handleCancel: function handleCancel() {
     this.hide();
   }
-}); // Emails
+}); // Email Correspondence
 
-QarrEmailModal = Garnish.Modal.extend({
-  widget: null,
-  init: function init(widget) {
-    var body, self;
-    self = this;
-    this.base();
-    this.widget = widget;
-    this.$form = $('<form class="modal fitted qarr-modal prompt-modal modal-blue">').appendTo(Garnish.$bod);
-    this.setContainer(this.$form); // TODO: Make From Name dynamic to use site admin name
-    // TODO: Make subject use entry title
-
-    body = $(['<div class="body">', '<header class="header">', '<span class="header-text">' + Craft.t('qarr', 'Sending Email') + '</span>', '<span class="icon"><i class="fa fa-mail-bulk"></i></span>', '</header>', '<div class="qarr-field custom-field field-white-bg">', '<input class="qarr-input" type="text" id="reply-subject" name="reply-subject" autocomplete="off">', '<label id="reply-subject-label" for="reply-subject" data-label="' + Craft.t('qarr', 'Subject') + '" data-error-message="' + Craft.t('qarr', 'Subject cannot be blank.') + '">' + Craft.t('qarr', 'Subject') + '</label>', '<span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>', '</div>', '<div class="qarr-field custom-field field-white-bg">', '<textarea id="reply-message" class="qarr-textarea" rows="6"></textarea>', '<label id="reply-message-label" for="reply-message" data-label="' + Craft.t('qarr', 'Message') + '" data-error-message="' + Craft.t('qarr', 'Message cannot be blank.') + '">' + Craft.t('qarr', 'Message') + '</label>', '<span class="qarr-error-icon"><i class="fa fa-exclamation-triangle"></i></span>', '</div>', '<div class="buttons">', '<button type="button" class="btn btn-modal cancel">' + Craft.t('qarr', 'Cancel') + '</button>', '<button type="submit" class="btn btn-modal submit">' + Craft.t('qarr', 'Send') + '</button>', '</div>', '</div>'].join('')).appendTo(this.$form);
-    this.show();
-    this.$cancelBtn = body.find('.cancel');
-    this.$subjectInput = body.find('#reply-subject');
-    this.$messageInput = body.find('#reply-message');
-    new QarrInputField(this.$subjectInput.parent());
-    new QarrTextareaField(this.$messageInput.parent());
-    setTimeout($.proxy(function () {
-      self.$subjectInput.focus();
-    }, this), 100);
-    this.addListener(this.$cancelBtn, 'click', 'hide');
-    this.addListener(this.$form, 'submit', 'save');
-  },
-  save: function save(e) {
-    e.preventDefault();
-    this.$subject = this.$subjectInput.val();
-    this.$message = this.$messageInput.val();
-    var subjectLabel = this.$subjectInput.parent().find('label');
-    var messageLabel = this.$messageInput.parent().find('label');
-    this.email = {
-      subject: this.$subject,
-      message: this.$message
-    };
-    this.$subjectInput.removeClass('has-error');
-    this.$messageInput.removeClass('has-error');
-
-    if (this.$subjectInput.val() === '' && this.$messageInput.val() === '') {
-      // Garnish.shake(this.$container)
-      if (this.$subjectInput.val() === '') {
-        this.$subjectInput.parent().addClass('has-error');
-        subjectLabel.html(subjectLabel.data('error-message'));
-      }
-
-      if (this.$messageInput.val() === '') {
-        this.$messageInput.parent().addClass('has-error');
-        messageLabel.html(messageLabel.data('error-message'));
-      }
-    } else {
-      this.trigger('save', {
-        email: this.email
-      });
-    }
-  }
-});
-QarrEmailCorrespondence = Garnish.Base.extend({
+var QarrEmailCorrespondence = Garnish.Base.extend({
   $btn: null,
   $btnText: null,
-  $spinner: null,
-  $waveLoaderContainer: null,
-  $waveLoader: null,
+  $loader: null,
   type: null,
   entryId: null,
   modal: null,
-  wavifyOptions: {
-    height: 20,
-    bones: 3,
-    amplitude: 40,
-    color: '#B289EF',
-    speed: .45
-  },
   init: function init(el) {
     this.$btn = $(el);
-    this.entryId = $(el).data('entry-id');
+    this.entryId = $(el).data('element-id');
     this.type = $(el).data('type');
     this.$btnText = this.$btn.find('.link-text');
-    this.$spinner = this.$btn.find('.spinner');
-    this.$waveLoaderContainer = this.$btn.parent().parent().find('.loader-container');
-    this.$waveLoader = this.$waveLoaderContainer.find('.wave-loader');
+    this.$loader = this.$btn.find('.loader');
     this.addListener(this.$btn, 'click', 'openEmailModal');
   },
   openEmailModal: function openEmailModal(e) {
@@ -247,7 +180,6 @@ QarrEmailCorrespondence = Garnish.Base.extend({
   sendEmail: function sendEmail(data) {
     var _this3 = this;
 
-    var that = this;
     var email = data.email;
     data = {
       type: this.type,
@@ -256,39 +188,90 @@ QarrEmailCorrespondence = Garnish.Base.extend({
       message: email.message
     };
     this.$btnText.addClass('hide');
-    this.$spinner.removeClass('hidden');
-    this.$waveLoader = $('.wave-loader').wavify(this.wavifyOptions);
+    this.$loader.removeClass('hidden');
     Craft.postActionRequest('qarr/correspondence/send-mail', data, $.proxy(function (response, textStatus) {
       if (textStatus === 'success') {
-        _this3.$waveLoaderContainer.velocity({
-          height: '150%'
-        }, 2000, function () {
-          that.$waveLoaderContainer.css({
-            'height': '100%',
-            'background-color': '#B289EF'
-          });
-          that.$waveLoader.kill();
-        });
-
         _this3.emailSent();
       }
     }, this));
     this.modal.hide();
   },
   emailSent: function emailSent() {
-    var that = this;
-    this.$waveLoaderContainer.velocity({
-      opacity: 0
-    }, 'fast', function () {
-      that.$waveLoaderContainer.css({
-        'pointer-events': 'none'
-      });
-      that.$btn.parent().html('<span class="mail-result">' + Craft.t('qarr', 'Mail sent!') + '</span>');
-    });
+    this.$btn.parent().html('<span class="mail-result">' + Craft.t('qarr', 'Mail sent!') + '</span>');
+  }
+}); // Emails
+
+var QarrEmailModal = Garnish.Modal.extend({
+  init: function init() {
+    var body, self;
+    self = this;
+    this.base();
+    this.$form = $('<form class="modal fitted qarr-modal prompt-modal modal-blue">').appendTo(Garnish.$bod);
+    this.setContainer(this.$form); // TODO: Make From Name dynamic to use site admin name
+    // TODO: Make subject use entry title
+
+    body = $(['<div class="body">', '<header class="header">', '<h2>' + Craft.t('qarr', 'Sending Email') + '</h2>', '</header>', '<div class="qarr-field mb-4">', '<label id="reply-subject-label" class="qarr-label" for="reply-subject" data-label="' + Craft.t('qarr', 'Subject') + '" data-error-message="' + Craft.t('qarr', 'Subject cannot be blank.') + '">' + Craft.t('qarr', 'Subject') + '</label>', '<input class="qarr-input" type="text" id="reply-subject" name="reply-subject" autocomplete="off">', '</div>', '<div class="qarr-field">', '<label id="reply-message-label" class="qarr-label" for="reply-message" data-label="' + Craft.t('qarr', 'Message') + '" data-error-message="' + Craft.t('qarr', 'Message cannot be blank.') + '">' + Craft.t('qarr', 'Message') + '</label>', '<textarea id="reply-message" class="qarr-textarea" rows="6" cols="60"></textarea>', '</div>', '<ul class="qarr-errors"></ul>', '<div class="buttons right">', '<button type="button" class="qarr-btn cancel mr-2">' + Craft.t('qarr', 'Cancel') + '</button>', '<button type="submit" class="qarr-btn btn-purple submit">' + Craft.t('qarr', 'Send') + '</button>', '</div>', '</div>'].join('')).appendTo(this.$form);
+    this.show();
+    this.$cancelBtn = body.find('.cancel');
+    this.$subjectInput = body.find('#reply-subject');
+    this.$messageInput = body.find('#reply-message');
+    setTimeout($.proxy(function () {
+      self.$subjectInput.focus();
+    }, this), 100);
+    this.addListener(this.$cancelBtn, 'click', 'hide');
+    this.addListener(this.$form, 'submit', 'save');
+  },
+  save: function save(e) {
+    e.preventDefault();
+    this.$subject = this.$subjectInput.val();
+    this.$message = this.$messageInput.val();
+    var subjectLabel = this.$subjectInput.parent().find('label');
+    var messageLabel = this.$messageInput.parent().find('label');
+    var $errorsContainer = this.$form.find('.qarr-errors');
+    this.email = {
+      subject: this.$subject,
+      message: this.$message
+    };
+    $errorsContainer.html('');
+    this.$subjectInput.removeClass('has-error');
+    this.$messageInput.removeClass('has-error');
+
+    if (this.$subjectInput.val() === '') {
+      Garnish.shake(this.$container);
+    }
+
+    if (this.$messageInput.val() === '') {} // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+    // TODO: FIXING THIS
+
+
+    if (this.$subjectInput.val() === '' && this.$messageInput.val() === '') {// Garnish.shake(this.$container)
+      //
+      // if (this.$subjectInput.val() === '') {
+      //     this.$subjectInput.addClass('has-error')
+      //     $errorsContainer.append('<li>'+subjectLabel.data('error-message')+'</li>')
+      // }
+      //
+      // if (this.$messageInput.val() === '') {
+      //     this.$messageInput.addClass('has-error')
+      //     $errorsContainer.append('<li>'+messageLabel.data('error-message')+'</li>')
+      // }
+      // this.updateSizeAndPosition()
+    } else {// this.trigger('save', {
+        //     email: this.email
+        // })
+      }
   }
 }); // Prompts
 
-QarrPrompt = Garnish.Base.extend({
+var QarrPrompt = Garnish.Base.extend({
   modal: null,
   $modalContainerDiv: null,
   $prompt: null,
@@ -315,8 +298,8 @@ QarrPrompt = Garnish.Base.extend({
     this.$promptButtons = $('<div class="buttons right"/>').appendTo(this.$prompt);
     this.modal.setContainer(this.$modalContainerDiv);
     this.$promptMessage.html('<div class="font-medium">' + message + '</div>');
-    var $cancelButton = $('<button class="cancel bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded mr-2 ml-auto">' + Craft.t('qarr', 'Cancel') + '</button>').appendTo(this.$promptButtons),
-        $submitBtn = $('<button type="submit" class="submit bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded">' + Craft.t('qarr', 'OK') + '</button>').appendTo(this.$promptButtons);
+    var $cancelButton = $('<button class="cancel qarr-btn  mr-2">' + Craft.t('qarr', 'Cancel') + '</button>').appendTo(this.$promptButtons),
+        $submitBtn = $('<button type="submit" class="submit qarr-btn btn-purple">' + Craft.t('qarr', 'OK') + '</button>').appendTo(this.$promptButtons);
 
     if (choices) {
       $submitBtn.addClass('disabled');

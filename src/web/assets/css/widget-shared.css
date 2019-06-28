@@ -101,3 +101,313 @@
 .qarr-widgets .item-actions {
   transition: opacity 0.3s ease;
 }
+
+#widget-pending-reviews .flex-container, #widget-pending-questions .flex-container {
+  display: flex;
+}
+
+#widget-pending-reviews .widget-header, #widget-pending-questions .widget-header {
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+#widget-pending-reviews .widget-header h2, #widget-pending-questions .widget-header h2 {
+  margin: 0;
+  padding: 0;
+}
+
+#widget-pending-reviews .widget-header a, #widget-pending-questions .widget-header a {
+  margin-left: 0.5rem;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  color: #a3bffa;
+  font-size: 0.75rem;
+  letter-spacing: 0.025rem;
+  line-height: normal;
+}
+
+#widget-pending-reviews .widget-header a:hover, #widget-pending-questions .widget-header a:hover {
+  color: #667eea;
+}
+
+#widget-pending-reviews .element-item, #widget-pending-questions .element-item {
+  transition: all 0.3s ease;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eeeeee;
+}
+
+#widget-pending-reviews .element-item:last-child, #widget-pending-questions .element-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border: none;
+}
+
+#widget-pending-reviews .element-item:hover .item-actions, #widget-pending-questions .element-item:hover .item-actions {
+  opacity: 1;
+}
+
+#widget-pending-reviews .element-object, #widget-pending-questions .element-object {
+  font-size: 1rem;
+  font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  align-items: center;
+}
+
+#widget-pending-reviews .element-object .icon, #widget-pending-questions .element-object .icon {
+  margin-left: 0.5rem;
+}
+
+#widget-pending-reviews .element-object svg, #widget-pending-questions .element-object svg {
+  display: block;
+  vertical-align: middle;
+  fill: currentColor;
+  opacity: 0.5;
+}
+
+#widget-pending-reviews .item-meta-title, #widget-pending-questions .item-meta-title {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+  margin-bottom: 0.5rem;
+}
+
+#widget-pending-reviews .star-rating .star, #widget-pending-questions .star-rating .star {
+  color: #ecc94b;
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+}
+
+#widget-pending-reviews .star-rating .star:first-child, #widget-pending-questions .star-rating .star:first-child {
+  margin-left: 0;
+}
+
+#widget-pending-reviews .star-rating .star.active svg, #widget-pending-questions .star-rating .star.active svg {
+  fill: currentColor;
+}
+
+#widget-pending-reviews .star-rating .star svg, #widget-pending-questions .star-rating .star svg {
+  fill: #eeeeee;
+  display: block;
+}
+
+#widget-pending-reviews .star-rating div, #widget-pending-questions .star-rating div {
+  display: block;
+  color: #9e9e9e;
+  text-align: center;
+  font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+}
+
+#widget-pending-reviews .entry-feedback, #widget-pending-questions .entry-feedback {
+  color: #616161;
+  margin-top: 0.5rem;
+}
+
+#widget-pending-reviews .entry-feedback a, #widget-pending-questions .entry-feedback a {
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  color: #a3bffa;
+  font-size: 0.75rem;
+  letter-spacing: 0.025rem;
+}
+
+#widget-pending-reviews .entry-feedback a:hover, #widget-pending-questions .entry-feedback a:hover {
+  color: #667eea;
+}
+
+#widget-pending-reviews .item-actions, #widget-pending-questions .item-actions {
+  transition: opacity 0.3s ease;
+  opacity: 0.25;
+  margin-top: 0.5rem;
+}
+
+#widget-pending-reviews .item-actions button, #widget-pending-questions .item-actions button {
+  color: #7f9cf5;
+  outline: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all 0.3s ease;
+  -moz-appearance: none;
+       appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  margin-right: 1rem;
+  padding: 0;
+  line-height: inherit;
+  text-transform: none;
+  align-items: center;
+  border: none;
+  box-shadow: none;
+}
+
+#widget-pending-reviews .item-actions button:hover.action-approve, #widget-pending-questions .item-actions button:hover.action-approve {
+  color: #38a169;
+}
+
+#widget-pending-reviews .item-actions button:hover.action-reject, #widget-pending-questions .item-actions button:hover.action-reject {
+  color: #e53e3e;
+}
+
+#widget-pending-reviews .item-actions button:hover.action-delete, #widget-pending-questions .item-actions button:hover.action-delete {
+  color: #e53e3e;
+}
+
+#widget-pending-reviews .item-actions button.action-delete, #widget-pending-questions .item-actions button.action-delete {
+  margin-left: auto;
+}
+
+#widget-pending-reviews .item-actions button svg, #widget-pending-questions .item-actions button svg {
+  display: block;
+  fill: currentColor;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.tippy-popper .element-element {
+  padding: 15px;
+}
+
+.tippy-popper .element-element .element-object {
+  text-align: center;
+}
+
+.tippy-popper .element-element .element-image {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.tippy-popper .element-element .element-image img {
+  display: block;
+  width: 50%;
+  margin: auto;
+}
+
+.tippy-popper .element-element .element-image span {
+  font-size: 0.75rem;
+  color: #e0e0e0;
+}
+
+.tippy-popper .element-element .element-type {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.tippy-popper .element-element .element-title {
+  font-weight: 500;
+  margin: 0;
+  color: #757575;
+  font-size: 0.875rem;
+}
+
+.tippy-popper .element-element a {
+  display: block;
+  text-align: center;
+  margin: 5px 0 0 0;
+  padding: 0;
+  transition: all 0.3s ease;
+  color: #a3bffa;
+  font-size: 0.75rem;
+  letter-spacing: 0.025rem;
+  text-decoration: none !important;
+}
+
+.tippy-popper .element-element a:hover {
+  color: #667eea;
+}
+
+.qarr-hud {
+  text-align: center;
+}
+
+.qarr-hud .qarr-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #9e9e9e;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  letter-spacing: 0.025em;
+  transition: all 0.3s ease;
+  outline: none;
+  cursor: pointer;
+  line-height: inherit;
+  text-transform: none;
+  border: none;
+  box-shadow: none;
+}
+
+.qarr-hud .qarr-btn:hover {
+  background-color: #757575;
+}
+
+.qarr-hud .qarr-btn.btn-small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.qarr-hud .qarr-btn.btn-purple {
+  background-color: #9f7aea;
+}
+
+.qarr-hud .qarr-btn.btn-purple:hover {
+  background-color: #805ad5;
+}
+
+.qarr-hud .qarr-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: none;
+  box-shadow: none;
+}
+
+.qarr-hud .qarr-footer > * {
+  margin: 0 4px;
+}
+
+.widget-reviews-donut h2, .widget-questions-donut h2 {
+  text-align: center;
+  padding-top: 10px;
+  margin: 0;
+}
+
+.widget-reviews-donut a, .widget-questions-donut a {
+  display: block;
+  text-align: center;
+  margin: 5px 0 0 0;
+  padding: 0;
+  transition: all 0.3s ease;
+  color: #a3bffa;
+  font-size: 0.75rem;
+  letter-spacing: 0.025rem;
+  text-decoration: none !important;
+}
+
+.widget-reviews-donut a:hover, .widget-questions-donut a:hover {
+  color: #667eea;
+}
+
+.widget-reviews-donut .widget-pie, .widget-questions-donut .widget-pie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.widget-reviews-donut .pie-stats, .widget-questions-donut .pie-stats {
+  margin-left: 2rem;
+}
+
+.widget-reviews-donut .stat-item, .widget-questions-donut .stat-item {
+  margin: 0.5rem;
+}
+
+.widget-reviews-donut .stat-label, .widget-questions-donut .stat-label {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+}
+
+.widget-reviews-donut .stat-value, .widget-questions-donut .stat-value {
+  color: #424242;
+}

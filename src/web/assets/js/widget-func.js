@@ -99,7 +99,6 @@ QARR.Widgets.PendingItem = Garnish.Base.extend({
 
     var that = this;
     var action = e.target.dataset.actionType;
-    this.parent.$loader.removeClass('hidden');
 
     if (action === 'delete') {
       var $form = $('<section class="hud-wrapper">' + '<label for="">' + Craft.t("qarr", "Are you sure?") + '</label>' + '</section>' + '<section class="hud-footer qarr-footer">' + '<button type="button" class="qarr-btn btn-small cancel">' + Craft.t("qarr", "Cancel") + '</button>' + '<button type="submit" class="qarr-btn btn-purple btn-small submit">' + Craft.t("qarr", "Delete") + '</button>' + '</section>').appendTo(Garnish.$bod);
@@ -134,6 +133,7 @@ QARR.Widgets.PendingItem = Garnish.Base.extend({
   deleteElement: function deleteElement() {
     var _this3 = this;
 
+    this.parent.$loader.removeClass('hidden');
     var newPayload = {
       id: this.payload.id
     };
