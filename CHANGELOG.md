@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.1.4.1 - 2019-06-28
+
+### Fixed
+- Fixed pending button style
+
 ## 1.1.4 - 2019-06-28
 
 ### Fixed
