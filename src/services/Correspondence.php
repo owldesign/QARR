@@ -90,13 +90,13 @@ class Correspondence extends Component
     {
         $record = new CorrespondenceRecord();
 
-        $record->email = $variables['message'];
-
-        $record->allowReplies = $variables['allowReplies'];
-        $record->password = $variables['password'];
-        $record->type = $variables['type'];
-        $record->elementId = $entry->id;
-        $record->ownerEmail = $entry->emailAddress;
+        $record->email          = $variables['message'];
+        $record->subject        = $variables['subject'];
+        $record->allowReplies   = $variables['allowReplies'];
+        $record->password       = $variables['password'];
+        $record->type           = $variables['type'];
+        $record->elementId      = $entry->id;
+        $record->ownerEmail     = $entry->emailAddress;
 
         $record->validate();
 

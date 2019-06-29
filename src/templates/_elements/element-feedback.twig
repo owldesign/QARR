@@ -1,11 +1,3 @@
-{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
-{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
-{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
-{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
-{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
-{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
-{# TODO: MAKE SURE TO STYLE AND TEST ANSWERS #}
-
 <div class="element-block element-details">
     <div class="element-object">
         <a href="{{ entry.url }}"><h2 class="element-title">{{ entry }}</h2></a>
@@ -36,8 +28,8 @@
     {% endif %}
 
     {% if reply and type == 'questions' %}
-        <div class="response">
-            <div class="response-wrapper">
+        <div class="response mt-6">
+            <div class="response-wrapper text-xs text-gray-600">
 
                 {% if reply is iterable %}
                     {% set pending = [] %}
@@ -54,7 +46,7 @@
 
                     {{ reply|length }} answers
                     {% if pending|length > 0 %}
-                        | {{ pending|length }} pending approval
+                        | <a href="{{ entry.url }}" class="qarr-btn-link">{{ pending|length }} pending approval</a>
                     {% endif %}
                     {% if approved|length > 0 %}
                         | {{ approved|length }} approved
@@ -64,8 +56,10 @@
                     {% endif %}
 
                     {% if abuse %}
-                        <br>
-                        <span class="abuse-reported">Abuse reported on one of the answers</span>
+                        <div class="abuse-reported relative mt-2">
+                            <div class="pulse round warning mr-2"></div>
+                            <span class="italic text-xs">Abuse reported on one of the answers</span>
+                        </div>
                     {% endif %}
                 {% endif %}
             </div>

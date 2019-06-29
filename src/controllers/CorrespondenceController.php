@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\controllers;
 
+use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use owldesign\qarr\QARR;
 
@@ -106,24 +107,22 @@ class CorrespondenceController extends Controller
         $variables['message']       = Craft::$app->getRequest()->getBodyParam('message');
         $variables['allowReplies']  = Craft::$app->getRequest()->getBodyParam('allowReplies');
 
-        $entry = QARR::$plugin->reviews->getEntryById($variables['entryId']);
-        $variables['entry'] = $entry;
-        $variables['element'] = $entry->element;
+        $entry                      = QARR::$plugin->reviews->getEntryById($variables['entryId']);
+        $variables['entry']         = $entry;
+        $variables['element']       = $entry->element;
+        $variables['websiteName']   = Craft::$app->sites->currentSite->name;
 
-        $variables['websiteName'] = Craft::$app->sites->currentSite->name;
+        if (!$entry) { return false; }
 
-        if (!$entry) {
-            return false;
-        }
-
-        $variables['password'] = Craft::$app->getSecurity()->generateRandomString(8);
-        $variables['privateUrl'] = UrlHelper::siteUrl('/qarr/correspondence?email='.$entry->emailAddress.'&type='.$variables['type'].'&elementId='.$entry->id);
-
-        $template = Craft::$app->view->renderTemplate('qarr/_components/correspondence/email-template', $variables);
+        $variables['password']      = Craft::$app->getSecurity()->generateRandomString(8);
+        $variables['privateUrl']    = UrlHelper::siteUrl('/qarr/correspondence?email='.$entry->emailAddress.'&type='.$variables['type'].'&elementId='.$entry->id);
+        $template                   = Craft::$app->view->renderTemplate('qarr/correspondence/_emails/email-template', $variables);
+        $variables['sentDate']      = DateTimeHelper::currentUTCDateTime();
 
         if (QARR::$plugin->correspondence->sendMail($variables, $entry, $template, $variables['subject'], $entry->emailAddress)) {
             return $this->asJson([
                 'success' => true,
+                'entry' => $variables
             ]);
 
         } else {

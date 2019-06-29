@@ -1,5 +1,18 @@
 # QARR Changelog
 
+## 1.1.4 - 2019-06-28
+
+### Fixed
+- Various bug fixes
+- Missing functions (such as answer deletes, etc)
+
+### Improved
+- UI complete update, for better experience and usability
+
+### Added
+- Custom element index columns (if you run into errors after update, you might need to clear element index from db)
+
+
 ## 1.1.3 - 2019-06-17
 
 ### Fixed

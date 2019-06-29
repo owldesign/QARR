@@ -22,171 +22,60 @@
 
     {% set answers = entry.getAnswers() %}
 
-    <div class="panel-header mb-2">
-        <h3 class="font-medium m-0 tracking-wider text-lg">{{ 'Question'|t('qarr') }}</h3>
-        {% include 'qarr/_elements/element-postdate' ignore missing with {entry: entry} %}
-    </div>
-
-    <div class="feedback">
-        {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'questions' } %}
-
-        {% set flaggedWords = flaggedWords(entry.flags) %}
-        {% if flaggedWords %}
-            {% set feedback = entry.question|occurrence(flaggedWords) %}
-        {% else %}
-            {% set feedback = entry.question %}
-        {% endif %}
-
-        <p class="feedback-text text-lg">{{ feedback |raw }}</p>
-
-
-        <div class="panel-actions">
-{#            <div class="my-6">#}
-{#                <button class="inline-flex items-center bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded tracking-wide {% if entry.reply %}opacity-50 cursor-not-allowed{% endif %}"#}
-{#                        id="reply-to-feedback"#}
-{#                        data-type="question"#}
-{#                        data-element-id="{{ entry.id }}"#}
-{#                        {% if entry.reply %}disabled{% endif %}>#}
-{#                    <span><svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M15 17v-2.99A4 4 0 0 0 11 10H8v5L2 9l6-6v5h3a6 6 0 0 1 6 6v3h-2z"/></svg></span>#}
-{#                    <span>{{ 'Reply to feedback'|t('qarr') }}</span>#}
-{#                    <span class="spinner hidden"></span>#}
-{#                </button>#}
-{#            </div>#}
-            <hr>
-
-            {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry, type: 'questions' } %}
+    <div class="block-element">
+        <div class="block-header flex-container mb-2">
+            <h2>{{ 'Question'|t('qarr') }}</h2>
+            <span class="ml-auto">
+                {% include 'qarr/_elements/element-postdate' ignore missing with {entry: entry} %}
+            </span>
         </div>
 
-{#        <div class="panel-actions">#}
-{#            <div class="panel-progress"></div>#}
+        <div class="block-body">
+            <div class="feedback">
+                {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'questions' } %}
 
-{#            <div class="pull-right">#}
-{#                <a href="#" class="btns btn-rounded btn-green btn-icon update-status-btn" data-type="questions" data-status="approved" data-element-id="{{ entry.id }}">#}
-{#                    <span class="icon"><i class="fa fa-thumbs-up"></i></span>#}
-{#                    <span class="btn-text">{{ 'Approve'|t('qarr') }}</span>#}
-{#                    <span class="loader"></span>#}
-{#                </a>#}
-{#                <a href="#" class="btns btn-rounded btn-red btn-icon update-status-btn" data-type="questions" data-status="rejected" data-element-id="{{ entry.id }}">#}
-{#                    <span class="icon"><i class="fa fa-thumbs-down"></i></span>#}
-{#                    <span class="btn-text">{{ 'Reject'|t('qarr') }}</span>#}
-{#                    <span class="loader"></span>#}
-{#                </a>#}
-{#            </div>#}
-{#            {% if currentUser.can('qarr:deleteQuestions') %}#}
-{#            <div class="remove-entry">#}
-{#                <a href="#" class="btns btn-rounded btn-gray btn-icon delete-entry" data-type="questions" data-element-id="{{ entry.id }}">#}
-{#                    <span class="icon"><i class="fal fa-trash-alt"></i></span>#}
-{#                </a>#}
-{#            </div>#}
-{#            {% endif %}#}
-{#        </div>#}
-    </div>
+                {% set flaggedWords = flaggedWords(entry.flags) %}
+                {% if flaggedWords %}
+                    {% set feedback = entry.question|occurrence(flaggedWords) %}
+                {% else %}
+                    {% set feedback = entry.question %}
+                {% endif %}
 
-    {% if answers %}
-        <div class="panel panel-answers">
-            <div class="panel-wrapper">
-                <div class="panel-header">
-                    <h2>{{ 'Answers'|t('qarr') }}</h2>
-                    <span class="header-icon"><i class="fa fa-comments"></i></span>
-                </div>
-                <div class="panel-body">
-                {% for answer in answers %}
-                    {% set answerAuthor = answer.getAuthor() %}
-                    <div class="panel-item answer-item" id="answer-item-{{ answer.id }}" data-parent-id="{{ entry.id }}" data-id="{{ answer.id }}">
-                        <div class="panel-item-status status-{{ answer.status }}"><span>{{ answer.status }}</span></div>
+                <p class="feedback-text text-lg">{{ feedback |raw }}</p>
 
-                        <div class="response-meta">
-                            {% if answer.anonymous %}
-                                <span class="response-icon tippy" data-tippy-content="Posted as anonymous"><i class="fal fa-user-shield"></i></span>
-                            {% endif %}
-                            {% if answer.abuse %}
-                                <span class="response-icon tippy" data-tippy-content="Abuse reported"><i class="fal fa-times-hexagon"></i></span>
-                            {% endif %}
-                            {% if answer.isHelpful %}
-                                <span class="response-icon tippy" data-tippy-content="Marked as helpful"><i class="fal fa-trophy"></i></span>
-                            {% endif %}
-                        </div>
-
-                        <div class="large-text">{{ answer.answer }}</div>
-                        <div class="panel-meta">By {{ answerAuthor.friendlyName }} on {{ answer.dateCreated |date() }} {% if answer.anonymous %}({{ 'Requested to post anonymously'|t('qarr') }}){% endif %}</div>
-                        <div class="panel-actions">
-                            <a href="#" class="action-btn btn-approve" data-action="approved">{{ 'Approve'|t('qarr') }}</a><span class="qarr-pipe">/</span>
-                            <a href="#" class="action-btn btn-reject" data-action="rejected">{{ 'Reject'|t('qarr') }}</a>
-                            <a href="#" class="action-btn btn-delete" data-action="deleted">{{ 'Delete'|t('qarr') }}</a>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
             </div>
         </div>
-    {% endif %}
 
+        <hr>
+
+        {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry, type: 'questions' } %}
+    </div>
+
+    <div class="block-element" id="answers-element">
+        <div class="block-header">
+            <h2 class="relative flex-container">
+                <div class="mr-2">{{ 'Answers'|t('qarr') }}</div>
+                <div class="loader hidden ml-auto"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"></circle><path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(217.494 18 18)"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"></animateTransform></path></g></g></svg></div>
+            </h2>
+        </div>
+        <div class="block-body">
+        {% for answer in answers %}
+            {% include 'qarr/_elements/element-entry-answer' ignore missing with { answer: answer } %}
+        {% endfor %}
+        </div>
+    </div>
+
+    {# DISPLAY FIELDS#}
     {% if fieldLayoutTabs is defined is not empty %}
-        <div class="panel panel-fields panel-blue">
-            <div class="panel-wrapper">
-                <div class="panel-header">
-                    <h2>{{ 'Additional Info'|t('qarr') }}</h2>
-                    <span class="header-icon"><i class="fa fa-clipboard-list"></i></span>
-                </div>
-                <div class="panel-body">
-                    {% for tab in fieldLayoutTabs %}
-                        {% set fields = tab.getFields() %}
-                        {% for field in fields %}
-                            {% set type = field|getClass %}
-                            {% set allowed = craft.qarr.allowedFields %}
-                            {% if type in allowed %}
-                                {% set value = entry.getFieldValue(field.handle) %}
-
-                                {% if value is iterable %}
-                                    {% set value = craft.qarr.getArrayValue(value.options) %}
-                                {% endif %}
-
-                                {% if value and value != '' %}
-                                    <div class="panel-item">
-                                        <div class="qarr-field-readonly">
-                                            <label>{{ field.name }}</label>
-                                            <div class="field-value">{{ value }}</div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+        {% include 'qarr/_elements/element-entry-display-fields' ignore missing with { entry: entry } %}
     {% endif %}
 
-    {% if correspondences %}
-        <div class="panel panel-correspondence panel-blue">
-            <div class="panel-wrapper">
-                <div class="panel-header">
-                    <h2>{{ 'Email Correspondence'|t('qarr') }}</h2>
-                    <span class="header-icon"><i class="fa fa-mail-bulk"></i></span>
-                </div>
-                <div class="panel-body">
-                    {% for correspondence in correspondences %}
-                        <div class="panel-item">
-                            <span class="panel-meta">{{ 'Sent on'|t('qarr') }} {{ correspondence.dateCreated |date() }}</span>
-                            <p>{{ correspondence.email }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% endif %}
+    {# CORRESPONDENCE #}
+    {% include 'qarr/_elements/element-entry-correspondence' ignore missing with { entry: entry } %}
 
 {% endblock %}
 
 {% block details %}
-    <div id="settings">
-        {% include 'qarr/_elements/element-information' ignore missing with {entry: entry, type: 'questions', status: entry.status, geolocation: entry.geolocation|json_decode, author: {
-            fullName: entry.fullName,
-            emailAddress: entry.emailAddress,
-            avatarUrl: entry.avatarUrl,
-            user: entry.author
-        }} %}
-        {% include 'qarr/_elements/element-element' ignore missing with {entry: entry, type: 'questions', element: entry.element, elementType: entry.elementType, settings: entry.settings} %}
-        {% include 'qarr/_elements/element-entry-audit' ignore missing with {entry: entry} %}
-    </div>
+    {# SETTINGS #}
+    {% include 'qarr/_elements/element-entry-settings' ignore missing with { entry: entry, type: 'questions' } %}
 {% endblock %}

@@ -29,9 +29,6 @@ class AnswersController extends Controller
      * Create modal
      *
      * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
@@ -55,28 +52,59 @@ class AnswersController extends Controller
     }
 
     /**
-     * Perform action method
+     * Update status
      *
-     * @return Response
+     * @return null|Response
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionPerformAction()
+    public function actionUpdateStatus()
     {
         $this->requirePostRequest();
-        $this->requireAcceptsJson();
 
-        $id     = Craft::$app->getRequest()->getBodyParam('id');
-        $action = Craft::$app->getRequest()->getBodyParam('action');
+        $request    = Craft::$app->getRequest();
+        $elementId  = $request->getBodyParam('id');
+        $status     = $request->getBodyParam('status');
 
-        if ($action === 'deleted') {
-            $result = QARR::$plugin->answers->delete($id);
-        } else {
-            $result = QARR::$plugin->elements->updateStatus($id, $action, 'questions_answers');
+        if (!$elementId) {
+            return null;
+        }
+
+        $result = QARR::$plugin->elements->updateStatus($elementId, $status, 'questions_answers');
+
+        if (!$result) {
+            return null;
         }
 
         return $this->asJson([
-            'success'   => $result,
-            'status'    => $action,
+            'success' => true,
+        ]);
+    }
+
+    /**
+     * Update status
+     *
+     * @return null|Response
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionDelete()
+    {
+        $this->requirePostRequest();
+
+        $request    = Craft::$app->getRequest();
+        $elementId  = $request->getBodyParam('id');
+
+        if (!$elementId) {
+            return null;
+        }
+
+        $result = QARR::$plugin->answers->delete($elementId);
+
+        if (!$result) {
+            return null;
+        }
+
+        return $this->asJson([
+            'success' => true,
         ]);
     }
 
@@ -84,9 +112,6 @@ class AnswersController extends Controller
      * Save entry
      *
      * @return Response|null
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */

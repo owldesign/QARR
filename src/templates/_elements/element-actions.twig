@@ -1,18 +1,20 @@
-<button class="qarr-btn btn-green update-status-btn"
-        data-type="{{ type }}" data-status="approved" data-element-id="{{ entry.id }}">
-    <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 0h1v3l3 7v8a2 2 0 0 1-2 2H5c-1.1 0-2.31-.84-2.7-1.88L0 12v-2a2 2 0 0 1 2-2h7V2a2 2 0 0 1 2-2zm6 10h3v10h-3V10z"/></svg>
-    {{ 'Approve'|t('qarr') }}
-</button>
-
-<button class="qarr-btn btn-red update-status-btn"
-        data-type="{{ type }}" data-status="rejected" data-element-id="{{ entry.id }}">
-    <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 20a2 2 0 0 1-2-2v-6H2a2 2 0 0 1-2-2V8l2.3-6.12A3.11 3.11 0 0 1 5 0h8a2 2 0 0 1 2 2v8l-3 7v3h-1zm6-10V0h3v10h-3z"/></svg>
-    {{ 'Reject'|t('qarr') }}
-</button>
-
-{% if currentUser.can('qarr:deleteReviews') %}
-    <button class="qarr-btn delete-entry float-right"
-            data-type="{{ type }}" data-element-id="{{ entry.id }}">
-        {{ 'Delete'|t('qarr') }}
+<div class="block-actions py-6">
+    <button class="qarr-btn btn-green update-status-btn mr-2"
+            data-type="{{ type }}" data-status="approved" data-element-id="{{ entry.id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 0h1v3l3 7v8a2 2 0 0 1-2 2H5c-1.1 0-2.31-.84-2.7-1.88L0 12v-2a2 2 0 0 1 2-2h7V2a2 2 0 0 1 2-2zm6 10h3v10h-3V10z"/></svg>
+        {{ 'Approve'|t('qarr') }}
     </button>
-{% endif %}
+
+    <button class="qarr-btn btn-red update-status-btn"
+            data-type="{{ type }}" data-status="rejected" data-element-id="{{ entry.id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 20a2 2 0 0 1-2-2v-6H2a2 2 0 0 1-2-2V8l2.3-6.12A3.11 3.11 0 0 1 5 0h8a2 2 0 0 1 2 2v8l-3 7v3h-1zm6-10V0h3v10h-3z"/></svg>
+        {{ 'Reject'|t('qarr') }}
+    </button>
+
+    {% if currentUser.can('qarr:deleteReviews') %}
+        <button class="qarr-btn delete-entry float-right"
+                data-type="{{ type }}" data-element-id="{{ entry.id }}">
+            {{ 'Delete'|t('qarr') }}
+        </button>
+    {% endif %}
+</div>

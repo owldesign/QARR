@@ -1,0 +1,28 @@
+<div class="block-element">
+    <div class="block-header">
+        <h2>{{ 'Display Fields'|t('qarr') }}</h2>
+    </div>
+    <div class="block-body">
+        {% for tab in fieldLayoutTabs %}
+            {% set fields = tab.getFields() %}
+            {% for field in fields %}
+                {% set type = field|getClass %}
+                {% set allowed = craft.qarr.allowedFields %}
+                {% if type in allowed %}
+                    {% set value = entry.getFieldValue(field.handle) %}
+
+                    {% if value is iterable %}
+                        {% set value = craft.qarr.getArrayValue(value.options) %}
+                    {% endif %}
+
+                    {% if value and value != '' %}
+                        <div class="block-field">
+                            <label>{{ field.name }}</label>
+                            <div class="field-value">{{ value }}</div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>

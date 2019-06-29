@@ -12,6 +12,7 @@ class Correspondence extends Model
 
     public $id;
     public $email;
+    public $subject;
     public $response;
     public $allowReplies;
     public $password;

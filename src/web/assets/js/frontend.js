@@ -1,4 +1,1 @@
-Garnish.$doc.ready(function () {
-  var qarrPlugin = new QarrPlugin();
-  qarrPlugin.init();
-});
+Garnish.$doc.ready(function(){(new QarrPlugin).init()});
