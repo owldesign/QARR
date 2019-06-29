@@ -31,7 +31,7 @@
 
                         <div class="qarr-entry-answer-data">
                             <span class="qarr-entry-ar-text">{{ answers[0].answer }}</span>
-                            <span class="qarr-entry-answer-author">By {% if answers[0].anonymous %}{{ 'anonymous customer'|t('qarr') }}{% else %}{{ answers[0].author }}{% endif %} on {{ answers[0].dateCreated |date() }}</span>
+                            <span class="qarr-entry-answer-author">{% if answers[0].anonymous %}{{ 'Posted anonymously'|t('qarr') }}{% else %}{{ answers[0].author }}{% endif %} on {{ answers[0].dateCreated |date() }}</span>
 
                             {% if answers|length > 1 %}
                                 <div class="qarr-entry-answers-additional-data">
@@ -40,7 +40,7 @@
                                             {% if not loop.first %}
                                                 <div class="qarr-entry-additional-answer">
                                                     <span class="qarr-entry-ar-text">{{ answer.answer }}</span>
-                                                    <span class="qarr-entry-answer-author">By {% if answer.anonymous %}{{ 'anonymous customer'|t('qarr') }}{% else %}{{ answer.author }}{% endif %} on {{ answer.dateCreated |date() }}</span>
+                                                    <span class="qarr-entry-answer-author">{% if answer.anonymous %}{{ 'Posted anonymously'|t('qarr') }}{% else %}{{ answer.author }}{% endif %} on {{ answer.dateCreated |date() }}</span>
                                                 </div>
                                             {% endif %}
                                         {% endfor %}

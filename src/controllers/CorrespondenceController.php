@@ -106,13 +106,18 @@ class CorrespondenceController extends Controller
         $variables['subject']       = Craft::$app->getRequest()->getBodyParam('subject');
         $variables['message']       = Craft::$app->getRequest()->getBodyParam('message');
         $variables['allowReplies']  = Craft::$app->getRequest()->getBodyParam('allowReplies');
-
-        $entry                      = QARR::$plugin->reviews->getEntryById($variables['entryId']);
+        $entry                      = Craft::$app->getElements()->getElementById($variables['entryId']);
         $variables['entry']         = $entry;
         $variables['element']       = $entry->element;
         $variables['websiteName']   = Craft::$app->sites->currentSite->name;
 
         if (!$entry) { return false; }
+
+        if ($variables['type'] == 'reviews') {
+            $variables['feedback'] = $entry->feedback;
+        } else {
+            $variables['feedback'] = $entry->question;
+        }
 
         $variables['password']      = Craft::$app->getSecurity()->generateRandomString(8);
         $variables['privateUrl']    = UrlHelper::siteUrl('/qarr/correspondence?email='.$entry->emailAddress.'&type='.$variables['type'].'&elementId='.$entry->id);

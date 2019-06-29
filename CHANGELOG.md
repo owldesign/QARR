@@ -1,5 +1,14 @@
 # QARR Changelog
 
+## 1.1.5 - 2019-06-28
+
+### Added
+- Added custom templates for posting answers [Answer Form](https://docs.qarr.tools/custom/answers/) 
+- Added custom templates for reporting abuse [Abuse Form](https://docs.qarr.tools/custom/abuse/) 
+
+### Improved
+- Updated [Documentation](https://docs.qarr.tools/) 
+
 ## 1.1.4.1 - 2019-06-28
 
 ### Fixed

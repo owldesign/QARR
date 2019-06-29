@@ -150,9 +150,6 @@ class RulesController extends Controller
             'errors' => $model->getErrors(),
         ]);
 
-
-
-
         return null;
     }
 

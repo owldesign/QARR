@@ -50,4 +50,14 @@ class Answer extends Model
     {
         return QARR::$plugin->elements->getElement('questions', $this->elementId);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['answer', 'elementId', 'authorId'], 'required'],
+        ];
+    }
 }

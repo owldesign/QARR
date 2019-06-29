@@ -103,14 +103,14 @@
                     <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 10px 30px; color: #666666; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 22px;" >
                         <p style="margin: 0 0 20px 0; font-weight: bold;">{{ 'Hi'|t('qarr') }} {{ entry.fullName }},</p>
                         <p style="margin: 0 0 10px 0;">{{ 'You have posted a review for'|t('qarr') }} <span style="color: #B289EF; font-weight: bold;">{{ element.title }}</span> on {{ entry.dateCreated |date()}}.</p>
-                        <p style="margin: 0; padding: 10px; border:1px dashed #E9EFF4; border-radius: 5px; background: rgba(233, 239, 244, 0.2);">{{ entry.feedback }}</p>
+                        <p style="margin: 0; padding: 10px; border:1px dashed #E9EFF4; border-radius: 5px; background: rgba(233, 239, 244, 0.2);">{{ feedback }}</p>
                     </td>
                 </tr>
 
                 <tr>
                     <td bgcolor="#ffffff" align="left" style="padding: 10px 30px 40px 30px; color: #666666; font-family: Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 22px;" >
                         <p style="margin: 0 0 10px 0; font-weight: bold;">{{ 'Our Response'|t('qarr') }}</p>
-                        <p style="margin: 0;">{{ message }}</p>
+                        <p style="margin: 0;">{{ message |nl2br }}</p>
                     </td>
                 </tr>
                 <tr>

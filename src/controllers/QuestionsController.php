@@ -55,7 +55,7 @@ class QuestionsController extends Controller
             $variables['fieldLayoutTabs'] = $entry->getFieldLayout()->getTabs();
         }
 
-        $variables['correspondences'] = QARR::$plugin->correspondence->getCorrespondenceByParams($entry->emailAddress, 'reviews', $entry->id);
+        $variables['correspondences'] = QARR::$plugin->correspondence->getCorrespondenceByParams($entry->emailAddress, 'questions', $entry->id);
 
         $this->_enforceEditPermissions($variables['entry']);
 

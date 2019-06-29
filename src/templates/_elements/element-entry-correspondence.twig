@@ -9,14 +9,14 @@
                 <div class="text-xs opacity-50 mb-2">{{ 'Sent on'|t('qarr') }} {{ correspondence.dateCreated |date() }}</div>
 
                 <div class="mb-2"><span class="font-semibold">{{ 'Subject'|t('qarr') }}</span> <p class="m-0">{{ correspondence.subject }}</p></div>
-                <div class="mb-2"><span class="font-semibold">{{ 'Message'|t('qarr') }}</span> <p class="m-0">{{ correspondence.email }}</p></div>
+                <div class="mb-2"><span class="font-semibold">{{ 'Message'|t('qarr') }}</span> <p class="m-0">{{ correspondence.email |nl2br }}</p></div>
             </div>
         {% else %}
             <p class="text-gray-600 mt-6">{{ 'There is no email correspondence'|t('qarr') }}</p>
         {% endfor %}
     </div>
     <div class="block-actions py-6">
-        <button type="button" class="qarr-btn btn-purple" id="reply-email-btn" data-element-id="{{ entry.id }}" data-type="reviews">
+        <button type="button" class="qarr-btn btn-purple" id="reply-email-btn" data-element-id="{{ entry.id }}" data-type="{{ type }}">
             <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" class="fill-current" width="10" height="10" viewBox="0 0 20 20"><path d="M0 0l20 10L0 20V0zm0 8v4l10-2L0 8z"/></svg></span>
             <span class="link-text">{{ 'Send Email'|t('qarr') }}</span>
         </button>

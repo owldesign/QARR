@@ -226,18 +226,32 @@ class ElementsController extends Controller
         $entry  = QARR::$plugin->reviews->getEntryById($elementId);
 
         if ($result) {
-            // TODO: Setup up some type of front end cookies
-            // QARR::$plugin->cookies->set('reported', $elementId);
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                return $this->asJson([
+                    'success' => true,
+                    'entry' => $entry
+                ]);
+            } else {
+                Craft::$app->getSession()->setNotice(QARR::t('Abuse reported'));
 
-            return $this->asJson([
-                'success' => true,
-                'entry' => $entry
-            ]);
+                return $this->redirectToPostedUrl($entry);
+            }
         } else {
-            return $this->asJson([
-                'success' => false
-            ]);
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                return $this->asJson([
+                    'success' => false
+                ]);
+            } else {
+                Craft::$app->getSession()->setError(QARR::t('Cannot report abuse'));
+
+                Craft::$app->getUrlManager()->setRouteParams([
+                    'message' => QARR::t('Cannot report abuse'),
+                    'errors' => $result,
+                ]);
+            }
         }
+
+        return null;
     }
 
     /**

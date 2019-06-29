@@ -29,6 +29,9 @@ class AnswersController extends Controller
      * Create modal
      *
      * @return Response
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
@@ -47,7 +50,7 @@ class AnswersController extends Controller
 
         return $this->asJson([
             'success' => true,
-            'template'   => $template
+            'template' => $template
         ]);
     }
 
@@ -61,9 +64,9 @@ class AnswersController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $elementId  = $request->getBodyParam('id');
-        $status     = $request->getBodyParam('status');
+        $request = Craft::$app->getRequest();
+        $elementId = $request->getBodyParam('id');
+        $status = $request->getBodyParam('status');
 
         if (!$elementId) {
             return null;
@@ -90,8 +93,8 @@ class AnswersController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $elementId  = $request->getBodyParam('id');
+        $request = Craft::$app->getRequest();
+        $elementId = $request->getBodyParam('id');
 
         if (!$elementId) {
             return null;
@@ -112,50 +115,70 @@ class AnswersController extends Controller
      * Save entry
      *
      * @return Response|null
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionSave()
     {
         $this->requirePostRequest();
-
-        $questionId     = Craft::$app->getRequest()->getBodyParam('questionId');
-        $authorId       = Craft::$app->getRequest()->getBodyParam('authorId');
-        $anonymous      = Craft::$app->getRequest()->getBodyParam('anonymous');
-        $answer         = Craft::$app->getRequest()->getBodyParam('answer');
-
-        $author     = Craft::$app->users->getUserById((int)$authorId);
+        $questionId = Craft::$app->getRequest()->getBodyParam('questionId');
+        $authorId = Craft::$app->getRequest()->getBodyParam('authorId');
+        $anonymous = Craft::$app->getRequest()->getBodyParam('anonymous');
+        $answer = Craft::$app->getRequest()->getBodyParam('answer');
+        $author = Craft::$app->users->getUserById((int)$authorId);
 
         if (!$author) {
-            return null;
+            $author = Craft::$app->getUser()->getIdentity();
+            if (!$author) {
+                return null;
+            }
         }
 
-        $model              = new Answer();
-        $model->answer      = $answer;
-        $model->elementId   = $questionId;
-        $model->authorId    = $author->id;
-        $model->anonymous   = $anonymous ? 1 : null;
-        $response = QARR::$plugin->answers->save($model, $author);
+        $model = new Answer();
+        $model->answer = $answer;
+        $model->elementId = $questionId;
+        $model->authorId = $author->id;
+        $model->anonymous = $anonymous ? 1 : null;
+        $model->validate();
 
-        if ($response) {
-            $array = ArrayHelper::toArray($response);
-            $array['author'] = $author->friendlyName;
+        if (!$model->hasErrors() && $response = QARR::$plugin->answers->save($model, $author)) {
+            if (Craft::$app->getRequest()->getIsAjax()) {
+                $array = ArrayHelper::toArray($response);
+                $array['author'] = $author->friendlyName;
 
-            $oldPath = Craft::$app->view->getTemplateMode();
-            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-            $template = Craft::$app->view->renderTemplate('qarr/frontend/_includes/_successful-answer', $array);
-            Craft::$app->view->setTemplateMode($oldPath);
+                $oldPath = Craft::$app->view->getTemplateMode();
+                Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+                $template = Craft::$app->view->renderTemplate('qarr/frontend/_includes/_successful-answer', $array);
+                Craft::$app->view->setTemplateMode($oldPath);
 
-            return $this->asJson([
-                'success'   => true,
-                'template'  => $template
-            ]);
-        } else {
+                return $this->asJson([
+                    'success' => true,
+                    'template' => $template
+                ]);
+            } else {
+                Craft::$app->getSession()->setNotice(QARR::t('Answer saved.'));
+                return $this->redirectToPostedUrl($model);
+            }
+        }
+
+        Craft::$app->getSession()->setError(QARR::t('Cannot save answer.'));
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+
             return $this->asJson([
                 'success' => false,
                 'errors' => $model->getErrors(),
             ]);
+        } else {
+            Craft::$app->getUrlManager()->setRouteParams([
+                'answer' => $model,
+                'errors' => $model->getErrors(),
+            ]);
 
+            return null;
         }
     }
 

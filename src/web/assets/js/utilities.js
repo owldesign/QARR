@@ -1,1 +1,13 @@
-Garnish.$doc.ready(function(){console.log("UTILITIES!!"),$("#update-geolocations").on("click",function(t){t.preventDefault(),Craft.postActionRequest("qarr/settings/utilities/update-geolocations",{},$.proxy(function(t,o){console.log(t),t&&Craft.cp.displayNotice(Craft.t("qarr",t.message))},this))})});
+Garnish.$doc.ready(function () {
+  console.log('UTILITIES!!');
+  $('#update-geolocations').on('click', function (e) {
+    e.preventDefault();
+    Craft.postActionRequest('qarr/settings/utilities/update-geolocations', {}, $.proxy(function (response, textStatus) {
+      console.log(response);
+
+      if (response) {
+        Craft.cp.displayNotice(Craft.t('qarr', response.message));
+      }
+    }, this));
+  });
+});
