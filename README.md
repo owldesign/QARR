@@ -2,7 +2,7 @@
 
 [Craft CMS Plugin](https://plugins.craftcms.com/qarr)
 
-Grow your business by allowing visitors to leave a reviews or ask a questions.
+Grow your business by allowing visitors to leave reviews or ask a questions.
 
 
 
