@@ -357,6 +357,7 @@ class Variables extends Behavior
           'Dropdown',
           'MultiSelect',
           'Url',
+          'Assets',
         ];
     }
 }

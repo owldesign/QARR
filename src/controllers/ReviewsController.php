@@ -131,7 +131,8 @@ class ReviewsController extends Controller
                 ]);
             } else {
                 Craft::$app->getUrlManager()->setRouteParams([
-                    'review' => $review
+                    'review' => $review,
+                    'errors' => $review->getErrors(),
                 ]);
             }
 

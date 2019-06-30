@@ -1,5 +1,12 @@
 # QARR Changelog
 
+## 1.1.6 - 2019-06-30
+
+### Added
+- Now you can add Asset Fields and file uploads to custom templates [Displays](https://docs.qarr.tools/custom/displays/)
+- Added validation errors to custom templates
+
+
 ## 1.1.5 - 2019-06-28
 
 ### Added

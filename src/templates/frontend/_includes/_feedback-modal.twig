@@ -9,7 +9,7 @@
     {% set hasUser = true %}
 {% endif %}
 
-<form id="qarr-modal-{{ type }}" class="modal qarr-modal fitted prompt-modal">
+<form id="qarr-modal-{{ type }}" class="modal qarr-modal fitted prompt-modal" enctype="multipart/form-data">
     {{ csrfInput() }}
     <input type="hidden" name="elementId" value="{{ elementId }}">
     {% if hasUser %}
@@ -77,6 +77,8 @@
                                 <label for="{{ field.handle }}" class="qarr-label" {% if field.required %}data-label="{{ field.name }}" data-error-message="{{ field.name }} {{ 'is required'|t('qarr') }}"{% endif %}>{{ field.name }}</label>
                                 {% if fieldType == 'PlainText' or fieldType == 'Url' %}
                                     {{ field.getInputHtml('') |raw }}
+                                {% elseif fieldType == 'Assets' %}
+                                    <input type="file" name="{{ field.handle }}[]" {% if field.limit != '1' %}multiple{% endif %}>
                                 {% else %}
                                     {{ field.getInputHtml('') |replace({'id=""': ''})|raw }}
                                 {% endif %}

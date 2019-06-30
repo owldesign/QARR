@@ -3,6 +3,8 @@
         <h2>{{ 'Display Fields'|t('qarr') }}</h2>
     </div>
     <div class="block-body">
+        {% set isArray = false %}
+
         {% for tab in fieldLayoutTabs %}
             {% set fields = tab.getFields() %}
             {% for field in fields %}
@@ -12,13 +14,29 @@
                     {% set value = entry.getFieldValue(field.handle) %}
 
                     {% if value is iterable %}
-                        {% set value = craft.qarr.getArrayValue(value.options) %}
+                        {% if value.elementType == 'craft\\elements\\Asset' %}
+                            {% set assetField = craft.app.fields.getFieldByHandle(field.handle) %}
+                            {% if assetField.limit == '1' %}
+                                {% set value = value.one() %}
+                                {% set isArray = false %}
+                            {% else %}
+                                {% set value = value.all() %}
+                                {% set isArray = true %}
+                            {% endif %}
+                        {% else %}
+                            {% set value = craft.qarr.getArrayValue(value.options) %}
+                        {% endif %}
                     {% endif %}
 
                     {% if value and value != '' %}
                         <div class="block-field">
                             <label>{{ field.name }}</label>
-                            <div class="field-value">{{ value }}</div>
+
+                            {% if type == 'Assets' %}
+                                {% include 'qarr/_elements/element-entry-asset-block' ignore missing with { isArray: isArray, value: value } %}
+                            {% else %}
+                                <div class="field-value">{{ value }}</div>
+                            {% endif %}
                         </div>
                     {% endif %}
                 {% endif %}

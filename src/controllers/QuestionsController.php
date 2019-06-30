@@ -127,7 +127,8 @@ class QuestionsController extends Controller
                 ]);
             } else {
                 Craft::$app->getUrlManager()->setRouteParams([
-                    'question' => $question
+                    'question' => $question,
+                    'errors' => $question->getErrors(),
                 ]);
             }
 

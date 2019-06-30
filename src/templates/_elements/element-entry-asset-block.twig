@@ -1,0 +1,21 @@
+{% if isArray %}
+    <div class="assets-wrapper flex-container">
+        {% for asset in value %}
+            <div class="field-value mr-2">
+                {% if asset.kind == 'image' %}
+                    {% include 'qarr/_elements/assets/assets-image' ignore missing with { asset: asset } %}
+                {% else %}
+                    {% include 'qarr/_elements/assets/assets-other' ignore missing with { asset: asset } %}
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="field-value">
+        {% if value.kind == 'image' %}
+            {% include 'qarr/_elements/assets/assets-image' ignore missing with { asset: value } %}
+        {% else %}
+            {% include 'qarr/_elements/assets/assets-other' ignore missing with { asset: value } %}
+        {% endif %}
+    </div>
+{% endif %}
