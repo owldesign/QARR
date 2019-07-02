@@ -60,6 +60,7 @@ class DirectLinksController extends Controller
     public function actionEdit(int $directId = null, DirectLink $direct = null): Response
     {
         $variables = [];
+        $variables['elementType'] = Craft::$app->getRequest()->getQueryParam('elementType');
         $variables['brandNewDirect'] = false;
 
         if ($directId !== null) {
@@ -77,18 +78,17 @@ class DirectLinksController extends Controller
                 if (!$direct) {
                     throw new NotFoundHttpException(QARR::t('Direct link not found'));
                 }
-
-                $variables['targetElementType'] = get_class($direct->element);
-                $variables['targetUserElementType'] = get_class($direct->user);
-
-                $variables['targetElement'] = $direct->element;
-                $variables['targetUser'] = $direct->user;
             }
+
+            $variables['elementType'] = get_class($direct->element);
+            $variables['elementId'] = $direct->elementId;
+            $variables['userId'] = $direct->userId;
 
             $variables['subTitle'] = trim($direct->title) ?: QARR::t('Edit Direct Link');
         } else {
             if ($direct === null) {
                 $direct = new DirectLink();
+                $variables['elementType'] = QARR::$plugin->elements->getElementTypeByName($variables['elementType']);
                 $variables['brandNewDirect'] = true;
             }
 
@@ -97,13 +97,8 @@ class DirectLinksController extends Controller
 
         $variables['directId']  = $directId;
         $variables['direct']    = $direct;
-
-
+        
         $this->_enforceEditRulePermissions($direct);
-
-        $type                       = Craft::$app->getRequest()->getQueryString();
-        $variables['type']          = $type;
-        $variables['elementType']   = QARR::$plugin->elements->getElementTypeByName($type);
 
         $variables['fullPageForm']          = true;
         $variables['continueEditingUrl']    = 'qarr/campaigns/direct/{id}';
@@ -128,8 +123,8 @@ class DirectLinksController extends Controller
 
         $model              = new DirectLink();
         $model->id          = $request->getBodyParam('directId');
-        $model->elementId   = $request->getBodyParam('element')[0];
-        $model->userId      = $request->getBodyParam('user')[0];
+        $model->elementId   = isset($request->getBodyParam('elementId')[0]) ? $request->getBodyParam('elementId')[0] : null;
+        $model->userId      = isset($request->getBodyParam('userId')[0]) ? $request->getBodyParam('userId')[0] : null;
         $model->enabled     = $request->getBodyParam('enabled');
         $model->type        = $request->getBodyParam('type');
         $model->link        = $request->getBodyParam('link');
@@ -137,7 +132,7 @@ class DirectLinksController extends Controller
         if ($request->getBodyParam('options')) {
             $model->options = Json::encode($request->getBodyParam('options'));
         }
-
+        
         if ($request->getBodyParam('settings')) {
             $model->settings = Json::encode($request->getBodyParam('settings'));
         }
@@ -151,12 +146,11 @@ class DirectLinksController extends Controller
 
         // Validate
         $model->validate();
-
+        
         if (!$model->hasErrors() && QARR::$plugin->links->save($model)) {
             Craft::$app->getSession()->setNotice(QARR::t('Direct link saved.'));
             return $this->redirectToPostedUrl($model);
         }
-
         Craft::$app->getSession()->setError(QARR::t('Cannot save direct link.'));
 
         Craft::$app->getUrlManager()->setRouteParams([
@@ -193,6 +187,21 @@ class DirectLinksController extends Controller
 
         // CP
 //        return $this->renderTemplate('qarr/campaigns/direct/_display', $variables);
+    }
+
+    public function actionGetElementInfo(): Response
+    {
+        $this->requirePostRequest();
+
+        $elementId  = Craft::$app->getRequest()->getParam('elementId');
+        $element    = Craft::$app->getElements()->getElementById($elementId);
+
+        return $this->asJson([
+            'success' => true,
+            'elementId' => $elementId,
+            'element' => $element,
+            'class' => $element->displayName(),
+        ]);
     }
 
     // Private Methods

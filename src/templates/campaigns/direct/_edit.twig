@@ -1,4 +1,4 @@
-{% extends "_layouts/cp" %}
+{% extends "qarr/_ui/layout" %}
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
@@ -26,9 +26,9 @@
 {% endblock %}
 
 {% block content %}
-    <div id="campaign-entry-edit" data-element-type="{{ elementType }}" data-type="{{ type }}" data-site-url="{{ siteUrl }}">
+    <div id="campaign-entry-edit" data-element-type="{{ elementType }}" data-site-url="{{ siteUrl }}">
 
-        {% include 'qarr/campaigns/_includes/edit-header' ignore missing %}
+        {% include 'qarr/campaigns/_includes/edit-header' ignore missing with {subTitle: subTitle} %}
 
         <input type="hidden" name="action" value="qarr/campaigns/direct-links/save">
         {{ redirectInput('qarr/campaigns/direct') }}
@@ -38,30 +38,43 @@
         {% endif %}
 
         <div class="element-container">
+
             <div class="mb-4">
-                {{ forms.elementSelectField({
+                <label for="elementId" class="qarr-label">{{ 'Element'|t('qarr') }}</label>
+                {% include 'qarr/_includes/forms/element-select' ignore missing with {
                     label: "Element"|t('app'),
                     id: 'elementId',
                     name: 'elementId',
-                    elementType: targetElementType,
+                    elementType: elementType,
                     selectionLabel: "Choose"|t('app'),
                     limit: 1,
-                    elements: (targetElement is defined and targetElement ? [targetElement]),
+                    elements: (direct.element is defined and direct.element ? [direct.element]),
                     errors: direct.getErrors('elementId')
-                }) }}
+                } %}
+                {% if direct.getErrors('elementId') %}<span class="error-message">{{ direct.getErrors('elementId')[0] }}</span>{% endif %}
             </div>
 
             <div class="mb-4">
-                {{ forms.elementSelectField({
+                <label for="userId" class="qarr-label">{{ 'User'|t('qarr') }}</label>
+                {% include 'qarr/_includes/forms/element-select' ignore missing with {
                     label: "User"|t('app'),
                     id: 'userId',
                     name: 'userId',
-                    elementType: targetUserElementType,
+                    elementType: 'craft\\elements\\User',
                     selectionLabel: "Choose"|t('app'),
                     limit: 1,
-                    elements: (targetUser is defined and targetUser ? [targetUser]),
+                    elements: (direct.user is defined and direct.user ? [direct.user]),
                     errors: direct.getErrors('elementId')
-                }) }}
+                } %}
+                {% if direct.getErrors('userId') %}<span class="error-message">{{ direct.getErrors('userId')[0] }}</span>{% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label for="type" class="qarr-label">{{ 'Type'|t('qarr') }}</label>
+                <select name="type" id="type" class="qarr-input" value="{{ direct.type }}">
+                    <option value="review">{{ 'Review'|t('qarr') }}</option>
+                    <option value="question">{{ 'Question'|t('qarr') }}</option>
+                </select>
             </div>
 
             <div class="mb-4">
@@ -81,7 +94,7 @@
 
             <div class="mb-4">
                 <label for="name" class="qarr-label">{{ 'Direct Link'|t('qarr') }}</label>
-                <input type="text" name="link" id="generated-url" class="qarr-input font-mono" value="{{ siteUrl }}qarr/direct?" readonly>
+                <input type="text" name="link" id="generated-url" class="qarr-input font-mono" value="{{ direct.link }}" readonly>
                 {% if direct.getErrors('link') %}<span class="error-message">{{ direct.getErrors('link')[0] }}</span>{% endif %}
             </div>
         </div>

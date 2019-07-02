@@ -484,4 +484,34 @@ Answers.Answer = Garnish.Base.extend({
       }
     });
   }
+}); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Element Selects
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var ElementSelect = {};
+ElementSelect.ElementSelectInput = Craft.BaseElementSelectInput.extend({
+  onModalSelect: function onModalSelect(elements) {
+    if (this.settings.limit) {
+      var slotsLeft = this.settings.limit - this.$elements.length;
+
+      if (elements.length > slotsLeft) {
+        elements = elements.slice(0, slotsLeft);
+      }
+    }
+
+    this.selectElements(elements);
+    this.updateDisabledElementsInModal();
+  },
+  onSelectElements: function onSelectElements(elements) {
+    this.trigger('selectElements', {
+      elements: elements
+    });
+    this.settings.onSelectElements(elements);
+    QARR.directLinkInstance.handleAddElement(elements[0]);
+  },
+  onRemoveElements: function onRemoveElements() {
+    this.trigger('removeElements');
+    this.settings.onRemoveElements();
+    QARR.directLinkInstance.trigger('elementRemoved', this);
+  }
 });

@@ -22,6 +22,7 @@ class DirectLinks extends AssetBundle
         ];
 
         $this->js = [
+            'js/element-func.js',
             'js/campaigns-func.js',
             'js/direct-links.js',
         ];
