@@ -52,7 +52,7 @@ class QARR extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '1.0.5';
+    public $schemaVersion = '1.0.6';
     public $hasCpSettings = false;
     public $hasCpSection = true;
     public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
@@ -165,6 +165,10 @@ class QARR extends Plugin
                 'rules' => [
                     'label' => QARR::t('Rules'),
                     'url' => 'qarr/rules'
+                ],
+                'campaigns' => [
+                    'label' => QARR::t('Campaigns'),
+                    'url' => 'qarr/campaigns'
                 ],
                 'settings' => [
                     'label' => QARR::t('Settings'),
@@ -301,6 +305,17 @@ class QARR extends Plugin
                         ],
                         'qarr:deleteRules' => [
                             'label' => QARR::t('Delete rules')
+                        ]
+                    ]
+                ];
+                $permissions['qarr:accessCampaigns'] = [
+                    'label' => QARR::t('Access Campaigns'),
+                    'nested' => [
+                        'qarr:editCampaigns' => [
+                            'label' => QARR::t('Edit campaigns')
+                        ],
+                        'qarr:deleteCampaigns' => [
+                            'label' => QARR::t('Delete campaigns')
                         ]
                     ]
                 ];

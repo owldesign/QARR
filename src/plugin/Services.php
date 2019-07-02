@@ -20,6 +20,7 @@ use owldesign\qarr\services\Notes;
 use owldesign\qarr\services\Correspondence;
 use owldesign\qarr\services\Elements;
 use owldesign\qarr\services\Rules;
+use owldesign\qarr\services\campaigns\DirectLink;
 use owldesign\qarr\services\Geolocations;
 
 trait Services
@@ -137,6 +138,16 @@ trait Services
         return $this->get('geolocations');
     }
 
+    /**
+     * Get direct link
+     *
+     * @return DirectLink
+     */
+    public function getLinks(): DirectLink
+    {
+        return $this->get('links');
+    }
+
     // Private Methods
     // =========================================================================
 
@@ -157,6 +168,7 @@ trait Services
             'elements' => Elements::class,
             'rules' => Rules::class,
             'geolocations' => Geolocations::class,
+            'links' => DirectLink::class,
         ]);
     }
 }

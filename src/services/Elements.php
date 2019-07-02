@@ -363,9 +363,58 @@ class Elements extends Component
         return $average;
     }
 
+    /**
+     * Return allowed element types
+     *
+     * @return array
+     */
+    public function allowedElementTypes()
+    {
+        $elements = Craft::$app->getElements()->getAllElementTypes();
+        $allowedElements = $this->_allowedElements();
+        $list = [];
+
+        foreach ($elements as $element) {
+            if (in_array($element, $allowedElements)) {
+                $list[] = $element;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * Get element type by name
+     *
+     * @param $type
+     * @return string
+     */
+    public function getElementTypeByName($type)
+    {
+        if ($type == 'product') {
+            return 'craft\\commerce\\elements\\Product';
+        }
+
+        if ($type == 'entry') {
+            return 'craft\\elements\\Entry';
+        }
+    }
+
     // Private Methods
     // =========================================================================
 
+    /**
+     * Set allowed element types
+     *
+     * @return array
+     */
+    private function _allowedElements()
+    {
+        return [
+            'craft\\elements\\Entry',
+            'craft\\commerce\\elements\\Product'
+        ];
+    }
 
     /**
      * Return element query

@@ -86,6 +86,7 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
+
         // Questions
         $this->createTable(Table::QUESTIONS, [
             'id' => $this->primaryKey(),
@@ -134,6 +135,7 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
+
         // Displays
         $this->createTable(Table::DISPLAYS, [
             'id' => $this->primaryKey(),
@@ -181,6 +183,7 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
+
         // Rules
         $this->createTable(Table::RULES, [
             'id' => $this->primaryKey(),
@@ -200,6 +203,23 @@ class Install extends Migration
             'ruleId' => $this->integer()->notNull(),
             'elementId' => $this->integer()->notNull(),
             'details' => $this->text(),
+            'dateCreated' => $this->dateTime()->notNull(),
+            'dateUpdated' => $this->dateTime()->notNull(),
+            'uid' => $this->uid()
+        ]);
+
+        // Direct Links
+        $this->createTable(Table::DIRECTLINKS, [
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'elementId' => $this->integer()->notNull(),
+            'userId' => $this->integer()->notNull(),
+            'type' => $this->string()->notNull(),
+            'link' => $this->string()->notNull(),
+            'enabled' => $this->boolean(),
+            'completed' => $this->boolean()->defaultValue(false),
+            'settings' => $this->text(),
+            'options' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
@@ -245,6 +265,8 @@ class Install extends Migration
         $this->addForeignKey($this->db->getForeignKeyName(Table::NOTES, 'elementId'), Table::NOTES, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::CORRESPONDENCERESPONSES, 'parentId'), Table::CORRESPONDENCERESPONSES, 'parentId', Table::CORRESPONDENCE, 'id', 'CASCADE', null);
         $this->addForeignKey($this->db->getForeignKeyName(Table::RULESFLAGGED, 'ruleId'), Table::RULESFLAGGED, 'ruleId', Table::RULES, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::DIRECTLINKS, 'elementId'), Table::DIRECTLINKS, 'elementId', CraftTable::ELEMENTS, 'id', 'CASCADE', null);
+        $this->addForeignKey($this->db->getForeignKeyName(Table::DIRECTLINKS, 'userId'), Table::DIRECTLINKS, 'userId', CraftTable::USERS, 'id', 'CASCADE', null);
     }
     /**
      * Remove tables
@@ -262,6 +284,7 @@ class Install extends Migration
         $this->dropTableIfExists(Table::CORRESPONDENCE);
         $this->dropTableIfExists(Table::RULESFLAGGED);
         $this->dropTableIfExists(Table::RULES);
+        $this->dropTableIfExists(Table::DIRECTLINKS);
     }
     public function insertDefaultData()
     {

@@ -1,0 +1,10 @@
+<nav>
+    <ul>
+        <li class="heading">
+            <span>{{ 'Tools'|t('qarr') }}</span>
+        </li>
+        <li>
+            <a href="{{ url('qarr/campaigns/direct') }}" {% if selectedSidebarItem == 'direct' %} class="sel"{% endif %}>Direct Links</a>
+        </li>
+    </ul>
+</nav>

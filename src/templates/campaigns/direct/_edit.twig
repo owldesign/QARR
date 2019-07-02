@@ -1,0 +1,160 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\DirectLinks") %}
+
+{% set fullPageForm = true %}
+{% set bodyClass = 'qarr-global qarr-elementindex qarr-edit' %}
+{% set pluginCpUrl = url('qarr') %}
+
+{% set title = 'Campaigns'|t('qarr') %}
+
+{% set selectedSubnavItem = "campaigns" %}
+{% set selectedSidebarItem = "direct" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% import "_includes/forms" as forms %}
+
+{% block sidebar %}
+    {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% block header %}
+    {% include 'qarr/_ui/page-header' ignore missing %}
+{% endblock %}
+
+{% block content %}
+    <div id="campaign-entry-edit" data-element-type="{{ elementType }}" data-type="{{ type }}" data-site-url="{{ siteUrl }}">
+
+        {% include 'qarr/campaigns/_includes/edit-header' ignore missing %}
+
+        <input type="hidden" name="action" value="qarr/campaigns/direct-links/save">
+        {{ redirectInput('qarr/campaigns/direct') }}
+
+        {% if direct.id %}
+            <input type="hidden" name="directId" value="{{ direct.id }}">
+        {% endif %}
+
+        <div class="element-container">
+            <div class="mb-4">
+                {{ forms.elementSelectField({
+                    label: "Element"|t('app'),
+                    id: 'elementId',
+                    name: 'elementId',
+                    elementType: targetElementType,
+                    selectionLabel: "Choose"|t('app'),
+                    limit: 1,
+                    elements: (targetElement is defined and targetElement ? [targetElement]),
+                    errors: direct.getErrors('elementId')
+                }) }}
+            </div>
+
+            <div class="mb-4">
+                {{ forms.elementSelectField({
+                    label: "User"|t('app'),
+                    id: 'userId',
+                    name: 'userId',
+                    elementType: targetUserElementType,
+                    selectionLabel: "Choose"|t('app'),
+                    limit: 1,
+                    elements: (targetUser is defined and targetUser ? [targetUser]),
+                    errors: direct.getErrors('elementId')
+                }) }}
+            </div>
+
+            <div class="mb-4">
+                <label class="qarr-label">{{ 'Enable this link'|t('qarr') }}</label>
+
+                {%- set on = (direct.enabled is defined ? direct.enabled : false) %}
+                {%- set value = (value is defined ? value : '1') %}
+                <div class="qarr-lightswitch lightswitch {% if direct.enabled %} on{% endif %} small">
+                    <div class="lightswitch-container">
+                        <div class="label on"></div>
+                        <div class="handle"></div>
+                        <div class="label off"></div>
+                    </div>
+                    <input type="hidden" name="enabled" value="{{ direct.enabled ? value }}">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="name" class="qarr-label">{{ 'Direct Link'|t('qarr') }}</label>
+                <input type="text" name="link" id="generated-url" class="qarr-input font-mono" value="{{ siteUrl }}qarr/direct?" readonly>
+                {% if direct.getErrors('link') %}<span class="error-message">{{ direct.getErrors('link')[0] }}</span>{% endif %}
+            </div>
+        </div>
+
+        <button type="submit" class="qarr-btn btn-purple">{{ 'Save'|t('qarr') }}</button>
+
+
+    {#    <div class="flex">#}
+    {#        <div class="flex-1">#}
+    {#            <div class="element-container">#}
+    {#                <div class="mb-4">#}
+    {#                    <label for="name" class="qarr-label">{{ 'Name'|t('qarr') }}</label>#}
+    {#                    <input class="qarr-input {% if rule.getErrors('name') %}has-error{% endif %}" type="text" id="name" name="name" value="{{ rule.name }}" maxlength="255" autocomplete="off">#}
+    {#                    {% if rule.getErrors('name') %}<span class="error-message">{{ rule.getErrors('name')[0] }}</span>{% endif %}#}
+    {#                </div>#}
+
+    {#                <div class="mb-4">#}
+    {#                    <label for="handle" class="qarr-label">{{ 'Handle'|t('qarr') }}</label>#}
+    {#                    <input class="qarr-input {% if rule.getErrors('handle') %}has-error{% endif %}" type="text" id="handle" name="handle" value="{{ rule.handle }}" autocomplete="off">#}
+    {#                    {% if rule.getErrors('handle') %}<span class="error-message">{{ rule.getErrors('handle')[0] }}</span>{% endif %}#}
+    {#                </div>#}
+
+    {#            </div>#}
+    {#            <div class="element-container mt-6">#}
+    {#                <div id="data-list-container">#}
+    {#                    <h2 class="mb-0">{{ 'Words List'|t('qarr') }}</h2>#}
+    {#                    <p class="text-sm opacity-50 mt-1">{{ 'Enter a list of words to catch'|t('qarr') }}</p>#}
+    {#                    <input class="tagify--outside" id="rule-data" type="text" name="data" placeholder="eg. boring, broken, sucks, lame, golden, funny..." value="{{ rule.data }}">#}
+
+    {#                    <a class="block qarr-btn-link my-2 tags--removeAllBtn {% if rule.data == '' %}btn-disabled{% endif %}">{{ 'Clear All'|t('qarr') }}</a>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+
+    {#        <div class="w-64 self-start">#}
+    {#            <div class="element-container element-sidebar ml-6">#}
+    {#                <h2>{{ 'Settings'|t('qarr') }}</h2>#}
+    {#                <div class="field">#}
+    {#                    <label class="qarr-label">{{ 'Enable rule'|t('qarr') }}</label>#}
+
+    {#                    {%- set on = (rule.enabled is defined ? rule.enabled : false) %}#}
+    {#                    {%- set value = (value is defined ? value : '1') %}#}
+    {#                    <div class="qarr-lightswitch lightswitch {% if rule.enabled %} on{% endif %} small">#}
+    {#                        <div class="lightswitch-container">#}
+    {#                            <div class="label on"></div>#}
+    {#                            <div class="handle"></div>#}
+    {#                            <div class="label off"></div>#}
+    {#                        </div>#}
+    {#                        <input type="hidden" name="enabled" value="{{ rule.enabled ? value }}">#}
+    {#                    </div>#}
+    {#                </div>#}
+
+    {#            </div>#}
+
+    {#            <div class="flex entry-actions mt-4 ml-6">#}
+    {#                <button type="submit" class="qarr-btn btn-purple">{{ "Save"|t('qarr') }}</button>#}
+    {#                {% if rule.id %}#}
+    {#                    <button type="button" id="delete-rule" class="qarr-btn" data-id="{{ rule.id }}">{{ "Delete"|t('qarr') }}</button>#}
+    {#                {% endif %}#}
+    {#            </div>#}
+
+    {#        </div>#}
+    {#    </div>#}
+    </div>
+{% endblock %}
+
+{#{% js %}#}
+{#    {% if rule is defined and not rule.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}#}
+
+{#    $('#name').on('keyup', function(e) {#}
+{#    var text = $(this).val();#}
+{#    var titleEl = $('.entry-title h1');#}
+
+{#    titleEl.html(text);#}
+{#    });#}
+{#{% endjs %}#}
