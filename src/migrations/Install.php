@@ -211,11 +211,10 @@ class Install extends Migration
         // Direct Links
         $this->createTable(Table::DIRECTLINKS, [
             'id' => $this->primaryKey(),
-            'title' => $this->string()->notNull(),
+            'slug' => $this->string()->notNull(),
             'elementId' => $this->integer()->notNull(),
             'userId' => $this->integer()->notNull(),
             'type' => $this->string()->notNull(),
-            'link' => $this->string()->notNull(),
             'enabled' => $this->boolean(),
             'completed' => $this->boolean()->defaultValue(false),
             'settings' => $this->text(),

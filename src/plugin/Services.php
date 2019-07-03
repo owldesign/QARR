@@ -22,6 +22,7 @@ use owldesign\qarr\services\Elements;
 use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\campaigns\DirectLink;
 use owldesign\qarr\services\Geolocations;
+use owldesign\qarr\services\Encrypt;
 
 trait Services
 {
@@ -148,6 +149,16 @@ trait Services
         return $this->get('links');
     }
 
+    /**
+     * Get Encrypt
+     *
+     * @return Encrypt
+     */
+    public function getEncrypt(): Encrypt
+    {
+        return $this->get('encrypt');
+    }
+
     // Private Methods
     // =========================================================================
 
@@ -169,6 +180,7 @@ trait Services
             'rules' => Rules::class,
             'geolocations' => Geolocations::class,
             'links' => DirectLink::class,
+            'encrypt' => Encrypt::class,
         ]);
     }
 }

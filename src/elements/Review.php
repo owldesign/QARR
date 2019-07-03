@@ -704,10 +704,10 @@ class Review extends Element
     }
 
     /**
- * Get settings
- *
- * @return mixed
- */
+     * Get settings
+     *
+     * @return mixed
+     */
     public function getSettings()
     {
         return QARR::$plugin->settings;
@@ -743,7 +743,6 @@ class Review extends Element
      */
     public function afterSave(bool $isNew)
     {
-
         if (!$isNew) {
             $record = ReviewRecord::findOne($this->id);
 

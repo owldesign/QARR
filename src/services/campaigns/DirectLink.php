@@ -15,6 +15,7 @@ use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use owldesign\qarr\models\DirectLink as DirectLinkModel;
 use owldesign\qarr\records\DirectLink as DirectLinkRecord;
+use Hashids\Hashids;
 
 use Craft;
 use craft\base\Component;
@@ -29,6 +30,9 @@ use yii\base\Exception;
  */
 class DirectLink extends Component
 {
+    // Protected Properties
+    // =========================================================================
+
     // Properties
     // =========================================================================
     /**
@@ -116,10 +120,10 @@ class DirectLink extends Component
      * Save direct link
      *
      * @param DirectLinkModel $link
-     * @return bool
+     * @return object
      * @throws Exception
      */
-    public function save(DirectLinkModel $link): bool
+    public function save(DirectLinkModel $link): object
     {
         $isNewLink = !$link->id;
 
@@ -133,12 +137,11 @@ class DirectLink extends Component
             $record = new DirectLinkRecord();
         }
 
-        $record->title      = $link->title;
+        $record->slug       = $link->slug;
         $record->elementId  = $link->elementId;
         $record->userId     = $link->userId;
         $record->type       = $link->type;
         $record->enabled    = $link->enabled;
-        $record->link       = $link->link;
         $record->completed  = $link->completed;
 
 
@@ -156,7 +159,7 @@ class DirectLink extends Component
             $link->id = $record->id;
         }
 
-        return true;
+        return $record;
     }
 
     /**
@@ -165,7 +168,7 @@ class DirectLink extends Component
      * @param $id
      * @return bool
      */
-    public function deleteRuleById($id)
+    public function deleteLinkById($id)
     {
         $record = DirectLinkRecord::find()
             ->where(['id' => $id])
@@ -173,6 +176,34 @@ class DirectLink extends Component
 
         if (!$record) {
             return true;
+        }
+
+        return true;
+    }
+
+    /**
+     * Mark completed + add submission id
+     *
+     * @param $id
+     * @param $submission
+     * @return bool
+     */
+    public function completeById($id, $submission)
+    {
+        try {
+            $record = DirectLinkRecord::find()
+                ->where(['id' => $id])
+                ->one();
+
+            $record->completed = true;
+
+            $record->options = Json::encode([
+                'submissionId' => $submission->id
+            ]);
+
+            $record->save(false);
+        } catch (\Exception $e) {
+            QARR::log('There was an error completing direct link: ' . $e->getMessage());
         }
 
         return true;
@@ -191,13 +222,12 @@ class DirectLink extends Component
         return (new Query())
             ->select([
                 'links.id',
-                'links.title',
+                'links.slug',
                 'links.elementId',
                 'links.userId',
                 'links.type',
                 'links.enabled',
                 'links.completed',
-                'links.link',
                 'links.settings',
                 'links.options',
             ])

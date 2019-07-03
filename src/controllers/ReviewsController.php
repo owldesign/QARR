@@ -101,6 +101,9 @@ class ReviewsController extends Controller
         // Set Element Data
         QARR::$plugin->elements->setElementData($request, $review);
 
+        // Set Direct Link Data
+        $directLinkId = $request->getBodyParam('directLinkId');
+
         $fieldsLocation = $request->getParam('fieldsLocation', 'fields');
         $review->setFieldValuesFromRequest($fieldsLocation);
 
@@ -113,6 +116,12 @@ class ReviewsController extends Controller
         }
 
         if ($saved) {
+
+            // Is this Direct Link Submission?
+            if ($directLinkId) {
+                QARR::$plugin->links->completeById($directLinkId, $review);
+            }
+
             if (Craft::$app->getRequest()->getIsAjax()) {
                 return $this->asJson([
                     'success' => true,

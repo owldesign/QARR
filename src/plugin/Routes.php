@@ -58,9 +58,10 @@ trait Routes
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function(RegisterUrlRulesEvent $event) {
-                $event->rules['qarr/direct'] = 'qarr/campaigns/direct-links/form';
+                $event->rules['qarr/direct/<slug:[^\\/]+>'] = 'qarr/campaigns/direct-links/form';
                 $event->rules['qarr/correspondence'] = 'qarr/correspondence/gate-keeper';
             }
         );
     }
 }
+

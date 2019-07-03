@@ -5,7 +5,7 @@
 {% set currentPage = craft.app.request.getSegment(2) %}
 {% set bodyClass = 'qarr-global qarr-elementindex' %}
 {% set selectedSubnavItem = "campaigns" %}
-{% set selectedSidebarItem = "direct" %}
+{% set selectedSidebarItem = "campaigns" %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
@@ -20,13 +20,13 @@
 
 {% block content %}
 
-    <a href="{{ url('qarr/campaigns/new') }}" class="qarr-btn">
+    <a href="{{ url('qarr/campaigns/new') }}" class="qarr-btn disabled cursor-not-allowed pointer-events-none">
         <span class="icon mr-3 font-bold">+</span>
         <span class="btn-text">{{ "New Campaign"|t('qarr') }}</span>
     </a>
 
     <div id="noelements" class="text-gray-600 mt-6">
-        {{ "No campaigns exist yet."|t('qarr') }}
+        {{ "No campaigns exist yet."|t('qarr') }} {{ "This feature is coming soon."|t('qarr') }}
     </div>
 
 {#    {% if rules|length %}#}

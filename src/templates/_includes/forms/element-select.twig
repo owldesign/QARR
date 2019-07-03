@@ -42,5 +42,5 @@
 } %}
 
 {% js %}
-    new ElementSelect.ElementSelectInput({{ jsSettings|json_encode|raw }});
+    new {{ jsClass }}({{ jsSettings|json_encode|raw }});
 {% endjs %}

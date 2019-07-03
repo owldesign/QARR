@@ -22,8 +22,6 @@ use yii\web\Response;
 
 class DirectLinksController extends Controller
 {
-    // Protected Properties
-    // =========================================================================
 
     /**
      * @var array
@@ -85,7 +83,7 @@ class DirectLinksController extends Controller
             $variables['elementId'] = $direct->elementId;
             $variables['userId'] = $direct->userId;
 
-            $variables['subTitle'] = trim($direct->title) ?: QARR::t('Edit Direct Link');
+            $variables['subTitle'] = QARR::t('Edit Direct Link');
         } else {
             if ($direct === null) {
                 $direct = new DirectLink();
@@ -98,7 +96,7 @@ class DirectLinksController extends Controller
         
         $variables['directId']  = $directId;
         $variables['direct']    = $direct;
-        
+
         $this->_enforceEditRulePermissions($direct);
 
         $variables['fullPageForm']          = true;
@@ -128,7 +126,7 @@ class DirectLinksController extends Controller
         $model->userId      = isset($request->getBodyParam('userId')[0]) ? $request->getBodyParam('userId')[0] : null;
         $model->enabled     = $request->getBodyParam('enabled');
         $model->type        = $request->getBodyParam('type');
-        $model->link        = $request->getBodyParam('link');
+        $model->slug        = $request->getBodyParam('slug');
 
         if ($request->getBodyParam('options')) {
             $model->options = Json::encode($request->getBodyParam('options'));
@@ -138,19 +136,24 @@ class DirectLinksController extends Controller
             $model->settings = Json::encode($request->getBodyParam('settings'));
         }
 
-        if ($model->userId) {
-            $model->title       = $this->_buildTitle($model);
-        }
-
         // Permission enforcement
         $this->requirePermission('qarr:editCampaigns');
 
         // Validate
         $model->validate();
         
-        if (!$model->hasErrors() && QARR::$plugin->links->save($model)) {
-            Craft::$app->getSession()->setNotice(QARR::t('Direct link saved.'));
-            return $this->redirectToPostedUrl($model);
+        if (!$model->hasErrors()) {
+
+            $saved = QARR::$plugin->links->save($model);
+
+            if ($saved) {
+                $slug = QARR::$plugin->encrypt->encodeById($saved->id);
+                $saved->slug = $slug;
+                $saved->save();
+
+                Craft::$app->getSession()->setNotice(QARR::t('Direct link saved.'));
+                return $this->redirectToPostedUrl($model);
+            }
         }
         Craft::$app->getSession()->setError(QARR::t('Cannot save direct link.'));
 
@@ -162,36 +165,47 @@ class DirectLinksController extends Controller
         return null;
     }
 
-    /**
-     * Display for Direct Links
-     *
-     * @return Response
-     * @throws UserNotAllowedException
-     */
-    public function actionForm(): Response
+    public function actionForm($slug = null): Response
     {
+        if (!$slug) {
+            return $this->redirect(Craft::$app->getRequest()->baseUrl);
+        }
+
         $view       = Craft::$app->getView();
-        $params     = Craft::$app->getRequest()->getQueryParams();
-        $user       = Craft::$app->getUsers()->getUserById($params['userId']);
-        $element    = Craft::$app->getElements()->getElementById($params['elementId']);
-        $direct     = $this->_getDirectModel();
+        $model      = QARR::$plugin->links->getLinkById(QARR::$plugin->encrypt->decode($slug));
+        $user       = $model->user;
+        $element    = $model->element;
+
+        if (!$model->enabled) {
+            return $this->redirect(Craft::$app->getRequest()->baseUrl);
+        }
 
         $this->_enforceActionPermissions($user);
 
         $variables = [
-            'user' => $user,
-            'element' => $element
+            'model'     => $model,
+            'user'      => $user,
+            'element'   => $element
         ];
 
-        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr' . DIRECTORY_SEPARATOR . 'direct';
-        $customFile     = $this->_resolveTemplate($path, 'form');
+        $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr' . DIRECTORY_SEPARATOR . 'direct';
+
+        if ($model->type == 'review') {
+            $customFile = $this->_resolveTemplate($path, 'review');
+        } else {
+            $customFile = $this->_resolveTemplate($path, 'question');
+        }
 
         if ($customFile) {
             return $this->renderTemplate($customFile, $variables);
         } else {
             $oldPath = Craft::$app->view->getTemplateMode();
             $view->setTemplateMode(View::TEMPLATE_MODE_CP);
-            return $this->renderTemplate('qarr/campaigns/direct/form', $variables);
+            if ($model->type == 'review') {
+                return $this->renderTemplate('qarr/campaigns/direct/review', $variables);
+            } else {
+                return $this->renderTemplate('qarr/campaigns/direct/question', $variables);
+            }
             $view->setTemplateMode($oldPath);
         }
 
@@ -214,13 +228,6 @@ class DirectLinksController extends Controller
 
     // Private Methods
     // =========================================================================
-
-    private function _buildTitle($model)
-    {
-        $string = QARR::t('Link for') . ' ' . $model->user->fullName;
-
-        return $string;
-    }
 
     /**
      * @param DirectLink $campaign

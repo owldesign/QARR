@@ -16,11 +16,10 @@ class DirectLink extends Model
     // =========================================================================
 
     public $id;
-    public $title;
+    public $slug;
     public $elementId;
     public $userId;
     public $type;
-    public $link;
     public $enabled;
     public $completed;
     public $settings;
@@ -34,7 +33,7 @@ class DirectLink extends Model
      */
     public function __toString()
     {
-        return $this->title ?: ((string)$this->title ?: static::class);
+        return $this->slug ?: ((string)$this->slug ?: static::class);
     }
 
     /**
@@ -43,7 +42,7 @@ class DirectLink extends Model
     public function rules()
     {
         return [
-            [['title', 'elementId', 'userId', 'type', 'link'], 'required']
+            [['slug', 'elementId', 'userId', 'type'], 'required']
         ];
     }
 

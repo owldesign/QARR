@@ -26,7 +26,6 @@
     <div class="buttons">
         <div class="btngroup">
             <div class="qarr-btn menubtn">
-                <span class="icon mr-3 font-bold">+</span>
                 <span class="btn-text">{{ "New Direct Link"|t('qarr') }}</span>
             </div>
 
@@ -48,20 +47,14 @@
                 {% set status = link.enabled ? 'enabled' : 'disabled' %}
                 <div class="element-item">
 
-                    <div class="element-header w-1/2">
-                        <a href="{{ url('qarr/campaigns/direct/' ~ link.id) }}"><h2>{{ link.title }}</h2></a>
-                        <div class="element-handle">
-{#                                <span>{{ rule.handle }}</span>#}
-{#                                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current" width="10" height="10" viewBox="0 0 20 20"><path d="M6 6V2c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h4zm2 0h4a2 2 0 0 1 2 2v4h4V2H8v4zM2 8v10h10V8H2z"/></svg>#}
-                        </div>
+                    <div class="element-header w-2/3">
+                        <a href="{{ url('qarr/campaigns/direct/' ~ link.id) }}" class="block"><h2>Link for {{ link.user.fullName }}</h2></a>
+                        <div class="inline-block font-mono bg-white py-1 px-2 rounded mt-2 text-xs">{{ siteUrl }}qarr/direct/{{ link.slug }}</div>
+                        {% if link.completed %}
+                            {% set result = craft.app.elements.getElementById(link.options['submissionId']) %}
+                            <div class="mt-2 text-xs opacity-75">{{ 'User has submitted a'|t('qarr') }} {{ link.type }}. <a href="{{ result.url }}" target="_blank">{{ 'You can view it here'|t('qarr') }}</a></div>
+                        {% endif %}
                     </div>
-
-{#                        <div class="element-body text-center">#}
-{#                            <h3 class="font-normal text-gray-500">{{ 'Flagged Entries'|t('qarr') }}</h3>#}
-{#                            <span class="block font-mono element-count">#}
-{#                                {{ craft.qarrRules.getFlaggedCountByRuleId(rule.id) }}#}
-{#                            </span>#}
-{#                        </div>#}
 
                     <div class="element-status {{ status }} ">
                         <div class="qarr-tag"><span>{{ status }}</span></div>
