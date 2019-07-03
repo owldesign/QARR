@@ -1,5 +1,11 @@
 # QARR Changelog
 
+## 1.1.7 - 2019-07-03
+
+### Added
+- Added ability to generate direct links for reviews and questions [See Docs](https://docs.qarr.tools/campaigns/)
+
+
 ## 1.1.6 - 2019-06-30
 
 ### Added
