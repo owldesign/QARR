@@ -6,6 +6,7 @@ use Craft;
 use craft\errors\MissingComponentException;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
+use craft\web\View;
 use owldesign\qarr\errors\UserNotAllowedException;
 use craft\web\Controller;
 use owldesign\qarr\elements\Campaign;
@@ -31,7 +32,8 @@ class DirectLinksController extends Controller
 
     // Public Properties
     // =========================================================================
-
+    public $defaultTemplateExtensions = ['html', 'twig'];
+    
     // Public Methods
     // =========================================================================
 
@@ -79,7 +81,6 @@ class DirectLinksController extends Controller
                     throw new NotFoundHttpException(QARR::t('Direct link not found'));
                 }
             }
-
             $variables['elementType'] = get_class($direct->element);
             $variables['elementId'] = $direct->elementId;
             $variables['userId'] = $direct->userId;
@@ -94,7 +95,7 @@ class DirectLinksController extends Controller
 
             $variables['subTitle'] = QARR::t('New Direct Link');
         }
-
+        
         $variables['directId']  = $directId;
         $variables['direct']    = $direct;
         
@@ -167,26 +168,33 @@ class DirectLinksController extends Controller
      * @return Response
      * @throws UserNotAllowedException
      */
-    public function actionDisplay(): Response
+    public function actionForm(): Response
     {
-        $params = Craft::$app->getRequest()->getQueryParams();
-
+        $view       = Craft::$app->getView();
+        $params     = Craft::$app->getRequest()->getQueryParams();
         $user       = Craft::$app->getUsers()->getUserById($params['userId']);
         $element    = Craft::$app->getElements()->getElementById($params['elementId']);
+        $direct     = $this->_getDirectModel();
 
         $this->_enforceActionPermissions($user);
-
 
         $variables = [
             'user' => $user,
             'element' => $element
         ];
 
-        // Site Url
-        return $this->renderTemplate('_qarr/direct/_display', $variables);
+        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr' . DIRECTORY_SEPARATOR . 'direct';
+        $customFile     = $this->_resolveTemplate($path, 'form');
 
-        // CP
-//        return $this->renderTemplate('qarr/campaigns/direct/_display', $variables);
+        if ($customFile) {
+            return $this->renderTemplate($customFile, $variables);
+        } else {
+            $oldPath = Craft::$app->view->getTemplateMode();
+            $view->setTemplateMode(View::TEMPLATE_MODE_CP);
+            return $this->renderTemplate('qarr/campaigns/direct/form', $variables);
+            $view->setTemplateMode($oldPath);
+        }
+
     }
 
     public function actionGetElementInfo(): Response
@@ -232,11 +240,29 @@ class DirectLinksController extends Controller
     {
         $currentUser = Craft::$app->getUser()->getIdentity();
 
-        if ($currentUser->id === $user->id) {
+        if ($currentUser->id === $user->id || $currentUser->admin) {
             return true;
         }
 
 
         throw new UserNotAllowedException();
+    }
+
+    /**
+     * Function to get custom templates path
+     *
+     * @param string $path
+     * @param string $name
+     * @return string
+     */
+    private function _resolveTemplate(string $path, string $name)
+    {
+        foreach ($this->defaultTemplateExtensions as $extension) {
+            $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+
+            if (is_file($testPath)) {
+                return 'qarr' . DIRECTORY_SEPARATOR . 'direct' . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+            }
+        }
     }
 }

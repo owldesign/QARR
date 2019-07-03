@@ -1,3 +1,2 @@
-Garnish.$doc.ready(function () {
-  QARR.directLinkInstance = new DirectLink('#campaign-entry-edit');
+Garnish.$doc.ready(function () {// QARR.directLinkInstance = new DirectLink('#campaign-entry-edit')
 });

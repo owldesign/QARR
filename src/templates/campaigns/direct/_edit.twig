@@ -39,35 +39,35 @@
 
         <div class="element-container">
 
-            <div class="mb-4">
-                <label for="elementId" class="qarr-label">{{ 'Element'|t('qarr') }}</label>
-                {% include 'qarr/_includes/forms/element-select' ignore missing with {
-                    label: "Element"|t('app'),
-                    id: 'elementId',
-                    name: 'elementId',
-                    elementType: elementType,
-                    selectionLabel: "Choose"|t('app'),
-                    limit: 1,
-                    elements: (direct.element is defined and direct.element ? [direct.element]),
-                    errors: direct.getErrors('elementId')
-                } %}
-                {% if direct.getErrors('elementId') %}<span class="error-message">{{ direct.getErrors('elementId')[0] }}</span>{% endif %}
-            </div>
+{#            <div class="mb-4">#}
+{#                <label for="elementId" class="qarr-label">{{ 'Element'|t('qarr') }}</label>#}
+{#                {% include 'qarr/_includes/forms/element-select' ignore missing with {#}
+{#                    label: "Element"|t('app'),#}
+{#                    id: 'elementId',#}
+{#                    name: 'elementId',#}
+{#                    elementType: elementType,#}
+{#                    selectionLabel: "Choose"|t('app'),#}
+{#                    limit: 1,#}
+{#                    elements: (direct.element is defined and direct.element ? [direct.element]),#}
+{#                    errors: direct.getErrors('elementId')#}
+{#                } %}#}
+{#                {% if direct.getErrors('elementId') %}<span class="error-message">{{ direct.getErrors('elementId')[0] }}</span>{% endif %}#}
+{#            </div>#}
 
-            <div class="mb-4">
-                <label for="userId" class="qarr-label">{{ 'User'|t('qarr') }}</label>
-                {% include 'qarr/_includes/forms/element-select' ignore missing with {
-                    label: "User"|t('app'),
-                    id: 'userId',
-                    name: 'userId',
-                    elementType: 'craft\\elements\\User',
-                    selectionLabel: "Choose"|t('app'),
-                    limit: 1,
-                    elements: (direct.user is defined and direct.user ? [direct.user]),
-                    errors: direct.getErrors('elementId')
-                } %}
-                {% if direct.getErrors('userId') %}<span class="error-message">{{ direct.getErrors('userId')[0] }}</span>{% endif %}
-            </div>
+{#            <div class="mb-4">#}
+{#                <label for="userId" class="qarr-label">{{ 'User'|t('qarr') }}</label>#}
+{#                {% include 'qarr/_includes/forms/element-select' ignore missing with {#}
+{#                    label: "User"|t('app'),#}
+{#                    id: 'userId',#}
+{#                    name: 'userId',#}
+{#                    elementType: 'craft\\elements\\User',#}
+{#                    selectionLabel: "Choose"|t('app'),#}
+{#                    limit: 1,#}
+{#                    elements: (direct.user is defined and direct.user ? [direct.user]),#}
+{#                    errors: direct.getErrors('elementId')#}
+{#                } %}#}
+{#                {% if direct.getErrors('userId') %}<span class="error-message">{{ direct.getErrors('userId')[0] }}</span>{% endif %}#}
+{#            </div>#}
 
             <div class="mb-4">
                 <label for="type" class="qarr-label">{{ 'Type'|t('qarr') }}</label>
