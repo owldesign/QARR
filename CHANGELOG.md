@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.1.8 - 2019-07-04
+
+### Fixed
+- Fixed a bug where plugin settings have not been set yet, prevented access to CP
+
 ## 1.1.7 - 2019-07-03
 
 ### Added

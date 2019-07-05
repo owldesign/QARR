@@ -1,10 +1,12 @@
 <div class="element-block element-element">
     <div class="element-object">
 
-        {% set assetHandleExist = attribute(entry.settings.elementAssetHandleName, entry.element.type.handle) is not empty %}
-        {% if assetHandleExist %}
-            {% set assetHandle = attribute(entry.settings.elementAssetHandleName, entry.element.type.handle) %}
-            {% set asset = attribute(entry.element, assetHandle) %}
+        {% if entry.settings.elementAssetHandleName %}
+            {% set assetHandleExist = attribute(entry.settings.elementAssetHandleName, entry.element.type.handle) is not empty %}
+            {% if assetHandleExist %}
+                {% set assetHandle = attribute(entry.settings.elementAssetHandleName, entry.element.type.handle) %}
+                {% set asset = attribute(entry.element, assetHandle) %}
+            {% endif %}
         {% endif %}
 
         <div class="element-image">
@@ -43,6 +45,5 @@
         {% if link is defined and link %}
             <a href="{{ entry.url }}" class="qarr-btn-link" target="_blank">{{ 'View Entry'|t('qarr') }}</a>
         {% endif %}
-
     </div>
 </div>
