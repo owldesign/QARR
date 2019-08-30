@@ -24,7 +24,9 @@ class QuestionsController extends Controller
     // Protected Properties
     // =========================================================================
 
-    protected $allowAnonymous = ['actionSave'];
+    protected $allowAnonymous = [
+        'actionSave' => self::ALLOW_ANONYMOUS_LIVE,
+    ];
 
     // Public Properties
     // =========================================================================

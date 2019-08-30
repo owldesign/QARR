@@ -1,0 +1,59 @@
+{% requirePermission 'qarr:accessCampaigns' %}
+
+{% extends "_layouts/base" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+
+{% set title = 'Reviewing product: ' ~ product.title %}
+
+{% block body %}
+
+
+    <div class="container m-auto mt-6" style="display: flex;">
+        <div class="w-2/6 bg-white rounded p-6 mr-6">
+            <form method="post" accept-charset="UTF-8">
+                {{ csrfInput() }}
+                {{ actionInput('qarr/reviews/save') }}
+                {{ redirectInput('review-posted') }}
+
+                <input type="hidden" name="elementId" value="{{ product.id }}">
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+                    <input type="text" name="fields[fullName]" placeholder="Full Name" value="{{ name }}" readonly class="appearance-none bg-gray-100 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+                    <input type="text" name="fields[emailAddress]" placeholder="Email Address" value="{{ email }}" readonly class="appearance-none bg-gray-100 border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Rating (1-5)</label>
+                    <input type="number" min="1" max="5" name="fields[rating]" value="1" placeholder="Rating (1-5)" required class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Feedback</label>
+                    <textarea name="fields[feedback]" cols="30" rows="10" placeholder="Your feedback" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" class="bg-purple-500 hover:bg-purple-400 focus:outline-none text-white font-bold py-2 px-4 rounded">Submit</button>
+            </form>
+        </div>
+        <div class="w-4/6">
+            <div class="mb-10">
+                <h2>Order Details</h2>
+                <div class="bg-white rounded p-6 mr-6">
+                    <p class="text-xs">Order #: {{ order.number }}</p>
+                </div>
+            </div>
+
+            <div>
+                <h2>Product Details</h2>
+                <div class="bg-white rounded p-6 mr-6">
+                    <p class="text-xs">{{ product.title }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

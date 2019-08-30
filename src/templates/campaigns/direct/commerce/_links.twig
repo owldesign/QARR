@@ -1,0 +1,23 @@
+{% requirePermission 'qarr:accessCampaigns' %}
+
+{% extends "_layouts/base" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+
+{% set title = 'Product Review Links' %}
+
+{% block body %}
+
+    {% for item in items %}
+        <div class="font-mono m-4 py-2 px-4 bg-white rounded">
+            <h2 class="border-b border-solid border-gray-200 pb-2 mb-4">Order Number: {{ item.order.number }}</h2>
+
+        {% for link in item.links %}
+            <div class="mb-4">
+                <h2 class="m-0">{{ link.details.description }}</h2>
+                <a href="{{ link.url }}" class="block text-xs" target="_blank">{{ link.url }}</a>
+            </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+
+{% endblock %}

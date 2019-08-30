@@ -23,7 +23,11 @@ use yii\web\Response;
 
 class AnswersController extends Controller
 {
-    protected $allowAnonymous = ['actionSave', 'actionGetHudModal', 'actionPerformAction'];
+    protected $allowAnonymous = [
+        'actionSave' => self::ALLOW_ANONYMOUS_LIVE,
+        'actionGetHudModal' => self::ALLOW_ANONYMOUS_LIVE,
+        'actionPerformAction' => self::ALLOW_ANONYMOUS_LIVE,
+    ];
 
     /**
      * Create modal

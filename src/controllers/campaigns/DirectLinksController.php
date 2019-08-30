@@ -208,7 +208,6 @@ class DirectLinksController extends Controller
             }
             $view->setTemplateMode($oldPath);
         }
-
     }
 
     public function actionGetElementInfo(): Response
