@@ -21,7 +21,10 @@ use yii\web\Response;
 
 class RepliesController extends Controller
 {
-    protected $allowAnonymous = ['actionSave', 'actionGetMarkup'];
+    protected $allowAnonymous = [
+        'save' => self::ALLOW_ANONYMOUS_LIVE,
+        'get-markup' => self::ALLOW_ANONYMOUS_LIVE,
+    ];
 
     /**
      * Generate reply markup

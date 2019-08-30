@@ -31,7 +31,10 @@ class ReviewsController extends Controller
     /**
      * @var array
      */
-    protected $allowAnonymous = ['actionSave', 'actionPaginate'];
+    protected $allowAnonymous = [
+        'save' => self::ALLOW_ANONYMOUS_LIVE,
+        'paginate' => self::ALLOW_ANONYMOUS_LIVE,
+    ];
 
     // Public Properties
     // =========================================================================
