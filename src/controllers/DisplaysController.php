@@ -37,13 +37,12 @@ class DisplaysController extends Controller
      * Index page
      *
      * @param array $variables
-     * @return Response
      */
-    public function actionIndex(array $variables = []): Response
+    public function actionIndex(array $variables = [])
     {
         $variables['displays'] = QARR::$plugin->displays->getAllDisplays();
 
-        return $this->renderTemplate('qarr/displays/index', $variables);
+        QARR::$plugin->routeTemplate('displays/index', $variables);
     }
 
     /**
@@ -51,11 +50,10 @@ class DisplaysController extends Controller
      *
      * @param int|null $displayId
      * @param Display|null $display
-     * @return Response
      * @throws NotFoundHttpException
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function actionEdit(int $displayId = null, Display $display = null): Response
+    public function actionEdit(int $displayId = null, Display $display = null)
     {
         $variables = [
             'displayId' => $displayId,
@@ -89,7 +87,7 @@ class DisplaysController extends Controller
         $variables['continueEditingUrl'] = 'qarr/displays/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
-        return $this->renderTemplate('qarr/displays/_edit', $variables);
+        QARR::$plugin->routeTemplate('displays/_edit', $variables);
     }
 
     /**

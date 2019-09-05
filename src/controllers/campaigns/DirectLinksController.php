@@ -39,13 +39,12 @@ class DirectLinksController extends Controller
      * Index
      *
      * @param array $variables
-     * @return Response
      */
-    public function actionIndex(array $variables = []): Response
+    public function actionIndex(array $variables = [])
     {
         $variables['directLinks'] = QARR::$plugin->links->getAllLinks();
 
-        return $this->renderTemplate('qarr/campaigns/direct/index', $variables);
+        QARR::$plugin->routeTemplate('campaigns/direct/index', $variables);
     }
 
     /**
@@ -53,11 +52,10 @@ class DirectLinksController extends Controller
      *
      * @param int|null $directId
      * @param DirectLink|null $direct
-     * @return Response
      * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
      */
-    public function actionEdit(int $directId = null, DirectLink $direct = null): Response
+    public function actionEdit(int $directId = null, DirectLink $direct = null)
     {
         $variables = [];
         $variables['elementType'] = Craft::$app->getRequest()->getQueryParam('elementType');
@@ -103,7 +101,7 @@ class DirectLinksController extends Controller
         $variables['continueEditingUrl']    = 'qarr/campaigns/direct/{id}';
         $variables['saveShortcutRedirect']  = $variables['continueEditingUrl'];
 
-        return $this->renderTemplate('qarr/campaigns/direct/_edit', $variables);
+        QARR::$plugin->routeTemplate('campaigns/direct/_edit', $variables);
     }
 
     /**

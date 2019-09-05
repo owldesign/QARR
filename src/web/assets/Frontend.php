@@ -27,7 +27,6 @@ class Frontend extends AssetBundle
 
         $this->js = [
             'js/qarr-plugin.js',
-//            'js/element-resize-detector.min.js',
             'js/utilities-web.js',
             'js/frontend.js',
         ];

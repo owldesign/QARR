@@ -12,6 +12,7 @@ namespace owldesign\qarr\controllers;
 
 use Craft;
 use craft\web\Controller;
+use owldesign\qarr\QARR;
 use yii\web\Response;
 
 class DashboardController extends Controller
@@ -24,12 +25,11 @@ class DashboardController extends Controller
     /**
      * Index page
      * @param array $variables
-     * @return Response
      */
-    public function actionIndex(array $variables = []): Response
+    public function actionIndex(array $variables = [])
     {
         $variables = [];
 
-        return $this->renderTemplate('qarr/index', $variables);
+        QARR::$plugin->routeTemplate('index', $variables);
     }
 }

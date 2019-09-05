@@ -1,15 +1,16 @@
 {% requirePermission 'qarr:accessReviews' %}
 
-{% extends "qarr/_ui/elementindex" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% extends craft.craftify ? 'qarr/_layouts/elementindex-craft' : 'qarr/_layouts/elementindex-qarr' %}
 
 {% set title = "Reviews"|t('qarr') %}
-{% set pageBodyClass = 'qarr-elementindex qarr-reviews' %}
-{% set selectedSubnavItem = "reviews" %}
 {% set elementType = 'owldesign\\qarr\\elements\\Review' %}
+{% set selectedSubnavItem = 'reviews' %}
 
 {% block header %}
-    {% include 'qarr/_ui/page-header' ignore missing %}
+    {% if not craft.craftify %}
+        {% include 'qarr/_layouts/header-qarr' ignore missing %}
+    {% endif %}
+    {{ parent() }}
 {% endblock %}
 
 {% block sidebar %}

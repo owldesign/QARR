@@ -44,7 +44,7 @@ class EmailTemplatesController extends Controller
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
-        return $this->renderTemplate('qarr/settings/emails/index', $variables);
+        QARR::$plugin->routeTemplate('settings/emails/index', $variables);
     }
 
 }

@@ -1,16 +1,16 @@
 {% requirePermission 'qarr:accessQuestions' %}
 
-{% extends "qarr/_ui/elementindex" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% extends craft.craftify ? 'qarr/_layouts/elementindex-craft' : 'qarr/_layouts/elementindex-qarr' %}
 
 {% set title = "Questions"|t('qarr') %}
-{% set pageBodyClass = 'qarr-elementindex qarr-questions' %}
-{% set selectedSubnavItem = "questions" %}
-{% set currentPage = craft.app.request.getSegment(2) %}
 {% set elementType = 'owldesign\\qarr\\elements\\Question' %}
+{% set selectedSubnavItem = 'questions' %}
 
 {% block header %}
-    {% include 'qarr/_ui/page-header' ignore missing %}
+    {% if not craft.craftify %}
+        {% include 'qarr/_layouts/header-qarr' ignore missing %}
+    {% endif %}
+    {{ parent() }}
 {% endblock %}
 
 {% block sidebar %}

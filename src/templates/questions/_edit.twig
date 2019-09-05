@@ -1,81 +1,91 @@
-{% extends "_layouts/cp" %}
-{% import "_includes/forms" as forms %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Element") %}
+{% extends craft.craftify ? 'qarr/_layouts/cp-craft' : 'qarr/_layouts/cp-qarr' %}
 
-{% set bodyClass = 'qarr-global qarr-element-edit' %}
-{% set pluginCpUrl = url('qarr') %}
+{% import "_includes/forms" as forms %}
+{% import "qarr/_ui/buttons" as buttons %}
+
 {% set selectedSubnavItem = "questions" %}
-{% set currentPage = craft.app.request.getSegment(2) %}
 
 {% block header %}
-    {% include 'qarr/_ui/page-header' ignore missing %}
+    {% if not craft.craftify %}
+        {% include 'qarr/_layouts/header-qarr' ignore missing %}
+    {% endif %}
+    {{ parent() }}
 {% endblock %}
 
+{% set tabs = [
+    {
+        'id': 'question',
+        'label': 'Question',
+        'url': '#question'
+    },
+    {
+        'id': 'correspondence',
+        'label': 'Correspondence',
+        'url': '#correspondence'
+    }
+] %}
+
 {% block content %}
-    <input type="hidden" name="action" value="qarr/reviews/save-entry">
-    <input type="hidden" name="reviewId" value="{{ entry.id }}">
+    <div id="question">
+        {% set answers = entry.getAnswers() %}
 
-    {% if entry.displayId %}
-        <input type="hidden" name="displayId" value="{{ entry.displayId }}">
-    {% endif %}
+        <div class="block-element">
+            <div class="block-header flex-container mb-2">
+                <h2>{{ 'Question'|t('qarr') }}</h2>
+                <span class="ml-auto">
+                    {% include 'qarr/_elements/element-postdate' ignore missing with {entry: entry} %}
+                </span>
+            </div>
 
-    {% set answers = entry.getAnswers() %}
+            <div class="block-body">
+                <div class="feedback">
+                    {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'questions' } %}
 
-    <div class="block-element">
-        <div class="block-header flex-container mb-2">
-            <h2>{{ 'Question'|t('qarr') }}</h2>
-            <span class="ml-auto">
-                {% include 'qarr/_elements/element-postdate' ignore missing with {entry: entry} %}
-            </span>
+                    {% set flaggedWords = flaggedWords(entry.flags) %}
+                    {% if flaggedWords %}
+                        {% set feedback = entry.question|occurrence(flaggedWords) %}
+                    {% else %}
+                        {% set feedback = entry.question %}
+                    {% endif %}
+
+                    <p class="feedback-text text-lg">{{ feedback |raw }}</p>
+
+                </div>
+            </div>
+
+            <hr>
+
+            {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry, type: 'questions' } %}
         </div>
 
-        <div class="block-body">
-            <div class="feedback">
-                {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'questions' } %}
+        <br><br>
 
-                {% set flaggedWords = flaggedWords(entry.flags) %}
-                {% if flaggedWords %}
-                    {% set feedback = entry.question|occurrence(flaggedWords) %}
-                {% else %}
-                    {% set feedback = entry.question %}
-                {% endif %}
-
-                <p class="feedback-text text-lg">{{ feedback |raw }}</p>
-
+        <div class="block-element" id="answers-element">
+            <div class="block-header">
+                <h2 class="relative flex-container">
+                    <div class="mr-2">{{ 'Answers'|t('qarr') }}</div>
+                    <div class="loader hidden ml-auto"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"></circle><path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(217.494 18 18)"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"></animateTransform></path></g></g></svg></div>
+                </h2>
+            </div>
+            <div class="block-body">
+            {% for answer in answers %}
+                {% include 'qarr/_elements/element-entry-answer' ignore missing with { answer: answer } %}
+            {% endfor %}
             </div>
         </div>
 
-        <hr>
-
-        {% include 'qarr/_elements/element-actions' ignore missing with { entry: entry, type: 'questions' } %}
+        {# DISPLAY FIELDS#}
+        {% if fieldLayoutTabs is defined is not empty %}
+            {% include 'qarr/_elements/element-entry-display-fields' ignore missing with { entry: entry } %}
+        {% endif %}
     </div>
 
-    <div class="block-element" id="answers-element">
-        <div class="block-header">
-            <h2 class="relative flex-container">
-                <div class="mr-2">{{ 'Answers'|t('qarr') }}</div>
-                <div class="loader hidden ml-auto"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"></circle><path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(217.494 18 18)"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"></animateTransform></path></g></g></svg></div>
-            </h2>
-        </div>
-        <div class="block-body">
-        {% for answer in answers %}
-            {% include 'qarr/_elements/element-entry-answer' ignore missing with { answer: answer } %}
-        {% endfor %}
-        </div>
+    <div id="correspondence" class="hidden">
+        {% include 'qarr/_elements/element-entry-correspondence' ignore missing with { entry: entry, type: 'questions' } %}
     </div>
-
-    {# DISPLAY FIELDS#}
-    {% if fieldLayoutTabs is defined is not empty %}
-        {% include 'qarr/_elements/element-entry-display-fields' ignore missing with { entry: entry } %}
-    {% endif %}
-
-    {# CORRESPONDENCE #}
-    {% include 'qarr/_elements/element-entry-correspondence' ignore missing with { entry: entry, type: 'questions' } %}
 
 {% endblock %}
 
 {% block details %}
-    {# SETTINGS #}
     {% include 'qarr/_elements/element-entry-settings' ignore missing with { entry: entry, type: 'questions' } %}
 {% endblock %}

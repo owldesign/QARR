@@ -1,6 +1,8 @@
 <div class="block-element">
     <div class="block-header">
-        <h2 class="flex-container">{{ 'Email Correspondence'|t('qarr') }} <span class="font-mono font-normal text-xs text-gray-400 ml-auto">Email customizer coming soon!</span></h2>
+        <h2 class="flex-container">{{ 'Email Correspondence'|t('qarr') }}
+{#            <span class="font-mono font-normal text-xs text-gray-400 ml-auto">Email customizer coming soon!</span>#}
+        </h2>
         <span class="header-icon"><i class="fa fa-mail-bulk"></i></span>
     </div>
     <div class="block-body">
@@ -12,13 +14,20 @@
                 <div class="mb-2"><span class="font-semibold">{{ 'Message'|t('qarr') }}</span> <p class="m-0">{{ correspondence.email |nl2br }}</p></div>
             </div>
         {% else %}
-            <p class="text-gray-600 mt-6">{{ 'There is no email correspondence'|t('qarr') }}</p>
+            <p class="text-gray-600 mt-6 no-content">{{ 'There is no email correspondence'|t('qarr') }}</p>
+            <div></div>
         {% endfor %}
     </div>
     <div class="block-actions py-6">
-        <button type="button" class="qarr-btn btn-purple" id="reply-email-btn" data-element-id="{{ entry.id }}" data-type="{{ type }}">
-            <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" class="fill-current" width="10" height="10" viewBox="0 0 20 20"><path d="M0 0l20 10L0 20V0zm0 8v4l10-2L0 8z"/></svg></span>
-            <span class="link-text">{{ 'Send Email'|t('qarr') }}</span>
-        </button>
+
+        {% import "qarr/_ui/buttons" as buttons %}
+
+        {{ buttons.basic({
+            class: 'btn secondary',
+            id: 'reply-email-btn',
+            type: 'reviews',
+            elementId: entry.id,
+            text: 'Send Email'|t('qarr'),
+        }) }}
     </div>
 </div>

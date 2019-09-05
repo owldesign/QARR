@@ -27,14 +27,12 @@ class CampaignsController extends Controller
      * Index
      *
      * @param array $variables
-     * @return Response
      */
-    public function actionIndex(array $variables = []): Response
+    public function actionIndex(array $variables = [])
     {
-//        $variables['rules'] = QARR::$plugin->rules->getAllRules();
         $variables = [];
 
-        return $this->renderTemplate('qarr/campaigns/index', $variables);
+        QARR::$plugin->routeTemplate('campaigns/index', $variables);
     }
 
     // Private Methods

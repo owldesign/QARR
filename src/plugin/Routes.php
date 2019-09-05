@@ -25,14 +25,16 @@ trait Routes
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['qarr'] = ['template' => 'qarr/index'];
                 $event->rules['qarr'] = 'qarr/dashboard/index';
 
                 $event->rules['qarr/displays'] = 'qarr/displays/index';
                 $event->rules['qarr/displays/new'] = 'qarr/displays/edit';
                 $event->rules['qarr/displays/<displayId:\d+>'] = 'qarr/displays/edit';
 
+                $event->rules['qarr/reviews'] = 'qarr/reviews/index';
                 $event->rules['qarr/reviews/<reviewId:\d+>'] = 'qarr/reviews/edit';
+
+                $event->rules['qarr/questions'] = 'qarr/questions/index';
                 $event->rules['qarr/questions/<questionId:\d+>'] = 'qarr/questions/edit';
 
                 $event->rules['qarr/rules'] = 'qarr/rules/index';
@@ -44,7 +46,7 @@ trait Routes
                 $event->rules['qarr/campaigns/direct/new'] = 'qarr/campaigns/direct-links/edit';
                 $event->rules['qarr/campaigns/direct/<directId:\d+>'] = 'qarr/campaigns/direct-links/edit';
 
-                $event->rules['qarr/settings'] = ['template' => 'qarr/settings/index'];
+                $event->rules['qarr/settings'] = 'qarr/settings/settings/index';
                 $event->rules['qarr/settings/email-templates'] = 'qarr/settings/email-templates/index';
                 $event->rules['qarr/settings/utilities'] = 'qarr/settings/utilities/index';
                 $event->rules['qarr/settings/configuration'] = 'qarr/settings/configuration/index';

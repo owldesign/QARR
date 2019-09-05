@@ -38,7 +38,7 @@ class HelpDeskController extends Controller
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
-        return $this->renderTemplate('qarr/settings/help-desk/index', $variables);
+        QARR::$plugin->routeTemplate('settings/help-desk/index', $variables);
     }
 
 }

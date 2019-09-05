@@ -21,9 +21,11 @@
     {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
 {% endblock %}
 
-{% block header %}
-    {% include 'qarr/_ui/page-header' ignore missing %}
-{% endblock %}
+{% if not craft.craftify %}
+    {% block header %}
+        {% include 'qarr/_ui/page-header' ignore missing %}
+    {% endblock %}
+{% endif %}
 
 {% block content %}
     <div id="campaign-entry-edit" data-element-type="{{ elementType }}" data-site-url="{{ siteUrl }}">

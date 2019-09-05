@@ -1,0 +1,19 @@
+<div class="entry-title-wrapper">
+    <div class="entry-title">
+        <h1>{{ name }}</h1>
+
+        {% if on is defined %}
+            {%- set on = (on is defined ? on : false) %}
+            {%- set value = (value is defined ? value : '1') %}
+            <div class="lightswitch {% if on %} on{% endif %} small">
+                <div class="lightswitch-container">
+                    <div class="label on"></div>
+                    <div class="handle"></div>
+                    <div class="label off"></div>
+                </div>
+                <input type="hidden" name="enabled" value="{{ on ? value }}">
+            </div>
+        {% endif %}
+
+    </div>
+</div>

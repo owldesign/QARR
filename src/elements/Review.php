@@ -490,6 +490,26 @@ class Review extends Element
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-information', $variables) : $this->title;
                 break;
+            case 'stars':
+                $variables = [
+                    'type' => 'reviews',
+                    'entry' => $this,
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-stars', $variables) : $this->title;
+                break;
+            case 'status':
+                $variables = [
+                    'entry' => $this,
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-status', $variables) : $this->title;
+                break;
+            case 'location':
+                $variables = [
+                    'entry' => $this,
+                    'geolocation' => Json::decode($this->geolocation),
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-location', $variables) : $this->title;
+                break;
             case 'feedback':
                 $variables = [
                     'type' => 'reviews',
@@ -519,10 +539,10 @@ class Review extends Element
     protected static function defineSortOptions(): array
     {
         $attributes = [
-            'qarr_reviews.status' => QARR::t('Status'),
-            'qarr_reviews.rating' => QARR::t('Rating'),
-            'qarr_reviews.fullName' => QARR::t('Author'),
-            'elements.dateCreated' => QARR::t('Submitted')
+            'status' => QARR::t('Status'),
+            'rating' => QARR::t('Rating'),
+            'fullName' => QARR::t('Author'),
+            'dateCreated' => QARR::t('Submitted')
         ];
 
         return $attributes;
@@ -535,9 +555,12 @@ class Review extends Element
     {
         $attributes = [];
 
-        $attributes['status'] = ['label' => QARR::t('Title')];
+        $attributes['title'] = ['label' => QARR::t('Title')];
         $attributes['information'] = ['label' => QARR::t('Information')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
+        $attributes['stars'] = ['label' => QARR::t('Stars')];
+        $attributes['status'] = ['label' => QARR::t('Status')];
+        $attributes['location'] = ['label' => QARR::t('Location')];
         $attributes['element'] = ['label' => QARR::t('Element')];
 
         return $attributes;
@@ -548,7 +571,7 @@ class Review extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'information', 'feedback', 'element'];
+        return ['title', 'status', 'stars', 'feedback', 'element'];
     }
 
     /**

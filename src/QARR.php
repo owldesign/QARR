@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr;
 
+use craft\web\Controller;
 use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\Review as ReviewElement;
 use owldesign\qarr\fields\QARRField as QARRFieldField;
@@ -41,6 +42,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 
 use yii\base\Event;
+use yii\web\Response;
 
 class QARR extends Plugin
 {
@@ -78,15 +80,15 @@ class QARR extends Plugin
         self::$plugin = $this;
 
         $this->_setPluginComponents();
-        $this->_registerCpRoutes();
         $this->_registerSiteRoutes();
         $this->_addTwigExtensions();
         $this->_registerElementTypes();
         $this->_registerVariables();
         $this->_registerPermissions();
         $this->_registerCpAssets();
+        $this->_registerCpRoutes();
 
-        // TODO: Widgets, fieldtypes, utitlities
+        // TODO: Widgets, fieldtypes, utilities
         // Coming soon
          $this->_registerWidgets();
         // $this->_registerFieldTypes();
@@ -95,6 +97,9 @@ class QARR extends Plugin
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
             /** @var CraftVariable $variable */
             $variable = $e->sender;
+            $variable->set('craftify', function() {
+                return QARR::$plugin->settings->craftify;
+            });
             $variable->set('qarrRules', Rules::class);
             $variable->set('qarrElements', QarrElements::class);
             $variable->set('geolocations', Geolocations::class);
@@ -211,6 +216,15 @@ class QARR extends Plugin
     public static function error($message)
     {
         Craft::error(self::t($message), __METHOD__);
+    }
+
+    public function routeTemplate($path, $variables): Response
+    {
+        if (QARR::$plugin->settings->craftify) {
+            return Craft::$app->controller->renderTemplate('qarr/' . $path, $variables);
+        } else {
+            return Craft::$app->controller->renderTemplate('qarr/' . $path, $variables);
+        }
     }
 
     // Private Methods

@@ -1,0 +1,13 @@
+<div class="element-block element-location">
+    <div class="user-location">
+        {% if geolocation %}
+            {% if geolocation is defined and geolocation.country_name %}
+                <span>{{ geolocation.country_name }}, {{ geolocation.region }}</span>
+            {% else %}
+                {{ 'Location Unknown'|t('qarr') }}
+            {% endif %}
+        {% else %}
+            {{ 'Location Unknown'|t('qarr') }}
+        {% endif %}
+    </div>
+</div>

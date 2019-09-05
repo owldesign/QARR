@@ -1,0 +1,8 @@
+{% extends "_layouts/cp" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
+
+{% set pluginCpUrl = url('qarr') %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+{% set bodyClass = 'qarr-global qarr-static-elements'  %}

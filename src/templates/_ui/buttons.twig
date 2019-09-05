@@ -1,0 +1,18 @@
+{% macro withIcon(config) %}
+    <div {% if config.id is defined %}id="{{ config.id }}"{% endif %}
+         class="{{ config.class }} {% if config.icon is defined %}icon icon-{{ config.icon }}{% endif %} {% if config.disabled is defined and config.disabled %}disabled{% endif %}"
+         {% if config.type is defined %}data-type="{{ config.type }}"{% endif %}
+         {% if config.status is defined %}data-status="{{ config.status }}"{% endif %}
+         {% if config.elementId is defined %}data-element-id="{{ config.elementId }}"{% endif %}>{{ config.text }}
+        {% if config.spinner %}
+            <span class="spinner hidden"></span>
+        {% endif %}</div>
+{% endmacro %}
+
+{% macro basic(config) %}
+    <div {% if config.id is defined %}id="{{ config.id }}"{% endif %}
+         class="{{ config.class }} {% if config.icon is defined %}icon icon-{{ config.icon }}{% endif %} {% if config.disabled is defined and config.disabled %}disabled{% endif %}"
+         {% if config.type is defined %}data-type="{{ config.type }}"{% endif %}
+            {% if config.status is defined %}data-status="{{ config.status }}"{% endif %}
+         {% if config.elementId is defined %}data-element-id="{{ config.elementId }}"{% endif %}>{{ config.text }}</div>
+{% endmacro %}

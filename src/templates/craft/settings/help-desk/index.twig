@@ -1,0 +1,28 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Qarr") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\HelpDesk") %}
+
+{% set title = "Help Desk"|t('qarr') %}
+{% set bodyClass = 'qarr qarr-tools' %}
+{% set selectedSubnavItem = "settings" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block header %}
+    {% include 'qarr/_includes/header' ignore missing %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+
+    <div id="section-coming-soon">
+        <div class="coming-soon-wrapper">
+            {% include 'qarr/_includes/icons/icon-ok' ignore missing %}
+
+            <h2>{{ 'Coming soon'|t('qarr') }}</h2>
+        </div>
+    </div>
+
+{% endset %}

@@ -22,7 +22,7 @@ class UI extends AssetBundle
 
         $this->css = [
             'css/ui.css',
-            'css/styles.css',
+            'css/qarr.css',
         ];
 
         $this->js = [

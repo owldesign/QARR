@@ -1,0 +1,42 @@
+{% set currentSettingsPage = craft.app.request.getSegment(3) %}
+
+<nav id="settings-sidebar">
+    <ul>
+        <li>
+            <a href="{{ url('qarr/settings') }}" class="{{ currentSettingsPage == null ? 'sel' }}">
+                <i class="{{ currentSettingsPage == null ? 'fas' : 'far' }} fa-exclamation-circle icon"></i>
+                <span class="label">{{ 'Info'|t('qarr') }}</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ url('qarr/settings/configuration') }}" class="{{ currentSettingsPage == 'configuration' ? 'sel' }}">
+                <i class="{{ currentSettingsPage == 'configuration' ? 'fas' : 'far' }} fa-layer-group icon"></i>
+                <span class="label">{{ 'Configuration'|t('qarr') }}</span>
+            </a>
+        </li>
+
+{#        <li>#}
+{#            <a href="{{ url('qarr/settings/helpdesk') }}" class="{{ currentSettingsPage == 'helpdesk' ? 'sel' }}">#}
+{#                <i class="{{ currentSettingsPage == 'helpdesk' ? 'fas' : 'far' }} fa-comments-alt icon"></i>#}
+{#                <span class="label">{{ 'Help Desk'|t('qarr') }}</span>#}
+{#                <div class="badge">1</div>#}
+{#            </a>#}
+{#        </li>#}
+
+{#        <li>#}
+{#            <a href="{{ url('qarr/settings/email-templates') }}" class="{{ currentSettingsPage == 'email-templates' ? 'sel' }}">#}
+{#                <i class="{{ currentSettingsPage == 'email-templates' ? 'fas' : 'far' }} fa-at icon"></i>#}
+{#                <span class="label">{{ 'Email Templates'|t('qarr') }}</span>#}
+{#            </a>#}
+{#        </li>#}
+
+
+        <li>
+            <a href="{{ url('qarr/settings/utilities') }}" class="{{ currentSettingsPage == 'utilities' ? 'sel' }}">
+                <i class="{{ currentSettingsPage == 'utilities' ? 'fas' : 'far' }} fa-layer-group icon"></i>
+                <span class="label">{{ 'Utilities'|t('qarr') }}</span>
+            </a>
+        </li>
+    </ul>
+</nav>

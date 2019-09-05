@@ -1,4 +1,11 @@
-<div class="meta muted submission-details bg-gray-100 text-gray-500 font-light text-xs mt-auto">
-    <div>IP Address: <span>{{ entry.ipAddress }}</span></div>
-    <div>Browser: <span>{{ entry.userAgent |browser }}</span></div>
+<div class="meta read-only">
+{#<div class="meta muted submission-details bg-gray-100 text-gray-500 font-light text-xs mt-auto">#}
+    <div class="data">
+        <h5 class="heading">{{ 'IP Address'|t('qarr') }}</h5>
+        <div class="value">{{ entry.ipAddress }}</div>
+    </div>
+    <div class="data">
+        <h5 class="heading">{{ 'Browser'|t('qarr') }}</h5>
+        <div class="value">{{ entry.userAgent |browser }}</div>
+    </div>
 </div>

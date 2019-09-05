@@ -421,6 +421,19 @@ class Question extends Element
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
                 break;
+            case 'status':
+                $variables = [
+                    'entry' => $this,
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-status', $variables) : $this->title;
+                break;
+            case 'location':
+                $variables = [
+                    'entry' => $this,
+                    'geolocation' => Json::decode($this->geolocation),
+                ];
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-location', $variables) : $this->title;
+                break;
             case 'element':
                 $variables = [
                     'type' => 'question',
@@ -443,9 +456,9 @@ class Question extends Element
     protected static function defineSortOptions(): array
     {
         $attributes = [
-            'qarr_questions.status'         => QARR::t('Status'),
-            'qarr_reviews.fullName'         => QARR::t('Author'),
-            'qarr_questions.dateCreated'    => QARR::t('Submitted')
+            'status'         => QARR::t('Status'),
+            'fullName'       => QARR::t('Author'),
+            'dateCreated'    => QARR::t('Submitted')
         ];
 
         return $attributes;
@@ -458,7 +471,9 @@ class Question extends Element
     {
         $attributes = [];
 
-        $attributes['status'] = ['label' => QARR::t('Title')];
+        $attributes['title'] = ['label' => QARR::t('Title')];
+        $attributes['status'] = ['label' => QARR::t('Status')];
+        $attributes['location'] = ['label' => QARR::t('Location')];
         $attributes['information'] = ['label' => QARR::t('Information')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
         $attributes['element'] = ['label' => QARR::t('Element')];
@@ -471,7 +486,7 @@ class Question extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['status', 'information', 'feedback', 'element'];
+        return ['title', 'status', 'information', 'feedback', 'element'];
     }
 
     /**

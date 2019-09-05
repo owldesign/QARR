@@ -1,0 +1,91 @@
+{% extends "_layouts/cp" %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+
+{% set fullPageForm = true %}
+{% set bodyClass = 'qarr-global qarr-static-elements qarr-edit' %}
+{% set pluginCpUrl = url('qarr') %}
+{% import "_includes/forms" as forms %}
+
+{% if rule.id %}
+    {% set title = rule.name %}
+{% else %}
+    {% set title = 'New Rule'|t('qarr') %}
+{% endif %}
+
+{% set crumbs = [
+    { label: "Rules"|t('app'), url: url('qarr/rules') }
+] %}
+
+{% set selectedSubnavItem = "rules" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block content %}
+    {{ actionInput('qarr/rules/save') }}
+    {{ redirectInput('qarr/rules') }}
+
+    {% if rule.id %}
+        <input type="hidden" name="ruleId" value="{{ rule.id }}">
+    {% endif %}
+
+{#    <a href="{{ url('qarr/rules') }}" class="inline-flex items-center text-xs text-indigo-400 mb-3 hover:text-indigo-500">#}
+{#        <svg xmlns="http://www.w3.org/2000/svg" class="fill-current mr-0" width="20" height="20" viewBox="0 0 20 20"><path d="M7.05 9.293L6.343 10 12 15.657l1.414-1.414L9.172 10l4.242-4.243L12 4.343z"/></svg>#}
+{#        <span>{{ 'Back to rules'|t('qarr') }}</span>#}
+{#    </a>#}
+
+    {{ forms.textField({
+        first: true,
+        label: "Name"|t('qarr'),
+        id: 'name',
+        name: 'name',
+        value: rule.name,
+        errors: rule.getErrors('name'),
+        autofocus: true,
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        first: true,
+        label: "Handle"|t('qarr'),
+        id: 'handle',
+        name: 'handle',
+        class: 'code',
+        autocorrect: false,
+        autocapitalize: false,
+        value: rule.handle,
+        errors: rule.getErrors('handle'),
+        required: true,
+    }) }}
+
+    {{ forms.lightswitchField({
+        name: 'enabled',
+        label: 'Should we enable this rule?'|t('qarr'),
+        instructions: 'Whether remotely-stored images should be downloaded and stored locally, to speed up transform generation.'|t('app'),
+        on: (rule.enabled is defined ? rule.enabled : false),
+    }) }}
+
+    <div id="data-list-container" class="field">
+        <div class="heading">
+            <label>{{ 'Words List'|t('qarr') }}</label>
+            <div class="instructions">
+                <p>{{ 'Enter a list of words to catch'|t('qarr') }}</p>
+            </div>
+        </div>
+        <div class="input" style="margin-bottom: 20px;">
+            <input class="tagify--outside" id="rule-data" type="text" name="data" placeholder="eg. boring, broken, sucks, lame, golden, funny..." value="{{ rule.data }}">
+        </div>
+
+        <a class="btn secondary tags--removeAllBtn {% if rule.data == '' %}btn-disabled{% endif %}">{{ 'Clear All'|t('qarr') }}</a>
+    </div>
+
+{% endblock %}
+
+{% js %}
+    {% if rule is defined and not rule.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
+    $('#name').on('keyup', function(e) {
+    var text = $(this).val();
+    var titleEl = $('.entry-title h1');
+
+    titleEl.html(text);
+    });
+{% endjs %}

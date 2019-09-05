@@ -1,0 +1,64 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{#{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}#}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
+
+{% set title = "Settings"|t('qarr') %}
+{% set bodyClass = 'qarr-global qarr-static-elements qarr-configuration' %}
+{% set selectedSubnavItem = "settings" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+
+{% block sidebar %}
+    {% include 'qarr/craft/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+
+        <h1>Configuration</h1>
+
+        <div class="settings-block">
+            <div class="seeings-header mb-2">
+                <p class="text-xl m-0">{{ 'Element Index'|t('qarr') }}</p>
+                <p class="text-xs m-0 mt-1 text-gray-500 font-light">{{ 'Set asset field handle name if you want to display images next to your submissions.'|t('qarr') }}</p>
+            </div>
+
+            <form class="w-full" method="post">
+                {{ csrfInput() }}
+                {{ actionInput('plugins/save-plugin-settings') }}
+                <input type="hidden" name="pluginHandle" value="qarr">
+
+                <div class="elements-list">
+                {% for type, items in sections %}
+                    <div class="element-item">
+                        <div class="section-wrapper">
+                            <h2 class="pb-4 text-lg">{{ type |capitalize }}</h2>
+                            {% for item in items %}
+                                <div class="section-item mb-2">
+                                    <label class="qarr-label">{{ item.name }}</label>
+                                    <input name="settings[elementAssetHandleName][{{ item.handle }}]"
+                                           value="{{ settings.elementAssetHandleName[item.handle] is defined ? settings.elementAssetHandleName[item.handle] : '' }}"
+                                           class="qarr-input"
+                                           type="text" placeholder="Handle Name">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+
+                <hr>
+                    {{ forms.checkboxField({
+                        label: "Yes, switch to Craft UI"|t('qarr'),
+                        id: 'craftify-input',
+                        name: 'settings[craftify]',
+                        checked: settings.craftify
+                    }) }}
+                <hr>
+
+
+                <button type="submit" class="qarr-btn btn-purple">Save</button>
+            </form>
+        </div>
+
+{% endset %}

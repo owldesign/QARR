@@ -39,9 +39,8 @@ class ConfigurationController extends Controller
      * Settings index
      *
      * @param array $variables
-     * @return Response
      */
-    public function actionIndex(array $variables = []): Response
+    public function actionIndex(array $variables = [])
     {
         $settings = QARR::$plugin->settings;
         $sections = Craft::$app->getSections()->getAllSections();
@@ -60,12 +59,9 @@ class ConfigurationController extends Controller
             $variables['sections']['products'] = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
         }
 
-        // Check for element images
-
-
         $variables['settings'] = $settings;
 
-        return $this->renderTemplate('qarr/settings/configuration/index', $variables);
+        QARR::$plugin->routeTemplate('settings/configuration/index', $variables);
     }
 
 }

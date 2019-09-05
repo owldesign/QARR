@@ -1,0 +1,21 @@
+{% requirePermission 'qarr:accessReviews' %}
+
+{% extends "_layouts/elementindex" %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+{% set bodyClass = 'qarr-global ' ~ (pageBodyClass is defined ? pageBodyClass~' ' : '')  %}
+
+{% if not craft.craftify %}
+    {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+    {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
+{% endif %}
+
+{% set title = "Reviews"|t('qarr') %}
+{% set pageBodyClass = 'qarr-elementindex qarr-reviews' %}
+{% set selectedSubnavItem = "reviews" %}
+{% set elementType = 'owldesign\\qarr\\elements\\Review' %}
+
+{% block sidebar %}
+    {% if sources is not empty %}
+        {% include 'qarr/_elements/element-sources' ignore missing with { srouces: sources } %}
+    {% endif %}
+{% endblock %}

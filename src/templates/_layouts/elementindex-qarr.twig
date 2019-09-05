@@ -1,0 +1,7 @@
+{% extends "_layouts/elementindex" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
+
+{% set currentPage = craft.app.request.getSegment(2) %}
+{% set bodyClass = 'qarr-global qarr-elementindex'  %}

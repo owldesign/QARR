@@ -1,4 +1,5 @@
 {% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
@@ -8,9 +9,11 @@
 {% set selectedSubnavItem = "settings" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
-{% block header %}
-    {% include 'qarr/_ui/page-header' ignore missing %}
-{% endblock %}
+{% if not craft.craftify %}
+    {% block header %}
+        {% include 'qarr/_ui/page-header' ignore missing %}
+    {% endblock %}
+{% endif %}
 
 {% block sidebar %}
     {% include 'qarr/settings/_includes/sidebar' ignore missing %}
@@ -50,14 +53,18 @@
                 {% endfor %}
                 </div>
 
-
+                <hr>
+                    {{ forms.checkboxField({
+                        label: "Yes, switch to Craft UI"|t('qarr'),
+                        id: 'craftify-input',
+                        name: 'settings[craftify]',
+                        checked: settings.craftify
+                    }) }}
                 <hr>
 
 
                 <button type="submit" class="qarr-btn btn-purple">Save</button>
             </form>
         </div>
-
-
 
 {% endset %}

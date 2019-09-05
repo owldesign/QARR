@@ -7,9 +7,11 @@
 {% set selectedSubnavItem = "emails" %}
 {% set currentPage = craft.app.request.getSegment(2) %}
 
-{% block header %}
-    {% include 'qarr/_includes/header' ignore missing %}
-{% endblock %}
+{% if not craft.craftify %}
+    {% block header %}
+        {% include 'qarr/_ui/page-header' ignore missing %}
+    {% endblock %}
+{% endif %}
 
 {% block sidebar %}
     {% include 'qarr/settings/_includes/sidebar' ignore missing %}

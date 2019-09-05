@@ -1,0 +1,8 @@
+{% extends "_layouts/cp" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Craftify") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementScripts") %}
+
+{% set pluginCpUrl = url('qarr') %}
+{% set currentPage = craft.app.request.getSegment(2) %}
+{% set bodyClass = 'craftify qarr-global qarr-element-edit'  %}

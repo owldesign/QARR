@@ -19,26 +19,9 @@
 </nav>
 
 {% if customizableSources %}
-    <a class="customize-sources block px-6 py-4 mt-6 tracking-wider text-xs" title="{{ 'Customize sources'|t('qarr') }}">{{ 'Customize Sidebar'|t('qarr') }}</a>
+    {% if craft.craftify %}
+        <a class="customize-sources settings icon" title="Customize sources"></a>
+    {% else %}
+        <a class="customize-sources block px-6 py-4 mt-6 tracking-wider text-xs" title="{{ 'Customize sources'|t('qarr') }}">{{ 'Customize Sidebar'|t('qarr') }}</a>
+    {% endif %}
 {% endif %}
-
-{#<div class="elements-data">#}
-{#    <h3>{{ 'Submission Stats'|t('qarr') }}</h3>#}
-{#    <div class="ed-item">#}
-{#        <span class="count-badge pending-reviews">{{ craft.qarr.getCount('reviews', 'pending') }}</span>#}
-{#        <span>Pending</span>#}
-{#        <span class="status pending"></span>#}
-{#    </div>#}
-{#    <hr>#}
-{#    <div class="ed-item">#}
-{#        <span class="count-badge approved-reviews">{{ craft.qarr.getCount('reviews', 'approved') }}</span>#}
-{#        <span>Approved</span>#}
-{#        <span class="status approved"></span>#}
-{#    </div>#}
-{#    <hr>#}
-{#    <div class="ed-item">#}
-{#        <span class="count-badge rejected-reviews">{{ craft.qarr.getCount('reviews', 'rejected') }}</span>#}
-{#        <span>Rejected</span>#}
-{#        <span class="status rejected"></span>#}
-{#    </div>#}
-{#</div>#}
