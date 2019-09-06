@@ -19,8 +19,11 @@
 {% block content %}
 
     <div class="field">
-        <p id="noelements" class="hidden">{{ "No rules exist yet."|t('qarr') }}</p>
 
+        {% include 'qarr/_elements/no-elements' ignore missing with {
+            text: 'No rules exist yet.'|t('qarr'),
+            hidden: rules|length ? true : false
+        } %}
 
         {% if rules|length %}
             <table id="rules" class="data fullwidth collapsible">

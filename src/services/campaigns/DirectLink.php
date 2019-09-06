@@ -102,19 +102,11 @@ class DirectLink extends Component
 
         $record = $query->one();
 
-        $record = new DirectLinkModel($record->toArray(['id', 'title', 'elementId', 'userId', 'type', 'link', 'completed', 'enabled', 'settings', 'options', 'dateCreated', 'dateUpdated']));
+        $record = new DirectLinkModel($record->toArray(['id', 'slug', 'elementId', 'userId', 'type', 'link', 'completed', 'enabled', 'settings', 'options', 'dateCreated', 'dateUpdated']));
 
 
         return $record;
     }
-
-//    public function getFlaggedCountByRuleId($id)
-//    {
-//        $query = FlaggedRecord::find()
-//            ->where(['ruleId' => $id]);
-//
-//        return $query->count();
-//    }
 
     /**
      * Save direct link
@@ -123,7 +115,7 @@ class DirectLink extends Component
      * @return object
      * @throws Exception
      */
-    public function save(DirectLinkModel $link): object
+    public function save(DirectLinkModel $link): bool
     {
         $isNewLink = !$link->id;
 
@@ -159,7 +151,7 @@ class DirectLink extends Component
             $link->id = $record->id;
         }
 
-        return $record;
+        return true;
     }
 
     /**
@@ -167,6 +159,8 @@ class DirectLink extends Component
      *
      * @param $id
      * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function deleteLinkById($id)
     {
@@ -177,6 +171,8 @@ class DirectLink extends Component
         if (!$record) {
             return true;
         }
+
+        $record->delete();
 
         return true;
     }

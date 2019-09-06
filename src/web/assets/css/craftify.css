@@ -2,7 +2,6 @@
   content: "";
   font-family: "Craft";
   speak: none;
-  -webkit-font-feature-settings: "liga", "dlig";
   -ms-font-feature-settings: "liga", "dlig";
   -o-font-feature-settings: "liga", "dlig";
   font-feature-settings: "liga", "dlig";
@@ -300,4 +299,76 @@
 
 .craftify .qarr-rating .qarr-rating-star.active svg * {
   fill: #ffd012;
+}
+
+.craftify .tagify__input {
+  border: 1px solid rgba(0, 0, 20, 0.1);
+  border-radius: 2px;
+  transition: border linear 50ms;
+  color: #b9bfc6;
+  margin: inherit;
+  padding: 5px 7px;
+  color: #29323d;
+}
+
+.craftify .tagify__input:focus {
+  border-color: #0D99F2;
+  outline: none;
+}
+
+.craftify .tagify {
+  margin-left: -5px;
+  margin-top: 10px;
+  border: none !important;
+}
+
+.craftify .tagify.tagify--outside {
+  border-radius: 0.25rem;
+}
+
+.craftify .tagify tag > div:before {
+  background: #EDF2F7 !important;
+}
+
+.craftify .tagify tag > div span {
+  color: #718096;
+  font-size: 0.875rem;
+  letter-spacing: 0.025em;
+}
+
+.craftify .tagify tag:hover div:before {
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  background: #da5a47 !important;
+}
+
+.craftify .tagify tag:hover div span {
+  color: white;
+}
+
+.craftify .tagify tag x {
+  border-radius: 3px;
+  color: white;
+}
+
+.craftify .tagify tag x:hover {
+  background: transparent !important;
+}
+
+.craftify .tagify tag x:hover + div {
+  background: #8c3b2e !important;
+}
+
+.craftify .tagify tag x:hover + div span {
+  opacity: 1 !important;
+}
+
+.craftify .tagify .tagify--notAllowed > div:before {
+  background: #D0021B !important;
+}
+
+.craftify .tagify .tagify--notAllowed > div span {
+  color: white;
 }

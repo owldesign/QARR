@@ -19,6 +19,7 @@ use Craft;
 use craft\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use function Couchbase\defaultDecoder;
 
 /**
  * Class RulesController
@@ -58,12 +59,15 @@ class RulesController extends Controller
      */
     public function actionEdit(int $ruleId = null, Rule $rule = null)
     {
-        $variables = [];
-        $variables['brandNewRule'] = false;
+        $variables = [
+            'ruleId' => $ruleId,
+            'brandNewRule' => false
+        ];
 
         if ($ruleId !== null) {
             if ($rule === null) {
-                $rule = QARR::$plugin->rules->getRuleById($ruleId);
+                $rule = QARR::$plugin->getRules()->getRuleById($ruleId);
+
                 if ($rule->options) {
                     $variables['rule']['options'] = Json::decode($rule->options);
                 }
@@ -74,6 +78,7 @@ class RulesController extends Controller
             }
 
             $variables['title'] = trim($rule->name) ?: QARR::t('Edit Rule');
+
         } else {
             if ($rule === null) {
                 $rule = new Rule();
@@ -83,12 +88,9 @@ class RulesController extends Controller
             $variables['title'] = QARR::t('Create a new rule');
         }
 
-        $variables['ruleId'] = $ruleId;
-        $variables['rule'] = $rule;
-
-
         $this->_enforceEditRulePermissions($rule);
 
+        $variables['rule'] = $rule;
         $variables['fullPageForm'] = true;
         $variables['continueEditingUrl'] = 'qarr/rules/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
@@ -100,6 +102,7 @@ class RulesController extends Controller
      * Save
      *
      * @return Response|null
+     * @throws NotFoundHttpException
      * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
@@ -110,45 +113,68 @@ class RulesController extends Controller
 
         $request = Craft::$app->getRequest();
 
-        $model = new Rule();
-        $model->id = $request->getBodyParam('ruleId');
-        $model->name = $request->getBodyParam('name');
-        $model->handle = $request->getBodyParam('handle');
-        $model->enabled = $request->getBodyParam('enabled');
-        $model->icon = $request->getBodyParam('icon');
+        $rule = $this->_getRuleModel();
+        $rule->id = $request->getBodyParam('id');
+        $rule->name = $request->getBodyParam('name');
+        $rule->handle = $request->getBodyParam('handle');
+        $rule->enabled = (bool)$request->getBodyParam('enabled');
+        $rule->icon = $request->getBodyParam('icon');
 
         if ($request->getBodyParam('data') != '' && $request->getBodyParam('data') != '[]') {
-            $model->data = Json::decode($request->getBodyParam('data'));
-            $model->data = StringHelper::toString($model->data);
+            $rule->data = Json::decode($request->getBodyParam('data'));
+            $rule->data = StringHelper::toString($rule->data);
         }
 
         if ($request->getBodyParam('options')) {
-            $model->options = Json::encode($request->getBodyParam('options'));
+            $rule->options = Json::encode($request->getBodyParam('options'));
         }
 
         if ($request->getBodyParam('settings')) {
-            $model->settings = Json::encode($request->getBodyParam('settings'));
+            $rule->settings = Json::encode($request->getBodyParam('settings'));
         }
 
         // Permission enforcement
-        $this->_enforceEditRulePermissions($model);
+        $this->_enforceEditRulePermissions($rule);
 
-        // Validate
-        $model->validate();
+        $rule->validate();
 
-        if (!$model->hasErrors() && QARR::$plugin->rules->saveRule($model)) {
-            Craft::$app->getSession()->setNotice(QARR::t('Rule saved.'));
-            return $this->redirectToPostedUrl($model);
+        if ($rule->hasErrors()) {
+            if ($request->getAcceptsJson()) {
+                return $this->asJson([
+                    'success' => false,
+                    'errors' => $rule->getErrors(),
+                ]);
+            }
+
+            Craft::$app->getSession()->setError(QARR::t('Couldn’t save rule.'));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'rule' => $rule
+            ]);
+
+            return null;
         }
 
-        Craft::$app->getSession()->setError(QARR::t('Cannot save rule.'));
+        QARR::$plugin->getRules()->saveRule($rule);
 
-        Craft::$app->getUrlManager()->setRouteParams([
-            'rule' => $model,
-            'errors' => $model->getErrors(),
-        ]);
+        if ($request->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'id' => $rule->id,
+                'name' => $rule->name,
+                'handle' => $rule->handle,
+                'enabled' => $rule->enabled,
+                'icon' => $rule->icon,
+                'data' => $rule->data,
+                'options' => $rule->options,
+                'settings' => $rule->settings,
+            ]);
+        }
 
-        return null;
+        Craft::$app->getSession()->setNotice(QARR::t( 'Rule saved.'));
+
+        return $this->redirectToPostedUrl($rule);
+
     }
 
     /**
@@ -188,22 +214,22 @@ class RulesController extends Controller
      * @return Rule
      * @throws NotFoundHttpException
      */
-//    private function _getRuleModel(): Rule
-//    {
-//        $ruleId = Craft::$app->getRequest()->getBodyParam('ruleId');
-//
-//        if ($ruleId) {
-//            $rule = QARR::$plugin->displays->getDisplayById($ruleId);
-//
-//            if (!$rule) {
-//                throw new NotFoundHttpException('Rule not found');
-//            }
-//        } else {
-//            $display = new Rule();
-//        }
-//
-//        return $rule;
-//    }
+    private function _getRuleModel(): Rule
+    {
+        $ruleId = Craft::$app->getRequest()->getBodyParam('id');
+
+        if ($ruleId) {
+            $rule = QARR::$plugin->getRules()->getRuleById($ruleId);
+
+            if (!$rule) {
+                throw new NotFoundHttpException('Rule not found');
+            }
+        } else {
+            $rule = new Rule();
+        }
+
+        return $rule;
+    }
 
     /**
      * @param Rule $rule

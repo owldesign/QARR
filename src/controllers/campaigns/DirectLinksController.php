@@ -57,13 +57,15 @@ class DirectLinksController extends Controller
      */
     public function actionEdit(int $directId = null, DirectLink $direct = null)
     {
-        $variables = [];
-        $variables['elementType'] = Craft::$app->getRequest()->getQueryParam('elementType');
-        $variables['brandNewDirect'] = false;
+        $variables = [
+            'directId' => $directId,
+            'brandNewDirect' => false,
+            'elementType' => Craft::$app->getRequest()->getQueryParam('elementType')
+        ];
 
         if ($directId !== null) {
             if ($direct == null) {
-                $direct = QARR::$plugin->links->getLinkById($directId);
+                $direct = QARR::$plugin->getLinks()->getLinkById($directId);
 
                 if ($direct->options) {
                     $variables['direct']['options'] = Json::decode($direct->options);
@@ -77,11 +79,12 @@ class DirectLinksController extends Controller
                     throw new NotFoundHttpException(QARR::t('Direct link not found'));
                 }
             }
+
             $variables['elementType'] = get_class($direct->element);
             $variables['elementId'] = $direct->elementId;
             $variables['userId'] = $direct->userId;
 
-            $variables['subTitle'] = QARR::t('Edit Direct Link');
+            $variables['title'] = QARR::t('Edit Direct Link');
         } else {
             if ($direct === null) {
                 $direct = new DirectLink();
@@ -89,14 +92,13 @@ class DirectLinksController extends Controller
                 $variables['brandNewDirect'] = true;
             }
 
-            $variables['subTitle'] = QARR::t('New Direct Link');
+            $variables['title'] = QARR::t('New Direct Link');
         }
         
-        $variables['directId']  = $directId;
-        $variables['direct']    = $direct;
 
         $this->_enforceEditRulePermissions($direct);
 
+        $variables['direct']                = $direct;
         $variables['fullPageForm']          = true;
         $variables['continueEditingUrl']    = 'qarr/campaigns/direct/{id}';
         $variables['saveShortcutRedirect']  = $variables['continueEditingUrl'];
@@ -118,8 +120,8 @@ class DirectLinksController extends Controller
 
         $request = Craft::$app->getRequest();
 
-        $model              = new DirectLink();
-        $model->id          = $request->getBodyParam('directId');
+        $model              = $this->_getDirectLinkModel();
+        $model->id          = $request->getBodyParam('id');
         $model->elementId   = isset($request->getBodyParam('elementId')[0]) ? $request->getBodyParam('elementId')[0] : null;
         $model->userId      = isset($request->getBodyParam('userId')[0]) ? $request->getBodyParam('userId')[0] : null;
         $model->enabled     = $request->getBodyParam('enabled');
@@ -139,28 +141,62 @@ class DirectLinksController extends Controller
 
         // Validate
         $model->validate();
-        
-        if (!$model->hasErrors()) {
 
-            $saved = QARR::$plugin->links->save($model);
 
-            if ($saved) {
-                $slug = QARR::$plugin->encrypt->encodeById($saved->id);
-                $saved->slug = $slug;
-                $saved->save();
-
-                Craft::$app->getSession()->setNotice(QARR::t('Direct link saved.'));
-                return $this->redirectToPostedUrl($model);
+        if ($model->hasErrors()) {
+            if ($request->getAcceptsJson()) {
+                return $this->asJson([
+                    'success' => false,
+                    'errors' => $model->getErrors(),
+                ]);
             }
+
+            Craft::$app->getSession()->setError(QARR::t('Couldn’t save direct link.'));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'direct' => $model
+            ]);
+
+            return null;
         }
-        Craft::$app->getSession()->setError(QARR::t('Cannot save direct link.'));
 
-        Craft::$app->getUrlManager()->setRouteParams([
-            'direct' => $model,
-            'errors' => $model->getErrors(),
-        ]);
+        QARR::$plugin->getLinks()->save($model);
 
-        return null;
+        if ($request->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'id' => $model->id,
+                'slug' => $model->slug,
+                'enabled' => $model->enabled,
+                'options' => $model->options,
+                'settings' => $model->settings,
+            ]);
+        }
+
+        Craft::$app->getSession()->setNotice(QARR::t( 'Direct link saved.'));
+
+        return $this->redirectToPostedUrl($model);
+    }
+
+    /**
+     * Delete
+     *
+     * @return Response
+     * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     */
+    public function actionDelete(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $this->requirePermission('qarr:editCampaigns');
+
+        $directLinkId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+
+        QARR::$plugin->getLinks()->deleteLinkById($directLinkId);
+
+        return $this->asJson(['success' => true]);
     }
 
     public function actionForm($slug = null): Response
@@ -226,6 +262,23 @@ class DirectLinksController extends Controller
 
     // Private Methods
     // =========================================================================
+
+    private function _getDirectLinkModel(): DirectLink
+    {
+        $directId = Craft::$app->getRequest()->getBodyParam('id');
+
+        if ($directId) {
+            $direct = QARR::$plugin->getLinks()->getLinkById($directId);
+
+            if (!$direct) {
+                throw new NotFoundHttpException('Direct link not found');
+            }
+        } else {
+            $direct = new DirectLink();
+        }
+
+        return $direct;
+    }
 
     /**
      * @param DirectLink $campaign

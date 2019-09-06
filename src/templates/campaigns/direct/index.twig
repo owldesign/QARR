@@ -1,22 +1,40 @@
 {% requirePermission 'qarr:accessCampaigns' %}
 
-{% extends "_layouts/cp" %}
+{% extends craft.craftify ? 'qarr/_layouts/cp-static-craft' : 'qarr/_layouts/cp-static-craft' %}
 
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
-
-{% set title = "Campaigns"|t('qarr') %}
-{% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'qarr-global qarr-elementindex qarr-static-elements qarr-campaigns' %}
+{% set title = "Direct Links"|t('qarr') %}
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "direct" %}
 
-{% if not craft.craftify %}
-    {% block header %}
-        {% include 'qarr/_ui/page-header' ignore missing %}
-    {% endblock %}
-{% endif %}
+{% block header %}
+    {% if not craft.craftify %}
+        {% include 'qarr/_layouts/header-qarr' ignore missing %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block actionButton %}
+    <a href="{{ url('qarr/campaigns/new') }}" class="btn submit add icon disabled">{{ "New Campaign"|t('qarr') }}</a>
+
+    <div id="new-btn-container" class="btngroup submit">
+        <div class="btn submit menubtn">{{ 'Direct Links'|t('qarr') }}</div>
+        <div class="menu" data-align="right">
+            <ul>
+                <li>
+                    <a href="{{ url('qarr/campaigns/direct/new?elementType=entry') }}">
+                        {{ "Link for entry"|t('qarr') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url('qarr/campaigns/direct/new?elementType=product') }}">
+                        {{ "Link for product"|t('qarr') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
 
 {% block sidebar %}
     {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
@@ -24,49 +42,56 @@
 
 {% block content %}
 
-    <div class="buttons">
-        <div class="btngroup">
-            <div class="qarr-btn menubtn">
-                <span class="btn-text">{{ "New Direct Link"|t('qarr') }}</span>
-            </div>
+    <div class="field">
 
-            <div class="menu">
-                <ul>
-                    <li><a href="{{ url('qarr/campaigns/direct/new?elementType=entry') }}">{{ "Link for entry"|t('app') }}</a></li>
-                    <li><a href="{{ url('qarr/campaigns/direct/new?elementType=product') }}">{{ "Link for product"|t('app') }}</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="spinner hidden"></div>
+        {% include 'qarr/_elements/no-elements' ignore missing with {
+            text: 'No direct links exist yet.'|t('qarr'),
+            hidden: directLinks|length ? true : false
+        } %}
+
+        {% if directLinks|length %}
+            <table id="links" class="data fullwidth collapsible">
+                <thead>
+                <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Link</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Completed</th>
+                    <th scope="col">Enabled</th>
+                    <th scope="thin"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for link in directLinks %}
+                    {% set enabled = link.enabled ? 'Yes' : 'No' %}
+
+                    <tr data-id="{{ link.id }}" data-name="{{ 'Link for'|t('qarr') }} {{ link.user.fullName }}">
+                        <th scope="row" data-title="{{ 'User'|t('qarr') }}"><a href="{{ url('qarr/campaigns/direct/' ~ link.id) }}">{{ link.user.fullName }}</a></th>
+                        <td scope="code" data-title="{{ 'Link'|t('qarr') }}">{{ siteUrl }}qarr/direct/{{ link.slug }}</td>
+                        <td scope="row" data-title="{{ 'Type'|t('qarr') }}">{{ link.type|capitalize }}</td>
+                        <td scope="row" data-title="{{ 'Completed'|t('qarr') }}">
+                            {% if link.completed %}
+                                {% set result = craft.app.elements.getElementById(link.options['submissionId']) %}
+                                {{ 'Yes'|t('qarr') }}, <a href="{{ result.url }}" target="_blank">{{ 'view here'|t('qarr') }}</a>
+                            {% else %}
+                                {{ 'No'|t('qarr') }}
+                            {% endif %}
+                        </td>
+                        <td scope="row" data-title="{{ 'Enabled'|t('qarr') }}">{{ enabled }}</td>
+                        <td scope="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}"></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </div>
 
-
-    {% if directLinks|length %}
-        <div class="elements-list">
-
-            {% for link in directLinks %}
-                {% set status = link.enabled ? 'enabled' : 'disabled' %}
-                <div class="element-item">
-
-                    <div class="element-header w-2/3">
-                        <a href="{{ url('qarr/campaigns/direct/' ~ link.id) }}" class="block"><h2>Link for {{ link.user.fullName }}</h2></a>
-                        <div class="inline-block font-mono bg-white py-1 px-2 rounded mt-2 text-xs">{{ siteUrl }}qarr/direct/{{ link.slug }}</div>
-                        {% if link.completed %}
-                            {% set result = craft.app.elements.getElementById(link.options['submissionId']) %}
-                            <div class="mt-2 text-xs opacity-75">{{ 'User has submitted a'|t('qarr') }} {{ link.type }}. <a href="{{ result.url }}" target="_blank">{{ 'You can view it here'|t('qarr') }}</a></div>
-                        {% endif %}
-                    </div>
-
-                    <div class="element-status {{ status }} ">
-                        <div class="qarr-tag"><span>{{ status }}</span></div>
-                    </div>
-
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div id="noelements" class="text-gray-600 mt-6">
-            {{ "No direct links exist yet."|t('qarr') }}
-        </div>
-    {% endif %}
 {% endblock %}
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#links',
+    noItemsSelector: '#noelements',
+    deleteAction: 'qarr/campaigns/direct-links/delete',
+    });
+{% endjs %}

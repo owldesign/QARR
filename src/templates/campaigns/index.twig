@@ -1,64 +1,26 @@
 {% requirePermission 'qarr:accessCampaigns' %}
 
-{% extends "_layouts/cp" %}
+{% extends craft.craftify ? 'qarr/_layouts/cp-static-craft' : 'qarr/_layouts/cp-static-craft' %}
+
 {% set title = "Campaigns"|t('qarr') %}
-{% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'qarr-global qarr-elementindex' %}
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "campaigns" %}
 
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
+{% block header %}
+    {% if not craft.craftify %}
+        {% include 'qarr/_layouts/header-qarr' ignore missing %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
 
-{% if not craft.craftify %}
-    {% block header %}
-        {% include 'qarr/_ui/page-header' ignore missing %}
-    {% endblock %}
-{% endif %}
+{% block actionButton %}
+    <a href="{{ url('qarr/campaigns/new') }}" class="btn submit add icon disabled">{{ "New Campaign"|t('qarr') }}</a>
+{% endblock %}
 
 {% block sidebar %}
     {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
 {% endblock %}
 
 {% block content %}
-
-    <a href="{{ url('qarr/campaigns/new') }}" class="qarr-btn disabled cursor-not-allowed pointer-events-none">
-        <span class="icon mr-3 font-bold">+</span>
-        <span class="btn-text">{{ "New Campaign"|t('qarr') }}</span>
-    </a>
-
-    <div id="noelements" class="text-gray-600 mt-6">
-        {{ "No campaigns exist yet."|t('qarr') }} {{ "This feature is coming soon."|t('qarr') }}
-    </div>
-
-{#    {% if rules|length %}#}
-{#        <div class="elements-list">#}
-
-{#            {% for rule in rules %}#}
-{#                {% set status = rule.enabled ? 'enabled' : 'disabled' %}#}
-{#                <div class="element-item">#}
-
-{#                    <div class="element-header w-1/2">#}
-{#                        <a href="{{ url('qarr/rules/' ~ rule.id) }}"><h2>{{ rule.name }}</h2></a>#}
-{#                        <div class="element-handle">#}
-{#                            <span>{{ rule.handle }}</span>#}
-{#                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current" width="10" height="10" viewBox="0 0 20 20"><path d="M6 6V2c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h4zm2 0h4a2 2 0 0 1 2 2v4h4V2H8v4zM2 8v10h10V8H2z"/></svg>#}
-{#                        </div>#}
-{#                    </div>#}
-
-{#                    <div class="element-body text-center">#}
-{#                        <h3 class="font-normal text-gray-500">{{ 'Flagged Entries'|t('qarr') }}</h3>#}
-{#                        <span class="block font-mono element-count">#}
-{#                            {{ craft.qarrRules.getFlaggedCountByRuleId(rule.id) }}#}
-{#                        </span>#}
-{#                    </div>#}
-
-{#                    <div class="element-status {{ status }} ">#}
-{#                        <div class="qarr-tag"><span>{{ status }}</span></div>#}
-{#                    </div>#}
-
-{#                </div>#}
-{#            {% endfor %}#}
-{#        </div>#}
-{#    {% endif %}#}
+    <p id="noelements">{{ "No campaigns exist yet."|t('qarr') }}</p>
 {% endblock %}

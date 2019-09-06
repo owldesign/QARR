@@ -5,9 +5,8 @@
 {% import "_includes/forms" as forms %}
 {% import "qarr/_ui/buttons" as buttons %}
 
-{% set title = "Displays"|t('qarr') %}
 {% set selectedSubnavItem = "displays" %}
-{% set fullPageForm = true %}
+{% set isNewElement = display.id ? false : true %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Displays") %}
 
@@ -18,9 +17,9 @@
         'url': '#display'
     },
     {
-        'id': 'fields',
+        'id': 'fieldlayout',
         'label': 'Fields',
-        'url': '#fields'
+        'url': '#fieldlayout'
     }
 ] %}
 
@@ -42,16 +41,18 @@
                     </a>
                 </li>
             </ul>
+            {% if not isNewElement %}
             <hr>
             <ul>
                 <li>
                     <a class="formsubmit error" data-action="qarr/displays/delete"
                        data-confirm="{{ 'Are you sure you want to delete this display?'|t('qarr') }}"
                        data-redirect="{{ 'qarr/displays'|hash }}">
-                        {{ 'Delete display'|t('app') }}
+                        {{ 'Delete display'|t('qarr') }}
                     </a>
                 </li>
             </ul>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
@@ -64,7 +65,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="display">
+    <div id="fields">
         {{ actionInput('qarr/displays/save') }}
         {{ redirectInput('qarr/displays') }}
 
@@ -75,6 +76,7 @@
             siteId: display.name,
             id: 'name',
             name: 'name',
+            first: true,
             autofocus: true,
             autocorrect: false,
             autocapitalize: false,
@@ -83,39 +85,41 @@
             errors: (display.getErrors('name'))
         }) }}
 
+        <div id="display">
 
-        {{ forms.textField({
-            label: "Title Format"|t('qarr'),
-            siteId: display.titleFormat,
-            id: 'titleFormat',
-            name: 'titleFormat',
-            instructions: 'eg. Review from {fullName} submitted on {dateCreated}',
-            autocorrect: false,
-            autocapitalize: false,
-            value: display.titleFormat,
-            placeholder: "Enter title format"|t('qarr'),
-            errors: (display.getErrors('titleFormat'))
-        }) }}
+            {{ forms.textField({
+                label: "Title Format"|t('qarr'),
+                siteId: display.titleFormat,
+                id: 'titleFormat',
+                name: 'titleFormat',
+                instructions: 'eg. Review from {fullName} submitted on {dateCreated}',
+                autocorrect: false,
+                autocapitalize: false,
+                value: display.titleFormat,
+                placeholder: "Enter title format"|t('qarr'),
+                errors: (display.getErrors('titleFormat'))
+            }) }}
 
-        <div id="title-format-items" class="flex mt-2">
-            <button type="button" class="tag-link qarr-btn btn-small" data-target="#titleFormat"
-                    data-field="{dateCreated}">Date Created
-            </button>
-            <button type="button" class="tag-link qarr-btn btn-small" data-target="#titleFormat"
-                    data-field="{fullName}">Full Name
-            </button>
-            <button type="button" class="tag-link qarr-btn btn-small" data-target="#titleFormat"
-                    data-field="{emailAddress}">Email Address
-            </button>
+            <div id="title-format-items" class="flex mt-2">
+                <div class="btn secondary tag-link qarr-btn btn-small" data-target="#titleFormat"
+                        data-field="{dateCreated}">Date Created
+                </div>
+                <div class="btn secondary tag-link qarr-btn btn-small" data-target="#titleFormat"
+                        data-field="{fullName}">Full Name
+                </div>
+                <div class="btn secondary tag-link qarr-btn btn-small" data-target="#titleFormat"
+                        data-field="{emailAddress}">Email Address
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div id="fields" class="hidden">
-        {% include "qarr/_elements/element-field-layout-designer" with {
-            fieldLayout: display.getFieldLayout(),
-            customizableTabs: true,
-            display: display
-        } only %}
+        <div id="fieldlayout" class="hidden">
+            {% include "qarr/_elements/element-field-layout-designer" with {
+                fieldLayout: display.getFieldLayout(),
+                customizableTabs: true,
+                display: display
+            } only %}
+        </div>
     </div>
 
 {% endblock %}
@@ -135,7 +139,7 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Enable display"|t('qarr'),
+            label: "Enabled"|t('app'),
             id: 'enabled',
             name: 'enabled',
             on: display.enabled

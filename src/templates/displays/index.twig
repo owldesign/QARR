@@ -18,7 +18,11 @@
 
 {% block content %}
     <div class="field">
-        <p id="noelements" class="hidden">{{ "No displays exist yet."|t('qarr') }}</p>
+
+        {% include 'qarr/_elements/no-elements' ignore missing with {
+            text: 'No displays exist yet.'|t('qarr'),
+            hidden: displays|length ? true : false
+        } %}
 
         {% if displays|length %}
             <table id="displays" class="data fullwidth collapsible">
@@ -53,7 +57,7 @@
 {% js %}
     var adminTable = new Craft.AdminTable({
         tableSelector: '#displays',
-        noItemsSelector: '#nodisplays',
+        noItemsSelector: '#noelements',
         deleteAction: 'qarr/displays/delete',
     });
 {% endjs %}

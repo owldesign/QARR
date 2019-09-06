@@ -5,9 +5,8 @@
 {% import "_includes/forms" as forms %}
 {% import "qarr/_ui/buttons" as buttons %}
 
-{% set title = "Rules"|t('qarr') %}
 {% set selectedSubnavItem = "rules" %}
-{% set fullPageForm = true %}
+{% set isNewElement = rule.id ? false : true %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
 
@@ -29,26 +28,21 @@
                     </a>
                 </li>
             </ul>
+            {% if not isNewElement %}
             <hr>
             <ul>
                 <li>
                     <a class="formsubmit error" data-action="qarr/rules/delete"
                        data-confirm="{{ 'Are you sure you want to delete this rule?'|t('qarr') }}"
                        data-redirect="{{ 'qarr/rules'|hash }}">
-                        {{ 'Delete relu'|t('app') }}
+                        {{ 'Delete rule'|t('qarr') }}
                     </a>
                 </li>
             </ul>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
-
-
-{% if rule.id %}
-    {% set title = rule.name %}
-{% else %}
-    {% set title = 'New Rule'|t('qarr') %}
-{% endif %}
 
 {% block header %}
     {% if not craft.craftify %}
@@ -58,76 +52,61 @@
 {% endblock %}
 
 {% block content %}
-    <input type="hidden" name="action" value="qarr/rules/save">
+    {{ actionInput('qarr/rules/save') }}
     {{ redirectInput('qarr/rules') }}
 
-    {% if rule.id %}
-        <input type="hidden" name="ruleId" value="{{ rule.id }}">
-    {% endif %}
+    {% if rule.id %}{{ hiddenInput('id', rule.id) }}{% endif %}
 
-    <a href="{{ url('qarr/rules') }}" class="inline-flex items-center text-xs text-indigo-400 mb-3 hover:text-indigo-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="fill-current mr-0" width="20" height="20" viewBox="0 0 20 20"><path d="M7.05 9.293L6.343 10 12 15.657l1.414-1.414L9.172 10l4.242-4.243L12 4.343z"/></svg>
-        <span>{{ 'Back to rules'|t('qarr') }}</span>
-    </a>
+    {{ forms.textField({
+        label: "Name"|t('app'),
+        siteId: rule.name,
+        id: 'name',
+        name: 'name',
+        first: true,
+        autofocus: true,
+        autocorrect: false,
+        autocapitalize: false,
+        value: rule.name,
+        placeholder: "Enter name"|t('qarr'),
+        errors: (rule.getErrors('name'))
+    }) }}
 
-
-    <div class="flex">
-        <div class="flex-1">
-            <div class="element-container">
-                <div class="mb-4">
-                    <label for="name" class="qarr-label">{{ 'Name'|t('qarr') }}</label>
-                    <input class="qarr-input {% if rule.getErrors('name') %}has-error{% endif %}" type="text" id="name" name="name" value="{{ rule.name }}" maxlength="255" autocomplete="off">
-                    {% if rule.getErrors('name') %}<span class="error-message">{{ rule.getErrors('name')[0] }}</span>{% endif %}
-                </div>
-
-                <div class="mb-4">
-                    <label for="handle" class="qarr-label">{{ 'Handle'|t('qarr') }}</label>
-                    <input class="qarr-input {% if rule.getErrors('handle') %}has-error{% endif %}" type="text" id="handle" name="handle" value="{{ rule.handle }}" autocomplete="off">
-                    {% if rule.getErrors('handle') %}<span class="error-message">{{ rule.getErrors('handle')[0] }}</span>{% endif %}
-                </div>
-
-            </div>
-            <div class="element-container mt-6">
-                <div id="data-list-container">
-                    <h2 class="mb-0">{{ 'Words List'|t('qarr') }}</h2>
-                    <p class="text-sm opacity-50 mt-1">{{ 'Enter a list of words to catch'|t('qarr') }}</p>
-                    <input class="tagify--outside" id="rule-data" type="text" name="data" placeholder="eg. boring, broken, sucks, lame, golden, funny..." value="{{ rule.data }}">
-
-                    <a class="block qarr-btn-link my-2 tags--removeAllBtn {% if rule.data == '' %}btn-disabled{% endif %}">{{ 'Clear All'|t('qarr') }}</a>
-                </div>
+    <div class="field">
+        <div class="heading">
+            <label for="rule-data">{{ 'Words List'|t('qarr') }}</label>
+            <div class="instructions">
+                <p>{{ 'Enter a list of words to catch'|t('qarr') }}</p>
             </div>
         </div>
-
-        <div class="w-64 self-start">
-            <div class="element-container element-sidebar ml-6">
-                <h2>{{ 'Settings'|t('qarr') }}</h2>
-                <div class="field">
-                    <label class="qarr-label">{{ 'Enable rule'|t('qarr') }}</label>
-
-                    {%- set on = (rule.enabled is defined ? rule.enabled : false) %}
-                    {%- set value = (value is defined ? value : '1') %}
-                    <div class="qarr-lightswitch lightswitch {% if rule.enabled %} on{% endif %} small">
-                        <div class="lightswitch-container">
-                            <div class="label on"></div>
-                            <div class="handle"></div>
-                            <div class="label off"></div>
-                        </div>
-                        <input type="hidden" name="enabled" value="{{ rule.enabled ? value }}">
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="flex entry-actions mt-4 ml-6">
-                <button type="submit" class="qarr-btn btn-purple">{{ "Save"|t('qarr') }}</button>
-                {% if rule.id %}
-                    <button type="button" id="delete-rule" class="qarr-btn" data-id="{{ rule.id }}">{{ "Delete"|t('qarr') }}</button>
-                {% endif %}
-            </div>
-
+        <div class="input">
+            <input class="tagify--outside" id="rule-data" type="text" name="data" placeholder="eg. boring, broken, sucks, lame, golden, funny..." value="{{ rule.data }}">
         </div>
     </div>
 
+    <a class="btn secondary tags--removeAllBtn">{{ 'Clear All'|t('qarr') }}</a>
+
+{% endblock %}
+
+{% block details %}
+    <div id="settings" class="meta">
+        {{ forms.textField({
+            label: "Handle"|t('app'),
+            id: 'handle',
+            name: 'handle',
+            autocorrect: false,
+            autocapitalize: false,
+            value: rule.handle,
+            placeholder: "Enter handle"|t('qarr'),
+            errors: (rule.getErrors('handle'))
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Enabled"|t('app'),
+            id: 'enabled',
+            name: 'enabled',
+            on: rule.enabled
+        }) }}
+    </div>
 {% endblock %}
 
 {% js %}
