@@ -40,9 +40,11 @@ class DisplaysController extends Controller
      */
     public function actionIndex(array $variables = [])
     {
-        $variables['displays'] = QARR::$plugin->displays->getAllDisplays();
+        $displays = QARR::$plugin->getDisplays()->getAllDisplays();
 
-        QARR::$plugin->routeTemplate('displays/index', $variables);
+        QARR::$plugin->routeTemplate('displays/index', [
+            'displays' => $displays
+        ]);
     }
 
     /**
@@ -62,7 +64,7 @@ class DisplaysController extends Controller
 
         if ($displayId !== null) {
             if ($display === null) {
-                $display = QARR::$plugin->displays->getDisplayById($displayId);
+                $display = Craft::$app->getElements()->getElementById($displayId);
 
                 if (!$display) {
                     throw new NotFoundHttpException(QARR::t('Display not found'));
@@ -97,6 +99,7 @@ class DisplaysController extends Controller
      * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
+     * @throws NotFoundHttpException
      */
     public function actionSave()
     {
@@ -104,14 +107,14 @@ class DisplaysController extends Controller
 
         $request = Craft::$app->getRequest();
 
-        $display                = new Display();
-        $display->id            = $request->getBodyParam('displayId');
-        $display->name          = $request->getBodyParam('name');
-        $display->handle        = $request->getBodyParam('handle');
-        $display->titleFormat   = $request->getBodyParam('titleFormat');
-        $display->enabled       = (bool)$request->getBodyParam('enabled');
-        $display->options       = $request->getBodyParam('options');
-        $display->settings      = $request->getBodyParam('settings');
+        $display = $this->_getDisplayModel();
+        $display->id = $request->getBodyParam('id');
+        $display->name = $request->getBodyParam('name');
+        $display->handle = $request->getBodyParam('handle');
+        $display->titleFormat = $request->getBodyParam('titleFormat');
+        $display->enabled = (bool)$request->getBodyParam('enabled');
+        $display->options = $request->getBodyParam('options');
+        $display->settings = $request->getBodyParam('settings');
 
         // Permission enforcement
         $this->_enforceEditDisplayPermissions($display);
@@ -146,21 +149,47 @@ class DisplaysController extends Controller
      * Delete
      *
      * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \craft\errors\MissingComponentException
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
      */
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
+//
         $this->requirePermission('qarr:deleteDisplays');
+        $request = Craft::$app->getRequest();
+        $displayId = $request->getRequiredBodyParam('id');
 
-        $displayId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $display = Craft::$app->getElements()->getElementById($displayId);
 
-        QARR::$plugin->displays->deleteDisplayById($displayId);
+        if (!$display) {
+            throw new NotFoundHttpException('Display not found');
+        }
 
-        return $this->asJson(['success' => true]);
+        if (!Craft::$app->getElements()->deleteElement($display)) {
+            if ($request->getAcceptsJson()) {
+                return $this->asJson(['success' => false]);
+            }
+
+            Craft::$app->getSession()->setError(Craft::t('qarr', 'Couldn’t delete display.'));
+
+            Craft::$app->getUrlManager()->setRouteParams([
+                'display' => $display
+            ]);
+
+            return null;
+        }
+
+        if ($request->getAcceptsJson()) {
+            return $this->asJson(['success' => true]);
+        }
+
+        Craft::$app->getSession()->setNotice(Craft::t('qarr', 'Display deleted.'));
+
+        return $this->redirectToPostedUrl($display);
     }
 
     // Private Methods
@@ -181,10 +210,10 @@ class DisplaysController extends Controller
      */
     private function _getDisplayModel(): Display
     {
-        $displayId = Craft::$app->getRequest()->getBodyParam('displayId');
+        $displayId = Craft::$app->getRequest()->getBodyParam('id');
 
         if ($displayId) {
-            $display = QARR::$plugin->displays->getDisplayById($displayId);
+            $display = Craft::$app->getElements()->getElementById($displayId);
 
             if (!$display) {
                 throw new NotFoundHttpException('Display not found');
@@ -203,12 +232,12 @@ class DisplaysController extends Controller
     {
         $request = Craft::$app->getRequest();
 
-        $display->enabled           = (bool)$request->getBodyParam('enabled', $display->enabled);
-        $display->name              = $request->getBodyParam('name', $display->name);
-        $display->handle            = $request->getBodyParam('handle', $display->handle);
-        $display->titleFormat       = $request->getBodyParam('titleFormat', $display->titleFormat);
-        $display->options           = $request->getBodyParam('options', $display->options);
-        $display->settings          = $request->getBodyParam('settings', $display->settings);
+        $display->enabled = (bool)$request->getBodyParam('enabled', $display->enabled);
+        $display->name = $request->getBodyParam('name', $display->name);
+        $display->handle = $request->getBodyParam('handle', $display->handle);
+        $display->titleFormat = $request->getBodyParam('titleFormat', $display->titleFormat);
+        $display->options = $request->getBodyParam('options', $display->options);
+        $display->settings = $request->getBodyParam('settings', $display->settings);
     }
 
 }

@@ -1,11 +1,48 @@
-{% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
+{% requirePermission 'qarr:accessRules' %}
 
+{% extends craft.craftify ? 'qarr/_layouts/cp-static-craft' : 'qarr/_layouts/cp-static-craft' %}
+
+{% import "_includes/forms" as forms %}
+{% import "qarr/_ui/buttons" as buttons %}
+
+{% set title = "Rules"|t('qarr') %}
+{% set selectedSubnavItem = "rules" %}
 {% set fullPageForm = true %}
-{% set bodyClass = 'qarr-global qarr-static-elements qarr-edit' %}
-{% set pluginCpUrl = url('qarr') %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}
+
+{% block actionButton %}
+    <div id="save-btn-container" class="btngroup submit">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+        <div class="btn submit menubtn"></div>
+        <div class="menu" data-align="right">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ '{cpEditUrl}'|hash }}">
+                        {{ forms.optionShortcutLabel('S') }}
+                        {{ "Save and continue editing"|t('app') }}
+                    </a>
+                </li>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ "qarr/rules/new"|hash }}">
+                        {{ "Save and add another"|t('app') }}
+                    </a>
+                </li>
+            </ul>
+            <hr>
+            <ul>
+                <li>
+                    <a class="formsubmit error" data-action="qarr/rules/delete"
+                       data-confirm="{{ 'Are you sure you want to delete this rule?'|t('qarr') }}"
+                       data-redirect="{{ 'qarr/rules'|hash }}">
+                        {{ 'Delete relu'|t('app') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
 
 {% if rule.id %}
     {% set title = rule.name %}
@@ -13,16 +50,12 @@
     {% set title = 'New Rule'|t('qarr') %}
 {% endif %}
 
-{% set selectedSubnavItem = "rules" %}
-{% set currentPage = craft.app.request.getSegment(2) %}
-
-{% import "_includes/forms" as forms %}
-
-{% if not craft.craftify %}
-    {% block header %}
-        {% include 'qarr/_ui/page-header' ignore missing %}
-    {% endblock %}
-{% endif %}
+{% block header %}
+    {% if not craft.craftify %}
+        {% include 'qarr/_layouts/header-qarr' ignore missing %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
 
 {% block content %}
     <input type="hidden" name="action" value="qarr/rules/save">

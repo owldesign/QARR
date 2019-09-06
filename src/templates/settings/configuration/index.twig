@@ -54,14 +54,15 @@
                 </div>
 
                 <hr>
-                    {{ forms.checkboxField({
-                        label: "Yes, switch to Craft UI"|t('qarr'),
-                        id: 'craftify-input',
-                        name: 'settings[craftify]',
-                        checked: settings.craftify
-                    }) }}
-                <hr>
 
+                {{ forms.lightswitchField({
+                    label: "Yes, switch to Craft UI"|t('qarr'),
+                    id: 'craftify-input',
+                    name: 'settings[craftify]',
+                    on: settings.craftify
+                }) }}
+
+                <hr>
 
                 <button type="submit" class="qarr-btn btn-purple">Save</button>
             </form>

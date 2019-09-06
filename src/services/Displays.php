@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\services;
 
+use craft\helpers\ArrayHelper;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Display;
 use owldesign\qarr\records\Display as DisplayRecord;
@@ -33,90 +34,64 @@ class Displays extends Component
     /**
      * @var
      */
-    protected $displayRecord;
-    /**
-     * @var
-     */
-    private $_allDisplays;
-    /**
-     * @var
-     */
-    private $_displaysById;
-    /**
-     * @var bool
-     */
-    private $_fetchedAllDisplays = false;
-
+    private $_displays;
 
     // Public Methods
     // =========================================================================
 
     /**
-     * @param null $productId
-     * @param null $productType
      * @return array
      */
-    public function getAllDisplays($productId = null, $productType = null): array
+    public function getAllDisplays(): array
     {
-        if ($this->_fetchedAllDisplays) {
-            return array_values($this->_displaysById);
+        if ($this->_displays !== null) {
+            return $this->_displays;
         }
 
-        $results = $this->_createDisplayQuery()->all();
+        $this->_displays = [];
 
-        $this->_displaysById = [];
+        $displayRecords = DisplayRecord::find()
+            ->orderBy(['name' => SORT_ASC])
+            ->all();
 
-        foreach ($results as $result) {
-            $display = new Display($result);
-            $this->_displaysById[$display->id] = $display;
+        foreach ($displayRecords as $displayRecord) {
+            $this->_displays[] = $this->_createDisplayFromRecord($displayRecord);
         }
 
-        $this->_fetchedAllDisplays = true;
-
-        return array_values($this->_displaysById);
+        return $this->_displays;
     }
 
     /**
+     * Returns display by its ID.
+     *
      * @param int $displayId
-     * @return null|Display
+     * @return Display|null
      */
     public function getDisplayById(int $displayId)
     {
-        if (!$displayId) {
-            return null;
-        }
-
-        if ($this->_displaysById !== null && array_key_exists($displayId, $this->_displaysById)) {
-            return $this->_displaysById[$displayId];
-        }
-
-        if ($this->_fetchedAllDisplays) {
-            return null;
-        }
-
-        $result = $this->_createDisplayQuery()
-            ->where(['id' => $displayId])
-            ->one();
-
-        return $this->_displaysById[$displayId] = $result ? new Display($result) : null;
+        return ArrayHelper::firstWhere($this->getAllDisplays(), 'id', $displayId);
     }
 
+    /**
+     * Returns display by its UID.
+     *
+     * @param int $uid
+     * @return Display|null
+     */
+    public function getDisplayByUid(int $uid)
+    {
+        return ArrayHelper::firstWhere($this->getAllDisplays(), 'uid', $uid, true);
+    }
 
     /**
+     * Returns display by its UID.
+     *
      * @param string $displayHandle
-     * @return null|Display
+     * @return Display|null
      */
     public function getDisplayByHandle(string $displayHandle)
     {
-        if (!$displayHandle) {
-            return null;
-        }
-
-        $result = $this->_createDisplayQuery()
-            ->where(['handle' => $displayHandle])
-            ->one();
-
-        return $result ? new Display($result) : null;
+        return ArrayHelper::firstWhere($this->getAllDisplays(), 'handle', $displayHandle, true);
     }
 
     /**
@@ -262,6 +237,25 @@ class Displays extends Component
 
     // Private Methods
     // =========================================================================
+
+    private function _createDisplayFromRecord(DisplayRecord $displayRecord = null)
+    {
+        if (!$displayRecord) {
+            return null;
+        }
+
+        $display = new Display($displayRecord->toArray([
+            'id',
+            'name',
+            'handle',
+            'titleFormat',
+            'fieldLayoutId',
+            'enabled',
+            'uid'
+        ]));
+
+        return $display;
+    }
 
     /**
      * Returns a Query object prepped for retrieving sections.

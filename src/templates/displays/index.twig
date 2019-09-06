@@ -17,12 +17,10 @@
 {% endblock %}
 
 {% block content %}
-
     <div class="field">
         <p id="noelements" class="hidden">{{ "No displays exist yet."|t('qarr') }}</p>
 
         {% if displays|length %}
-
             <table id="displays" class="data fullwidth collapsible">
                 <thead>
                 <tr>
@@ -35,15 +33,13 @@
                 </thead>
                 <tbody>
                 {% for display in displays %}
-                    {% set status = display.enabled ? 'enabled' : 'disabled' %}
-
                     <tr data-id="{{ display.id }}" data-name="{{ display.name }}">
                         <th scope="row" data-title="{{ 'Display Name'|t('qarr') }}"><a
                                     href="{{ url('qarr/displays/' ~ display.id) }}">{{ display.name }}</a></th>
                         <td scope="code" data-title="{{ 'Handle'|t('qarr') }}">{{ display.handle }}</td>
                         <td scope="row"
                             data-title="{{ 'Fields'|t('qarr') }}">{{ display.fieldlayout.fields |length }}</td>
-                        <td scope="row" data-title="{{ 'Status'|t('qarr') }}">{{ status }}</td>
+                        <td scope="row" data-title="{{ 'Status'|t('qarr') }}">{{ display.enabled }}</td>
                         <td scope="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}"></a></td>
                     </tr>
                 {% endfor %}
@@ -52,41 +48,6 @@
         {% endif %}
 
     </div>
-
-    {#    <div id="noelements" class="text-gray-600 mt-6 {% if displays %}hidden{% endif %}">#}
-    {#        {{ "No displays exist yet."|t('qarr') }}#}
-    {#    </div>#}
-
-    {#    {% if displays|length %}#}
-    {#        <div class="elements-list">#}
-    {#            {% for display in displays %}#}
-    {#                {% set status = display.enabled ? 'enabled' : 'disabled' %}#}
-    {#                <div class="element-item">#}
-
-    {#                    <div class="element-header w-1/2">#}
-    {#                        <a href="{{ url('qarr/displays/' ~ display.id) }}"><h2>{{ display.name }}</h2></a>#}
-    {#                        <div class="element-handle">#}
-    {#                            <span>{{ display.handle }}</span>#}
-    {#                            <svg xmlns="http://www.w3.org/2000/svg" class="fill-current" width="10" height="10" viewBox="0 0 20 20"><path d="M6 6V2c0-1.1.9-2 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4v4a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h4zm2 0h4a2 2 0 0 1 2 2v4h4V2H8v4zM2 8v10h10V8H2z"/></svg>#}
-    {#                        </div>#}
-    {#                    </div>#}
-
-    {#                    <div class="element-body text-center">#}
-    {#                        <h3 class="font-normal text-gray-500">{{ 'Fields'|t('qarr') }}</h3>#}
-    {#                        <span class="block font-mono element-count">#}
-    {#                            {{ display.fieldlayout.fields |length }}#}
-    {#                        </span>#}
-    {#                    </div>#}
-
-    {#                    <div class="element-status {{ status }} ">#}
-    {#                        <div class="qarr-tag"><span>{{ status }}</span></div>#}
-    {#                    </div>#}
-
-    {#                </div>#}
-
-    {#            {% endfor %}#}
-    {#        </div>#}
-    {#    {% endif %}#}
 {% endblock %}
 
 {% js %}

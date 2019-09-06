@@ -351,6 +351,7 @@ class Display extends Element
 
         $record->name = $this->name;
         $record->handle = $this->handle;
+        $record->enabled = $this->enabled;
         $record->titleFormat = $this->titleFormat;
         $record->fieldLayoutId = $this->fieldLayoutId;
         $record->options = Json::encode($this->options);
@@ -364,8 +365,11 @@ class Display extends Element
     /**
      * @return bool
      */
-    public function beforeDelete(): bool
+    public function afterDelete(): bool
     {
+        // Delete display record
+        QARR::$plugin->displays->deleteDisplayById($this->id);
+
         if ($this->fieldLayoutId !== null) {
             Craft::$app->getFields()->deleteLayoutById($this->fieldLayoutId);
         }
