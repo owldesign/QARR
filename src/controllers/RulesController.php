@@ -40,12 +40,13 @@ class RulesController extends Controller
      * Index
      *
      * @param array $variables
+     * @return Response
      */
-    public function actionIndex(array $variables = [])
+    public function actionIndex(array $variables = []): Response
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
-        QARR::$plugin->routeTemplate('rules/index', $variables);
+        return $this->renderTemplate('qarr/rules/index', $variables);
     }
 
     /**
@@ -53,11 +54,12 @@ class RulesController extends Controller
      *
      * @param int|null $ruleId
      * @param Rule|null $rule
+     * @return Response
      * @throws NotFoundHttpException
      * @throws \yii\base\ExitException
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function actionEdit(int $ruleId = null, Rule $rule = null)
+    public function actionEdit(int $ruleId = null, Rule $rule = null): Response
     {
         $variables = [
             'ruleId' => $ruleId,
@@ -95,7 +97,7 @@ class RulesController extends Controller
         $variables['continueEditingUrl'] = 'qarr/rules/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
-        QARR::$plugin->routeTemplate('rules/_edit', $variables);
+        return $this->renderTemplate('qarr/rules/_edit', $variables);
     }
 
     /**

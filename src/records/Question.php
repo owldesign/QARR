@@ -15,10 +15,13 @@ use owldesign\qarr\QARR;
 use Craft;
 use craft\records\Element;
 use craft\db\ActiveRecord;
+use craft\db\SoftDeleteTrait;
 use yii\db\ActiveQueryInterface;
 
 class Question extends ActiveRecord
 {
+    use SoftDeleteTrait;
+
     // Public Static Methods
     // =========================================================================
 

@@ -1,29 +1,20 @@
-{% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
+{% extends 'qarr/_layouts/cp-static-craft' %}
+
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}
 
 {% set title = "Dashboard"|t('qarr') %}
-{% set bodyClass = 'qarr-global qarr-widgets qarr-dashboard' %}
-{% set currentPage = craft.app.request.getSegment(2) %}
-
-{% if not craft.craftify %}
-    {% block header %}
-        {% include 'qarr/_ui/page-header' ignore missing %}
-    {% endblock %}
-{% endif %}
+{% set bodyClass = 'qarr qarr-dashboard qarr-widgets'  %}
 
 {% block content %}
-
     <div class="widgets-list">
 
-        <div class="widget-item flex-container flex-1">
+        <div class="widget-item flex-item">
             {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {title: 'Reviews'|t('qarr'), type: 'reviews' } %}
         </div>
 
-        <div class="widget-item flex-container flex-1">
+        <div class="widget-item flex-item">
             {% include 'qarr/dashboard/_includes/widget-charts' ignore missing with {title: 'Questions'|t('qarr'), type: 'questions' } %}
         </div>
 
@@ -42,5 +33,4 @@
 {#        </div>#}
 
     </div>
-
 {% endblock %}

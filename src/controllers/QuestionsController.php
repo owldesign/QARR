@@ -38,20 +38,22 @@ class QuestionsController extends Controller
      * Index
      *
      * @param array $variables
+     * @return Response
      */
-    public function actionIndex(array $variables = [])
+    public function actionIndex(array $variables = []): Response
     {
-        QARR::$plugin->routeTemplate('questions/index', $variables);
+        return $this->renderTemplate('qarr/questions/index', $variables);
     }
 
     /**
      * Edit
      *
      * @param int|null $questionId
+     * @return Response
      * @throws NotFoundHttpException
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function actionEdit(int $questionId = null)
+    public function actionEdit(int $questionId = null): Response
     {
         if ($questionId) {
             $variables['entry'] = QARR::$plugin->questions->getEntryById($questionId);
@@ -74,7 +76,7 @@ class QuestionsController extends Controller
         $variables['continueEditingUrl'] = 'qarr/reviews/{id}';
         $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
-        QARR::$plugin->routeTemplate('questions/_edit', $variables);
+        return $this->renderTemplate('qarr/questions/_edit', $variables);
     }
 
     /**

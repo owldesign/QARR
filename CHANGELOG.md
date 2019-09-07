@@ -1,5 +1,15 @@
 # QARR Changelog
 
+## 1.2.0 - 2019-09-06
+
+### Improved
+- Updated plugin UI to coexist with Craft's UI (sorry to going back and fourth with these UI style changes...)
+- Added additional element columns (Stars, Location) + ability to configure element assets from the element index page
+
+### Added
+- Added soft deletes to Reviews, Questions and Displays
+
+
 ## 1.1.9 - 2019-08-29
 
 ### Fixed

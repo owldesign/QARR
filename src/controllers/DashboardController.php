@@ -25,11 +25,12 @@ class DashboardController extends Controller
     /**
      * Index page
      * @param array $variables
+     * @return Response
      */
-    public function actionIndex(array $variables = [])
+    public function actionIndex(array $variables = []): Response
     {
         $variables = [];
 
-        QARR::$plugin->routeTemplate('index', $variables);
+        return $this->renderTemplate('qarr/index', $variables);
     }
 }

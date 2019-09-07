@@ -54,7 +54,7 @@ class QARR extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '1.0.6';
+    public $schemaVersion = '1.0.7';
     public $hasCpSettings = false;
     public $hasCpSection = true;
     public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
@@ -97,9 +97,6 @@ class QARR extends Plugin
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
             /** @var CraftVariable $variable */
             $variable = $e->sender;
-            $variable->set('craftify', function() {
-                return QARR::$plugin->settings->craftify;
-            });
             $variable->set('qarrRules', Rules::class);
             $variable->set('qarrElements', QarrElements::class);
             $variable->set('geolocations', Geolocations::class);
@@ -216,15 +213,6 @@ class QARR extends Plugin
     public static function error($message)
     {
         Craft::error(self::t($message), __METHOD__);
-    }
-
-    public function routeTemplate($path, $variables): Response
-    {
-        if (QARR::$plugin->settings->craftify) {
-            return Craft::$app->controller->renderTemplate('qarr/' . $path, $variables);
-        } else {
-            return Craft::$app->controller->renderTemplate('qarr/' . $path, $variables);
-        }
     }
 
     // Private Methods

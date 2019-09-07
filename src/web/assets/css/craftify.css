@@ -2,6 +2,7 @@
   content: "";
   font-family: "Craft";
   speak: none;
+  -webkit-font-feature-settings: "liga", "dlig";
   -ms-font-feature-settings: "liga", "dlig";
   -o-font-feature-settings: "liga", "dlig";
   font-feature-settings: "liga", "dlig";
@@ -112,6 +113,23 @@
   margin-left: auto;
 }
 
+.craftify #sources.active {
+  background: #f3f3f3;
+}
+
+.craftify .sidebar .customize-sources:hover {
+  color: white;
+}
+
+.craftify .sidebar .button-group {
+  margin-top: 15px;
+}
+
+.craftify .sidebar .button-group a {
+  display: block;
+  margin-bottom: 5px;
+}
+
 .craftify .status.pending {
   background-color: #4da1ff;
   border-color: #4da1ff !important;
@@ -135,7 +153,7 @@
   min-width: 100px;
 }
 
-.craftify .elementindex td[data-title=Title] {
+.craftify .elementindex td[data-title=Title], .craftify .elementindex td[data-attr=element] {
   min-width: 200px;
 }
 
@@ -216,6 +234,10 @@
 
 .craftify .element-block.element-element a:hover {
   color: #667eea;
+}
+
+.craftify .element-block.element-element.active {
+  background: #f3f3f3;
 }
 
 .craftify.qarr-element-edit .created-date, .craftify.qarr-element-edit .no-content {

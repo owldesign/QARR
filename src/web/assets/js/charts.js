@@ -40,17 +40,17 @@ QarrLineChart = Garnish.Base.extend({
     var $timelinePickerWrapper = $('<div class="timeline-wrapper mb-4" />').appendTo($chartHeader);
     this.$chartExplorer = $chartExplorer;
     this.$chartContainer = $('<div class="chart-container"></div>').appendTo($chartExplorer);
-    this.$spinner = $('<div class="loader absolute top-0 right-0"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"/><path d="M36 18c0-9.94-8.06-18-18-18"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"/></path></g></g></svg></div>').prependTo($chartHeader);
+    this.$spinner = $('<div class="loader"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"/><path d="M36 18c0-9.94-8.06-18-18-18"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"/></path></g></g></svg></div>').prependTo($chartHeader);
     this.$error = $('<div class="error"></div>').appendTo(this.$chartContainer);
     this.$chart = $('<div class="chart"></div>').appendTo(this.$chartContainer);
-    this.$monthBtn = $('<button id="month-range" class="qarr-btn-link btn-small btn-active mr-4">' + Craft.t('qarr', 'Last 30 days') + '</buttons>').appendTo($timelinePickerWrapper);
-    this.$weekBtn = $('<button id="week-range" class="qarr-btn-link btn-small">' + Craft.t('qarr', 'Week') + '</buttons>').appendTo($timelinePickerWrapper);
+    this.$monthBtn = $('<div id="month-range" class="btn secondary small">' + Craft.t('qarr', 'Last 30 days') + '</div>').appendTo($timelinePickerWrapper);
+    this.$weekBtn = $('<div id="week-range" class="btn small">' + Craft.t('qarr', 'Week') + '</div>').appendTo($timelinePickerWrapper);
     this.addListener(this.$monthBtn, 'click', 'handleMonthChange');
     this.addListener(this.$weekBtn, 'click', 'handleWeekChange');
   },
   handleMonthChange: function handleMonthChange() {
-    this.$weekBtn.removeClass('btn-active');
-    this.$monthBtn.addClass('btn-active');
+    this.$weekBtn.removeClass('secondary');
+    this.$monthBtn.addClass('secondary');
     var startTime = this.monthRangeDate();
     var endTime = new Date(new Date().getTime());
     this.params.startDate = startTime;
@@ -60,8 +60,8 @@ QarrLineChart = Garnish.Base.extend({
     this.loadReport();
   },
   handleWeekChange: function handleWeekChange() {
-    this.$monthBtn.removeClass('btn-active');
-    this.$weekBtn.addClass('btn-active');
+    this.$monthBtn.removeClass('secondary');
+    this.$weekBtn.addClass('secondary');
     var startTime = this.weekRangeDate();
     var endTime = new Date(new Date().getTime());
     this.params.startDate = startTime;

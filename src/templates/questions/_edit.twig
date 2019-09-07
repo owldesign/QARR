@@ -1,16 +1,9 @@
-{% extends craft.craftify ? 'qarr/_layouts/cp-craft' : 'qarr/_layouts/cp-qarr' %}
+{% extends 'qarr/_layouts/cp-craft' %}
 
 {% import "_includes/forms" as forms %}
 {% import "qarr/_ui/buttons" as buttons %}
 
 {% set selectedSubnavItem = "questions" %}
-
-{% block header %}
-    {% if not craft.craftify %}
-        {% include 'qarr/_layouts/header-qarr' ignore missing %}
-    {% endif %}
-    {{ parent() }}
-{% endblock %}
 
 {% set tabs = [
     {

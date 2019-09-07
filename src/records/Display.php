@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\records;
 
+use craft\db\SoftDeleteTrait;
 use owldesign\qarr\QARR;
 
 use Craft;
@@ -20,6 +21,8 @@ use yii\db\ActiveQueryInterface;
 
 class Display extends ActiveRecord
 {
+    use SoftDeleteTrait;
+
     private $_oldHandle;
     private $_oldFieldLayoutId;
 

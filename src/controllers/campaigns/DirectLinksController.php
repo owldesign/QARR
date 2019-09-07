@@ -39,12 +39,13 @@ class DirectLinksController extends Controller
      * Index
      *
      * @param array $variables
+     * @return Response
      */
-    public function actionIndex(array $variables = [])
+    public function actionIndex(array $variables = []): Response
     {
         $variables['directLinks'] = QARR::$plugin->links->getAllLinks();
 
-        QARR::$plugin->routeTemplate('campaigns/direct/index', $variables);
+        return $this->renderTemplate('qarr/campaigns/direct/index', $variables);
     }
 
     /**
@@ -52,10 +53,11 @@ class DirectLinksController extends Controller
      *
      * @param int|null $directId
      * @param DirectLink|null $direct
+     * @return Response
      * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
      */
-    public function actionEdit(int $directId = null, DirectLink $direct = null)
+    public function actionEdit(int $directId = null, DirectLink $direct = null): Response
     {
         $variables = [
             'directId' => $directId,
@@ -103,7 +105,7 @@ class DirectLinksController extends Controller
         $variables['continueEditingUrl']    = 'qarr/campaigns/direct/{id}';
         $variables['saveShortcutRedirect']  = $variables['continueEditingUrl'];
 
-        QARR::$plugin->routeTemplate('campaigns/direct/_edit', $variables);
+        return $this->renderTemplate('qarr/campaigns/direct/_edit', $variables);
     }
 
     /**

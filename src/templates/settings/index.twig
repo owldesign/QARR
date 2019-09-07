@@ -1,18 +1,10 @@
-{% extends "_layouts/cp" %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% extends 'qarr/_layouts/cp-static-craft' %}
+
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementStatic") %}
 
 {% set title = "Settings"|t('qarr') %}
-{% set bodyClass = 'qarr-global qarr-static-elements qarr-settings' %}
 {% set selectedSubnavItem = "settings" %}
-{% set currentPage = craft.app.request.getSegment(2) %}
-
-{% if not craft.craftify %}
-    {% block header %}
-        {% include 'qarr/_ui/page-header' ignore missing %}
-    {% endblock %}
-{% endif %}
+{% set selectedSidebarItem = "settings" %}
 
 {% block sidebar %}
     {% include 'qarr/settings/_includes/sidebar' ignore missing %}
@@ -22,61 +14,49 @@
     {% set settings = craft.app.plugins.getPlugin('qarr') %}
     {% set plugin = craft.app.plugins.getPluginInfo('qarr') %}
 
-    <div class="flex-container">
-
-        <div class="quarter-col utility-widget utility-info" data-tippy-arrow="true" data-tippy-theme="light" data-tippy="{{ craft.app.plugins.getPluginLicenseKey('qarr') }}">
-            <div class="pane">
-                <div class="license-status">
-                    {% switch craft.app.plugins.getPluginLicenseKeyStatus('qarr') %}
-                        {% case 'valid' %}
-                        <div>
-                            <h2>{{ 'License Valid'|t('qarr') }}</h2>
-                            <ptext-gray-600>{{ 'Thanks for your support!'|t('qarr') }}</ptext-gray-600>
-                        </div>
-                        <div class="utility-icon license-status-valid">
-                            <i class="fal fa-grimace"></i>
-                        </div>
-                        {% case 'invalid' %}
-                        <div>
-                            <h2>{{ 'License Invalid'|t('qarr') }}</h2>
-                            <p class="text-xs text-gray-600 opacity-50">{{ 'Dont forget to purchase license'|t('qarr') }}</p>
-                        </div>
-                        <div class="utility-icon license-status-invalid">
-                            <i class="fal fa-sad-tear"></i>
-                        </div>
-                        {% case 'mismatched' %}
-                        <div>
-                            <h2>{{ 'License Mismatched'|t('qarr') }}</h2>
-                            <p class="text-gray-600">{{ 'Dont forget to purchase license'|t('qarr') }}</p>
-                        </div>
-                        <div class="utility-icon license-status-mismatched">
-                            <i class="fal fa-dizzy"></i>
-                        </div>
-                        {% default %}
-                        <div>
-                            <h2>{{ 'License Mismatched'|t('qarr') }}</h2>
-                            <ptext-gray-600>{{ 'Please contact support'|t('qarr') }}</ptext-gray-600>
-                        </div>
-                        <div class="utility-icon">
-                            <i class="fal fa-dizzy"></i>
-                        </div>
-                    {% endswitch %}
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-
-
-
-
-
-    {#<p>Plugin Version: {{ settings.version }}</p>#}
-    {#<p>DB Schema: {{ settings.schemaVersion }}</p>#}
-    {#<p>Developer: {{ settings.developer }}</p>#}
-
-    {#{{ d(plugin) }}#}
-    {#{{ d(settings) }}#}
+    <h2>Plugin Info</h2>
+    <table class="data fullwidth fixed-layout">
+        <tbody>
+        <tr>
+            <th class="light">License</th>
+            <td>
+                {% switch craft.app.plugins.getPluginLicenseKeyStatus('qarr') %}
+                {% case 'valid' %}
+                    <span class="success" title="Valid" data-icon="check"></span> {{ 'Valid'|t('qarr') }}
+                {% case 'invalid' %}
+                    <span class="error" title="Invalid" data-icon="alert"></span> {{ 'Invalid'|t('qarr') }}
+                {% case 'mismatched' %}
+                    <span class="error" title="Mismatched" data-icon="alert"></span> {{ 'Mismatched'|t('qarr') }}
+                {% default %}
+                    <span class="error" title="Mismatched" data-icon="alert"></span> {{ 'Mismatched'|t('qarr') }}
+                {% endswitch %}
+            </td>
+        </tr>
+        <tr>
+            <th class="light">{{ 'Edition'|t('qarr') }}</th>
+            <td>{{ settings.edition }}</td>
+        </tr>
+        <tr>
+            <th class="light">{{ 'Version'|t('qarr') }}</th>
+            <td>{{ settings.version }}</td>
+        </tr>
+        <tr>
+            <th class="light">{{ 'Schema Version'|t('qarr') }}</th>
+            <td>{{ settings.schemaVersion }}</td>
+        </tr>
+        <tr>
+            <th class="light">{{ 'Developer'|t('qarr') }}</th>
+            <td><a href="{{ url(settings.developerUrl) }}">{{ settings.developer }}</a></td>
+        </tr>
+        <tr>
+            <th class="light">{{ 'Website'|t('qarr') }}</th>
+            <td><a href="{{ url(settings.pluginUrl) }}">{{ settings.pluginUrl }}</a></td>
+        </tr>
+        <tr>
+            <th class="light">{{ 'Documentation'|t('qarr') }}</th>
+            <td><a href="{{ url(settings.docsUrl) }}">{{ settings.docsUrl }}</a></td>
+        </tr>
+        </tbody>
+    </table>
 
 {% endset %}

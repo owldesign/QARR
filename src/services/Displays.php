@@ -167,7 +167,7 @@ class Displays extends Component
     /**
      * @param Display $display
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws \Exception
      */
     public function delete(Display $display): bool
     {
@@ -178,7 +178,7 @@ class Displays extends Component
 
 
             Craft::$app->getDb()->createCommand()
-                ->delete('{{%qarr_displays}}', ['id' => $display->id])
+                ->softDelete('{{%qarr_displays}}', ['id' => $display->id])
                 ->execute();
 
             // null all element's displayIds

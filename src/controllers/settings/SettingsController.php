@@ -35,9 +35,13 @@ class SettingsController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionIndex(array $variables = [])
+    /**
+     * @param array $variables
+     * @return Response
+     */
+    public function actionIndex(array $variables = []): Response
     {
-        QARR::$plugin->routeTemplate('settings/index', $variables);
+        return $this->renderTemplate('qarr/settings/index', $variables);
     }
 
 }

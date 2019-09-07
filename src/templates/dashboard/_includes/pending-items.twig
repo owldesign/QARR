@@ -21,26 +21,24 @@
             {% endif %}
         </div>
 
-        <div class="item-actions flex-container mt-2 opacity-25">
-            <button class="action-btn action-approve text-indigo-400 hover:text-green-600 text-xs flex-container items-center mr-4" data-type="{{ type }}" data-status="approved" data-action-type="status" data-element-id="{{ entry.id }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 0h1v3l3 7v8a2 2 0 0 1-2 2H5c-1.1 0-2.31-.84-2.7-1.88L0 12v-2a2 2 0 0 1 2-2h7V2a2 2 0 0 1 2-2zm6 10h3v10h-3V10z"/></svg>
+        <div class="item-actions btngroup">
+            <div class="action-btn action-approve btn submit" data-type="{{ type }}" data-status="approved" data-action-type="status" data-element-id="{{ entry.id }}">
                 {{ 'Approve'|t('qarr') }}
-            </button>
+            </div>
 
-            <button class="action-btn action-reject text-indigo-400 hover:text-red-600 text-xs flex-container items-center" data-type="{{ type }}" data-status="rejected" data-action-type="status" data-element-id="{{ entry.id }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="align-middle fill-current mr-2" width="14" height="14" viewBox="0 0 20 20"><path d="M11 20a2 2 0 0 1-2-2v-6H2a2 2 0 0 1-2-2V8l2.3-6.12A3.11 3.11 0 0 1 5 0h8a2 2 0 0 1 2 2v8l-3 7v3h-1zm6-10V0h3v10h-3z"/></svg>
+            <div class="action-btn action-reject btn secondary" data-type="{{ type }}" data-status="rejected" data-action-type="status" data-element-id="{{ entry.id }}">
                 {{ 'Reject'|t('qarr') }}
-            </button>
+            </div>
 
             {% if currentUser.can('qarr:deleteReviews') %}
-                <button class="action-btn action-delete text-gray-300 hover:text-red-600 text-xs ml-auto" data-type="{{ type }}" data-action-type="delete" data-element-id="{{ entry.id }}">
+                <div class="action-btn action-delete btn dashed" style="margin-left: auto;" data-type="{{ type }}" data-action-type="delete" data-element-id="{{ entry.id }}">
                     {{ 'Delete'|t('qarr') }}
-                </button>
+                </div>
             {% endif %}
         </div>
 
         <div id="element-popup-{{ entry.id }}" style="display: none;">
-            {% include 'qarr/_elements/element-element' ignore missing with { entry: entry, link: true } %}
+            {% include 'qarr/_elements/element-element' ignore missing with { entry: entry, link: true, configure: false } %}
         </div>
 
     </div>

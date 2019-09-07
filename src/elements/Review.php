@@ -824,10 +824,10 @@ class Review extends Element
     public function afterDelete()
     {
         $record = ReviewRecord::findOne($this->id);
-        $record->delete();
+        $record->softDelete();
 
         // Remove rules
-        QARR::$plugin->rules->removeRecord($this->id);
+        QARR::$plugin->getRules()->removeRecord($this->id);
     }
 
     /**

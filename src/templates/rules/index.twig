@@ -1,16 +1,9 @@
 {% requirePermission 'qarr:accessRules' %}
 
-{% extends craft.craftify ? 'qarr/_layouts/cp-static-craft' : 'qarr/_layouts/cp-static-craft' %}
+{% extends 'qarr/_layouts/cp-static-craft' %}
 
 {% set title = "Rules"|t('qarr') %}
 {% set selectedSubnavItem = "rules" %}
-
-{% block header %}
-    {% if not craft.craftify %}
-        {% include 'qarr/_layouts/header-qarr' ignore missing %}
-    {% endif %}
-    {{ parent() }}
-{% endblock %}
 
 {% block actionButton %}
     <a href="{{ url('qarr/rules/new') }}" class="btn submit add icon">{{ "New Rule"|t('qarr') }}</a>

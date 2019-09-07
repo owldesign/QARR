@@ -1,6 +1,6 @@
 {% extends "_layouts/elementindex" %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Craftify") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementScripts") %}
 
 {% set currentPage = craft.app.request.getSegment(2) %}
-{% set bodyClass = 'craftify qarr-global qarr-elementindex'  %}

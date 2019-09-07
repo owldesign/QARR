@@ -523,4 +523,80 @@ ElementSelect.ElementSelectInput = Craft.BaseElementSelectInput.extend({
     this.settings.onRemoveElements();
     QARR.directLinkInstance.trigger('elementRemoved', this);
   }
+}); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Configure Elements Modal
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var ConfigureElementsModal = Garnish.Modal.extend({
+  $form: null,
+  $modalContainer: null,
+  $errorContainer: null,
+  $spinner: null,
+  elementIndex: null,
+  type: null,
+  target: null,
+  init: function init(target, type) {
+    this.base();
+    this.elementIndex = Craft.elementIndex;
+
+    if (target) {
+      this.target = target;
+    }
+
+    if (type) {
+      this.type = type;
+    }
+
+    this.setSettings({
+      resizable: true
+    });
+    this.getModalContent();
+    this.$form = $('<form class="modal elementselectormodal">').appendTo(Garnish.$bod);
+    this.setContainer(this.$form);
+  },
+  getModalContent: function getModalContent() {
+    var _this6 = this;
+
+    Craft.postActionRequest('qarr/settings/configuration/get-element-settings-modal', {}, $.proxy(function (response, textStatus) {
+      if (response.success) {
+        _this6.buildModal($(response.template));
+      }
+    }, this));
+  },
+  buildModal: function buildModal(modalContainer) {
+    var that = this;
+    this.$modalContainer = modalContainer;
+    this.$modalContainer.appendTo(this.$form);
+
+    if (this.type && this.target) {
+      setTimeout(function (e) {
+        $('#elementAssetHandleName-' + that.type + '-' + that.target).focus();
+      }, 100);
+    }
+
+    this.show();
+    this.$cancelBtn = this.$modalContainer.find('.cancel');
+    this.$spinner = this.$modalContainer.find('.spinner');
+    this.addListener(this.$cancelBtn, 'click', 'handleCancel');
+    this.addListener(this.$form, 'submit', 'handleOk');
+  },
+  handleOk: function handleOk(e) {
+    var _this7 = this;
+
+    e.preventDefault();
+    var data = this.$form.serialize();
+    Craft.postActionRequest('qarr/settings/configuration/save-element-settings', data, $.proxy(function (response, textStatus) {
+      if (response.success) {
+        _this7.handleSuccess();
+
+        _this7.elementIndex.updateElements();
+      }
+    }, this));
+  },
+  handleSuccess: function handleSuccess() {
+    this.hide();
+  },
+  handleCancel: function handleCancel() {
+    this.hide();
+  }
 });

@@ -117,6 +117,7 @@
 .qarr-elementindex .selectallcontainer .checkbox:before {
   font-family: "Craft";
   speak: none;
+  -webkit-font-feature-settings: "liga", "dlig";
   -ms-font-feature-settings: "liga", "dlig";
   -o-font-feature-settings: "liga", "dlig";
   font-feature-settings: "liga", "dlig";
@@ -185,6 +186,7 @@
 .qarr-elementindex .tableview tbody .checkbox:before {
   font-family: "Craft";
   speak: none;
+  -webkit-font-feature-settings: "liga", "dlig";
   -ms-font-feature-settings: "liga", "dlig";
   -o-font-feature-settings: "liga", "dlig";
   font-feature-settings: "liga", "dlig";

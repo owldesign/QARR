@@ -38,12 +38,13 @@ class UtilitiesController extends Controller
      * Settings index
      *
      * @param array $variables
+     * @return Response
      */
-    public function actionIndex(array $variables = [])
+    public function actionIndex(array $variables = []): Response
     {
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
-        QARR::$plugin->routeTemplate('settings/utilities/index', $variables);
+        return $this->renderTemplate('qarr/settings/utilities/index', $variables);
     }
 
     /**

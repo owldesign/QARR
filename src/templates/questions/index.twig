@@ -1,17 +1,10 @@
 {% requirePermission 'qarr:accessQuestions' %}
 
-{% extends craft.craftify ? 'qarr/_layouts/elementindex-craft' : 'qarr/_layouts/elementindex-qarr' %}
+{% extends 'qarr/_layouts/elementindex-craft' %}
 
 {% set title = "Questions"|t('qarr') %}
 {% set elementType = 'owldesign\\qarr\\elements\\Question' %}
 {% set selectedSubnavItem = 'questions' %}
-
-{% block header %}
-    {% if not craft.craftify %}
-        {% include 'qarr/_layouts/header-qarr' ignore missing %}
-    {% endif %}
-    {{ parent() }}
-{% endblock %}
 
 {% block sidebar %}
     {% if sources is not empty %}

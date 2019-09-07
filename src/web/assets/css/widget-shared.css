@@ -1,5 +1,5 @@
 .qarr-widgets #content {
-  background: transparent !important;
+  background: none !important;
 }
 
 .qarr-widgets .chart-explorer-container {
@@ -12,81 +12,42 @@
   height: 130px;
 }
 
-.qarr-widgets .chart-explorer-container .chart .tooltip {
+.qarr-widgets .flex-item {
+  display: flex;
+}
+
+.qarr-widgets .col-1 {
+  width: 25%;
+}
+
+.qarr-widgets .col-2 {
+  width: 50%;
+}
+
+.qarr-widgets .col-3 {
+  width: 75%;
+}
+
+.qarr-widgets .text-center {
   text-align: center;
-  background: #9F7AEA;
-  box-shadow: none;
 }
 
-.qarr-widgets .chart-explorer-container .chart .tooltip .x-value {
-  font-size: 10px;
-  font-weight: 600;
-  color: #E2E8F0;
-}
-
-.qarr-widgets .chart-explorer-container .chart .tooltip .y-value {
-  font-size: 18px;
-  font-weight: 800;
-  color: white;
-}
-
-.qarr-widgets .chart-explorer-container .chart .grid-line .tick line {
-  stroke: #CBD5E0 !important;
-}
-
-.qarr-widgets .chart-explorer-container .chart .tick text {
-  stroke: none !important;
-  fill: #A0AEC0 !important;
-}
-
-.qarr-widgets .chart-explorer-container .chart .axis path {
-  stroke: #CBD5E0 !important;
-}
-
-.qarr-widgets .chart-explorer-container .chart .plots .plot {
-  fill: #9F7AEA !important;
-}
-
-.qarr-widgets .chart-explorer-container .chart .chart-line path {
-  stroke: #9F7AEA !important;
-}
-
-.qarr-widgets .chart-explorer-container .chart .chart-area path {
-  fill: #9F7AEA !important;
-}
-
-.qarr-widgets .widget-item {
-  background-color: #fff;
-  margin-bottom: 1rem;
-  border-radius: 0.25rem;
-}
-
-.qarr-widgets .widget-item h2 {
-  margin: 0;
-}
-
-.qarr-widgets .widget-item .widget-header {
-  padding: 1rem;
-  border-bottom-width: 1px;
-  border-color: #eeeeee;
-  border-style: solid;
-}
-
-.qarr-widgets .widget-item .widget-header .loader {
+.qarr-widgets .loader {
   position: absolute;
+  top: 0;
   right: 0;
 }
 
-.qarr-widgets .widget-item .widget-body {
-  padding: 1rem;
+.qarr-widgets .widget-header {
+  margin-bottom: 20px;
 }
 
-.qarr-widgets .widget-item .element-header a {
-  color: #667eea;
-}
-
-.qarr-widgets .widget-item .element-header a:hover {
-  color: #4c51bf;
+.qarr-widgets .widget-item {
+  background: white;
+  padding: 24px;
+  margin: 14px 0;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px #e3e5e8;
 }
 
 .qarr-widgets .element-container {
@@ -105,6 +66,18 @@
 
 .qarr-widgets .item-actions {
   transition: opacity 0.3s ease;
+}
+
+.qarr-widgets .widget-item-wrapper {
+  display: flex;
+}
+
+.qarr-widgets .widget-item-wrapper .widget-item {
+  flex: 1;
+}
+
+.qarr-widgets .widget-item-wrapper .widget-item:first-child {
+  margin-right: 24px;
 }
 
 #widget-pending-reviews .flex-container, #widget-pending-questions .flex-container {

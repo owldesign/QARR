@@ -1,0 +1,45 @@
+{% import "_includes/forms" as forms %}
+
+{{ hiddenInput('pluginHandle', 'qarr') }}
+
+<div class="body">
+    <div class="content">
+        <div class="main">
+            <div class="header">
+                <h1>{{ 'Configure elements'|t('qarr') }}</h1>
+            </div>
+
+            {% for type, items in sections %}
+                <div class="field {% if loop.first %}first{% endif %}">
+                    <div class="heading">
+                        <h2 class="pb-4 text-lg">{{ type |capitalize }}</h2>
+                    </div>
+                    {% for item in items %}
+                        {{ forms.textField({
+                            label: item.name,
+                            id: 'elementAssetHandleName-' ~ type ~ '-' ~ item.handle,
+                            name: 'settings[elementAssetHandleName][' ~ item.handle ~ ']',
+                            autocorrect: false,
+                            autocapitalize: false,
+                            value: settings.elementAssetHandleName[item.handle] is defined ? settings.elementAssetHandleName[item.handle] : '',
+                            placeholder: "Asset handle"|t('qarr')
+                        }) }}
+                    {% endfor %}
+                </div>
+                {% if not loop.last %}
+                    <hr>
+                {% endif %}
+            {% endfor %}
+            </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="buttons right last">
+        <input type="button" class="btn cancel" value="{{ 'Cancel'|t('app') }}">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+        <span class="spinner hidden"></span>
+    </div>
+</div>
+
+

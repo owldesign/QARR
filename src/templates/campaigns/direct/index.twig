@@ -1,17 +1,10 @@
 {% requirePermission 'qarr:accessCampaigns' %}
 
-{% extends craft.craftify ? 'qarr/_layouts/cp-static-craft' : 'qarr/_layouts/cp-static-craft' %}
+{% extends 'qarr/_layouts/cp-static-craft' %}
 
 {% set title = "Direct Links"|t('qarr') %}
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "direct" %}
-
-{% block header %}
-    {% if not craft.craftify %}
-        {% include 'qarr/_layouts/header-qarr' ignore missing %}
-    {% endif %}
-    {{ parent() }}
-{% endblock %}
 
 {% block actionButton %}
     <a href="{{ url('qarr/campaigns/new') }}" class="btn submit add icon disabled">{{ "New Campaign"|t('qarr') }}</a>

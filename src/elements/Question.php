@@ -736,12 +736,11 @@ class Question extends Element
 
     /**
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
     public function afterDelete()
     {
         $record = QuestionRecord::findOne($this->id);
-        $record->delete();
+        $record->softDelete();
     }
 
     /**

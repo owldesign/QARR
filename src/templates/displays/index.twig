@@ -1,16 +1,9 @@
 {% requirePermission 'qarr:accessDisplays' %}
 
-{% extends craft.craftify ? 'qarr/_layouts/cp-static-craft' : 'qarr/_layouts/cp-static-craft' %}
+{% extends 'qarr/_layouts/cp-static-craft' %}
 
 {% set title = "Displays"|t('qarr') %}
 {% set selectedSubnavItem = "displays" %}
-
-{% block header %}
-    {% if not craft.craftify %}
-        {% include 'qarr/_layouts/header-qarr' ignore missing %}
-    {% endif %}
-    {{ parent() }}
-{% endblock %}
 
 {% block actionButton %}
     <a href="{{ url('qarr/displays/new') }}" class="btn submit add icon">{{ "New Display"|t('qarr') }}</a>

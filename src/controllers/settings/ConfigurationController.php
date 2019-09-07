@@ -35,33 +35,54 @@ class ConfigurationController extends Controller
     // Public Methods
     // =========================================================================
 
-    /**
-     * Settings index
-     *
-     * @param array $variables
-     */
-    public function actionIndex(array $variables = [])
+    public function actionGetElementSettingsModal()
     {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
         $settings = QARR::$plugin->settings;
         $sections = Craft::$app->getSections()->getAllSections();
 
         foreach ($sections as $section) {
             if ($section->type == 'single') {
-                $variables['sections']['singles'][] = $section;
+                $variables['sections']['single'][] = $section;
             }
             if ($section->type == 'channel') {
-                $variables['sections']['channels'][] = $section;
+                $variables['sections']['channel'][] = $section;
             }
         }
 
         $commerce = Craft::$app->getPlugins()->isPluginEnabled('commerce');
         if ($commerce) {
-            $variables['sections']['products'] = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
+            $variables['sections']['product'] = CommercePlugin::getInstance()->productTypes->getAllProductTypes();
         }
 
         $variables['settings'] = $settings;
 
-        QARR::$plugin->routeTemplate('settings/configuration/index', $variables);
+        $template = Craft::$app->view->renderTemplate('qarr/settings/_includes/element-index-assets', $variables);
+
+        return $this->asJson([
+            'success' => true,
+            'template'   => $template
+        ]);
+    }
+
+    public function actionSaveElementSettings()
+    {
+        $this->requirePostRequest();
+        $pluginHandle = Craft::$app->getRequest()->getRequiredBodyParam('pluginHandle');
+        $settings = Craft::$app->getRequest()->getBodyParam('settings', []);
+        $plugin = Craft::$app->getPlugins()->getPlugin($pluginHandle);
+
+        if ($plugin === null) {
+            throw new NotFoundHttpException('Plugin not found');
+        }
+
+        $result = Craft::$app->getPlugins()->savePluginSettings($plugin, $settings);
+
+        return $this->asJson([
+            'success' => $result,
+        ]);
     }
 
 }

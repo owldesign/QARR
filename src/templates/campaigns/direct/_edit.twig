@@ -1,6 +1,6 @@
 {% requirePermission 'qarr:accessCampaigns' %}
 
-{% extends craft.craftify ? 'qarr/_layouts/cp-static-craft' : 'qarr/_layouts/cp-static-craft' %}
+{% extends 'qarr/_layouts/cp-static-craft' %}
 
 {% import "_includes/forms" as forms %}
 {% import "qarr/_ui/buttons" as buttons %}
@@ -13,13 +13,6 @@
 
 {% block sidebar %}
     {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
-{% endblock %}
-
-{% block header %}
-    {% if not craft.craftify %}
-        {% include 'qarr/_layouts/header-qarr' ignore missing %}
-    {% endif %}
-    {{ parent() }}
 {% endblock %}
 
 {% block actionButton %}

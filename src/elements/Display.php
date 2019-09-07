@@ -368,7 +368,7 @@ class Display extends Element
     public function afterDelete(): bool
     {
         // Delete display record
-        QARR::$plugin->displays->deleteDisplayById($this->id);
+        QARR::$plugin->getDisplays()->deleteDisplayById($this->id);
 
         if ($this->fieldLayoutId !== null) {
             Craft::$app->getFields()->deleteLayoutById($this->fieldLayoutId);

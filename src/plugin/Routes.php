@@ -49,7 +49,6 @@ trait Routes
                 $event->rules['qarr/settings'] = 'qarr/settings/settings/index';
                 $event->rules['qarr/settings/email-templates'] = 'qarr/settings/email-templates/index';
                 $event->rules['qarr/settings/utilities'] = 'qarr/settings/utilities/index';
-                $event->rules['qarr/settings/configuration'] = 'qarr/settings/configuration/index';
             }
         );
     }
