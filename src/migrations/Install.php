@@ -75,6 +75,7 @@ class Install extends Migration
             'userAgent' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
+            'dateDeleted' => $this->dateTime()->null(),
             'uid' => $this->uid(),
         ]);
         $this->createTable(Table::REVIEWSREPLIES, [
@@ -109,6 +110,7 @@ class Install extends Migration
             'userAgent' => $this->text(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
+            'dateDeleted' => $this->dateTime()->null(),
             'uid' => $this->uid(),
         ]);
         $this->createTable(Table::QUESTIONSANSWERS, [
@@ -148,6 +150,7 @@ class Install extends Migration
             'settings' => $this->mediumText(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
+            'dateDeleted' => $this->dateTime()->null(),
             'uid' => $this->uid(),
         ]);
         $this->createTable(Table::CORRESPONDENCE, [
@@ -159,6 +162,7 @@ class Install extends Migration
             'ownerEmail' => $this->string()->notNull(),
             'type' => $this->string()->notNull(),
             'elementId' => $this->integer()->notNull(),
+            'emailTemplateId' => $this->integer()->null(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
@@ -223,6 +227,20 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()
         ]);
+
+        // Email Templates
+        $this->createTable(Table::EMAIL_TEMPLATES, [
+            'id' => $this->primaryKey(),
+            'name' => $this->string()->notNull(),
+            'handle' => $this->string()->notNull(),
+            'enabled' => $this->boolean(),
+            'settings' => $this->text(),
+            'options' => $this->text(),
+            'dateCreated' => $this->dateTime()->notNull(),
+            'dateUpdated' => $this->dateTime()->notNull(),
+            'dateDeleted' => $this->dateTime()->null(),
+            'uid' => $this->uid()
+        ]);
     }
     /**
      * Create indexes
@@ -284,6 +302,7 @@ class Install extends Migration
         $this->dropTableIfExists(Table::RULESFLAGGED);
         $this->dropTableIfExists(Table::RULES);
         $this->dropTableIfExists(Table::DIRECTLINKS);
+        $this->dropTableIfExists(Table::EMAIL_TEMPLATES);
     }
     public function insertDefaultData()
     {

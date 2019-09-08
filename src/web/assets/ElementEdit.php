@@ -5,7 +5,7 @@ namespace owldesign\qarr\web\assets;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-class Element extends AssetBundle
+class ElementEdit extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -17,17 +17,7 @@ class Element extends AssetBundle
     {
         $this->sourcePath = __DIR__;
 
-        $this->depends = [
-            CpAsset::class,
-        ];
-
-        $this->css = [
-            'css/element-shared.css',
-            'css/element-edit.css'
-        ];
-
         $this->js = [
-            'js/element-func.js',
             'js/element-edit.js'
         ];
 

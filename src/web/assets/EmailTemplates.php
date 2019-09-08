@@ -5,7 +5,7 @@ namespace owldesign\qarr\web\assets;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
-class ElementScripts extends AssetBundle
+class EmailTemplates extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -22,8 +22,7 @@ class ElementScripts extends AssetBundle
         ];
 
         $this->js = [
-            'js/element-func.js',
-            'js/element-edit.js'
+            'js/email-templates.js',
         ];
 
         parent::init();

@@ -193,9 +193,10 @@ class ElementsController extends Controller
         $exclude    = $request->getBodyParam('exclude');
 
         $variables['type'] = $type;
-        $variables['entries'] = QARR::$plugin->elements->queryElements($type, null, $limit, null, 'pending', $exclude);
+        $variables['entries'] = QARR::$plugin->getElements()->queryElements($type, null, $limit, null, 'pending', $exclude);
 
         $template = Craft::$app->view->renderTemplate('qarr/dashboard/_includes/pending-items', $variables);
+
 
         return $this->asJson([
             'success' => true,

@@ -1,3 +1,48 @@
+.qarr-widgets .widget-pie svg {
+  margin: auto;
+}
+
+.qarr-widgets .pie-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qarr-widgets .pie-stats .pie-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qarr-widgets .pie-stats .stat-item {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.qarr-widgets .pie-stats .stat-label {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+}
+
+.qarr-widgets .pie-stats .stat-value {
+  color: #424242;
+}
+
+.qarr-widgets .star-rating .star:first-child {
+  margin-left: 0;
+}
+
+.qarr-widgets .element-list .element-item {
+  transform-origin: 50% 50%;
+  transition: all 0.3s ease;
+}
+
+.qarr-widgets .element-list .element-item:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border: none;
+}
+
 .qarr-widgets #content {
   background: none !important;
 }

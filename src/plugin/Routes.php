@@ -45,9 +45,11 @@ trait Routes
                 $event->rules['qarr/campaigns/direct'] = 'qarr/campaigns/direct-links/index';
                 $event->rules['qarr/campaigns/direct/new'] = 'qarr/campaigns/direct-links/edit';
                 $event->rules['qarr/campaigns/direct/<directId:\d+>'] = 'qarr/campaigns/direct-links/edit';
+                $event->rules['qarr/campaigns/email-templates'] = 'qarr/campaigns/email-templates/index';
+                $event->rules['qarr/campaigns/email-templates/new'] = 'qarr/campaigns/email-templates/edit';
+                $event->rules['qarr/campaigns/email-templates/<templateId:\d+>'] = 'qarr/campaigns/email-templates/edit';
 
                 $event->rules['qarr/settings'] = 'qarr/settings/settings/index';
-                $event->rules['qarr/settings/email-templates'] = 'qarr/settings/email-templates/index';
                 $event->rules['qarr/settings/utilities'] = 'qarr/settings/utilities/index';
             }
         );

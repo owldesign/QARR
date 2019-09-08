@@ -14,6 +14,7 @@ use craft\web\Controller;
 use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\Review as ReviewElement;
 use owldesign\qarr\fields\QARRField as QARRFieldField;
+use owldesign\qarr\services\campaigns\EmailTemplates;
 use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\services\Elements as QarrElements;
@@ -54,7 +55,7 @@ class QARR extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '1.0.7';
+    public $schemaVersion = '1.0.8';
     public $hasCpSettings = false;
     public $hasCpSection = true;
     public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
@@ -97,6 +98,7 @@ class QARR extends Plugin
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
             /** @var CraftVariable $variable */
             $variable = $e->sender;
+            $variable->set('qarrEmails', EmailTemplates::class);
             $variable->set('qarrRules', Rules::class);
             $variable->set('qarrElements', QarrElements::class);
             $variable->set('geolocations', Geolocations::class);

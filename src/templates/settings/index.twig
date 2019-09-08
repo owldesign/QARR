@@ -1,10 +1,9 @@
-{% extends 'qarr/_layouts/cp-static-craft' %}
-
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
+{% extends "_layouts/cp" %}
 
 {% set title = "Settings"|t('qarr') %}
 {% set selectedSubnavItem = "settings" %}
 {% set selectedSidebarItem = "settings" %}
+{% set bodyClass = "qarr qarr-element-static" %}
 
 {% block sidebar %}
     {% include 'qarr/settings/_includes/sidebar' ignore missing %}
@@ -14,11 +13,12 @@
     {% set settings = craft.app.plugins.getPlugin('qarr') %}
     {% set plugin = craft.app.plugins.getPluginInfo('qarr') %}
 
-    <h2>Plugin Info</h2>
+    <h2>{{ 'Plugin Info'|t('qarr') }}</h2>
+
     <table class="data fullwidth fixed-layout">
         <tbody>
         <tr>
-            <th class="light">License</th>
+            <th class="light">{{ 'License'|t('qarr') }}</th>
             <td>
                 {% switch craft.app.plugins.getPluginLicenseKeyStatus('qarr') %}
                 {% case 'valid' %}

@@ -1,9 +1,10 @@
 {% requirePermission 'qarr:accessDisplays' %}
 
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
 
 {% set title = "Displays"|t('qarr') %}
 {% set selectedSubnavItem = "displays" %}
+{% set bodyClass = "qarr qarr-element-static" %}
 
 {% block actionButton %}
     <a href="{{ url('qarr/displays/new') }}" class="btn submit add icon">{{ "New Display"|t('qarr') }}</a>

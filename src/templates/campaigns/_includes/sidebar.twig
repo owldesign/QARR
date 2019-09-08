@@ -1,10 +1,10 @@
 <nav>
     <ul>
-        <li class="heading">
-            <span>{{ 'Tools'|t('qarr') }}</span>
+        <li>
+            <a href="{{ url('qarr/campaigns/direct') }}" {% if selectedSidebarItem == 'direct' %} class="sel"{% endif %}>{{ 'Direct Links'|t('qarr') }}</a>
         </li>
         <li>
-            <a href="{{ url('qarr/campaigns/direct') }}" {% if selectedSidebarItem == 'direct' %} class="sel"{% endif %}>Direct Links</a>
+            <a href="{{ url('qarr/campaigns/email-templates') }}" {% if selectedSidebarItem == 'email-templates' %} class="sel"{% endif %}>{{ 'Email Templates'|t('qarr') }}</a>
         </li>
     </ul>
 </nav>

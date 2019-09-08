@@ -1,10 +1,15 @@
 {% requirePermission 'qarr:accessQuestions' %}
 
-{% extends 'qarr/_layouts/elementindex-craft' %}
+{% extends "_layouts/elementindex" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementShared") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
 
 {% set title = "Questions"|t('qarr') %}
 {% set elementType = 'owldesign\\qarr\\elements\\Question' %}
 {% set selectedSubnavItem = 'questions' %}
+{% set bodyClass = 'qarr qarr-elementindex' %}
 
 {% block sidebar %}
     {% if sources is not empty %}

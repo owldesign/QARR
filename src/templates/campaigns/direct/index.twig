@@ -1,14 +1,13 @@
 {% requirePermission 'qarr:accessCampaigns' %}
 
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
 
 {% set title = "Direct Links"|t('qarr') %}
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "direct" %}
+{% set bodyClass = "qarr qarr-element-static" %}
 
 {% block actionButton %}
-    <a href="{{ url('qarr/campaigns/new') }}" class="btn submit add icon disabled">{{ "New Campaign"|t('qarr') }}</a>
-
     <div id="new-btn-container" class="btngroup submit">
         <div class="btn submit menubtn">{{ 'Direct Links'|t('qarr') }}</div>
         <div class="menu" data-align="right">
@@ -26,7 +25,6 @@
             </ul>
         </div>
     </div>
-
 {% endblock %}
 
 {% block sidebar %}

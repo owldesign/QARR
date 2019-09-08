@@ -26,6 +26,7 @@ use craft\helpers\UrlHelper;
 use craft\elements\db\ElementQueryInterface;
 
 use craft\commerce\Plugin as CommercePlugin;
+use craft\commerce\elements\Order as CommerceOrder;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\validators\EmailValidator;
@@ -679,6 +680,28 @@ class Review extends Element
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
 
+    public function hasPurchased()
+    {
+        $commerce = $this->getCommerce();
+
+        if (!$commerce) {
+            return false;
+        }
+
+        if ($this->getElementType() != 'product') {
+            return false;
+        }
+
+        $product = CommercePlugin::getInstance()->getProducts()->getProductById($this->elementId);
+
+        $order = CommerceOrder::find()
+            ->email($this->emailAddress)
+            ->hasPurchasables($product->defaultVariant)
+            ->one();
+
+        return $order;
+    }
+
     /**
      * @param $time
      * @return string
@@ -795,7 +818,7 @@ class Review extends Element
         if ($isNew) {
             // Apply Rule
             Craft::$app->getQueue()->push(new RulesTask([
-                'entry' => $record,
+                'entry' => $record->toArray(),
             ]));
 
             // Apply Geolocation

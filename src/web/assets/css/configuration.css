@@ -1,9 +1,0 @@
-.qarr-configuration .elements-list {
-  display: flex;
-  align-items: flex-start;
-}
-
-.qarr-configuration .elements-list .element-item {
-  margin-right: 25px;
-  margin-bottom: 25px;
-}

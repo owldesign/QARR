@@ -5,7 +5,7 @@ namespace owldesign\qarr\records;
 use craft\db\ActiveRecord;
 use owldesign\qarr\elements\db\Table;
 
-class DirectLink extends ActiveRecord
+class EmailTemplate extends ActiveRecord
 {
     // Public Static Methods
     // =========================================================================
@@ -15,6 +15,6 @@ class DirectLink extends ActiveRecord
      */
     public static function tableName()
     {
-        return Table::DIRECTLINKS;
+        return Table::EMAIL_TEMPLATES;
     }
 }

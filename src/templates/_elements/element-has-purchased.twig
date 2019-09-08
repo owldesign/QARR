@@ -1,0 +1,11 @@
+<div class="meta read-only">
+    <div class="data">
+        <h5 class="heading">{{ 'Order'|t('qarr') }}</h5>
+        <div class="value"><a href="{{ url('commerce/orders/' ~ order.id) }}" target="_blank">Reference #{{ order.shortNumber }}</a></div>
+    </div>
+    <div class="data">
+        <h5 class="heading">{{ 'Purchased Date'|t('qarr') }}</h5>
+        <div class="value">{{ order.dateOrdered |date() }}</div>
+    </div>
+</div>
+<br>

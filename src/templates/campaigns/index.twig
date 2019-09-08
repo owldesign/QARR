@@ -1,10 +1,11 @@
 {% requirePermission 'qarr:accessCampaigns' %}
 
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
 
 {% set title = "Campaigns"|t('qarr') %}
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "campaigns" %}
+{% set bodyClass = "qarr qarr-element-static" %}
 
 {% block actionButton %}
     <a href="{{ url('qarr/campaigns/new') }}" class="btn submit add icon disabled">{{ "New Campaign"|t('qarr') }}</a>

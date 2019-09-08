@@ -1,0 +1,61 @@
+{% requirePermission 'qarr:accessCampaigns' %}
+
+{% extends "_layouts/cp" %}
+
+{% set title = "Email Templates"|t('qarr') %}
+{% set selectedSubnavItem = "email-templates" %}
+{% set selectedSidebarItem = "email-templates" %}
+{% set bodyClass = "qarr qarr-element-static" %}
+
+{% block actionButton %}
+    <a href="{{ url('qarr/campaigns/email-templates/new') }}" class="btn submit add icon">{{ "New Email Template"|t('qarr') }}</a>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="field">
+
+        {% include 'qarr/_elements/no-elements' ignore missing with {
+            text: 'No email templates exist yet.'|t('qarr'),
+            hidden: templates|length ? true : false
+        } %}
+
+        {% if templates|length %}
+            <table id="templates" class="data fullwidth collapsible">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Handle</th>
+                    <th scope="col">Enabled</th>
+                    <th scope="thin"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for template in templates %}
+                    {% set enabled = template.enabled ? 'Yes' : 'No' %}
+
+                    <tr data-id="{{ template.id }}" data-name="{{ template.name }}">
+                        <th scope="row" data-title="{{ 'Name'|t('qarr') }}"><a href="{{ url('qarr/campaigns/email-templates/' ~ template.id) }}">{{ template.name }}</a></th>
+                        <td scope="code" data-title="{{ 'Handle'|t('qarr') }}">{{ template.handle }}</td>
+                        <td scope="row" data-title="{{ 'Enabled'|t('qarr') }}">{{ enabled }}</td>
+                        <td scope="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}"></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+{% endblock %}
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#templates',
+    noItemsSelector: '#noelements',
+    deleteAction: 'qarr/campaigns/email-templates/delete',
+    });
+{% endjs %}

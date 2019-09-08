@@ -12,6 +12,7 @@ namespace owldesign\qarr\elements;
 
 use Craft;
 use craft\base\Element;
+use craft\commerce\elements\Order as CommerceOrder;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
@@ -500,6 +501,28 @@ class Question extends Element
         $response = QARR::$plugin->answers->getAnswers($status, $this->id);
 
         return $response;
+    }
+
+    public function hasPurchased()
+    {
+        $commerce = $this->getCommerce();
+
+        if (!$commerce) {
+            return false;
+        }
+
+        if ($this->getElementType() != 'product') {
+            return false;
+        }
+
+        $product = CommercePlugin::getInstance()->getProducts()->getProductById($this->elementId);
+
+        $order = CommerceOrder::find()
+            ->email($this->emailAddress)
+            ->hasPurchasables($product->defaultVariant)
+            ->one();
+
+        return $order;
     }
 
     /**

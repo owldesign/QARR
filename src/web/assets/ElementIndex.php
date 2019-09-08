@@ -17,15 +17,6 @@ class ElementIndex extends AssetBundle
     {
         $this->sourcePath = __DIR__;
 
-        $this->depends = [
-            CpAsset::class,
-        ];
-
-        $this->css = [
-            'css/element-shared.css',
-            'css/element-index.css'
-        ];
-
         $this->js = [
             'js/element-index.js'
         ];

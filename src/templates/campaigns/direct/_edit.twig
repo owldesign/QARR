@@ -1,14 +1,15 @@
 {% requirePermission 'qarr:accessCampaigns' %}
 
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
 
 {% import "_includes/forms" as forms %}
-{% import "qarr/_ui/buttons" as buttons %}
+{% import "qarr/_includes/macros/_buttons" as buttons %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\DirectLinks") %}
 
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "direct" %}
+{% set bodyClass = "qarr qarr-element-edit" %}
 {% set isNewElement = direct.id ? false : true %}
 
 {% block sidebar %}

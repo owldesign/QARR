@@ -54,6 +54,10 @@
             </h2>
         {% endif %}
 
+        {% if order is defined and order %}
+            <p>{{ 'Customer has purchased this product'|t('qarr') }}</p>
+        {% endif %}
+
         {% if link is defined and link %}
             <a href="{{ entry.url }}" class="qarr-btn-link" target="_blank">{{ 'View Entry'|t('qarr') }}</a>
         {% endif %}

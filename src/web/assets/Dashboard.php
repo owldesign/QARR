@@ -17,13 +17,7 @@ class Dashboard extends AssetBundle
     {
         $this->sourcePath = __DIR__;
 
-        $this->depends = [
-            CpAsset::class,
-            Tippy::class
-        ];
-
         $this->css = [
-            'css/widget-plugin.css',
             'css/dashboard.css',
         ];
 

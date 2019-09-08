@@ -2,12 +2,12 @@
     {% set entries = craft.qarr.reviews({
         limit: limit,
         status: 'pending',
-    }).all() %}
+    }) %}
 {% else %}
     {% set entries = craft.qarr.questions({
         limit: limit,
         status: 'pending',
-    }).all() %}
+    }) %}
 {% endif %}
 <div id="widget-pending-{{ type }}">
 

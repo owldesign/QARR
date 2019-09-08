@@ -23,5 +23,6 @@ abstract class Table
     const RULESFLAGGED              = '{{%qarr_rules_elements}}';
 
     const DIRECTLINKS               = '{{%qarr_direct_links}}';
+    const EMAIL_TEMPLATES           = '{{%qarr_email_templates}}';
 
 }

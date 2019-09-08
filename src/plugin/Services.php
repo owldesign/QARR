@@ -21,6 +21,7 @@ use owldesign\qarr\services\Correspondence;
 use owldesign\qarr\services\Elements;
 use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\campaigns\DirectLink;
+use owldesign\qarr\services\campaigns\EmailTemplates;
 use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\services\Encrypt;
 
@@ -150,6 +151,16 @@ trait Services
     }
 
     /**
+     * Get email templates
+     *
+     * @return EmailTemplates
+     */
+    public function getEmailTemplates(): EmailTemplates
+    {
+        return $this->get('email-templates');
+    }
+
+    /**
      * Get Encrypt
      *
      * @return Encrypt
@@ -181,6 +192,7 @@ trait Services
             'geolocations' => Geolocations::class,
             'links' => DirectLink::class,
             'encrypt' => Encrypt::class,
+            'email-templates' => EmailTemplates::class,
         ]);
     }
 }

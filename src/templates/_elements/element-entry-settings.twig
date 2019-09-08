@@ -1,3 +1,5 @@
+{% set hasPurchased = entry.hasPurchased() %}
+
 <div id="settings">
     {% include 'qarr/_elements/element-information' ignore missing with {entry: entry, type: type, status: entry.status, geolocation: entry.geolocation|json_decode, author: {
         fullName: entry.fullName,
@@ -5,7 +7,12 @@
         avatarUrl: entry.avatarUrl,
         user: entry.author
     }} %}
-    {% include 'qarr/_elements/element-element' ignore missing with {entry: entry, type: type, element: entry.element, elementType: entry.elementType, settings: entry.settings} %}
+    {% include 'qarr/_elements/element-element' ignore missing with {entry: entry, type: type, element: entry.element, elementType: entry.elementType, settings: entry.settings, configure: false, order: hasPurchased} %}
+
+    {% if hasPurchased %}
+        {% include 'qarr/_elements/element-has-purchased' ignore missing with {entry: entry, order: hasPurchased} %}
+    {% endif %}
+
     {% include 'qarr/_elements/element-entry-audit' ignore missing with {entry: entry} %}
 </div>
 

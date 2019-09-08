@@ -4,14 +4,14 @@
     <ul>
         <li>
             <a href="{{ url('qarr/settings') }}" class="{{ currentSettingsPage == null ? 'sel' }}">
-                <i class="{{ currentSettingsPage == null ? 'fas' : 'far' }} fa-exclamation-circle icon"></i>
+                <span class="icon icon-mask">{{ (svg('infocircle', sanitize=true, namespace=true) ?: "<span data-icon='infocircle'></span>")|raw }}</span>
                 <span class="label">{{ 'Info'|t('qarr') }}</span>
             </a>
         </li>
 
         <li>
             <a href="{{ url('qarr/settings/utilities') }}" class="{{ currentSettingsPage == 'utilities' ? 'sel' }}">
-                <i class="{{ currentSettingsPage == 'utilities' ? 'fas' : 'far' }} fa-layer-group icon"></i>
+                <span class="icon icon-mask">{{ (svg('tool', sanitize=true, namespace=true) ?: "<span data-icon='tool'></span>")|raw }}</span>
                 <span class="label">{{ 'Utilities'|t('qarr') }}</span>
             </a>
         </li>

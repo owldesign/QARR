@@ -1,5 +1,6 @@
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
 
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Dashboard") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Charts") %}
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Widgets") %}

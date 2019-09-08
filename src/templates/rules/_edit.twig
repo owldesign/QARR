@@ -1,11 +1,14 @@
 {% requirePermission 'qarr:accessRules' %}
 
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 
 {% import "_includes/forms" as forms %}
-{% import "qarr/_ui/buttons" as buttons %}
+{% import "qarr/_includes/macros/_buttons" as buttons %}
 
 {% set selectedSubnavItem = "rules" %}
+{% set bodyClass = 'qarr qarr-element-edit' %}
 {% set isNewElement = rule.id ? false : true %}
 
 {% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Rules") %}

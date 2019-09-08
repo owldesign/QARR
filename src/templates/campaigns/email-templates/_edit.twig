@@ -1,0 +1,178 @@
+{% requirePermission 'qarr:accessCampaigns' %}
+
+{% extends "_layouts/cp" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\EmailTemplates") %}
+{% do view.registerAssetBundle("craft\\web\\assets\\vue\\VueAsset") %}
+
+{% import "_includes/forms" as forms %}
+{% import "qarr/_includes/macros/_buttons" as buttons %}
+
+{% set selectedSubnavItem = "campaigns" %}
+{% set selectedSidebarItem = "email-templates" %}
+{% set bodyClass = "qarr qarr-element-edit" %}
+{% set isNewElement = template.id ? false : true %}
+
+{% block sidebar %}
+    {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% block actionButton %}
+    <div id="save-btn-container" class="btngroup submit">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+        <div class="btn submit menubtn"></div>
+        <div class="menu" data-align="right">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ '{cpEditUrl}'|hash }}">
+                        {{ forms.optionShortcutLabel('S') }}
+                        {{ "Save and continue editing"|t('app') }}
+                    </a>
+                </li>
+                <li>
+                    <a class="formsubmit"
+                       data-redirect="{{ "qarr/campaigns/email-templates/new" |hash }}">
+                        {{ "Save and add another"|t('app') }}
+                    </a>
+                </li>
+            </ul>
+            {% if not isNewElement %}
+                <hr>
+                <ul>
+                    <li>
+                        <a class="formsubmit error" data-action="qarr/campaigns/email-templates/delete"
+                           data-confirm="{{ 'Are you sure you want to delete this email template?'|t('qarr') }}"
+                           data-redirect="{{ 'qarr/campaigns/email-templates'|hash }}">
+                            {{ 'Delete template'|t('qarr') }}
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    {{ actionInput('qarr/campaigns/email-templates/save') }}
+    {{ redirectInput('qarr/campaigns/email-templates') }}
+
+    {% if template.id %}{{ hiddenInput('id', template.id) }}{% endif %}
+
+    {{ forms.textField({
+        label: "Name"|t('app'),
+        siteId: template.name,
+        id: 'name',
+        name: 'name',
+        first: true,
+        autofocus: true,
+        autocorrect: false,
+        autocapitalize: false,
+        value: template.name,
+        placeholder: "Enter name"|t('qarr'),
+        errors: (template.getErrors('name'))
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "HTML Email Template"|t('qarr'),
+        instructions: "The template QARR will use for HTML emails"|t('qarr'),
+        id: 'template',
+        name: 'template',
+        suggestions: craft.qarrEmails.emailTemplateSuggestions(),
+        suggestEnvVars: false,
+        value: template.template ? template.template : '',
+        errors: template.getErrors('template')
+    }) }}
+
+
+    <div id="email-template-app">
+
+        <div class="field" id="tmp-bg-color-field">
+            <div class="heading">
+                <label id="tmp-bg-color-label" for="tmp-bg-color">{{ 'Background Color'|t('qarr') }}</label>
+            </div>
+            <div class="input ltr">
+                <input type="color" name="tmp-bg-color" class="color-input" value="#f4f4f4" @change="onBgColorChanged">
+            </div>
+        </div>
+
+        <div class="field" id="tmp-container-color-field">
+            <div class="heading">
+                <label id="tmp-container-color-label" for="tmp-container-color">{{ 'Container Color'|t('qarr') }}</label>
+            </div>
+            <div class="input ltr">
+                <input type="color" name="tmp-container-color" class="color-input" value="#ffffff" @change="onContainerColorChanged">
+            </div>
+        </div>
+
+        <div class="field" id="tmp-headline-field">
+            <div class="heading">
+                <label id="tmp-headline-label" for="tmp-headline">{{ 'Headline Text'|t('qarr') }}</label>
+            </div>
+            <div class="input ltr">
+                <input type="text" name="tmp-headline" class="text fullwidth" value="Thanks for your input!" @change="onHeadlineChanged">
+            </div>
+        </div>
+
+        <div class="field" id="tmp-subheadline-field">
+            <div class="heading">
+                <label id="tmp-subheadline-label" for="tmp-subheadline">{{ 'Subheadline Text'|t('qarr') }}</label>
+            </div>
+            <div class="input ltr">
+                <input type="text" name="tmp-subheadline" class="text fullwidth" value="Our Response" @change="onSubheadlineChanged">
+            </div>
+        </div>
+
+        <div class="field" id="tmp-footerText-field">
+            <div class="heading">
+                <label id="tmp-footerText-label" for="tmp-footerText">{{ 'Footer Text'|t('qarr') }}</label>
+            </div>
+            <div class="input ltr">
+                <input type="text" name="tmp-footerText" class="text fullwidth" value="Cheers!" @change="onFooterTextChanged">
+            </div>
+        </div>
+
+    </div>
+
+
+    {#    {{ forms.selectField({#}
+    {#        label: "Link Type"|t('qarr'),#}
+    {#        id: 'type',#}
+    {#        name: 'type',#}
+    {#        value: direct.type,#}
+    {#        options: [{ label: 'Review'|t('qarr'), value: 'review' }, { label: 'Question'|t('qarr'), value: 'question' }]#}
+    {#    }) }}#}
+
+
+{% endblock %}
+
+{% block details %}
+    <div id="settings" class="meta">
+        {{ forms.textField({
+            label: "Handle"|t('app'),
+            id: 'handle',
+            name: 'handle',
+            autocorrect: false,
+            autocapitalize: false,
+            value: template.handle,
+            placeholder: "Enter handle"|t('qarr'),
+            errors: (template.getErrors('handle'))
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Enabled"|t('app'),
+            id: 'enabled',
+            name: 'enabled',
+            on: template.enabled
+        }) }}
+    </div>
+{% endblock %}
+
+{% set settings = {
+    enablePreview: true,
+    previewTargets: [],
+} %}
+
+{% js %}
+    {% if template is defined and not template.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+{% endjs %}

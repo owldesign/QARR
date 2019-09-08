@@ -3,6 +3,7 @@
 namespace owldesign\qarr\web\assets;
 
 use craft\web\AssetBundle;
+use craft\web\assets\cp\CpAsset;
 
 class UI extends AssetBundle
 {
@@ -17,12 +18,12 @@ class UI extends AssetBundle
         $this->sourcePath = __DIR__;
 
         $this->depends = [
+            CpAsset::class,
             Tippy::class
         ];
 
         $this->css = [
             'css/ui.css',
-            'css/qarr.css',
         ];
 
         $this->js = [

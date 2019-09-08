@@ -1,9 +1,12 @@
 {% requirePermission 'qarr:accessRules' %}
 
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 
 {% set title = "Rules"|t('qarr') %}
 {% set selectedSubnavItem = "rules" %}
+{% set bodyClass = "qarr qarr-element-static" %}
 
 {% block actionButton %}
     <a href="{{ url('qarr/rules/new') }}" class="btn submit add icon">{{ "New Rule"|t('qarr') }}</a>

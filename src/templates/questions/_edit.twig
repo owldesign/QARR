@@ -1,9 +1,14 @@
-{% extends 'qarr/_layouts/cp-craft' %}
+{% extends "_layouts/cp" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementShared") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementEdit") %}
 
 {% import "_includes/forms" as forms %}
-{% import "qarr/_ui/buttons" as buttons %}
+{% import "qarr/_includes/macros/_buttons" as buttons %}
 
 {% set selectedSubnavItem = "questions" %}
+{% set bodyClass = 'qarr qarr-element-edit' %}
 
 {% set tabs = [
     {
@@ -13,7 +18,7 @@
     },
     {
         'id': 'correspondence',
-        'label': 'Correspondence',
+        'label': 'Email Correspondence',
         'url': '#correspondence'
     }
 ] %}

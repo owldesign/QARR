@@ -1,11 +1,15 @@
 {% requirePermission 'qarr:accessReviews' %}
 
-{% extends 'qarr/_layouts/elementindex-craft' %}
+{% extends "_layouts/elementindex" %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementShared") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementIndex") %}
 
 {% set title = "Reviews"|t('qarr') %}
 {% set elementType = 'owldesign\\qarr\\elements\\Review' %}
 {% set selectedSubnavItem = 'reviews' %}
-{% set bodyClass = 'qarr craftify' %}
+{% set bodyClass = 'qarr qarr-elementindex' %}
 
 {% block sidebar %}
     {% if sources is not empty %}

@@ -1,10 +1,11 @@
-{% extends 'qarr/_layouts/cp-static-craft' %}
+{% extends "_layouts/cp" %}
 
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Settings") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 
 {% set title = "Settings"|t('qarr') %}
 {% set selectedSubnavItem = "settings" %}
 {% set selectedSidebarItem = "settings" %}
+{% set bodyClass = "qarr qarr-element-static" %}
 
 {% block sidebar %}
     {% include 'qarr/settings/_includes/sidebar' ignore missing %}
@@ -12,27 +13,19 @@
 
 {% set content %}
 
-    <div class="flex-container">
-        <div class="quarter-col utility-widget utility-location">
-            <div class="pane">
-                <div class="utility-icon">
-                    <i class="fas fa-globe-americas"></i>
-                </div>
+    <h2>{{ 'Geolocations'|t('qarr') }}</h2>
 
-                <div class="utility-info">
-                    <h2>{{ 'Geolocation'|t('qarr') }}</h2>
-                    <p class="text-gray-600">{{ 'Update geolocation for all entries based on submitted IP address.'|t('qarr') }}</p>
-                </div>
-
-                <div class="utility-actions mt-2">
-                    <a href="#" class="btn submit"
+    <table class="data fullwidth fixed-layout">
+        <tbody>
+            <tr>
+                <th class="light">{{ 'Update geolocation for all entries based on submitters IP address.'|t('qarr') }}</th>
+                <td class="text-right"><a href="#" class="btn submit"
                        id="update-geolocations"
                        data-tippy-theme="light"
                        data-tippy-arrow="true"
-                       data-tippy="Geolocation will be used to pinpoint customer's locations for better statistics and reporting.">Update Geolocations</a>
-                </div>
-            </div>
-        </div>
-    </div>
+                       data-tippy="Geolocation will be used to pinpoint customer's locations for better statistics and reporting.">{{ 'Update Geolocations'|t('qarr') }}</a></td>
+            </tr>
+        </tbody>
+    </table>
 
 {% endset %}
