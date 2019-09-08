@@ -54,8 +54,6 @@ Garnish.$doc.ready(function () {
           var iframe = $('<iframe class="lp-preview" frameborder="0" width="100%" height="100%"/>');
           iframe.appendTo(_this.$el);
           iframe.on('load', function () {
-            console.log('iframe loaded');
-
             if (_this.iframe) {
               _this.iframe.remove();
             }
@@ -73,95 +71,5 @@ Garnish.$doc.ready(function () {
         });
       }
     }
-  }); // new Vue({
-  //         el: "#{{ containerId|namespaceInputId|e('js') }}",
-  //
-  //         data() {
-  //             {% block data %}
-  //             var data = {{ {
-  //                 selected: '',
-  //                     filteredOptions: [],
-  //                     suggestions: suggestions ?? [],
-  //                     inputProps: {
-  //                 class: class,
-  //                     initialValue: value ?? '',
-  //                         style: style ?? '',
-  //                         id: id|namespaceInputId,
-  //                         name: (name ?? '')|namespaceInputName,
-  //                         size: size ?? '',
-  //                         maxlength: maxlength ?? '',
-  //                         autofocus: autofocus ?? false,
-  //                         disabled: disabled ?? false,
-  //                         title: title ?? '',
-  //                         placeholder: placeholder ?? '',
-  //                 },
-  //                 limit: limit ?? 5
-  //             }|json_encode|raw }};
-  //             data.inputProps.onInputChange = this.onInputChange;
-  //             {% endblock %}
-  //             return data;
-  //         },
-  //
-  //         methods: {
-  //     {% block methods %}
-  //     onInputChange(text) {
-  //         if (text === '' || text === undefined) {
-  //             this.filteredOptions = this.suggestions;
-  //             return;
-  //         }
-  //
-  //         text = text.toLowerCase();
-  //
-  //         var filtered = [];
-  //         var i, j, sectionFilter, item, name;
-  //         var that = this;
-  //
-  //         for (i = 0; i < this.suggestions.length; i++) {
-  //             sectionFilter = [];
-  //             for (j = 0; j < this.suggestions[i].data.length; j++) {
-  //                 item = this.suggestions[i].data[j];
-  //                 if (
-  //                     (item.name || item).toLowerCase().indexOf(text) !== -1 ||
-  //                     (item.hint && item.hint.toLowerCase().indexOf(text) !== -1)
-  //                 ) {
-  //                     sectionFilter.push(item.name ? item : {name: item});
-  //                 }
-  //             }
-  //             if (sectionFilter.length) {
-  //                 sectionFilter.sort(function(a, b) {
-  //                     var scoreA = that.scoreItem(a, text);
-  //                     var scoreB = that.scoreItem(b, text);
-  //                     if (scoreA === scoreB) {
-  //                         return 0;
-  //                     }
-  //                     return scoreA < scoreB ? 1 : -1;
-  //                 });
-  //                 filtered.push({
-  //                     label: this.suggestions[i].label || null,
-  //                     data: sectionFilter.slice(0, this.limit)
-  //                 });
-  //             }
-  //         }
-  //
-  //         this.filteredOptions = filtered;
-  //     },
-  //     scoreItem(item, text) {
-  //         var score = 0;
-  //         if (item.name.toLowerCase().indexOf(text) !== -1) {
-  //             score += 100 + text.length / item.name.length;
-  //         }
-  //         if (item.hint && item.hint.toLowerCase().indexOf(text) !== -1) {
-  //             score += text.length / item.hint.length;
-  //         }
-  //         return score;
-  //     },
-  //     onSelected(option) {
-  //         this.selected = option.item;
-  //     },
-  //     getSuggestionValue(suggestion) {
-  //         return suggestion.item.name || suggestion.item;
-  //     },
-  //     {% endblock %}
-  // }
-  // })
+  });
 });

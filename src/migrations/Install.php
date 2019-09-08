@@ -233,6 +233,7 @@ class Install extends Migration
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
             'handle' => $this->string()->notNull(),
+            'template' => $this->string()->null(),
             'enabled' => $this->boolean(),
             'settings' => $this->text(),
             'options' => $this->text(),
