@@ -264,7 +264,7 @@ class EmailTemplatesController extends Controller
         $variables = $request->getBodyParam('fields');
 
         // TODO: options for custom templates
-        $template = Craft::$app->view->renderTemplate('qarr/correspondence/_emails/basic-template', $variables);
+        $template = Craft::$app->view->renderTemplate('qarr/campaigns/email-templates/_templates/simple', $variables);
 
         return $this->asJson([
             'template' => $template

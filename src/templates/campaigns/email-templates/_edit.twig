@@ -73,18 +73,16 @@
         errors: (template.getErrors('name'))
     }) }}
 
-    {{ forms.autosuggestField({
-        label: "HTML Email Template"|t('qarr'),
-        instructions: "The template QARR will use for HTML emails"|t('qarr'),
-        id: 'template',
-        name: 'template',
-        suggestions: craft.qarrEmails.emailTemplateSuggestions(),
-        suggestEnvVars: false,
-        value: template.template ? template.template : '',
-        errors: template.getErrors('template')
-    }) }}
-
-
+        {{ forms.autosuggestField({
+            label: "HTML Email Template"|t('qarr'),
+            instructions: "HTML template located at templates/_qarr/emails/"|t('qarr'),
+            id: 'template',
+            name: 'template',
+            suggestions: craft.qarrEmails.emailTemplateSuggestions(),
+            suggestEnvVars: false,
+            value: template.template ? template.template : '',
+            errors: template.getErrors('template')
+        }) }}
     <div id="email-template-app">
 
         <div class="field" id="tmp-bg-color-field">
