@@ -276,11 +276,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/js/qarr-plugin.js */"./development/js/qarr-plugin.js");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/dashboard.scss */"./development/scss/dashboard.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/frontend.scss */"./development/scss/frontend.scss");
-__webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/ui.scss */"./development/scss/ui.scss");
-module.exports = __webpack_require__(/*! /Users/owldesign/QARR/plugins/qarr/development/scss/widgets.scss */"./development/scss/widgets.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/js/qarr-plugin.js */"./development/js/qarr-plugin.js");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/dashboard.scss */"./development/scss/dashboard.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/frontend.scss */"./development/scss/frontend.scss");
+__webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/ui.scss */"./development/scss/ui.scss");
+module.exports = __webpack_require__(/*! /Users/gonchav/QARR/plugins/qarr/development/scss/widgets.scss */"./development/scss/widgets.scss");
 
 
 /***/ })

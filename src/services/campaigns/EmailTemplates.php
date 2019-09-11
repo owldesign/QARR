@@ -11,12 +11,14 @@
 namespace owldesign\qarr\services\campaigns;
 
 use craft\helpers\ArrayHelper;
+use craft\helpers\Json;
 use owldesign\qarr\models\EmailTemplate;
 
 use Craft;
 use craft\base\Component;
 use owldesign\qarr\QARR;
 use owldesign\qarr\records\EmailTemplate as EmailTemplateRecord;
+use yii\base\Exception;
 
 /**
  * Class Reviews
@@ -40,7 +42,6 @@ class EmailTemplates extends Component
     /**
      * Get all links
      *
-     * @param null $enabled
      * @return array
      */
     public function getAllEmailTemplates(): array
@@ -56,12 +57,106 @@ class EmailTemplates extends Component
             ->all();
 
         foreach ($templateRecords as $templateRecord) {
-            $this->_templates[] = $this->_createEmailTemplateFromRecord($templateRecord);
+            $template = $this->_createEmailTemplateFromRecord($templateRecord);
+            if ($template->settings) {
+                $template->settings = Json::decode($template->settings);
+            }
+            if ($template->options) {
+                $template->options = Json::decode($template->options);
+            }
+            $this->_templates[] = $template;
+
         }
 
         return $this->_templates;
     }
 
+    /**
+     * Returns email template by its ID.
+     *
+     * @param int $templateId
+     * @return EmailTemplate|null
+     */
+    public function getEmailTemplateById(int $templateId)
+    {
+        return ArrayHelper::firstWhere($this->getAllEmailTemplates(), 'id', $templateId);
+    }
+
+    /**
+     * Returns email template by its UID.
+     *
+     * @param int $uid
+     * @return EmailTemplate|null
+     */
+    public function getEmailTemplateByUid(int $uid)
+    {
+        return ArrayHelper::firstWhere($this->getAllEmailTemplates(), 'uid', $uid, true);
+    }
+
+    /**
+     * Returns email template by its handle.
+     *
+     * @param string $templateHandle
+     * @return EmailTemplate|null
+     */
+    public function getEmailTemplateByHandle(string $templateHandle)
+    {
+        return ArrayHelper::firstWhere($this->getAllEmailTemplates(), 'handle', $templateHandle, true);
+    }
+
+    /**
+     * Save email template
+     *
+     * @param EmailTemplate $template
+     * @return bool
+     * @throws Exception
+     */
+    public function save(EmailTemplate $template)
+    {
+        $isNewEmailTemplate = !$template->id;
+
+        if ($template->id) {
+            $record = EmailTemplateRecord::findOne($template->id);
+
+            if (!$record) {
+                throw new Exception(QARR::t('Email template with ID not found: ' . $template->id));
+            }
+        } else {
+            $record = new EmailTemplateRecord();
+        }
+
+        $record->name           = $template->name;
+        $record->handle         = $template->handle;
+        $record->enabled        = $template->enabled;
+        $record->templatePath   = $template->templatePath;
+        $record->bodyHtml       = $template->bodyHtml;
+        $record->bodyRaw        = $template->bodyRaw;
+        $record->footerHtml     = $template->footerHtml;
+        $record->footerRaw     = $template->footerRaw;
+
+        if ($template->settings) {
+            $record->settings = $template->settings;
+        }
+
+        if ($template->options) {
+            $record->options = $template->options;
+        }
+
+        $record->save(false);
+
+        if ($isNewEmailTemplate) {
+            $template->id = $record->id;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get email template suggestions for custom templates
+     *
+     * @return array
+     * @throws \yii\base\Exception
+     */
     public function emailTemplateSuggestions(): array
     {
         // Get all the template files sorted by path length
@@ -154,6 +249,13 @@ class EmailTemplates extends Component
             'name',
             'handle',
             'enabled',
+            'templatePath',
+            'bodyHtml',
+            'bodyRaw',
+            'footerHtml',
+            'footerRaw',
+            'settings',
+            'options',
         ]));
 
         return $template;

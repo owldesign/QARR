@@ -162,6 +162,10 @@ class QARR extends Plugin
                     'label' => QARR::t('Questions'),
                     'url' => 'qarr/questions'
                 ],
+                'campaigns' => [
+                    'label' => QARR::t('Campaigns'),
+                    'url' => 'qarr/campaigns'
+                ],
                 'displays' => [
                     'label' => QARR::t('Displays'),
                     'url' => 'qarr/displays'
@@ -169,10 +173,6 @@ class QARR extends Plugin
                 'rules' => [
                     'label' => QARR::t('Rules'),
                     'url' => 'qarr/rules'
-                ],
-                'campaigns' => [
-                    'label' => QARR::t('Campaigns'),
-                    'url' => 'qarr/campaigns'
                 ],
                 'settings' => [
                     'label' => QARR::t('Settings'),

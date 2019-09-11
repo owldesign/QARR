@@ -167,12 +167,14 @@ var QarrEmailCorrespondence = Garnish.Base.extend({
   type: null,
   entryId: null,
   modal: null,
+  templates: null,
   init: function init(el) {
     this.$btn = $(el);
     this.entryId = $(el).data('element-id');
     this.type = $(el).data('type');
     this.$btnText = this.$btn.find('.link-text');
     this.$loader = this.$btn.find('.loader');
+    this.getAvailableTemplates();
     this.addListener(this.$btn, 'click', 'openEmailModal');
   },
   openEmailModal: function openEmailModal(e) {
@@ -195,7 +197,8 @@ var QarrEmailCorrespondence = Garnish.Base.extend({
       type: this.type,
       entryId: this.entryId,
       subject: email.subject,
-      message: email.message
+      message: email.message,
+      templateId: email.templateId
     };
     this.$btnText.addClass('hide');
     this.$loader.removeClass('hidden');
@@ -213,6 +216,15 @@ var QarrEmailCorrespondence = Garnish.Base.extend({
     var $html = $(['<div class="block-field mb-4">', '<div class="text-xs opacity-50 mb-2">' + Craft.t('qarr', 'Sent now') + '</div>', '<div class="mb-2"><span class="font-semibold">' + Craft.t('qarr', 'Subject') + '</span> <p class="m-0">' + entry.subject + '</p></div>', '<div class="mb-2"><span class="font-semibold">' + Craft.t('qarr', 'Message') + '</span> <p class="m-0">' + entry.message + '</p></div>', '</div>'].join(''));
     $container.append($html);
     Craft.cp.displayNotice(Craft.t('qarr', 'Mail sent'));
+  },
+  getAvailableTemplates: function getAvailableTemplates() {
+    var _this4 = this;
+
+    Craft.postActionRequest('qarr/campaigns/email-templates/get-all-email-templates', $.proxy(function (response, textStatus) {
+      if (response.success) {
+        _this4.templates = response.options;
+      }
+    }, this));
   }
 }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Emails
@@ -221,19 +233,35 @@ var QarrEmailCorrespondence = Garnish.Base.extend({
 var QarrEmailModal = Garnish.Modal.extend({
   $body: null,
   isValid: false,
-  init: function init() {
+  parent: null,
+  init: function init(parent) {
     var self = this;
     this.base();
+    this.parent = parent;
     this.$form = $('<form class="modal fitted qarr-modal prompt-modal modal-blue">').appendTo(Garnish.$bod);
     this.setContainer(this.$form); // TODO: Make From Name dynamic to use site admin name
     // TODO: Make subject use entry title
 
-    this.$body = $("\n                <div class=\"header\">\n                    <h1>".concat(Craft.t('qarr', 'Sending Email'), "</h1>\n                </div>\n                \n                <div class=\"body\">\n                    <div class=\"field\">\n                        <div class=\"heading\">\n                            <label class=\"qarr-label\" for=\"reply-subject\">").concat(Craft.t('qarr', 'Subject'), "</label>\n                        </div>\n                        <div class=\"input\">\n                            <input class=\"text fullwidth\" type=\"text\" id=\"reply-subject\" name=\"reply-subject\" autocomplete=\"off\">\n                        </div>\n                    </div>\n                    \n                    <div class=\"field\">\n                        <div class=\"heading\">\n                            <label class=\"qarr-label\">").concat(Craft.t('qarr', 'Message'), "</label>\n                        </div>\n                        <div class=\"input\">\n                            <textarea id=\"reply-message\" class=\"text fullwidth\" rows=\"6\" cols=\"70\" placeholder=\"").concat(Craft.t('qarr', 'Email body message...'), "\"></textarea>\n                        </div>\n                    </div>\n                    \n                    <ul class=\"qarr-errors\"></ul>\n                </div>\n                \n                <div class=\"footer\">\n                    <div class=\"buttons right last\">\n                        <input type=\"button\" class=\"btn cancel\" value=\"").concat(Craft.t('qarr', 'Cancel'), "\">\n                        <input type=\"submit\" class=\"btn submit\" value=\"").concat(Craft.t('qarr', 'Send'), "\">\n                        <span class=\"spinner hidden\"></span>\n                    </div>\n                </div>\n        "));
+    var subjectPlaceholder = Craft.t('qarr', 'We received your {rating} star rating!');
+    var subjectInstructions = Craft.t('qarr', 'Any submission data can be used here eg. {rating}');
+    var messagePlaceholder = Craft.t('qarr', '{fullName} thank you for your {rating} star submission.');
+    var messageInstruction = Craft.t('qarr', 'Markdown allowed. Any submission data can be used here eg. {fullName}');
+
+    if (this.parent.type === 'questions') {
+      subjectPlaceholder = Craft.t('qarr', 'We received your question about {element.title}!');
+      subjectInstructions = Craft.t('qarr', 'Any submission data can be used here eg. {element.title}');
+      messagePlaceholder = Craft.t('qarr', '{fullName} thank you for your question.');
+    }
+
+    this.$body = $("\n                <div class=\"header\">\n                    <h1>".concat(Craft.t('qarr', 'Sending Email'), "</h1>\n                </div>\n                \n                <div class=\"body\">\n                    <div class=\"field\">\n                        <div class=\"heading\">\n                            <label class=\"qarr-label\" for=\"reply-template\">").concat(Craft.t('qarr', 'Email Template'), "</label>\n                            <div class=\"instructions\"><p>").concat(Craft.t('qarr', 'Select email template if you want to use custom template'), "</p></div>\n                        </div>\n                        <div class=\"input\">\n                            <div class=\"select fullwidth\">\n                                <select name=\"template\" id=\"reply-template\" class=\"text fullwidth\">\n                                    <option value=\"0\" selected>Default</option>\n                                    ").concat(Object.keys(this.parent.templates).map(function (key) {
+      return '<option value="' + self.parent.templates[key].id + '">' + self.parent.templates[key].name + '</option>';
+    }).join(''), "\n                                </select>\n                            </div>\n                        </div>\n                    </div>\n                    \n                    <div class=\"field\">\n                        <div class=\"heading\">\n                            <label class=\"qarr-label\" for=\"reply-subject\">").concat(Craft.t('qarr', 'Subject'), "</label>\n                            <div class=\"instructions\"><p>").concat(subjectInstructions, "</p></div>\n                        </div>\n                        <div class=\"input\">\n                            <input class=\"text fullwidth\" type=\"text\" id=\"reply-subject\" name=\"reply-subject\" autocomplete=\"off\" placeholder=\"").concat(subjectPlaceholder, "\">\n                        </div>\n                    </div>\n                    \n                    <div class=\"field\">\n                        <div class=\"heading\">\n                            <label class=\"qarr-label\">").concat(Craft.t('qarr', 'Message'), "</label>\n                            <div class=\"instructions\"><p>").concat(messageInstruction, "</p></div>\n                        </div>\n                        <div class=\"input\">\n                            <textarea id=\"reply-message\" class=\"text fullwidth\" rows=\"12\" cols=\"70\" placeholder=\"").concat(messagePlaceholder, "\"></textarea>\n                        </div>\n                    </div>\n                    \n                    <ul class=\"qarr-errors\"></ul>\n                </div>\n                \n                <div class=\"footer\">\n                    <div class=\"buttons right last\">\n                        <input type=\"button\" class=\"btn cancel\" value=\"").concat(Craft.t('qarr', 'Cancel'), "\">\n                        <input type=\"submit\" class=\"btn submit\" value=\"").concat(Craft.t('qarr', 'Send'), "\">\n                        <span class=\"spinner hidden\"></span>\n                    </div>\n                </div>\n        "));
     this.$body.appendTo(this.$form);
     this.show();
     this.$cancelBtn = this.$body.find('.cancel');
     this.$subjectInput = this.$body.find('#reply-subject');
     this.$messageInput = this.$body.find('#reply-message');
+    this.$templateInput = this.$body.find('#reply-template');
     setTimeout($.proxy(function () {
       self.$subjectInput.focus();
     }, this), 100);
@@ -246,11 +274,13 @@ var QarrEmailModal = Garnish.Modal.extend({
     var $errorsContainer = this.$form.find('.qarr-errors');
     this.email = {
       subject: this.$subjectInput.val(),
-      message: this.$messageInput.val()
+      message: this.$messageInput.val(),
+      templateId: this.$templateInput.val()
     };
     $errorsContainer.html('');
     this.$subjectInput.removeClass('error');
     this.$messageInput.removeClass('error');
+    this.$templateInput.removeClass('error');
     $.each(this.email, function (key, value) {
       if (value === '') {
         that.isValid = false;
@@ -405,7 +435,7 @@ Answers.Answer = Garnish.Base.extend({
     this.addListener(this.$actionBtn, 'click', 'performAction');
   },
   performAction: function performAction(e) {
-    var _this4 = this;
+    var _this5 = this;
 
     var that = this;
     var action = e.target.dataset.actionType;
@@ -434,9 +464,9 @@ Answers.Answer = Garnish.Base.extend({
         if (response.success) {
           Craft.cp.displayNotice(Craft.t('qarr', 'Answer status updated'));
 
-          _this4.$item.addClass('status-changed');
+          _this5.$item.addClass('status-changed');
 
-          _this4.updateAnswer();
+          _this5.updateAnswer();
         }
       }, this));
     }
@@ -458,21 +488,21 @@ Answers.Answer = Garnish.Base.extend({
     this.parent.$loader.addClass('hidden');
   },
   deleteElement: function deleteElement() {
-    var _this5 = this;
+    var _this6 = this;
 
     this.parent.$loader.removeClass('hidden');
     var newPayload = {
       id: this.payload.id
     };
     Craft.postActionRequest('qarr/answers/delete', newPayload, $.proxy(function (response, textStatus) {
-      _this5.parent.$loader.addClass('hidden');
+      _this6.parent.$loader.addClass('hidden');
 
       if (response.success) {
         Craft.cp.displayNotice(Craft.t('qarr', 'Answer deleted'));
 
-        _this5.$item.addClass('item-deleted');
+        _this6.$item.addClass('item-deleted');
 
-        _this5.$item.velocity('slideUp', {
+        _this6.$item.velocity('slideUp', {
           duration: 300
         });
       }
@@ -555,11 +585,11 @@ var ConfigureElementsModal = Garnish.Modal.extend({
     this.setContainer(this.$form);
   },
   getModalContent: function getModalContent() {
-    var _this6 = this;
+    var _this7 = this;
 
     Craft.postActionRequest('qarr/settings/configuration/get-element-settings-modal', {}, $.proxy(function (response, textStatus) {
       if (response.success) {
-        _this6.buildModal($(response.template));
+        _this7.buildModal($(response.template));
       }
     }, this));
   },
@@ -581,15 +611,15 @@ var ConfigureElementsModal = Garnish.Modal.extend({
     this.addListener(this.$form, 'submit', 'handleOk');
   },
   handleOk: function handleOk(e) {
-    var _this7 = this;
+    var _this8 = this;
 
     e.preventDefault();
     var data = this.$form.serialize();
     Craft.postActionRequest('qarr/settings/configuration/save-element-settings', data, $.proxy(function (response, textStatus) {
       if (response.success) {
-        _this7.handleSuccess();
+        _this8.handleSuccess();
 
-        _this7.elementIndex.updateElements();
+        _this8.elementIndex.updateElements();
       }
     }, this));
   },

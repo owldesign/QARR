@@ -18,7 +18,7 @@
         </tr>
         <tr>
             <th class="light">{{ 'Body'|t('qarr') }}</th>
-            <td>{{ correspondence.email |nl2br }}</td>
+            <td>{{ correspondence.email |raw }}</td>
         </tr>
         </tbody>
     </table>
@@ -30,7 +30,7 @@
     {{ buttons.basic({
         class: 'btn secondary',
         id: 'reply-email-btn',
-        type: 'reviews',
+        type: type,
         elementId: entry.id,
         text: 'Send Email'|t('qarr'),
     }) }}

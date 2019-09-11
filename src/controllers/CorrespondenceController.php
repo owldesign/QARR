@@ -11,18 +11,26 @@
 namespace owldesign\qarr\controllers;
 
 use craft\helpers\DateTimeHelper;
+use craft\helpers\Html;
+use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use owldesign\qarr\QARR;
 
 use Craft;
 use craft\web\Controller;
 use craft\web\View;
+use yii\helpers\Markdown;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class CorrespondenceController extends Controller
 {
-    protected $allowAnonymous = ['actionGateKeeper', 'actionCheckPassword', 'actionIndex', 'actionIndex', 'actionSendMail'];
+    protected $allowAnonymous = [
+        'index' => self::ALLOW_ANONYMOUS_LIVE,
+        'gate-keeper' => self::ALLOW_ANONYMOUS_LIVE,
+        'check-password' => self::ALLOW_ANONYMOUS_LIVE,
+        'send-mail' => self::ALLOW_ANONYMOUS_LIVE,
+    ];
 
     /**
      * Gate keeper
@@ -103,13 +111,14 @@ class CorrespondenceController extends Controller
         $variables = [];
         $variables['type']          = Craft::$app->getRequest()->getBodyParam('type');
         $variables['entryId']       = Craft::$app->getRequest()->getBodyParam('entryId');
-        $variables['subject']       = Craft::$app->getRequest()->getBodyParam('subject');
-        $variables['message']       = Craft::$app->getRequest()->getBodyParam('message');
+        $templateId                 = Craft::$app->getRequest()->getBodyParam('templateId');
         $variables['allowReplies']  = Craft::$app->getRequest()->getBodyParam('allowReplies');
         $entry                      = Craft::$app->getElements()->getElementById($variables['entryId']);
         $variables['entry']         = $entry;
         $variables['element']       = $entry->element;
         $variables['websiteName']   = Craft::$app->sites->currentSite->name;
+        $variables['plugin']        = Craft::$app->getPlugins()->getPluginInfo('qarr');
+        $variables['settings']      = null;
 
         if (!$entry) { return false; }
 
@@ -121,8 +130,39 @@ class CorrespondenceController extends Controller
 
         $variables['password']      = Craft::$app->getSecurity()->generateRandomString(8);
         $variables['privateUrl']    = UrlHelper::siteUrl('/qarr/correspondence?email='.$entry->emailAddress.'&type='.$variables['type'].'&elementId='.$entry->id);
-        $template                   = Craft::$app->view->renderTemplate('qarr/correspondence/_emails/email-template', $variables);
         $variables['sentDate']      = DateTimeHelper::currentUTCDateTime();
+
+        // Render Entry Variables for Subject & Message
+        $subject                    = Craft::$app->getRequest()->getBodyParam('subject');
+        $message                    = Craft::$app->getRequest()->getBodyParam('message');
+        $variables['subject']       = Craft::$app->getView()->renderObjectTemplate($subject, $entry);
+        $variables['message']       = Template::raw(Markdown::process(Craft::$app->getView()->renderObjectTemplate($message, $entry)));
+
+        // Templating
+        $emailTemplate              = QARR::$plugin->getEmailTemplates()->getEmailTemplateById($templateId);
+
+        if ($emailTemplate) {
+            $variables['settings']  = $emailTemplate->settings;
+
+            $body                   = Craft::$app->getView()->renderObjectTemplate($emailTemplate->bodyRaw, $entry);
+            $footer                 = Craft::$app->getView()->renderObjectTemplate($emailTemplate->footerRaw, $entry);
+            $variables['body']      = Template::raw(Markdown::process($body));
+            $variables['footer']    = Template::raw(Markdown::process($footer));
+
+            if ($emailTemplate->templatePath) {
+                // Custom Email Template
+                $oldPath = Craft::$app->view->getTemplateMode();
+                Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+                $template = Craft::$app->view->renderTemplate('_qarr/emails/' . $emailTemplate->templatePath, $variables);
+                Craft::$app->view->setTemplateMode($oldPath);
+            } else {
+                // Customized Template
+                $template = Craft::$app->view->renderTemplate('qarr/campaigns/email-templates/_templates/simple', $variables);
+            }
+        } else {
+            $template = Craft::$app->view->renderTemplate('qarr/campaigns/email-templates/_templates/simple', $variables);
+        }
+
 
         if (QARR::$plugin->correspondence->sendMail($variables, $entry, $template, $variables['subject'], $entry->emailAddress)) {
             return $this->asJson([
@@ -135,6 +175,5 @@ class CorrespondenceController extends Controller
                 'success' => false,
             ]);
         }
-
     }
 }

@@ -3,23 +3,24 @@
 namespace owldesign\qarr\controllers\campaigns;
 
 use Craft;
+use craft\errors\InvalidPluginException;
 use craft\errors\MissingComponentException;
 use craft\helpers\Json;
-use craft\helpers\StringHelper;
+use craft\db\Query;
 use craft\web\View;
-use owldesign\qarr\errors\UserNotAllowedException;
+use craft\helpers\Template;
 use craft\web\Controller;
-use owldesign\qarr\elements\Campaign;
-use owldesign\qarr\models\DirectLink;
-use owldesign\qarr\models\Display;
+use owldesign\qarr\elements\Question;
+use owldesign\qarr\elements\Review;
+use owldesign\qarr\errors\UserNotAllowedException;
 use owldesign\qarr\models\EmailTemplate;
-use owldesign\qarr\models\Rule;
 use owldesign\qarr\QARR;
-use yii\base\ExitException;
+use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\helpers\Markdown;
 
 class EmailTemplatesController extends Controller
 {
@@ -32,7 +33,8 @@ class EmailTemplatesController extends Controller
     // Public Properties
     // =========================================================================
     public $defaultTemplateExtensions = ['html', 'twig'];
-    
+    public $_cachedElement;
+
     // Public Methods
     // =========================================================================
 
@@ -93,12 +95,61 @@ class EmailTemplatesController extends Controller
 
         $this->_enforceEditRulePermissions($template);
 
-        $variables['template']                = $template;
-        $variables['fullPageForm']          = true;
-        $variables['continueEditingUrl']    = 'qarr/campaigns/email-templates/{id}';
-        $variables['saveShortcutRedirect']  = $variables['continueEditingUrl'];
+        $variables['template'] = $template;
+        $variables['fullPageForm'] = true;
+        $variables['continueEditingUrl'] = 'qarr/campaigns/email-templates/{id}';
+        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
 
         return $this->renderTemplate('qarr/campaigns/email-templates/_edit', $variables);
+    }
+
+    /**
+     * Get email template preview
+     *
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws InvalidPluginException
+     * @throws \Throwable
+     */
+    public function actionGetEmailTemplatePreview(): Response
+    {
+        $this->requirePostRequest();
+        $request = Craft::$app->getRequest();
+
+        $variables = [
+            'elementType'   => $request->getBodyParam('elementType'),
+            'elementId'     => $request->getBodyParam('elementId'),
+            'templatePath'  => $request->getBodyParam('templatePath'),
+            'settings'      => $request->getBodyParam('settings'),
+            'body'          => $request->getBodyParam('body'),
+            'footer'        => $request->getBodyParam('footer'),
+            'plugin'        => Craft::$app->getPlugins()->getPluginInfo('qarr'),
+            'forceUpdate'   => $request->getBodyParam('forceUpdate'),
+        ];
+
+        $this->_getRandomElementByType($variables['elementType'], $variables['elementId'], $variables['forceUpdate']);
+        $availableFields = $this->_cachedElement;
+
+
+        $body = Craft::$app->getView()->renderObjectTemplate($variables['body'], $availableFields);
+        $footer = Craft::$app->getView()->renderObjectTemplate($variables['footer'], $availableFields);
+        $variables['body'] = Template::raw(Markdown::process($body));
+        $variables['footer'] = Template::raw(Markdown::process($footer));
+
+        if ($variables['templatePath'] == 'simple') {
+            $template = Craft::$app->view->renderTemplate('qarr/campaigns/email-templates/_templates/simple', $variables);
+        } else {
+            $oldPath = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+            $template = Craft::$app->view->renderTemplate('_qarr/emails/' . $variables['template'], $variables);
+            Craft::$app->view->setTemplateMode($oldPath);
+        }
+
+        return $this->asJson([
+            'template' => $template,
+            'elementId' => $this->_cachedElement->id
+        ]);
     }
 
     /**
@@ -114,30 +165,29 @@ class EmailTemplatesController extends Controller
     {
         $this->requirePostRequest();
 
-        $request = Craft::$app->getRequest();
+        $request                = Craft::$app->getRequest();
+        $model                  = $this->_getEmailTemplateModel();
+        $model->id              = $request->getBodyParam('id');
+        $model->name            = $request->getBodyParam('name');
+        $model->handle          = $request->getBodyParam('handle');
+        $model->templatePath    = $request->getBodyParam('templatePath');
+        $model->enabled         = $request->getBodyParam('enabled');
+        $settings               = $request->getBodyParam('settings');
+        $model->settings        = [
+            'bgColor'           => $settings['bgColor'],
+            'containerColor'    => $settings['containerColor'],
+        ];
 
-        $model              = $this->_getDirectLinkModel();
-        $model->id          = $request->getBodyParam('id');
-        $model->elementId   = isset($request->getBodyParam('elementId')[0]) ? $request->getBodyParam('elementId')[0] : null;
-        $model->userId      = isset($request->getBodyParam('userId')[0]) ? $request->getBodyParam('userId')[0] : null;
-        $model->enabled     = $request->getBodyParam('enabled');
-        $model->type        = $request->getBodyParam('type');
-        $model->slug        = $request->getBodyParam('slug');
-
-        if ($request->getBodyParam('options')) {
-            $model->options = Json::encode($request->getBodyParam('options'));
-        }
-        
-        if ($request->getBodyParam('settings')) {
-            $model->settings = Json::encode($request->getBodyParam('settings'));
-        }
+        $model->bodyRaw         = $request->getBodyParam('body');
+        $model->footerRaw       = $request->getBodyParam('footer');
+        $model->bodyHtml        = Template::raw(Markdown::process($model->bodyRaw));
+        $model->footerHtml      = Template::raw(Markdown::process($model->footerRaw));
 
         // Permission enforcement
         $this->requirePermission('qarr:editCampaigns');
 
         // Validate
         $model->validate();
-
 
         if ($model->hasErrors()) {
             if ($request->getAcceptsJson()) {
@@ -147,29 +197,24 @@ class EmailTemplatesController extends Controller
                 ]);
             }
 
-            Craft::$app->getSession()->setError(QARR::t('Couldn’t save direct link.'));
+            Craft::$app->getSession()->setError(QARR::t('Couldn’t save email template.'));
 
             Craft::$app->getUrlManager()->setRouteParams([
-                'direct' => $model
+                'template' => $model
             ]);
 
             return null;
         }
 
-        QARR::$plugin->getLinks()->save($model);
+        QARR::$plugin->getEmailTemplates()->save($model);
 
         if ($request->getAcceptsJson()) {
             return $this->asJson([
                 'success' => true,
-                'id' => $model->id,
-                'slug' => $model->slug,
-                'enabled' => $model->enabled,
-                'options' => $model->options,
-                'settings' => $model->settings,
             ]);
         }
 
-        Craft::$app->getSession()->setNotice(QARR::t( 'Direct link saved.'));
+        Craft::$app->getSession()->setNotice(QARR::t('Email template saved.'));
 
         return $this->redirectToPostedUrl($model);
     }
@@ -178,8 +223,8 @@ class EmailTemplatesController extends Controller
      * Delete
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionDelete(): Response
     {
@@ -195,100 +240,74 @@ class EmailTemplatesController extends Controller
         return $this->asJson(['success' => true]);
     }
 
-    public function actionForm($slug = null): Response
+    public function actionGetAllEmailTemplates()
     {
-        if (!$slug) {
-            return $this->redirect(Craft::$app->getRequest()->baseUrl);
+        $templates = QARR::$plugin->getEmailTemplates()->getAllEmailTemplates();
+
+        $options = [];
+
+        foreach ($templates as $template) {
+            $options[] = [
+                'id' => $template->id,
+                'name' => $template->name,
+                'handle' => $template->handle,
+            ];
         }
-
-        $view       = Craft::$app->getView();
-        $model      = QARR::$plugin->links->getLinkById(QARR::$plugin->encrypt->decode($slug));
-        $user       = $model->user;
-        $element    = $model->element;
-
-        if (!$model->enabled) {
-            return $this->redirect(Craft::$app->getRequest()->baseUrl);
-        }
-
-        $this->_enforceActionPermissions($user);
-
-        $variables = [
-            'model'     => $model,
-            'user'      => $user,
-            'element'   => $element
-        ];
-
-        $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr' . DIRECTORY_SEPARATOR . 'direct';
-
-        if ($model->type == 'review') {
-            $customFile = $this->_resolveTemplate($path, 'review');
-        } else {
-            $customFile = $this->_resolveTemplate($path, 'question');
-        }
-
-        if ($customFile) {
-            return $this->renderTemplate($customFile, $variables);
-        } else {
-            $oldPath = Craft::$app->view->getTemplateMode();
-            $view->setTemplateMode(View::TEMPLATE_MODE_CP);
-            if ($model->type == 'review') {
-                return $this->renderTemplate('qarr/campaigns/direct/review', $variables);
-            } else {
-                return $this->renderTemplate('qarr/campaigns/direct/question', $variables);
-            }
-            $view->setTemplateMode($oldPath);
-        }
-
-    }
-
-    public function actionGetElementInfo(): Response
-    {
-        $this->requirePostRequest();
-
-        $elementId  = Craft::$app->getRequest()->getParam('elementId');
-        $element    = Craft::$app->getElements()->getElementById($elementId);
 
         return $this->asJson([
             'success' => true,
-            'elementId' => $elementId,
-            'element' => $element,
-            'class' => $element->displayName(),
-        ]);
-    }
-
-    public function actionGetEmailTemplatePreview(): Response
-    {
-        $this->requirePostRequest();
-        $request = Craft::$app->getRequest();
-
-        $variables = $request->getBodyParam('fields');
-
-        // TODO: options for custom templates
-        $template = Craft::$app->view->renderTemplate('qarr/campaigns/email-templates/_templates/simple', $variables);
-
-        return $this->asJson([
-            'template' => $template
+            'options' => $options
         ]);
     }
 
     // Private Methods
     // =========================================================================
-
-    private function _getDirectLinkModel(): DirectLink
+    private function _getRandomElementByType($type, $elementId, $forceUpdate)
     {
-        $directId = Craft::$app->getRequest()->getBodyParam('id');
-
-        if ($directId) {
-            $direct = QARR::$plugin->getLinks()->getLinkById($directId);
-
-            if (!$direct) {
-                throw new NotFoundHttpException('Direct link not found');
+        if ($forceUpdate) {
+            if ($type == 'review') {
+                $this->_cachedElement = Review::find()
+                    ->orderBy('RAND()')
+                    ->one();
+            } else {
+                $this->_cachedElement = Question::find()
+                    ->orderBy('RAND()')
+                    ->one();
             }
         } else {
-            $direct = new DirectLink();
+            if ($elementId) {
+                $this->_cachedElement = Craft::$app->getElements()->getElementById($elementId);
+
+                return;
+            }
+
+            if ($type == 'review') {
+                $this->_cachedElement = Review::find()
+                    ->orderBy('RAND()')
+                    ->one();
+            } else {
+                $this->_cachedElement = Question::find()
+                    ->orderBy('RAND()')
+                    ->one();
+            }
+        }
+    }
+
+    private function _getEmailTemplateModel(): EmailTemplate
+    {
+        $templateId = Craft::$app->getRequest()->getBodyParam('id');
+
+        if ($templateId) {
+            $template = QARR::$plugin->getEmailTemplates()->getEmailTemplateById($templateId);
+
+            if (!$template) {
+                throw new NotFoundHttpException('Email Template not found');
+            }
+        } else {
+            $template = new EmailTemplate();
         }
 
-        return $direct;
+        return $template;
     }
 
     /**

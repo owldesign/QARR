@@ -5,45 +5,62 @@ Garnish.$doc.ready(function () {
       return {
         iframe: null,
         options: {},
-        settings: {},
-        fields: {
+        templatePath: 'simple',
+        element: 'review',
+        elementId: null,
+        settings: {
           bgColor: '#f4f4f4',
-          containerColor: '#ffffff',
-          headline: 'Thanks for your input!',
-          subheadline: 'Our Response',
-          footerText: 'Cheers!'
-        }
+          containerColor: '#ffffff'
+        },
+        body: '',
+        footer: ''
       };
+    },
+    mounted: function mounted() {
+      templateSuggest.$on('templateSelected', this.onTemplatePathChanged);
+      this.elementId = $('#element-id').val();
     },
     created: function created() {
       this.updateIframe();
     },
+    computed: {},
     methods: {
+      onTemplatePathChanged: function onTemplatePathChanged(options) {
+        this.templatePath = options.item.name;
+        this.updateIframe();
+      },
       onBgColorChanged: function onBgColorChanged(e) {
-        this.fields.bgColor = e.target.value;
+        this.settings.bgColor = e.target.value;
         this.updateIframe();
       },
       onContainerColorChanged: function onContainerColorChanged(e) {
-        this.fields.containerColor = e.target.value;
+        this.settings.containerColor = e.target.value;
         this.updateIframe();
       },
-      onHeadlineChanged: function onHeadlineChanged(e) {
-        this.fields.headline = e.target.value;
+      onBodyChanged: function onBodyChanged(e) {
+        this.body = e.target.value;
         this.updateIframe();
       },
-      onSubheadlineChanged: function onSubheadlineChanged(e) {
-        this.fields.subheadline = e.target.value;
+      onFooterChanged: function onFooterChanged(e) {
+        this.footer = e.target.value;
         this.updateIframe();
       },
-      onFooterTextChanged: function onFooterTextChanged(e) {
-        this.fields.footerText = e.target.value;
-        this.updateIframe();
+      onElementChanged: function onElementChanged(e) {
+        this.element = e.target.value;
+        this.updateIframe(true);
       },
       updateIframe: function updateIframe() {
         var _this = this;
 
+        var $forceUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
         var payload = {
-          fields: this.fields
+          templatePath: this.templatePath,
+          element: this.element,
+          body: this.body,
+          footer: this.footer,
+          settings: this.settings,
+          elementId: this.elementId,
+          forceUpdate: $forceUpdate
         };
         payload[Craft.csrfTokenName] = Craft.csrfTokenValue;
         return axios.post(Craft.getActionUrl('qarr/campaigns/email-templates/get-email-template-preview'), payload, {
@@ -51,6 +68,8 @@ Garnish.$doc.ready(function () {
             'X-CSRF-Token': Craft.csrfTokenValue
           }
         }).then(function (res) {
+          // cache element id
+          _this.elementId = res.data.elementId;
           var iframe = $('<iframe class="lp-preview" frameborder="0" width="100%" height="100%"/>');
           iframe.appendTo(_this.$el);
           iframe.on('load', function () {

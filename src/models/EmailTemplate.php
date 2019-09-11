@@ -19,7 +19,11 @@ class EmailTemplate extends Model
     public $name;
     public $handle;
     public $enabled;
-    public $template;
+    public $templatePath;
+    public $bodyHtml;
+    public $bodyRaw;
+    public $footerHtml;
+    public $footerRaw;
     public $settings;
     public $options;
 

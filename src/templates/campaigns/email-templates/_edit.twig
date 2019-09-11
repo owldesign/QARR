@@ -7,6 +7,7 @@
 
 {% import "_includes/forms" as forms %}
 {% import "qarr/_includes/macros/_buttons" as buttons %}
+{% import "qarr/_includes/macros/_forms" as qarrForms %}
 
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "email-templates" %}
@@ -73,73 +74,96 @@
         errors: (template.getErrors('name'))
     }) }}
 
-        {{ forms.autosuggestField({
-            label: "HTML Email Template"|t('qarr'),
-            instructions: "HTML template located at templates/_qarr/emails/"|t('qarr'),
-            id: 'template',
-            name: 'template',
-            suggestions: craft.qarrEmails.emailTemplateSuggestions(),
-            suggestEnvVars: false,
-            value: template.template ? template.template : '',
-            errors: template.getErrors('template')
-        }) }}
+    <hr>
+    <h1>{{ 'Customize Email Template'|t('qarr') }}</h1>
+    <p>{{ 'You can use any of the Available Fields handles within your email templates.'|t('qarr') }}</p>
+
+    {{ qarrForms.autosuggestField({
+        label: "Custom Email Template"|t('qarr'),
+        instructions: "Optional HTML template located at templates/_qarr/emails/"|t('qarr'),
+        id: 'template',
+        name: 'templatePath',
+        suggestions: craft.qarrEmails.emailTemplateSuggestions(),
+        suggestEnvVars: false,
+        value: template.templatePath ? template.templatePath : '',
+        errors: template.getErrors('templatePath')
+    }) }}
+
     <div id="email-template-app">
+        <input type="hidden" id="element-id" name="elementId" value="">
 
         <div class="field" id="tmp-bg-color-field">
             <div class="heading">
                 <label id="tmp-bg-color-label" for="tmp-bg-color">{{ 'Background Color'|t('qarr') }}</label>
+                <div class="instructions"><p>{{ 'Use in html template as'|t('qarr') }} <span class="code"><strong>settings['bgColor']</strong></span>
+                    </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="tmp-bg-color" class="color-input" value="#f4f4f4" @change="onBgColorChanged">
+                <input type="color" name="settings[bgColor]" class="color-input" v-model="settings.bgColor" @change="onBgColorChanged">
             </div>
         </div>
 
         <div class="field" id="tmp-container-color-field">
             <div class="heading">
-                <label id="tmp-container-color-label" for="tmp-container-color">{{ 'Container Color'|t('qarr') }}</label>
+                <label id="tmp-container-color-label"
+                       for="tmp-container-color">{{ 'Container Color'|t('qarr') }}</label>
+                <div class="instructions"><p>{{ 'Use in html template as'|t('qarr') }} <span class="code"><strong>settings['containerColor']</strong></span>
+                    </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="tmp-container-color" class="color-input" value="#ffffff" @change="onContainerColorChanged">
+                <input type="color" name="settings[containerColor]" class="color-input" v-model="settings.containerColor" @change="onContainerColorChanged">
             </div>
         </div>
 
-        <div class="field" id="tmp-headline-field">
+        <div class="field" id="tmp-body-field">
             <div class="heading">
-                <label id="tmp-headline-label" for="tmp-headline">{{ 'Headline Text'|t('qarr') }}</label>
+                <label id="tmp-body-label" for="tmp-body">{{ 'Body'|t('qarr') }}</label>
+                <div class="instructions"><p>{{ 'Use in html template as'|t('qarr') }} <span class="code"><strong>body</strong></span>. {{ 'Markdown and HTML tags allowed'|t('qarr') }}
+                    </p></div>
             </div>
             <div class="input ltr">
-                <input type="text" name="tmp-headline" class="text fullwidth" value="Thanks for your input!" @change="onHeadlineChanged">
+                <textarea type="text" name="body" rows="12" class="text fullwidth"
+                          placeholder="### Hello, {fullName}
+
+You have posted a review for <a href='{element.url}'>{element}</a> on {element.dateCreated|date()}.
+
+<strong>You said:</strong><br>
+{feedback}
+
+Thank you for your feedback!" @change="onBodyChanged" v-model="body"></textarea>
             </div>
         </div>
 
-        <div class="field" id="tmp-subheadline-field">
+        <div class="field" id="tmp-footer-field">
             <div class="heading">
-                <label id="tmp-subheadline-label" for="tmp-subheadline">{{ 'Subheadline Text'|t('qarr') }}</label>
+                <label id="tmp-footer-label" for="tmp-footer">{{ 'Footer'|t('qarr') }}</label>
+                <div class="instructions"><p>{{ 'Use in html template as'|t('qarr') }} <span class="code"><strong>footer</strong></span>. {{ 'Markdown and HTML tags allowed'|t('qarr') }}
+                    </p></div>
             </div>
             <div class="input ltr">
-                <input type="text" name="tmp-subheadline" class="text fullwidth" value="Our Response" @change="onSubheadlineChanged">
+                <textarea type="text" name="footer" rows="6" class="text fullwidth" placeholder="Company Inc, 3 Abbey Road, San Francisco CA 94102" @change="onFooterChanged" v-model="footer"></textarea>
             </div>
         </div>
 
-        <div class="field" id="tmp-footerText-field">
+        <div class="field" id="tmp-type-field">
             <div class="heading">
-                <label id="tmp-footerText-label" for="tmp-footerText">{{ 'Footer Text'|t('qarr') }}</label>
+                <label id="type-label" for="tmp-type">{{ 'Preview Fields (Demo only)'|t('qarr') }}</label>
+                <div class="instructions"><p>{{ 'For demo purposes and template preview select element to use'|t('qarr') }}</p></div>
             </div>
             <div class="input ltr">
-                <input type="text" name="tmp-footerText" class="text fullwidth" value="Cheers!" @change="onFooterTextChanged">
+                <div class="select">
+                    <select id="tmp-type" name="tmp-type" @change="onElementChanged">
+                        <option value="review" selected="selected">Review</option>
+                        <option value="question">Question</option>
+                    </select>
+                </div>
             </div>
         </div>
 
     </div>
 
+    <p class="text-muted">"Powered by QARR" will be removed with valid license.</p>
 
-    {#    {{ forms.selectField({#}
-    {#        label: "Link Type"|t('qarr'),#}
-    {#        id: 'type',#}
-    {#        name: 'type',#}
-    {#        value: direct.type,#}
-    {#        options: [{ label: 'Review'|t('qarr'), value: 'review' }, { label: 'Question'|t('qarr'), value: 'question' }]#}
-    {#    }) }}#}
 
 
 {% endblock %}
@@ -163,14 +187,47 @@
             name: 'enabled',
             on: template.enabled
         }) }}
+
+    </div>
+
+
+    <div class="meta read-only">
+        <h3>Available Fields</h3>
+        <div class="data">
+            <h5 class="heading" style="align-self: flex-start;">User</h5>
+            <div class="value">
+                {{ 'If registered user, you have access to all User Element attributes eg.'|t('qarr') }} <span
+                        class="code">user.firstName</span>
+            </div>
+        </div>
+        <div class="data">
+            <h5 class="heading" style="align-self: flex-start;">Element</h5>
+            <div class="value">
+                {{ 'Depending on element type (Single, Channel or Product) you have access to all of elements attributes eg'|t('qarr') }}
+                <span class="code">element.price</span>
+            </div>
+        </div>
+        <div class="data">
+            <h5 class="heading" style="align-self: flex-start;">Submission</h5>
+            <div class="value code">
+                <span>fullName</span><br>
+                <span>emailAddress</span><br>
+                <span>feedback/question</span><br>
+                <span>rating</span><br>
+                <span>element (Craft Element)</span><br>
+                <span>status</span><br>
+                <span>abuse</span><br>
+                <span>hasPurchased</span><br>
+                <span>geolocation</span><br>
+                <span>ipAddress</span><br>
+                <span>userAgent</span>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
-{% set settings = {
-    enablePreview: true,
-    previewTargets: [],
-} %}
-
 {% js %}
     {% if template is defined and not template.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
+    new Craft.FieldToggle('.fieldtoggle')
 {% endjs %}
