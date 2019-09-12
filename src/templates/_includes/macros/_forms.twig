@@ -6,6 +6,14 @@
     {% include "qarr/_includes/forms/autosuggest" with config only %}
 {% endmacro %}
 
+{% macro textField(config) %}
+    {% include "qarr/_includes/forms/text-vue" with config only %}
+{% endmacro %}
+
+{% macro colorField(config) %}
+    {% include "qarr/_includes/forms/color-vue" with config only %}
+{% endmacro %}
+
 {% macro autosuggestField(config) %}
     {% import _self as forms %}
 

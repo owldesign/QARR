@@ -16,20 +16,20 @@ Garnish.$doc.ready(function () {
         footer: ''
       };
     },
-    mounted: function mounted() {
-      templateSuggest.$on('templateSelected', this.onTemplatePathChanged);
-      this.elementId = $('#element-id').val();
-    },
     created: function created() {
       this.updateIframe();
     },
-    computed: {},
+    mounted: function mounted() {
+      templateSuggest.$on('templateSelected', this.onTemplatePathChanged);
+      this.elementId = $('#element-id').val(); // this.initColorInputs($('.color-input'))
+    },
     methods: {
       onTemplatePathChanged: function onTemplatePathChanged(options) {
         this.templatePath = options.item.name;
         this.updateIframe();
       },
       onBgColorChanged: function onBgColorChanged(e) {
+        console.log(e);
         this.settings.bgColor = e.target.value;
         this.updateIframe();
       },
@@ -48,6 +48,12 @@ Garnish.$doc.ready(function () {
       onElementChanged: function onElementChanged(e) {
         this.element = e.target.value;
         this.updateIframe(true);
+      },
+      initColorInputs: function initColorInputs(inputs) {
+        $.each(inputs, function (i, item) {
+          var id = $(item).attr('id');
+          new QarrColorInput("#".concat(id, "-container"));
+        });
       },
       updateIframe: function updateIframe() {
         var _this = this;

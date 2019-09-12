@@ -2,10 +2,13 @@
 
 {% extends "_layouts/cp" %}
 
-{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\EmailTemplates") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
 {% do view.registerAssetBundle("craft\\web\\assets\\vue\\VueAsset") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\ElementShared") %}
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\EmailTemplates") %}
 
 {% import "_includes/forms" as forms %}
+
 {% import "qarr/_includes/macros/_buttons" as buttons %}
 {% import "qarr/_includes/macros/_forms" as qarrForms %}
 
@@ -90,7 +93,29 @@
     }) }}
 
     <div id="email-template-app">
-        <input type="hidden" id="element-id" name="elementId" value="">
+        <input type="hidden" id="element-id" name="elementId">
+
+{#        {{ qarrForms.colorField({#}
+{#            label: "Background Color"|t('qarr'),#}
+{#            id: 'bgColor',#}
+{#            name: 'settings[bgColor]',#}
+{#            autofocus: true,#}
+{#            autocorrect: false,#}
+{#            autocapitalize: false,#}
+{#            value: settings.bgColor ? settings.bgColor : '#f4f4f4',#}
+{#            onChange: 'onBgColorChanged',#}
+{#        }) }}#}
+
+{#        {{ qarrForms.colorField({#}
+{#            label: "Container Color"|t('qarr'),#}
+{#            id: 'containerColor',#}
+{#            name: 'settings[containerColor]',#}
+{#            autofocus: true,#}
+{#            autocorrect: false,#}
+{#            autocapitalize: false,#}
+{#            value: settings.containerColor ? settings.containerColor : '#ffffff',#}
+{#            onChange: 'onContainerColorChanged',#}
+{#        }) }}#}
 
         <div class="field" id="tmp-bg-color-field">
             <div class="heading">
@@ -99,7 +124,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="settings[bgColor]" class="color-input" v-model="settings.bgColor" @change="onBgColorChanged">
+                <input type="color" name="settings[bgColor]" class="color-input" value="{{ settings.bgColor ? settings.bgColor : '#f4f4f4' }}" @change="onBgColorChanged">
             </div>
         </div>
 
@@ -111,7 +136,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="settings[containerColor]" class="color-input" v-model="settings.containerColor" @change="onContainerColorChanged">
+                <input type="color" name="settings[containerColor]" class="color-input" value="{{ settings.containerColor ? settings.containerColor : '#ffffff' }}" @change="onContainerColorChanged">
             </div>
         </div>
 
@@ -130,7 +155,7 @@ You have posted a review for <a href='{element.url}'>{element}</a> on {element.d
 <strong>You said:</strong><br>
 {feedback}
 
-Thank you for your feedback!" @change="onBodyChanged" v-model="body"></textarea>
+Thank you for your feedback!" @change="onBodyChanged">{{ body ? body : '' }}</textarea>
             </div>
         </div>
 
@@ -141,7 +166,7 @@ Thank you for your feedback!" @change="onBodyChanged" v-model="body"></textarea>
                     </p></div>
             </div>
             <div class="input ltr">
-                <textarea type="text" name="footer" rows="6" class="text fullwidth" placeholder="Company Inc, 3 Abbey Road, San Francisco CA 94102" @change="onFooterChanged" v-model="footer"></textarea>
+                <textarea type="text" name="footer" rows="6" class="text fullwidth" placeholder="Company Inc, 3 Abbey Road, San Francisco CA 94102" @change="onFooterChanged">{{ footer ? footer : '' }}</textarea>
             </div>
         </div>
 

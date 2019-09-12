@@ -629,4 +629,72 @@ var ConfigureElementsModal = Garnish.Modal.extend({
   handleCancel: function handleCancel() {
     this.hide();
   }
+}); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Color Input
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+QarrColorInput = Garnish.Base.extend({
+  $container: null,
+  $input: null,
+  $colorContainer: null,
+  $colorPreview: null,
+  $colorInput: null,
+  init: function init(container) {
+    this.$container = $(container);
+    this.$input = this.$container.children('.color-input');
+    this.$colorContainer = this.$container.children('.color');
+    this.$colorPreview = this.$colorContainer.children('.color-preview');
+    this.createColorInput();
+    this.handleTextChange();
+    this.addListener(this.$input, 'textchange', 'handleTextChange');
+  },
+  createColorInput: function createColorInput() {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'color');
+
+    if (input.type !== 'color') {
+      // The browser doesn't support input[type=color]
+      return;
+    }
+
+    this.$colorContainer.removeClass('static');
+    this.$colorInput = $(input).addClass('hidden').insertAfter(this.$input);
+    this.addListener(this.$colorContainer, 'click', function () {
+      this.$colorInput.trigger('click');
+    });
+    this.addListener(this.$colorInput, 'change', 'updateColor');
+  },
+  updateColor: function updateColor() {
+    this.$input.val(this.$colorInput.val());
+    this.$input.data('garnish-textchange-value', this.$colorInput.val());
+    this.handleTextChange();
+  },
+  handleTextChange: function handleTextChange() {
+    var val = this.$input.val(); // If empty, set the preview to transparent
+
+    if (!val.length || val === '#') {
+      this.$colorPreview.css('background-color', '');
+      return;
+    } // Make sure the value starts with a #
+
+
+    if (val[0] !== '#') {
+      val = '#' + val;
+      this.$input.val(val);
+      this.$input.data('garnish-textchange-value', val);
+    }
+
+    this.$colorPreview.css('background-color', val);
+
+    if (this.$colorInput) {
+      this.$colorInput.val(val);
+    }
+  }
+}, {
+  _browserSupportsColorInputs: null,
+  doesBrowserSupportColorInputs: function doesBrowserSupportColorInputs() {
+    if (Craft.ColorInput._browserSupportsColorInputs === null) {}
+
+    return Craft.ColorInput._browserSupportsColorInputs;
+  }
 });

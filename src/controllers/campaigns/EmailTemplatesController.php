@@ -58,6 +58,7 @@ class EmailTemplatesController extends Controller
      * @return Response
      * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
+     * @throws \yii\base\ExitException
      */
     public function actionEdit(int $templateId = null, EmailTemplate $template = null): Response
     {
@@ -68,14 +69,17 @@ class EmailTemplatesController extends Controller
 
         if ($templateId !== null) {
             if ($template == null) {
-                $template = QARR::$plugin->getEmailTemplates()->getTemplateById($templateId);
+                $template = QARR::$plugin->getEmailTemplates()->getEmailTemplateById($templateId);
 
-                if ($template->options) {
-                    $variables['template']['options'] = Json::decode($template->options);
-                }
+                $variables['body'] = $template->bodyRaw;
+                $variables['footer'] = $template->footerRaw;
 
                 if ($template->settings) {
-                    $variables['template']['settings'] = Json::decode($template->settings);
+                    $variables['settings'] = $template->settings;
+                }
+
+                if ($template->options) {
+                    $variables['options'] = $template->options;
                 }
 
                 if (!$template) {
