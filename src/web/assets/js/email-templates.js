@@ -21,7 +21,8 @@ Garnish.$doc.ready(function () {
     },
     mounted: function mounted() {
       templateSuggest.$on('templateSelected', this.onTemplatePathChanged);
-      this.elementId = $('#element-id').val(); // this.initColorInputs($('.color-input'))
+      this.elementId = $('#element-id').val();
+      $('.email-template-input').trigger('change');
     },
     methods: {
       onTemplatePathChanged: function onTemplatePathChanged(options) {

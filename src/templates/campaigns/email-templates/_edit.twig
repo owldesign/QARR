@@ -14,7 +14,7 @@
 
 {% set selectedSubnavItem = "campaigns" %}
 {% set selectedSidebarItem = "email-templates" %}
-{% set bodyClass = "qarr qarr-element-edit" %}
+{% set bodyClass = "qarr qarr-element-edit qarr-email-template-edit" %}
 {% set isNewElement = template.id ? false : true %}
 
 {% block sidebar %}
@@ -86,6 +86,7 @@
         instructions: "Optional HTML template located at templates/_qarr/emails/"|t('qarr'),
         id: 'template',
         name: 'templatePath',
+        class: 'email-template-input',
         suggestions: craft.qarrEmails.emailTemplateSuggestions(),
         suggestEnvVars: false,
         value: template.templatePath ? template.templatePath : '',
@@ -95,28 +96,6 @@
     <div id="email-template-app">
         <input type="hidden" id="element-id" name="elementId">
 
-{#        {{ qarrForms.colorField({#}
-{#            label: "Background Color"|t('qarr'),#}
-{#            id: 'bgColor',#}
-{#            name: 'settings[bgColor]',#}
-{#            autofocus: true,#}
-{#            autocorrect: false,#}
-{#            autocapitalize: false,#}
-{#            value: settings.bgColor ? settings.bgColor : '#f4f4f4',#}
-{#            onChange: 'onBgColorChanged',#}
-{#        }) }}#}
-
-{#        {{ qarrForms.colorField({#}
-{#            label: "Container Color"|t('qarr'),#}
-{#            id: 'containerColor',#}
-{#            name: 'settings[containerColor]',#}
-{#            autofocus: true,#}
-{#            autocorrect: false,#}
-{#            autocapitalize: false,#}
-{#            value: settings.containerColor ? settings.containerColor : '#ffffff',#}
-{#            onChange: 'onContainerColorChanged',#}
-{#        }) }}#}
-
         <div class="field" id="tmp-bg-color-field">
             <div class="heading">
                 <label id="tmp-bg-color-label" for="tmp-bg-color">{{ 'Background Color'|t('qarr') }}</label>
@@ -124,7 +103,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="settings[bgColor]" class="color-input" value="{{ settings.bgColor ? settings.bgColor : '#f4f4f4' }}" @change="onBgColorChanged">
+                <input type="color" name="settings[bgColor]" class="color-input email-template-input" value="{{ settings.bgColor ? settings.bgColor : '#f4f4f4' }}" @change="onBgColorChanged">
             </div>
         </div>
 
@@ -136,7 +115,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="settings[containerColor]" class="color-input" value="{{ settings.containerColor ? settings.containerColor : '#ffffff' }}" @change="onContainerColorChanged">
+                <input type="color" name="settings[containerColor]" class="color-input email-template-input" value="{{ settings.containerColor ? settings.containerColor : '#ffffff' }}" @change="onContainerColorChanged">
             </div>
         </div>
 
@@ -147,7 +126,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <textarea type="text" name="body" rows="12" class="text fullwidth"
+                <textarea type="text" name="body" rows="12" class="text fullwidth email-template-input"
                           placeholder="### Hello, {fullName}
 
 You have posted a review for <a href='{element.url}'>{element}</a> on {element.dateCreated|date()}.
@@ -166,7 +145,7 @@ Thank you for your feedback!" @change="onBodyChanged">{{ body ? body : '' }}</te
                     </p></div>
             </div>
             <div class="input ltr">
-                <textarea type="text" name="footer" rows="6" class="text fullwidth" placeholder="Company Inc, 3 Abbey Road, San Francisco CA 94102" @change="onFooterChanged">{{ footer ? footer : '' }}</textarea>
+                <textarea type="text" name="footer" rows="6" class="text fullwidth email-template-input" placeholder="Company Inc, 3 Abbey Road, San Francisco CA 94102" @change="onFooterChanged">{{ footerData ? footerData : '' }}</textarea>
             </div>
         </div>
 
@@ -177,7 +156,7 @@ Thank you for your feedback!" @change="onBodyChanged">{{ body ? body : '' }}</te
             </div>
             <div class="input ltr">
                 <div class="select">
-                    <select id="tmp-type" name="tmp-type" @change="onElementChanged">
+                    <select id="tmp-type" name="tmp-type" @change="onElementChanged" class="email-template-input">
                         <option value="review" selected="selected">Review</option>
                         <option value="question">Question</option>
                     </select>

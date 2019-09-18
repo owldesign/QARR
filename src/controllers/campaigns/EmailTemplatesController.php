@@ -72,7 +72,7 @@ class EmailTemplatesController extends Controller
                 $template = QARR::$plugin->getEmailTemplates()->getEmailTemplateById($templateId);
 
                 $variables['body'] = $template->bodyRaw;
-                $variables['footer'] = $template->footerRaw;
+                $variables['footerData'] = $template->footerRaw;
 
                 if ($template->settings) {
                     $variables['settings'] = $template->settings;
