@@ -71,8 +71,8 @@ class EmailTemplatesController extends Controller
             if ($template == null) {
                 $template = QARR::$plugin->getEmailTemplates()->getEmailTemplateById($templateId);
 
-                $variables['body'] = $template->bodyRaw;
-                $variables['footer'] = $template->footerRaw;
+                $variables['bodyRaw'] = $template->bodyRaw;
+                $variables['footerRaw'] = $template->footerRaw;
 
                 if ($template->settings) {
                     $variables['settings'] = $template->settings;
@@ -135,7 +135,6 @@ class EmailTemplatesController extends Controller
         $this->_getRandomElementByType($variables['elementType'], $variables['elementId'], $variables['forceUpdate']);
         $availableFields = $this->_cachedElement;
 
-
         $body = Craft::$app->getView()->renderObjectTemplate($variables['body'], $availableFields);
         $footer = Craft::$app->getView()->renderObjectTemplate($variables['footer'], $availableFields);
         $variables['body'] = Template::raw(Markdown::process($body));
@@ -146,7 +145,7 @@ class EmailTemplatesController extends Controller
         } else {
             $oldPath = Craft::$app->view->getTemplateMode();
             Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-            $template = Craft::$app->view->renderTemplate('_qarr/emails/' . $variables['template'], $variables);
+            $template = Craft::$app->view->renderTemplate('_qarr/emails/' . $variables['templatePath'], $variables);
             Craft::$app->view->setTemplateMode($oldPath);
         }
 

@@ -21,7 +21,19 @@ Garnish.$doc.ready(function () {
     },
     mounted: function mounted() {
       templateSuggest.$on('templateSelected', this.onTemplatePathChanged);
-      this.elementId = $('#element-id').val(); // this.initColorInputs($('.color-input'))
+      this.elementId = $('#element-id').val();
+
+      if ($('#template').val() !== '') {
+        this.templatePath = $('#template').val();
+      } else {
+        this.templatePath = 'simple';
+      }
+
+      this.settings.bgColor = $('#tmp-bg-color-field input').val();
+      this.settings.containerColor = $('#tmp-container-color-field input').val();
+      this.body = $('#tmp-body-field textarea').val();
+      this.footer = $('#tmp-footer-field textarea').val();
+      this.updateIframe();
     },
     methods: {
       onTemplatePathChanged: function onTemplatePathChanged(options) {
@@ -29,7 +41,6 @@ Garnish.$doc.ready(function () {
         this.updateIframe();
       },
       onBgColorChanged: function onBgColorChanged(e) {
-        console.log(e);
         this.settings.bgColor = e.target.value;
         this.updateIframe();
       },

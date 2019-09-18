@@ -2,6 +2,10 @@
   text-align: right;
 }
 
+.qarr .text-muted {
+  color: #98A3AE;
+}
+
 .qarr .qarr-tag {
   display: inline-block;
   text-transform: uppercase;

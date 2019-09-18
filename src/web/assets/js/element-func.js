@@ -157,6 +157,16 @@ var ReplyModal = Garnish.Modal.extend({
     this.hide();
   }
 }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Email Correspondence Preview
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var QarrEmailCorrespondencePreview = Garnish.Base.extend({
+  $btn: null,
+  init: function init(el) {
+    this.$btn = $(el);
+    console.log(this.$btn);
+  }
+}); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Email Correspondence
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

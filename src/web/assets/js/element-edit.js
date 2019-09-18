@@ -11,10 +11,14 @@ Garnish.$doc.ready(function () {
 
   if ($('#reply-email-btn').length > 0) {
     new QarrEmailCorrespondence('#reply-email-btn');
-  } // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  }
+
+  $('.preview-email').on('click', function (e) {
+    e.preventDefault();
+    new QarrEmailCorrespondencePreview(e.target);
+  }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
   // Answers Instances
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
   if ($('#answers-element').length > 0) {
     new Answers.Container('#answers-element');

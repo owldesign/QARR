@@ -86,6 +86,15 @@ class Correspondence extends Component
 
     // Private Methods
     // =========================================================================
+
+    /**
+     * Save correspondence
+     *
+     * @param $variables
+     * @param $entry
+     * @return bool
+     * @throws \Throwable
+     */
     protected function save($variables, $entry): bool
     {
         $record = new CorrespondenceRecord();
@@ -95,6 +104,9 @@ class Correspondence extends Component
         $record->allowReplies   = $variables['allowReplies'];
         $record->password       = $variables['password'];
         $record->type           = $variables['type'];
+        if (isset($variables['emailTemplateId'])) {
+            $record->emailTemplateId = $variables['emailTemplateId'];
+        }
         $record->elementId      = $entry->id;
         $record->ownerEmail     = $entry->emailAddress;
 

@@ -86,6 +86,7 @@
         instructions: "Optional HTML template located at templates/_qarr/emails/"|t('qarr'),
         id: 'template',
         name: 'templatePath',
+        class: 'email-template-input',
         suggestions: craft.qarrEmails.emailTemplateSuggestions(),
         suggestEnvVars: false,
         value: template.templatePath ? template.templatePath : '',
@@ -124,7 +125,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="settings[bgColor]" class="color-input" value="{{ settings.bgColor ? settings.bgColor : '#f4f4f4' }}" @change="onBgColorChanged">
+                <input type="color" name="settings[bgColor]" class="color-input email-template-input" value="{{ settings.bgColor ? settings.bgColor : '#f4f4f4' }}" @change="onBgColorChanged">
             </div>
         </div>
 
@@ -136,7 +137,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <input type="color" name="settings[containerColor]" class="color-input" value="{{ settings.containerColor ? settings.containerColor : '#ffffff' }}" @change="onContainerColorChanged">
+                <input type="color" name="settings[containerColor]" class="color-input email-template-input" value="{{ settings.containerColor ? settings.containerColor : '#ffffff' }}" @change="onContainerColorChanged">
             </div>
         </div>
 
@@ -147,7 +148,7 @@
                     </p></div>
             </div>
             <div class="input ltr">
-                <textarea type="text" name="body" rows="12" class="text fullwidth"
+                <textarea type="text" name="body" rows="12" class="text fullwidth email-template-input"
                           placeholder="### Hello, {fullName}
 
 You have posted a review for <a href='{element.url}'>{element}</a> on {element.dateCreated|date()}.
@@ -155,7 +156,7 @@ You have posted a review for <a href='{element.url}'>{element}</a> on {element.d
 <strong>You said:</strong><br>
 {feedback}
 
-Thank you for your feedback!" @change="onBodyChanged">{{ body ? body : '' }}</textarea>
+Thank you for your feedback!" @change="onBodyChanged">{{ bodyRaw ? bodyRaw : '' }}</textarea>
             </div>
         </div>
 
@@ -166,7 +167,7 @@ Thank you for your feedback!" @change="onBodyChanged">{{ body ? body : '' }}</te
                     </p></div>
             </div>
             <div class="input ltr">
-                <textarea type="text" name="footer" rows="6" class="text fullwidth" placeholder="Company Inc, 3 Abbey Road, San Francisco CA 94102" @change="onFooterChanged">{{ footer ? footer : '' }}</textarea>
+                <textarea type="text" name="footer" rows="6" class="text fullwidth email-template-input" placeholder="Company Inc, 3 Abbey Road, San Francisco CA 94102" @change="onFooterChanged">{{ footerRaw ? footerRaw : '' }}</textarea>
             </div>
         </div>
 
@@ -187,10 +188,10 @@ Thank you for your feedback!" @change="onBodyChanged">{{ body ? body : '' }}</te
 
     </div>
 
-    <p class="text-muted">"Powered by QARR" will be removed with valid license.</p>
+{% endblock %}
 
-
-
+{% block footer %}
+    <p class="text-muted"><span class="code">"Powered by QARR"</span> will be removed with valid license.</p>
 {% endblock %}
 
 {% block details %}
@@ -253,6 +254,4 @@ Thank you for your feedback!" @change="onBodyChanged">{{ body ? body : '' }}</te
 
 {% js %}
     {% if template is defined and not template.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
-
-    new Craft.FieldToggle('.fieldtoggle')
 {% endjs %}

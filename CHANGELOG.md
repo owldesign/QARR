@@ -8,6 +8,7 @@
 
 ### Added
 - Added soft deletes to Reviews, Questions and Displays
+- Added ability to return objects instead of markup for functions `displayQuestions()`, `displayReviews()` and `displayRating()`
 
 
 ## 1.1.9 - 2019-08-29
