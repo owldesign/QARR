@@ -1,7 +1,7 @@
 {% set hasPurchased = entry.hasPurchased() %}
 
 <div id="settings">
-    {% include 'qarr/_elements/element-information' ignore missing with {entry: entry, type: type, status: entry.status, geolocation: entry.geolocation|json_decode, author: {
+    {% include 'qarr/_elements/element-entry-author' ignore missing with {entry: entry, type: type, status: entry.status, geolocation: entry.geolocation|json_decode, author: {
         fullName: entry.fullName,
         emailAddress: entry.emailAddress,
         avatarUrl: entry.avatarUrl,

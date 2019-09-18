@@ -269,7 +269,7 @@ class Review extends Element
      */
     public function __toString()
     {
-        return $this->title ?: ((string)$this->id ?: static::class);
+        return $this->status;
     }
 
     /**
@@ -477,7 +477,7 @@ class Review extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch ($attribute) {
-            case 'information':
+            case 'author':
                 $variables = [
                     'type' => 'reviews',
                     'entry' => $this,
@@ -489,7 +489,7 @@ class Review extends Element
                     ],
                     'geolocation' => Json::decode($this->geolocation),
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-information', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-author', $variables) : $this->title;
                 break;
             case 'stars':
                 $variables = [
@@ -498,12 +498,12 @@ class Review extends Element
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-stars', $variables) : $this->title;
                 break;
-            case 'status':
-                $variables = [
-                    'entry' => $this,
-                ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-status', $variables) : $this->title;
-                break;
+//            case 'status':
+//                $variables = [
+//                    'entry' => $this,
+//                ];
+//                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-status', $variables) : $this->title;
+//                break;
             case 'location':
                 $variables = [
                     'entry' => $this,
@@ -556,11 +556,11 @@ class Review extends Element
     {
         $attributes = [];
 
-        $attributes['title'] = ['label' => QARR::t('Title')];
-        $attributes['information'] = ['label' => QARR::t('Information')];
+        $attributes['title'] = ['label' => QARR::t('Status')];
+        $attributes['author'] = ['label' => QARR::t('Author')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
         $attributes['stars'] = ['label' => QARR::t('Stars')];
-        $attributes['status'] = ['label' => QARR::t('Status')];
+//        $attributes['status'] = ['label' => QARR::t('Status')];
         $attributes['location'] = ['label' => QARR::t('Location')];
         $attributes['element'] = ['label' => QARR::t('Element')];
 
@@ -572,7 +572,7 @@ class Review extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['title', 'status', 'stars', 'feedback', 'element'];
+        return ['title', 'stars', 'feedback', 'element'];
     }
 
     /**

@@ -142,7 +142,7 @@ class Variables extends Behavior
      * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      */
-    public function displayRating($element)
+    public function displayRating($element, $markup = true)
     {
         $view           = Craft::$app->getView();
         $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -162,7 +162,12 @@ class Variables extends Behavior
             Craft::$app->view->setTemplateMode($oldPath);
         }
 
-        return Template::raw($html);
+        if ($markup) {
+            return Template::raw($html);
+        } else {
+            return $variables;
+        }
+
     }
 
     /**
@@ -175,7 +180,7 @@ class Variables extends Behavior
      * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      */
-    public function displayReviews($element)
+    public function displayReviews($element, $markup = true)
     {
         $view           = Craft::$app->getView();
         $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -184,20 +189,29 @@ class Variables extends Behavior
         $query          = QARR::$plugin->elements->queryElements('reviews', $element->id, null, null, 'approved');
 
         $variables      = [
-            'reviews'   => $query,
-            'total'     => $query->count()
+            'averageRating'     => $this->getAverageRating($element->id),
+            'reviews'           => $query,
+            'total'             => $query->count()
         ];
 
-        if ($customFile) {
-            $html = Craft::$app->view->renderTemplate($customFile, $variables);
+
+        if ($markup) {
+            if ($customFile) {
+                $html = Craft::$app->view->renderTemplate($customFile, $variables);
+            } else {
+                $oldPath = Craft::$app->view->getTemplateMode();
+                Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+                $html = Craft::$app->view->renderTemplate('qarr/frontend/custom/reviews', $variables);
+                Craft::$app->view->setTemplateMode($oldPath);
+            }
+
+            return Template::raw($html);
         } else {
-            $oldPath = Craft::$app->view->getTemplateMode();
-            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-            $html = Craft::$app->view->renderTemplate('qarr/frontend/custom/reviews', $variables);
-            Craft::$app->view->setTemplateMode($oldPath);
+            $variables['reviews'] = $query->all();
+
+            return $variables;
         }
 
-        return Template::raw($html);
     }
 
     /**
@@ -210,7 +224,7 @@ class Variables extends Behavior
      * @throws \Twig\Error\SyntaxError
      * @throws \yii\base\Exception
      */
-    public function displayQuestions($element)
+    public function displayQuestions($element, $markup = true)
     {
         $view           = Craft::$app->getView();
         $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -232,7 +246,14 @@ class Variables extends Behavior
             Craft::$app->view->setTemplateMode($oldPath);
         }
 
-        return Template::raw($html);
+        if ($markup) {
+            return Template::raw($html);
+        } else {
+            $variables['questions'] = $query->all();
+
+            return $variables;
+        }
+
     }
 
 

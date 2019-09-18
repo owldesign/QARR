@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\controllers;
 
+use craft\errors\MissingComponentException;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Html;
 use craft\helpers\Template;
@@ -19,7 +20,12 @@ use owldesign\qarr\QARR;
 use Craft;
 use craft\web\Controller;
 use craft\web\View;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 use yii\helpers\Markdown;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -38,7 +44,7 @@ class CorrespondenceController extends Controller
      *
      * @param null $variables
      * @return Response
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function actionGateKeeper($variables = null)
     {
@@ -57,9 +63,9 @@ class CorrespondenceController extends Controller
      * TODO: Under development
      *
      * @return bool|Response
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @throws MissingComponentException
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
     public function actionCheckPassword()
     {
@@ -94,14 +100,12 @@ class CorrespondenceController extends Controller
 
     /**
      * Send Mail
-     * TODO: Under development + make dynamic and customizable
      *
      * @return bool|Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws \Throwable
+     * @throws \craft\errors\InvalidPluginException
      */
     public function actionSendMail()
     {
@@ -143,6 +147,7 @@ class CorrespondenceController extends Controller
 
         if ($emailTemplate) {
             $variables['settings']  = $emailTemplate->settings;
+            $variables['emailTemplateId'] = $templateId;
 
             $body                   = Craft::$app->getView()->renderObjectTemplate($emailTemplate->bodyRaw, $entry);
             $footer                 = Craft::$app->getView()->renderObjectTemplate($emailTemplate->footerRaw, $entry);

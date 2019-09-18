@@ -1,6 +1,6 @@
 <div class="element-block element-details">
     <div class="element-object">
-        <a href="{{ entry.url }}"><h2 class="element-title">{{ entry }}</h2></a>
+        <a href="{{ entry.url }}"><h2 class="element-title">{{ entry.title }}</h2></a>
         <span class="posted-date">{{ 'Posted on'|t('qarr') }} <time datetime="{{ entry.dateCreated.date }}">{{ entry.dateCreated.date |date() }}</time></span>
     </div>
 

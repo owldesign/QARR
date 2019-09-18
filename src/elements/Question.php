@@ -217,7 +217,7 @@ class Question extends Element
      */
     public function __toString()
     {
-        return $this->title ?: ((string)$this->id ?: static::class);
+        return $this->status;
     }
 
     /**
@@ -397,7 +397,7 @@ class Question extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         switch($attribute) {
-            case 'information':
+            case 'author':
                 $variables = [
                     'type' => 'questions',
                     'entry' => $this,
@@ -410,7 +410,7 @@ class Question extends Element
                     'geolocation' => Json::decode($this->geolocation),
                     'status' => $this->status
                 ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-information', $variables) : $this->title;
+                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-author', $variables) : $this->title;
                 break;
             case 'feedback':
                 $variables = [
@@ -422,12 +422,12 @@ class Question extends Element
                 ];
                 return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-feedback', $variables) : $this->title;
                 break;
-            case 'status':
-                $variables = [
-                    'entry' => $this,
-                ];
-                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-status', $variables) : $this->title;
-                break;
+//            case 'status':
+//                $variables = [
+//                    'entry' => $this,
+//                ];
+//                return $variables ? Craft::$app->getView()->renderTemplate('qarr/_elements/element-status', $variables) : $this->title;
+//                break;
             case 'location':
                 $variables = [
                     'entry' => $this,
@@ -472,10 +472,10 @@ class Question extends Element
     {
         $attributes = [];
 
-        $attributes['title'] = ['label' => QARR::t('Title')];
-        $attributes['status'] = ['label' => QARR::t('Status')];
+        $attributes['title'] = ['label' => QARR::t('Status')];
+//        $attributes['status'] = ['label' => QARR::t('Status')];
         $attributes['location'] = ['label' => QARR::t('Location')];
-        $attributes['information'] = ['label' => QARR::t('Information')];
+        $attributes['author'] = ['label' => QARR::t('Author')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
         $attributes['element'] = ['label' => QARR::t('Element')];
 
@@ -487,7 +487,7 @@ class Question extends Element
      */
     public static function defaultTableAttributes(string $source): array
     {
-        return ['title', 'status', 'information', 'feedback', 'element'];
+        return ['title', 'author', 'feedback', 'element'];
     }
 
     /**

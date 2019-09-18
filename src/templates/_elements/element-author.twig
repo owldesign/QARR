@@ -1,0 +1,15 @@
+<div class="element-block element-info">
+    <div class="item-column">
+        <div class="qarr-avatar qarr-avatar-square qarr-avatar-default">
+            <img src="{{ author.avatarUrl }}?s=200&amp;d=retro&amp;r=g" alt="{{ author.fullName }}">
+        </div>
+        <div class="user-info">
+            {% if author.user %}
+                <div class="user-name">{{ author.user.fullName }}</div>
+            {% else %}
+                <div class="user-name">{{ author.fullName }}</div>
+            {% endif %}
+            <div class="user-email">{{ author.emailAddress }}</div>
+        </div>
+    </div>
+</div>

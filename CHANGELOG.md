@@ -1,6 +1,6 @@
 # QARR Changelog
 
-## 1.2.0 - 2019-09-06
+## 1.2.0 - 2019-09-17
 
 ### Improved
 - Updated plugin UI to coexist with Craft's UI (sorry to going back and fourth with these UI style changes...)
@@ -8,6 +8,9 @@
 
 ### Added
 - Added soft deletes to Reviews, Questions and Displays
+- Added ability to return objects instead of markup for functions `displayQuestions()`, `displayReviews()` and `displayRating()`
+- Elements now display if submission is by a verified purchaser. (Only for Commerce plugin) [See Details](https://github.com/owldesign/QARR/issues/22)
+- Added Email Template configuration for Correspondence [See Docs](https://docs.qarr.tools/campaigns/email-templates/). 
 
 
 ## 1.1.9 - 2019-08-29
