@@ -819,6 +819,7 @@ class Review extends Element
             // Apply Rule
             Craft::$app->getQueue()->push(new RulesTask([
                 'entry' => $record->toArray(),
+                'elementType' => 'review'
             ]));
 
             // Apply Geolocation

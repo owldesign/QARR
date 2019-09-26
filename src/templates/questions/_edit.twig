@@ -17,6 +17,11 @@
         'url': '#question'
     },
     {
+        'id': 'answers',
+        'label': 'Answers',
+        'url': '#answers'
+    },
+    {
         'id': 'correspondence',
         'label': 'Email Correspondence',
         'url': '#correspondence'
@@ -37,7 +42,9 @@
 
             <div class="block-body">
                 <div class="feedback">
+                    <div class="element-block element-details">
                     {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'questions' } %}
+                    {% include 'qarr/_elements/element-abuse' ignore missing with { entry: entry, type: 'questions' } %}
 
                     {% set flaggedWords = flaggedWords(entry.flags) %}
                     {% if flaggedWords %}
@@ -47,7 +54,7 @@
                     {% endif %}
 
                     <p class="feedback-text text-lg">{{ feedback |raw }}</p>
-
+                    </div>
                 </div>
             </div>
 
@@ -58,24 +65,27 @@
 
         <br><br>
 
-        <div class="block-element" id="answers-element">
-            <div class="block-header">
-                <h2 class="relative flex-container">
-                    <div class="mr-2">{{ 'Answers'|t('qarr') }}</div>
-                    <div class="loader hidden ml-auto"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"></circle><path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(217.494 18 18)"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"></animateTransform></path></g></g></svg></div>
-                </h2>
-            </div>
-            <div class="block-body">
-            {% for answer in answers %}
-                {% include 'qarr/_elements/element-entry-answer' ignore missing with { answer: answer } %}
-            {% endfor %}
-            </div>
-        </div>
-
         {# DISPLAY FIELDS#}
         {% if fieldLayoutTabs is defined is not empty %}
             {% include 'qarr/_elements/element-entry-display-fields' ignore missing with { entry: entry } %}
         {% endif %}
+    </div>
+
+    <div id="answers" class="hidden">
+        <h2>{{ 'Answers'|t('qarr') }}</h2>
+        <div class="loader hidden"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"></circle><path d="M36 18c0-9.94-8.06-18-18-18" transform="rotate(217.494 18 18)"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"></animateTransform></path></g></g></svg></div>
+
+        {% if not answers %}
+            <p>{{ 'No answers yet'|t('qarr') }}</p>
+        {% endif %}
+
+        <div class="block-element">
+            <div class="block-body">
+                {% for answer in answers %}
+                    {% include 'qarr/_elements/element-entry-answer' ignore missing with { answer: answer } %}
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
     <div id="correspondence" class="hidden">

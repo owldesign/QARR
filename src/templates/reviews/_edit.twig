@@ -36,16 +36,19 @@
 
             <div class="block-body">
                 <div class="feedback">
-                    {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'reviews' } %}
+                    <div class="element-block element-details">
+                        {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: 'reviews' } %}
+                        {% include 'qarr/_elements/element-abuse' ignore missing with { entry: entry, type: 'reviews' } %}
 
-                    {% set flaggedWords = flaggedWords(entry.flags) %}
-                    {% if flaggedWords %}
-                        {% set feedback = entry.feedback|occurrence(flaggedWords) %}
-                    {% else %}
-                        {% set feedback = entry.feedback %}
-                    {% endif %}
+                        {% set flaggedWords = flaggedWords(entry.flags) %}
+                        {% if flaggedWords %}
+                            {% set feedback = entry.feedback|occurrence(flaggedWords) %}
+                        {% else %}
+                            {% set feedback = entry.feedback %}
+                        {% endif %}
 
-                    <p class="feedback-text text-lg">{{ feedback |raw }}</p>
+                        <p class="feedback-text text-lg">{{ feedback |raw }}</p>
+                    </div>
                 </div>
 
                 <div class="response">

@@ -22,6 +22,7 @@ class RulesTask extends BaseJob
     // =========================================================================
 
     public $entry;
+    public $elementType;
 
     // Public Methods
     // =========================================================================
@@ -29,7 +30,7 @@ class RulesTask extends BaseJob
     public function execute($queue)
     {
         try {
-            $result = QARR::$plugin->rules->applyRules($this->entry);
+            $result = QARR::$plugin->rules->applyRules($this->entry, $this->elementType);
         } catch (\Exception $e) {
             QARR::log('There was an error applying rules: ' . $e->getMessage());
         }

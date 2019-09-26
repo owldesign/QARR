@@ -90,10 +90,11 @@ class Rules extends Component
      * Apply rules
      *
      * @param $element
+     * @param $elementType
      * @throws \Throwable
      * @throws \yii\db\Exception
      */
-    public function applyRules($element)
+    public function applyRules($element, $elementType)
     {
         $rules = $this->getAllRules(true);
         $config = Craft::$app->config->getConfigFromFile('qarr');
@@ -119,19 +120,20 @@ class Rules extends Component
         }
 
         // Ok lets go
-        $this->performRules($element, $rules);
+        $this->performRules($element, $elementType, $rules);
     }
 
     /**
      * Perform rule matching
      *
      * @param $element
+     * @param $elementType
      * @param $rules
      * @return bool
      * @throws \Throwable
      * @throws \yii\db\Exception
      */
-    public function performRules($element, $rules)
+    public function performRules($element, $elementType, $rules)
     {
         foreach ($rules as $rule) {
             if (is_string($rule->data)) {
@@ -141,10 +143,15 @@ class Rules extends Component
             }
 
             $checker = new RuleChecker($data);
-            $result = $checker->filter($element->feedback, true);
+
+            if ($elementType == 'question') {
+                $result = $checker->filter($element['question'], true);
+            } else {
+                $result = $checker->filter($element['feedback'], true);
+            }
 
             if ($result['hasMatch']) {
-                $this->flagElement($rule->id, $element->id, $result);
+                $this->flagElement($rule->id, $element['id'], $result);
             }
         }
 
@@ -164,6 +171,7 @@ class Rules extends Component
         $record = new FlaggedRecord();
         $record->ruleId = $ruleId;
         $record->elementId = $elementId;
+
         if ($details) {
             $record->details = Json::encode($details);
         }

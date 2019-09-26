@@ -735,7 +735,8 @@ class Question extends Element
         if ($isNew) {
             // Apply Rule
             Craft::$app->getQueue()->push(new RulesTask([
-                'entry' => $record,
+                'entry' => $record->toArray(),
+                'elementType' => 'question'
             ]));
 
             // Apply Geolocation

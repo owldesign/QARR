@@ -1,5 +1,15 @@
 # QARR Changelog
 
+## 1.2.1 - 2019-09-25
+
+### Fixed
+- Fixed `Serialization of 'Closure' is not allowed` bug when posting a question
+- Fixed bug where Rules were not applied to submissions
+- Fixed styles for Answers on questions edit page
+
+### Improved
+- Submitted items that are flagged by Rules or reported as abuse will now display on element index and edit pages
+
 ## 1.2.0 - 2019-09-17
 
 ### Improved

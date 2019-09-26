@@ -1,7 +1,6 @@
 <div class="element-block element-status">
-    <div class="item-column element-status {{ entry.status }} {% if entry.status == 'pending' %}pulse{% endif %}">
-        <div class="qarr-tag">
-            <span>{{ entry.status }}</span>
-        </div>
+    <div class="qarr-tag status-tag {{ entry.status }}">
+        <span class="status-indicator"></span>
+        <span class="status-text">{{ entry.status }}</span>
     </div>
 </div>

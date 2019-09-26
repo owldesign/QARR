@@ -1,50 +1,11 @@
-{% if entry.flags or entry.abuse %}
-
+{% if entry.flags %}
     <div class="flags-container">
         {% for flag in entry.flags %}
-            <div class="flagged-item flagged-{{ flag.rule.handle }} flagged-item inline-flex items-center text-gray-700 tracking-wider">
+            <div class="pulse round warning flagged-indicator"></div>
+
+            <div class="flagged-item flagged-{{ flag.rule.handle }}">
                 <span class="block">{{ flag.rule.name }}</span>
             </div>
         {% endfor %}
-
-        {% if entry.abuse %}
-            <div class="relative flagged-item flagged-abuse inline-flex items-center text-gray-700 tracking-wider">
-
-                <a href="#" class="absolute flex items-center justify-center w-full h-full text-center text-indigo-400"
-                   id="element-clear-abuse-{{ entry.id }}" data-entry-id="{{ entry.id }}" data-type="{{ type }}">
-                    <span class="block">{{ 'Click to clear' |t('qarr') }}</span>
-                </a>
-
-                <svg xmlns="http://www.w3.org/2000/svg" class="fill-current" width="15" height="15"
-                     viewBox="0 0 20 20">
-                    <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 5h2v6H9V5zm0 8h2v2H9v-2z"/>
-                </svg>
-                <span class="block ml-2 flag-text">{{ 'Abuse reported'|t('qarr') }}</span>
-            </div>
-        {% endif %}
     </div>
 {% endif %}
-
-
-
-{% js %}
-    $('#element-clear-abuse-'+{{ entry.id }}).on('click', function(e) {
-    e.preventDefault();
-
-    let data = {
-        id: $(this).data('entry-id'),
-        type: $(this).data('type')
-    }
-
-    Craft.postActionRequest('qarr/elements/clear-abuse', data, $.proxy(((response, textStatus) => {
-        if (response && response.success) {
-            Craft.cp.displayNotice(Craft.t('qarr', 'Abuse cleared'))
-            $(this).parent().addClass('zap')
-
-            setTimeout($.proxy(function () {
-                $(this).parent().remove()
-            }, this), 300);
-        }
-        }), this))
-    });
-{% endjs %}

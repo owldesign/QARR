@@ -217,13 +217,15 @@ class Extensions extends \Twig_Extension
 
         foreach($rules as $rule => $words) {
             foreach ($words as $word) {
-                $patterns[] = '/\b' . $word . '\b/i';
-                ArrayHelper::prependOrAppend($wordList, $word, true);
+                if (!in_array($word, $wordList)) {
+                    $patterns[] = '/\b' . $word . '\b/i';
+                    ArrayHelper::prependOrAppend($wordList, $word, true);
+                }
             }
         }
 
         $result = preg_replace($patterns, '<span class="matched-word">$0</span>', $string);
-        
+
         return $result;
     }
 

@@ -42,7 +42,8 @@ class Answers extends Component
         $answers = [];
 
         $query = AnswerRecord::find()
-            ->where(['elementId' => $elementId]);
+            ->where(['elementId' => $elementId])
+            ->orderBy(['status' => 'approved']);
 
         if ($status !== '*') {
             $query->andWhere(['status' => $status]);

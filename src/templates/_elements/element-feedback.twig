@@ -6,9 +6,10 @@
 
     <div class="feedback">
         {% if entry.flags or entry.abuse %}
-            <div class="pulse round warning flagged-indicator"></div>
+            <div class="element-flags">
+                {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: type } %}
+            </div>
         {% endif %}
-        {% include 'qarr/_elements/element-flags' ignore missing with { entry: entry, type: type } %}
 
         {% set flaggedWords = flaggedWords(entry.flags) %}
         {% if flaggedWords %}
@@ -18,6 +19,8 @@
         {% endif %}
 
         <p class="feedback-text text-sm">{{ feedback |raw }}</p>
+
+        {% include 'qarr/_elements/element-abuse' ignore missing with { entry: entry, type: type } %}
     </div>
 
     {% if reply and type == 'reviews' %}

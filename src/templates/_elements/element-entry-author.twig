@@ -35,9 +35,11 @@
         {% endif %}
     {% endif %}
 
-    <div class="item-column element-status {{ entry.status }} {% if entry.status == 'pending' %}pulse{% endif %}">
-        <div class="qarr-tag">
-            <span>{{ entry.status }}</span>
-        </div>
-    </div>
+    {% include 'qarr/_elements/element-status' ignore missing with { entry: entry } %}
+
+{#    <div class="item-column element-status {{ entry.status }} {% if entry.status == 'pending' %}pulse{% endif %}">#}
+{#        <div class="qarr-tag">#}
+{#            <span>{{ entry.status }}</span>#}
+{#        </div>#}
+{#    </div>#}
 </div>
