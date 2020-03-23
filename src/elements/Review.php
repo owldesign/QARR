@@ -269,7 +269,9 @@ class Review extends Element
      */
     public function __toString()
     {
-        return $this->status;
+        // TODO: fix this
+        // return (string)$this->title ?: static::class;
+         return $this->status;
     }
 
     /**
@@ -770,6 +772,33 @@ class Review extends Element
 
         return $commerce;
     }
+
+    /**
+     * @inheritdoc
+     */
+//    public function getType()
+//    {
+//        if ($this->id === null) {
+//            throw new InvalidConfigException(QARR::t( 'Review is missing its ID'));
+//        }
+//
+//        $review = QARR::$plugin->getReviews()->getEntryById($this->id);
+//
+//        if (!$review) {
+//            throw new InvalidConfigException(QARR::t( 'Invalid review ID: ' . $this->id));
+//        }
+//
+//        return $review;
+//
+//    }
+
+    /**
+     * @inheritdoc
+     */
+//    public function getGqlTypeName(): string
+//    {
+//        return static::gqlTypeNameByContext($this->getType());
+//    }
 
     // Events
     // -------------------------------------------------------------------------

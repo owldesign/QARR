@@ -10,16 +10,16 @@
 
 namespace owldesign\qarr;
 
-use craft\web\Controller;
 use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\Review as ReviewElement;
 use owldesign\qarr\fields\QARRField as QARRFieldField;
+use owldesign\qarr\gql\interfaces\elements\Review as ReviewInterface;
+use owldesign\qarr\gql\queries\Review as ReviewQuery;
 use owldesign\qarr\services\campaigns\EmailTemplates;
 use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\services\Elements as QarrElements;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
-use owldesign\qarr\web\assets\QarrCp;
 use owldesign\qarr\widgets\Stats;
 use owldesign\qarr\widgets\Pending;
 use owldesign\qarr\plugin\Routes;
@@ -29,7 +29,6 @@ use owldesign\qarr\web\twig\Extensions;
 use owldesign\qarr\models\Settings;
 
 use Craft;
-use craft\web\View;
 use craft\web\twig\variables\CraftVariable;
 use craft\helpers\ArrayHelper;
 use craft\base\Plugin;
@@ -38,12 +37,13 @@ use craft\services\Fields;
 use craft\services\Utilities;
 use craft\services\Dashboard;
 use craft\services\UserPermissions;
-use craft\events\TemplateEvent;
+use craft\services\Gql;
+use craft\events\RegisterGqlQueriesEvent;
+use craft\events\RegisterGqlTypesEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 
 use yii\base\Event;
-use yii\web\Response;
 
 class QARR extends Plugin
 {
@@ -86,8 +86,12 @@ class QARR extends Plugin
         $this->_registerElementTypes();
         $this->_registerVariables();
         $this->_registerPermissions();
-        $this->_registerCpAssets();
         $this->_registerCpRoutes();
+
+        // TODO: add Graph QL implementation
+        // if (version_compare(Craft::$app->getVersion(), '3.3', '>=')) {
+        //    $this->_registerGraphql();
+        // }
 
         // TODO: Widgets, fieldtypes, utilities
         // Coming soon
@@ -344,20 +348,25 @@ class QARR extends Plugin
     }
 
     /**
-     * Register CP Assets
+     * Register GraphQl
      */
-    private function _registerCpAssets()
+    private function _registerGraphql()
     {
-        // TODO: take a look at this, does it need to exist?
-//        if (Craft::$app->getRequest()->getIsCpRequest()) {
-//            Event::on(
-//                View::class,
-//                View::EVENT_BEFORE_RENDER_TEMPLATE,
-//                function (TemplateEvent $event) {
-//                    Craft::$app->getView()->registerAssetBundle(QarrCp::class);
-//                }
-//            );
-//        }
+        Event::on(
+            Gql::class,
+            Gql::EVENT_REGISTER_GQL_TYPES,
+            function(RegisterGqlTypesEvent $event) {
+                $event->types[] = ReviewInterface::class;
+            }
+        );
+
+        Event::on(
+            Gql::class,
+            Gql::EVENT_REGISTER_GQL_QUERIES,
+            function(RegisterGqlQueriesEvent $event) {
+                $event->queries = array_merge($event->queries, ReviewQuery::getQueries());
+            }
+        );
     }
 
     private function _registerFieldTypes()
