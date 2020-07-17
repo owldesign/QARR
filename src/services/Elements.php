@@ -202,7 +202,7 @@ class Elements extends Component
         }
         
         // Check Element Type
-        if (property_exists($element, 'type') {
+        if (property_exists($element, 'type')) {
             if ($element->type->elementType === 'craft\\elements\\Entry') {
                 $review->sectionId = $element->getType()->sectionId;
             } else if ($element->type->elementType === 'craft\\commerce\\elements\\Product') {
