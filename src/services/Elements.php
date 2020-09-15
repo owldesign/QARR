@@ -76,7 +76,7 @@ class Elements extends Component
         $query->elementId($elementId);
         $query->orderBy($value);
         $query->status('approved');
-    
+
         return $query;
     }
 
@@ -200,7 +200,7 @@ class Elements extends Component
         if (!$element) {
             return QARR::t('Element not found.');
         }
-        
+
         // Check Element Type
         if (property_exists($element, 'typeId')) {
             if ($element->type->elementType === 'craft\\elements\\Entry') {
@@ -212,7 +212,7 @@ class Elements extends Component
 
         $review->elementId = $elementId;
     }
-    
+
     /**
      * Update entry status
      *
@@ -299,9 +299,9 @@ class Elements extends Component
      */
     public function getTotalApproved()
     {
-        $reviews    = Review::find()->where(['status' => 'approved'])->count();
-        $questions  = Question::find()->where(['status' => 'approved'])->count();
-        $total      = $reviews + $questions;
+        $reviews = Review::find()->where(['status' => 'approved'])->count();
+        $questions = Question::find()->where(['status' => 'approved'])->count();
+        $total = $reviews + $questions;
 
         return $total;
     }
@@ -313,9 +313,9 @@ class Elements extends Component
      */
     public function getTotalPending()
     {
-        $reviews    = Review::find()->where(['status' => 'pending'])->count();
-        $questions  = Question::find()->where(['status' => 'pending'])->count();
-        $total      = $reviews + $questions;
+        $reviews = Review::find()->where(['status' => 'pending'])->count();
+        $questions = Question::find()->where(['status' => 'pending'])->count();
+        $total = $reviews + $questions;
 
         return $total;
     }
@@ -329,7 +329,7 @@ class Elements extends Component
 
         $grouped = array_group_by($query->all(), 'rating');
         $newGroup = [];
-        for($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
             $newGroup[$i] = [
                 'entries' => isset($grouped[$i]) ? $grouped[$i] : null,
                 'total' => isset($grouped[$i]) ? count($grouped[$i]) : 0
