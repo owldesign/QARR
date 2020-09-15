@@ -183,7 +183,6 @@ class DisplaysController extends Controller
                 'display' => $display
             ]);
 
-            return null;
         }
 
         if ($request->getAcceptsJson()) {

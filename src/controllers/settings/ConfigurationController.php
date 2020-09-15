@@ -78,6 +78,8 @@ class ConfigurationController extends Controller
             throw new NotFoundHttpException('Plugin not found');
         }
 
+        $pluginSettings = QARR::$plugin->settings;
+
         $result = Craft::$app->getPlugins()->savePluginSettings($plugin, $settings);
 
         return $this->asJson([

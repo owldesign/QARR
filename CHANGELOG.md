@@ -6,6 +6,7 @@
 - Craft 3.5 compatibility
 - Fixed JS errors
 - Fixed EVENT_AFTER_SAVE on plugin load
+- Fixed image configuration on Element Index table 
 - Make QARR compatible with custom ElementTypes (Thanks @francoislevesque)
 
 ## 1.2.1 - 2019-09-25
