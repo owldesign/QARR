@@ -1,12 +1,16 @@
 # QARR Changelog
 
+## 1.2.2.1 - 2020-09-14
+
+### Fixed
+- Fixed image configuration on Element Index table 
+
 ## 1.2.2 - 2020-09-14
 
 ### Fixed
 - Craft 3.5 compatibility
 - Fixed JS errors
 - Fixed EVENT_AFTER_SAVE on plugin load
-- Fixed image configuration on Element Index table 
 - Make QARR compatible with custom ElementTypes (Thanks @francoislevesque)
 
 ## 1.2.1 - 2019-09-25
