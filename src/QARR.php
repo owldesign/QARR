@@ -19,7 +19,7 @@ use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\services\Elements as QarrElements;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
-use owldesign\qarr\web\assets\QarrCp;
+//use owldesign\qarr\web\assets\QarrCp;
 use owldesign\qarr\widgets\Stats;
 use owldesign\qarr\widgets\Pending;
 use owldesign\qarr\plugin\Routes;
@@ -79,6 +79,8 @@ class QARR extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+
+        Craft::setAlias('@qarr', dirname(__DIR__));
 
         $this->_setPluginComponents();
         $this->_registerSiteRoutes();

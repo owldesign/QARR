@@ -1,7 +1,7 @@
 <div class="element-block element-details">
     <div class="element-object">
         <a href="{{ entry.url }}"><h2 class="element-title">{{ entry.title }}</h2></a>
-        <span class="posted-date">{{ 'Posted on'|t('qarr') }} <time datetime="{{ entry.dateCreated.date }}">{{ entry.dateCreated.date |date() }}</time></span>
+        <span class="posted-date">{{ 'Posted on'|t('qarr') }} <time datetime="{{ entry.dateCreated |date() }}">{{ entry.dateCreated |date() }}</time></span>
     </div>
 
     <div class="feedback">
@@ -25,7 +25,7 @@
 
     {% if reply and type == 'reviews' %}
         <div class="response relative response-container bg-gray-100 rounded p-4 mt-4">
-            <span class="reply-date response-author text-gray-500 font-medium text-xs tracking-wide"><strong>{{ reply.author }}</strong> {{ 'replied on'|t('qarr') }} <time datetime="{{ reply.dateCreated.date }}">{{ reply.dateCreated |date() }}</time></span>
+            <span class="reply-date response-author text-gray-500 font-medium text-xs tracking-wide"><strong>{{ reply.author }}</strong> {{ 'replied on'|t('qarr') }} <time datetime="{{ reply.dateCreated |date() }}">{{ reply.dateCreated |date() }}</time></span>
             <span class="response-wrapper block pt-4 text-sm leading-relaxed">{{ reply.reply }}</span>
         </div>
     {% endif %}

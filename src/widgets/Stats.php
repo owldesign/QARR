@@ -11,6 +11,7 @@
 namespace owldesign\qarr\widgets;
 
 use craft\helpers\ArrayHelper;
+use craft\helpers\Html;
 use craft\helpers\Json;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Review;
@@ -55,9 +56,9 @@ class Stats extends Widget
     /**
      * @inheritdoc
      */
-    public static function iconPath()
+    public static function icon()
     {
-        return Craft::getAlias("@owldesign/qarr/web/assets/images/icon.svg");
+        return Craft::getAlias("@qarr/src/web/assets/images/icon.svg");
     }
 
     // Public Methods
@@ -79,7 +80,7 @@ class Stats extends Widget
      */
     public function getSettingsHtml()
     {
-        $id = Craft::$app->getView()->formatInputId('type');
+        $id = Html::id('type');
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
         return Craft::$app->getView()->renderTemplate('qarr/widgets/_stats/settings', [

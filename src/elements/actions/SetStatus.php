@@ -29,6 +29,8 @@ class SetStatus extends ElementAction
     // Properties
     // =========================================================================
 
+    const EVENT_AFTER_SAVE = 'eventAfterSave';
+
     /**
      * @var
      */
@@ -69,6 +71,10 @@ class SetStatus extends ElementAction
         return Craft::$app->getView()->renderTemplate('qarr/_components/elementactions/SetStatus/trigger');
     }
 
+    /**
+     * @param ElementQueryInterface $query
+     * @return bool
+     */
     public function performAction(ElementQueryInterface $query): bool
     {
         $type = $this->_getType($query->elementType);

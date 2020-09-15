@@ -64,9 +64,9 @@ class ChartsController extends ElementIndexesController
         $this->requireAcceptsJson();
         $reviews = QARR::$plugin->reviews->getAllReviews();
 
-        $pending = count(ArrayHelper::filterByValue($reviews, 'status', 'pending', true));
-        $approved = count(ArrayHelper::filterByValue($reviews, 'status', 'approved', true));
-        $rejected = count(ArrayHelper::filterByValue($reviews, 'status', 'rejected', true));
+        $pending = count(ArrayHelper::where($reviews, 'status', 'pending', true));
+        $approved = count(ArrayHelper::where($reviews, 'status', 'approved', true));
+        $rejected = count(ArrayHelper::where($reviews, 'status', 'rejected', true));
 
         $total = count($reviews);
 
@@ -101,18 +101,14 @@ class ChartsController extends ElementIndexesController
      */
     public function actionGetEntriesCount()
     {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
-        $request = Craft::$app->getRequest();
-
-        $startDateParam = $request->getBodyParam('startDate');
-        $endDateParam = $request->getBodyParam('endDate');
-        $elementType = $request->getBodyParam('elementType');
+        $startDateParam = $this->request->getRequiredBodyParam('startDate');
+        $endDateParam = $this->request->getRequiredBodyParam('endDate');
+        $elementType = $this->request->getRequiredBodyParam('elementType');
 
         $startDate = DateTimeHelper::toDateTime($startDateParam);
         $endDate = DateTimeHelper::toDateTime($endDateParam);
 
+        // Start at midnight on the start date, end at midnight after the end date
         $timeZone = new \DateTimeZone(Craft::$app->getTimeZone());
         $startDate = new \DateTime($startDate->format('Y-m-d'), $timeZone);
         $endDate = new \DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
@@ -162,9 +158,9 @@ class ChartsController extends ElementIndexesController
     {
         $variables['total'] = $this->getElementQuery()->count();
 
-        $variables['entries']['0']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'pending', true));
-        $variables['entries']['1']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'approved', true));
-        $variables['entries']['2']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'rejected', true));
+        $variables['entries']['0']['count'] = count(ArrayHelper::where($entries, 'status', 'pending', true));
+        $variables['entries']['1']['count'] = count(ArrayHelper::where($entries, 'status', 'approved', true));
+        $variables['entries']['2']['count'] = count(ArrayHelper::where($entries, 'status', 'rejected', true));
 
         // Set empty percentages
         $variables['entries']['0']['percent'] = 0;

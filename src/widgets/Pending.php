@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\widgets;
 
+use craft\helpers\Html;
 use craft\helpers\Json;
 use owldesign\qarr\elements\Question;
 use owldesign\qarr\elements\Review;
@@ -57,9 +58,9 @@ class Pending extends Widget
     /**
      * @inheritdoc
      */
-    public static function iconPath()
+    public static function icon()
     {
-        return Craft::getAlias("@owldesign/qarr/web/assets/images/icon.svg");
+        return Craft::getAlias("@qarr/src/web/assets/images/icon.svg");
     }
 
     /**
@@ -90,7 +91,7 @@ class Pending extends Widget
      */
     public function getSettingsHtml()
     {
-        $id = Craft::$app->getView()->formatInputId('type');
+        $id = Html::id('type');
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
 
         return Craft::$app->getView()->renderTemplate('qarr/widgets/_pending/settings', [
@@ -111,9 +112,9 @@ class Pending extends Widget
         $this->elementType = $this->_getElementType($this->type);
 
         if ($this->type == 'reviews') {
-            $js = 'new QARR.Widgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
+            $js = 'new QARRWidgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         } else {
-            $js = 'new QARR.Widgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
+            $js = 'new QARRWidgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         }
 
         $view->registerJs($js);

@@ -202,12 +202,14 @@ class Elements extends Component
         }
         
         // Check Element Type
-        if ($element->type->elementType === 'craft\\elements\\Entry') {
-            $review->sectionId = $element->getType()->sectionId;
-        } else if ($element->type->elementType === 'craft\\commerce\\elements\\Product') {
-            $review->productTypeId = $element->getType()->id;
+        if (property_exists($element, 'typeId')) {
+            if ($element->type->elementType === 'craft\\elements\\Entry') {
+                $review->sectionId = $element->typeId;
+            } else if ($element->type->elementType === 'craft\\commerce\\elements\\Product') {
+                $review->productTypeId = $element->typeId;
+            }
         }
-        
+
         $review->elementId = $elementId;
     }
     

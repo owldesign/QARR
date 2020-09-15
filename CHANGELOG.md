@@ -1,5 +1,13 @@
 # QARR Changelog
 
+## 1.2.2 - 2020-09-14
+
+### Fixed
+- Craft 3.5 compatibility
+- Fixed JS errors
+- Fixed EVENT_AFTER_SAVE on plugin load
+- Make QARR compatible with custom ElementTypes (Thanks @francoislevesque)
+
 ## 1.2.1 - 2019-09-25
 
 ### Fixed
@@ -13,7 +21,7 @@
 ## 1.2.0 - 2019-09-17
 
 ### Improved
-- Updated plugin UI to coexist with Craft's UI (sorry to going back and fourth with these UI style changes...)
+- Updated plugin UI to coexist with Craft's UI (sorry to going back and forth with these UI style changes...)
 - Added additional element columns (Stars, Location) + ability to configure element assets from the element index page
 
 ### Added
