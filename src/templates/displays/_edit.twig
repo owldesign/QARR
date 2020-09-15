@@ -110,11 +110,19 @@
 
 
         <div id="fieldlayout" class="hidden">
-            {% include "qarr/_elements/element-field-layout-designer" with {
-                fieldLayout: display.getFieldLayout(),
-                customizableTabs: true,
-                display: display
-            } only %}
+            {% if craft.app.version > '3.4.30' %}
+                {% include "qarr/_elements/element-field-layout-designer" with {
+                    fieldLayout: display.getFieldLayout(),
+                    customizableTabs: true,
+                    display: display
+                } only %}
+            {% else %}
+                {% include "qarr/_elements/element-field-layout-designer-older" with {
+                    fieldLayout: display.getFieldLayout(),
+                    customizableTabs: true,
+                    display: display
+                } only %}
+            {% endif %}
         </div>
     </div>
 

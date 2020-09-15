@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.2.2.2 - 2020-09-14
+
+### Fixed
+- Displays will now load Layout Designer based on your Craft version compatibility
+
 ## 1.2.2.1 - 2020-09-14
 
 ### Fixed
