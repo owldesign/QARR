@@ -15,7 +15,9 @@
             {% set assetHandleExist = attribute(entry.settings.elementAssetHandleName, entry.element.type.handle) is defined %}
             {% if assetHandleExist %}
                 {% set assetHandle = attribute(entry.settings.elementAssetHandleName, entry.element.type.handle) %}
-                {% set asset = attribute(entry.element, assetHandle) %}
+                {% if assetHandle %}
+                    {% set asset = attribute(entry.element, assetHandle) %}
+                {% endif %}
             {% endif %}
         {% endif %}
 

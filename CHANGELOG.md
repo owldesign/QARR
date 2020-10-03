@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.2.3 - 2020-10-03
+
+### Fixed
+- Fixed a bug that would sometimes throw an error on the dashboard and element index pages
+
 ## 1.2.2.2 - 2020-09-14
 
 ### Fixed
