@@ -14,6 +14,7 @@ use Craft;
 use craft\base\Element;
 use craft\base\FieldInterface;
 use craft\elements\db\ElementQueryInterface;
+use craft\fields\data\SingleOptionFieldData;
 use yii\base\Exception;
 use craft\db\Query;
 use craft\helpers\Json;
@@ -312,6 +313,16 @@ class Display extends Element
         if (is_string($handle) && !empty($handle)) {
             return $fields[$handle] ?? null;
         }
+    }
+
+    /**
+     * Return empty option field data
+     *
+     * @return SingleOptionFieldData
+     */
+    public function getEmptyOptionFieldData()
+    {
+        return new SingleOptionFieldData(null, null, true, true);
     }
 
     /**

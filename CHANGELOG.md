@@ -1,5 +1,15 @@
 # QARR Changelog
 
+## 1.2.4 - 2020-12-26
+
+### Fixed
+- Fixed average rating now updating after ratings were deleted
+- Fixed display dropdown fields render issues
+
+### Added
+- Added option to display all reviews or questions with html markup
+- You can now post answers to questions from CP
+
 ## 1.2.3 - 2020-10-03
 
 ### Fixed

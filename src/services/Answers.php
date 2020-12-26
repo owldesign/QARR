@@ -55,7 +55,7 @@ class Answers extends Component
             return null;
         }
 
-        foreach($records as $key => $record) {
+        foreach ($records as $key => $record) {
             $answers[$key] = new Answer($record->toArray(['id', 'answer', 'elementId', 'anonymous', 'authorId', 'status', 'abuse', 'isHelpful', 'dateCreated', 'dateUpdated']));
         }
 
@@ -107,10 +107,14 @@ class Answers extends Component
             return false;
         }
 
-        $record->answer     = $answer->answer;
-        $record->elementId  = $answer->elementId;
-        $record->authorId   = $author->id;
-        $record->anonymous  = $answer->anonymous;
+        $record->answer = $answer->answer;
+        $record->elementId = $answer->elementId;
+        $record->authorId = $author->id;
+        $record->anonymous = $answer->anonymous;
+
+        if ($answer->status) {
+            $record->status = $answer->status;
+        }
 
         $transaction = Craft::$app->getDb()->beginTransaction();
 

@@ -15,6 +15,7 @@ use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\Review as ReviewElement;
 use owldesign\qarr\fields\QARRField as QARRFieldField;
 use owldesign\qarr\services\campaigns\EmailTemplates;
+use owldesign\qarr\services\Functions;
 use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\services\Elements as QarrElements;
@@ -50,6 +51,7 @@ class QARR extends Plugin
     /// Static Properties
     // =========================================================================
 
+    public static $app;
     public static $plugin;
 
     // Public Properties
@@ -79,6 +81,7 @@ class QARR extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+        self::$app = $this;
 
         Craft::setAlias('@qarr', dirname(__DIR__));
 
@@ -100,6 +103,7 @@ class QARR extends Plugin
         Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
             /** @var CraftVariable $variable */
             $variable = $e->sender;
+            $variable->set('functions', Functions::class);
             $variable->set('qarrEmails', EmailTemplates::class);
             $variable->set('qarrRules', Rules::class);
             $variable->set('qarrElements', QarrElements::class);

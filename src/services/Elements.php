@@ -10,19 +10,23 @@
 
 namespace owldesign\qarr\services;
 
-use function Couchbase\defaultDecoder;
 use Craft;
 use craft\base\Component;
+use craft\base\ElementInterface;
 use craft\commerce\elements\Product;
 
 use craft\db\Query;
-use craft\elements\Entry;
+
 use owldesign\qarr\QARR;
+use owldesign\qarr\plugin\Table;
 use owldesign\qarr\elements\Review;
 use owldesign\qarr\elements\Question;
 use owldesign\qarr\elements\Display;
+use craft\elements\db\ElementQueryInterface;
+use Throwable;
+use yii\db\Exception;
 
-require_once CRAFT_VENDOR_PATH . '/owldesign/qarr/src/functions/array-group-by.php';
+//require_once CRAFT_VENDOR_PATH . '/owldesign/qarr/src/functions/array-group-by.php';
 
 /**
  * Class Element
@@ -35,7 +39,7 @@ class Elements extends Component
      *
      * @param string $type
      * @param int $elementId
-     * @return array|\craft\base\ElementInterface|null
+     * @return array|ElementInterface|null
      */
     public function getElement(string $type, int $elementId)
     {
@@ -52,7 +56,7 @@ class Elements extends Component
      * @param int|null $offset
      * @param string $status
      * @param array $exclude
-     * @return \craft\elements\db\ElementQueryInterface|null
+     * @return ElementQueryInterface|null
      */
     public function queryElements(string $type, int $elementId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = [])
     {
@@ -70,10 +74,22 @@ class Elements extends Component
         return $query;
     }
 
-    public function querySortElements(string $type, int $elementId, string $value, $limit)
+    /**
+     * Query sort elements
+     *
+     * @param string $type
+     * @param $elementId
+     * @param string $value
+     * @param $limit
+     * @return ElementQueryInterface|null
+     * @throws \yii\base\ExitException
+     */
+    public function querySortElements(string $type, $elementId, string $value, $limit)
     {
         $query = $this->_getElementQuery($type);
-        $query->elementId($elementId);
+        if ($elementId) {
+            $query->elementId($elementId);
+        }
         $query->orderBy($value);
         $query->status('approved');
 
@@ -88,7 +104,7 @@ class Elements extends Component
      * @param int $rating
      * @param int|null $limit
      * @param init|null $offset
-     * @return \craft\elements\db\ElementQueryInterface|null
+     * @return ElementQueryInterface|null
      */
     public function queryStarFilteredElements(string $type, int $elementId, int $rating, int $limit = null, int $offset = null)
     {
@@ -110,7 +126,7 @@ class Elements extends Component
      * @param int $elementId
      * @param string $type
      * @return bool|int
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function reportAbuse(int $elementId, string $type)
     {
@@ -133,7 +149,7 @@ class Elements extends Component
      * @param int $elementId
      * @param string $type
      * @return bool|int
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function clearAbuse(int $elementId, string $type)
     {
@@ -156,7 +172,7 @@ class Elements extends Component
      * @param $request
      * @param $fields
      * @param $entry
-     * @throws \Throwable
+     * @throws Throwable
      * @throws \yii\base\Exception
      */
     public function getDisplay($request, $fields, &$entry)
@@ -220,7 +236,7 @@ class Elements extends Component
      * @param string $status
      * @param string $type
      * @return int|null
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function updateStatus(int $elementId, string $status, string $type)
     {
@@ -244,7 +260,7 @@ class Elements extends Component
      * @param $status
      * @param $type
      * @return bool
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function updateAllStatuses($entries, $status, $type)
     {
@@ -320,14 +336,22 @@ class Elements extends Component
         return $total;
     }
 
-    public function getEntriesByRating($status, $elementId)
+    /**
+     * Get entries by rating
+     *
+     * @param $status
+     * @param $elementId
+     * @return array
+     */
+    public function getEntriesByRating($status, $elementId): array
     {
         $query = new Query();
         $query->select('*')
-            ->from('{{%qarr_reviews}}')
+            ->from(Table::REVIEWS)
             ->where(['status' => $status, 'elementId' => $elementId]);
 
-        $grouped = array_group_by($query->all(), 'rating');
+        $grouped = QARR::$app->functions->groupBy($query->all(), 'rating');
+
         $newGroup = [];
         for ($i = 1; $i <= 5; $i++) {
             $newGroup[$i] = [
@@ -350,8 +374,8 @@ class Elements extends Component
     {
         $query = new Query();
         $query->select('rating')
-            ->from('{{%qarr_reviews}}')
-            ->where(['status' => 'approved', 'elementId' => $elementId]);
+            ->from(Table::REVIEWS)
+            ->where(['status' => 'approved', 'elementId' => $elementId, 'dateDeleted' => null]);
 
         $count = $query->count();
         $sum = $query->sum('rating');
@@ -360,9 +384,7 @@ class Elements extends Component
             return 0;
         }
 
-        $average = $sum / $count;
-
-        return $average;
+        return $sum / $count;
     }
 
     /**
@@ -422,7 +444,7 @@ class Elements extends Component
      * Return element query
      *
      * @param $type
-     * @return \craft\elements\db\ElementQueryInterface|null
+     * @return ElementQueryInterface|null
      */
     private function _getElementQuery($type)
     {

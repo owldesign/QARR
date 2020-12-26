@@ -1,0 +1,100 @@
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\Frontend") %}
+
+<section id="qarr-display-container">
+
+    {% if showTabs %}
+        <div class="qarr-tab-links">
+            {% if includeReviews %}
+                <a href="#" class="qarr-tab-link qarr-tab-link-reviews active" data-target="reviews">Reviews</a>
+            {% endif %}
+            {% if includeQuestions %}
+                <a href="#" class="qarr-tab-link qarr-tab-link-questions" data-target="questions">Questions</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="qarr-tab-container">
+        <div class="qarr-loader">
+            {% include 'qarr/frontend/_includes/loader' ignore missing %}
+        </div>
+
+        {% if includeReviews %}
+            {# {% set ratings = craft.qarr.getEntriesByRating(element.id) %} #}
+
+            <div id="qarr-tab-reviews" class="qarr-tab-content active pager-style-{{ pagination }}" {% if reviewsDisplay %}data-display-id="{{ reviewsDisplay.id }}"{% endif %} data-qarr-reviews>
+
+                <div class="qarr-tab-header">
+                    {# Over All Average Rating #}
+{#                     {% include 'qarr/frontend/_reviews/_includes/overall-rating' ignore missing %}#}
+
+                    {# Star Rating Filter #}
+                    {# {% include 'qarr/frontend/_reviews/_includes/star-filter' ignore missing with { ratings: ratings } %} #}
+
+                    {% if showButtons %}
+                        {# Leave Review Button #}
+                        <div class="qarr-header-actions">
+                            {% include 'qarr/frontend/_includes/button' ignore missing with { type: 'reviews' } %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if showSort %}
+                    {# Sort & Filters #}
+                    <div class="qarr-filer-actions">
+                        <div class="qarr-filter-title">
+                            {{ 'Sort By'|t('qarr') }}
+                        </div>
+                        {% include 'qarr/frontend/_includes/sort' ignore missing with { type: 'reviews' } %}
+                    </div>
+                {% endif %}
+
+                <div class="qarr-entries-body">
+                    {% include 'qarr/frontend/_reviews' ignore missing with { type: 'reviews' } %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if includeQuestions %}
+            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-element-id="{{ element.id }}" data-qarr-questions>
+                <div class="qarr-tab-header">
+                    {% include 'qarr/frontend/_includes/title' ignore missing with { element: element, type: 'Questions' } %}
+
+                    {% if showButtons %}
+                        {# Ask Question Button #}
+                        <div class="qarr-header-actions">
+                            {% include 'qarr/frontend/_includes/button' ignore missing with { type: 'questions' } %}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                {% if showSort %}
+                    {# Sort & Filters #}
+                    <div class="qarr-filer-actions">
+                        <div class="qarr-filter-title">
+                            {{ 'Sort By'|t('qarr') }}
+                        </div>
+                        {% include 'qarr/frontend/_includes/sort' ignore missing with { type: 'questions' } %}
+                    </div>
+                {% endif %}
+
+                <div class="qarr-entries-body">
+                    {% include 'qarr/frontend/_questions' ignore missing with { type: 'questions' } %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</section>
+
+<script>
+    window.QARR = {};
+    QARR.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
+    QARR.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+    {% if element != '*' %}
+    QARR.elementId = "{{ element.id }}";
+    QARR.elementTypeId = "{{ element.type.id }}";
+    {% endif %}
+    QARR.actionUrl = "{{ actionUrl('') }}/";
+    QARR.limit = "{{ limit }}";
+</script>

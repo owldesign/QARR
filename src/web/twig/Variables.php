@@ -2,19 +2,16 @@
 
 namespace owldesign\qarr\web\twig;
 
+use craft\elements\db\ElementQueryInterface;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Question;
-use owldesign\qarr\elements\db\QuestionQuery;
 use owldesign\qarr\elements\Review;
-use owldesign\qarr\elements\db\ReviewQuery;
-use owldesign\qarr\services\Rules;
 
 use Craft;
 use craft\web\View;
 use craft\helpers\Template;
-use craft\commerce\elements\Product;
-use craft\events\DefineComponentsEvent;
 use yii\base\Behavior;
+use yii\base\Exception;
 
 class Variables extends Behavior
 {
@@ -25,19 +22,18 @@ class Variables extends Behavior
      *
      * @param $element
      * @param null $variables
-     * @return \Twig\Markup
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function display($element, $variables = null)
     {
-        $limit              = null;
-        $pagination         = 'arrows';
-        $removePagination   = false;
-        $removeReviews      = false;
-        $removeQuestions    = false;
+        $limit = null;
+        $pagination = 'arrows';
+        $removePagination = false;
+        $removeReviews = false;
+        $removeQuestions = false;
+        $showButtons = true;
+        $showTabs = true;
+        $showSort = true;
 
         // Remove Pagination
         if (isset($variables['pagination']) && $variables['pagination'] === false) {
@@ -64,13 +60,38 @@ class Variables extends Behavior
             $limit = $variables['limit'];
         }
 
+        // Hide Buttons
+        if (isset($variables['showButtons']) && $variables['showButtons'] === false) {
+            $showButtons = false;
+        }
+
+        // Show Tabs
+        if (isset($variables['showTabs']) && $variables['showTabs'] === false) {
+            $showTabs = false;
+        }
+
+        // Show Tabs
+        if (isset($variables['showSort']) && $variables['showSort'] === false) {
+            $showSort = false;
+        }
+
         // Reviews & Questions
         if ($removePagination) {
-            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, null, 'approved');
-            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, null, 'approved');
+            if ($element === '*') {
+                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', null, null, 'approved');
+                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', null, null, 'approved');
+            } else {
+                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, null, 'approved');
+                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, null, 'approved');
+            }
         } else {
-            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, $limit, null, 'approved');
-            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, $limit, null, 'approved');
+            if ($element === '*') {
+                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', null, $limit, null, 'approved');
+                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', null, $limit, null, 'approved');
+            } else {
+                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, $limit, null, 'approved');
+                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, $limit, null, 'approved');
+            }
         }
 
         // Displays
@@ -80,18 +101,39 @@ class Variables extends Behavior
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        $html = Craft::$app->view->renderTemplate('qarr/frontend/index', [
-            'element' => $element,
-            'includeReviews' => $removeReviews ? false : true,
-            'includeQuestions' => $removeQuestions ? false : true,
-            'includePagination' => $removePagination ? false : true,
-            'pagination' => $pagination,
-            'limit' => $limit,
-            'reviews' => $reviews,
-            'questions' => $questions,
-            'reviewsDisplay' => $reviewsDisplay,
-            'questionsDisplay' => $questionsDisplay,
-        ]);
+        if ($element === '*') {
+            $html = Craft::$app->view->renderTemplate('qarr/frontend/index-all', [
+                'element' => $element,
+                'includeReviews' => $removeReviews ? false : true,
+                'includeQuestions' => $removeQuestions ? false : true,
+                'includePagination' => $removePagination ? false : true,
+                'pagination' => $pagination,
+                'limit' => $limit,
+                'reviews' => $reviews,
+                'questions' => $questions,
+                'reviewsDisplay' => $reviewsDisplay,
+                'questionsDisplay' => $questionsDisplay,
+                'showButtons' => $showButtons,
+                'showTabs' => $showTabs,
+                'showSort' => $showSort,
+            ]);
+        } else {
+            $html = Craft::$app->view->renderTemplate('qarr/frontend/index', [
+                'element' => $element,
+                'includeReviews' => $removeReviews ? false : true,
+                'includeQuestions' => $removeQuestions ? false : true,
+                'includePagination' => $removePagination ? false : true,
+                'pagination' => $pagination,
+                'limit' => $limit,
+                'reviews' => $reviews,
+                'questions' => $questions,
+                'reviewsDisplay' => $reviewsDisplay,
+                'questionsDisplay' => $questionsDisplay,
+                'showButtons' => $showButtons,
+                'showTabs' => $showTabs,
+                'showSort' => $showSort,
+            ]);
+        }
 
         Craft::$app->view->setTemplateMode($oldPath);
 
@@ -102,7 +144,7 @@ class Variables extends Behavior
      * Get all reviews
      *
      * @param null $criteria
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
     public function reviews($criteria = null)
     {
@@ -119,7 +161,7 @@ class Variables extends Behavior
      * Get all questions
      *
      * @param null $criteria
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
     public function questions($criteria = null)
     {
@@ -136,19 +178,17 @@ class Variables extends Behavior
      * Display rating template
      *
      * @param $element
-     * @return \Twig\Markup
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @param bool $markup
+     * @return array|Markup
+     * @throws Exception
      */
     public function displayRating($element, $markup = true)
     {
-        $view           = Craft::$app->getView();
-        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
-        $customFile     = $this->_resolveTemplate($path, 'rating');
+        $view = Craft::$app->getView();
+        $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
+        $customFile = $this->_resolveTemplate($path, 'rating');
 
-        $variables      = [
+        $variables = [
             'averageRating' => $this->getAverageRating($element->id),
             'total' => $this->getCount('reviews', 'approved', $element->id)
         ];
@@ -174,26 +214,28 @@ class Variables extends Behavior
      * Display reviews
      *
      * @param $element
-     * @return \Twig\Markup
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @param bool $markup
+     * @throws Exception
      */
     public function displayReviews($element, $markup = true)
     {
-        $view           = Craft::$app->getView();
-        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
-        $customFile     = $this->_resolveTemplate($path, 'reviews');
+        $view = Craft::$app->getView();
+        $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
+        $customFile = $this->_resolveTemplate($path, 'reviews');
 
-        $query          = QARR::$plugin->elements->queryElements('reviews', $element->id, null, null, 'approved');
+        $variables = [];
 
-        $variables      = [
-            'averageRating'     => $this->getAverageRating($element->id),
-            'reviews'           => $query,
-            'total'             => $query->count()
+        if ($element === '*') {
+            $query = QARR::$app->elements->queryElements('reviews');
+        } else {
+            $query = QARR::$plugin->elements->queryElements('reviews', $element->id, null, null, 'approved');
+            $variables['averageRating'] = $this->getAverageRating($element->id);
+        }
+
+        $variables = [
+            'reviews' => $query,
+            'total' => $query->count()
         ];
-
 
         if ($markup) {
             if ($customFile) {
@@ -218,23 +260,19 @@ class Variables extends Behavior
      * Display questions
      *
      * @param $element
-     * @return \Twig\Markup
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function displayQuestions($element, $markup = true)
     {
-        $view           = Craft::$app->getView();
-        $path           = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
-        $customFile     = $this->_resolveTemplate($path, 'questions');
+        $view = Craft::$app->getView();
+        $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
+        $customFile = $this->_resolveTemplate($path, 'questions');
 
-        $query          = QARR::$plugin->elements->queryElements('questions', $element->id, null, null, 'approved');
+        $query = QARR::$plugin->elements->queryElements('questions', $element->id, null, null, 'approved');
 
-        $variables      = [
+        $variables = [
             'questions' => $query,
-            'total'     => $query->count()
+            'total' => $query->count()
         ];
 
         if ($customFile) {
@@ -276,7 +314,6 @@ class Variables extends Behavior
     }
 
 
-
     /**
      * * Get count of elements by **elementId**, **productTypeId** and **status**
      *
@@ -291,9 +328,7 @@ class Variables extends Behavior
      */
     public function getCount(string $type, string $status, int $elementId = null, $elementType = null, $elementTypeId = null)
     {
-        $count = QARR::$plugin->elements->getCount($type, $status, $elementId, $elementType, $elementTypeId);
-
-        return $count;
+        return QARR::$plugin->elements->getCount($type, $status, $elementId, $elementType, $elementTypeId);
     }
 
     /**
@@ -308,9 +343,7 @@ class Variables extends Behavior
             return null;
         }
 
-        $ratings = QARR::$plugin->elements->getEntriesByRating('approved', $elementId);
-
-        return $ratings;
+        return QARR::$plugin->elements->getEntriesByRating('approved', $elementId);
     }
 
     /**
@@ -372,13 +405,13 @@ class Variables extends Behavior
     public function allowedFields()
     {
         return [
-          'PlainText',
-          'Checkboxes',
-          'RadioButtons',
-          'Dropdown',
-          'MultiSelect',
-          'Url',
-          'Assets',
+            'PlainText',
+            'Checkboxes',
+            'RadioButtons',
+            'Dropdown',
+            'MultiSelect',
+            'Url',
+            'Assets',
         ];
     }
 }

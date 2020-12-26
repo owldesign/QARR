@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\plugin;
 
+use owldesign\qarr\services\Functions;
 use owldesign\qarr\services\Cookies;
 use owldesign\qarr\services\Reviews;
 use owldesign\qarr\services\Questions;
@@ -29,6 +30,16 @@ trait Services
 {
     // Public Methods
     // =========================================================================
+
+    /**
+     * Get functions
+     *
+     * @return Functions
+     */
+    public function getFunctions(): Functions
+    {
+        return $this->get('functions');
+    }
 
     /**
      * Get reviews
@@ -179,6 +190,7 @@ trait Services
     private function _setPluginComponents()
     {
         $this->setComponents([
+            'functions' => Functions::class,
             'reviews' => Reviews::class,
             'replies' => Replies::class,
             'questions' => Questions::class,

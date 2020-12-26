@@ -14,6 +14,11 @@ use Craft;
 use craft\web\Controller;
 use craft\helpers\ArrayHelper;
 use craft\web\View;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
 use owldesign\qarr\models\Answer;
@@ -33,11 +38,8 @@ class AnswersController extends Controller
      * Create modal
      *
      * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
     public function actionGetHudModal()
     {
@@ -62,7 +64,7 @@ class AnswersController extends Controller
      * Update status
      *
      * @return null|Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionUpdateStatus()
     {
@@ -91,7 +93,7 @@ class AnswersController extends Controller
      * Update status
      *
      * @return null|Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionDelete()
     {
@@ -119,11 +121,8 @@ class AnswersController extends Controller
      * Save entry
      *
      * @return Response|null
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
     public function actionSave()
     {
@@ -132,6 +131,7 @@ class AnswersController extends Controller
         $authorId = Craft::$app->getRequest()->getBodyParam('authorId');
         $anonymous = Craft::$app->getRequest()->getBodyParam('anonymous');
         $answer = Craft::$app->getRequest()->getBodyParam('answer');
+        $forceApprove = Craft::$app->getRequest()->getBodyParam('forceApprove');
         $author = Craft::$app->users->getUserById((int)$authorId);
 
         if (!$author) {
@@ -146,6 +146,11 @@ class AnswersController extends Controller
         $model->elementId = $questionId;
         $model->authorId = $author->id;
         $model->anonymous = $anonymous ? 1 : null;
+
+        if ($forceApprove) {
+            $model->status = 'approved';
+        }
+
         $model->validate();
 
         if (!$model->hasErrors() && $response = QARR::$plugin->answers->save($model, $author)) {
@@ -190,7 +195,7 @@ class AnswersController extends Controller
      * Remove replies
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionRemoveReplies()
     {

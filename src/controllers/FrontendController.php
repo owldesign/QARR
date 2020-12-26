@@ -17,7 +17,13 @@ use owldesign\qarr\QARR;
 use Craft;
 use craft\web\View;
 use craft\web\Controller;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class FrontendController extends Controller
 {
@@ -26,12 +32,9 @@ class FrontendController extends Controller
     /**
      * Build modal
      *
-     * @return \yii\web\Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
     public function actionGetModalContent()
     {

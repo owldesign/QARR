@@ -43,7 +43,17 @@ class Extensions extends \Twig_Extension
             new \Twig_SimpleFilter('valueOutOfArray', [$this, 'valueOutOfArray']),
             new \Twig_SimpleFilter('truncate', [$this, 'truncate']),
             new \Twig_SimpleFilter('occurrence', [$this, 'occurrence']),
+            new \Twig_SimpleFilter('toObject', array($this, 'toObject')),
         ];
+    }
+
+    /**
+     * @param array $array
+     * @return object
+     */
+    public function toObject($array)
+    {
+        return (object) $array;
     }
 
     /**

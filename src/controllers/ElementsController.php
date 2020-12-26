@@ -16,6 +16,12 @@ use craft\web\Controller;
 use craft\helpers\Template;
 use craft\controllers\ElementIndexesController;
 use owldesign\qarr\elements\Question;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 use owldesign\qarr\QARR;
@@ -41,11 +47,8 @@ class ElementsController extends Controller
      * Query builder for elements
      *
      * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
     public function actionQueryElements()
     {
@@ -70,6 +73,13 @@ class ElementsController extends Controller
         ]);
     }
 
+    /**
+     * Query sort elements
+     *
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws Exception
+     */
     public function actionQuerySortElements()
     {
         $this->requirePostRequest();
@@ -98,11 +108,8 @@ class ElementsController extends Controller
      * Star filtered elements
      *
      * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
     public function actionQueryStarFilteredElements()
     {
@@ -131,7 +138,7 @@ class ElementsController extends Controller
      * Check total pending count
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionCheckPending()
     {
@@ -178,10 +185,10 @@ class ElementsController extends Controller
      * Fetch pending items
      *
      * @return Response
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\web\BadRequestHttpException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws BadRequestHttpException
      */
     public function actionFetchPendingItems()
     {
@@ -209,7 +216,7 @@ class ElementsController extends Controller
      * Report abuse
      *
      * @return bool|Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionReportAbuse()
     {
@@ -259,7 +266,7 @@ class ElementsController extends Controller
      * Clear abuse
      *
      * @return bool|Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionClearAbuse()
     {
@@ -290,7 +297,7 @@ class ElementsController extends Controller
      * Update status
      *
      * @return null|Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
     public function actionUpdateStatus()
     {
@@ -322,8 +329,8 @@ class ElementsController extends Controller
      * Delete
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionDelete()
     {
@@ -362,7 +369,7 @@ class ElementsController extends Controller
     // =========================================================================
 
     /**
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
     private function _enforceEditPermissions()
     {

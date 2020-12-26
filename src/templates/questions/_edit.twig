@@ -69,7 +69,33 @@
         {% if fieldLayoutTabs is defined is not empty %}
             {% include 'qarr/_elements/element-entry-display-fields' ignore missing with { entry: entry } %}
         {% endif %}
+
+        <hr>
+
+        <div class="block-element">
+            <h2>Leave an answer</h2>
+
+            <form method="POST">
+                {{ csrfInput() }}
+                {{ actionInput('qarr/answers/save') }}
+                {{ hiddenInput('authorId', currentUser.id) }}
+                {{ hiddenInput('questionId', entry.id) }}
+                {{ hiddenInput('forceApprove', 1) }}
+
+                {{ forms.textareaField({
+                    name: 'answer',
+                }) }}
+
+                {{ forms.lightswitchField({
+                    name: 'anonymous',
+                    label: 'Posting as ' ~ currentUser.name,
+                    id: 'post-anonymous',
+                }) }}
+                <button type="submit" class="btn submit">Add Answer</button>
+            </form>
+        </div>
     </div>
+
 
     <div id="answers" class="hidden">
         <h2>{{ 'Answers'|t('qarr') }}</h2>
@@ -97,3 +123,13 @@
 {% block details %}
     {% include 'qarr/_elements/element-entry-settings' ignore missing with { entry: entry, type: 'questions' } %}
 {% endblock %}
+
+{% js %}
+    $('#post-anonymous').on('change', function() {
+        if ($(this).find('input').val()) {
+            $('#post-anonymous-field').find('label').html('Posting anonymously');
+        } else {
+            $('#post-anonymous-field').find('label').html('Posting as {{ currentUser.name }}');
+        }
+    });
+{% endjs %}

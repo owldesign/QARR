@@ -64,10 +64,13 @@
             <input type="hidden" name="displayHandle" value="{{ display.handle }}">
 
             {%- namespace 'fields' -%}
-                {% set tabs = display.getFieldLayout.getTabs() %}
+{#                {% set fields = display.getFieldLayout.createForm(display) %}#}
+                {% set fields = display.getFieldLayout.fields %}
 
-                {% for tab in tabs %}
-                    {% set fields = tab.getFields() %}
+{#                {% set tabs = display.getFieldLayout.getTabs() %}#}
+
+{#                {% for tab in tabs %}#}
+{#                    {% set fields = tab.getFields() %}#}
 
                     {% for field in fields %}
                         {% set fieldType = field |getClass %}
@@ -79,14 +82,18 @@
                                     {{ field.getInputHtml('') |raw }}
                                 {% elseif fieldType == 'Assets' %}
                                     <input type="file" name="{{ field.handle }}[]" {% if field.limit != '1' %}multiple{% endif %}>
+                                {% elseif fieldType == 'Dropdown' %}
+                                    {% set optionFieldData = display.getEmptyOptionFieldData()  %}
+                                    {{ field.getInputHtml(optionFieldData) |replace({'id=""': ''})|raw }}
                                 {% else %}
                                     {{ field.getInputHtml('') |replace({'id=""': ''})|raw }}
+{#                                    {{ field.getInputHtml(data) |replace({'id=""': ''})|raw }}#}
                                 {% endif %}
                             </div>
 
                         {% endif %}
                     {% endfor %}
-                {% endfor %}
+{#                {% endfor %}#}
             {% endnamespace %}
         {% endif %}
 

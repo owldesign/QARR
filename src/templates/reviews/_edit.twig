@@ -81,6 +81,7 @@
 
         {# DISPLAY FIELDS#}
         {% if fieldLayoutTabs is defined is not empty %}
+            <br>
             {% include 'qarr/_elements/element-entry-display-fields' ignore missing with { entry: entry } %}
         {% endif %}
 
