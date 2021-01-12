@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.2.5 - 2021-01-11
+
+### Added
+- Added optional attributes for advanced usage 
+
 ## 1.2.4 - 2020-12-26
 
 ### Fixed

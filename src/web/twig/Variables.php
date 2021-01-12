@@ -34,6 +34,7 @@ class Variables extends Behavior
         $showButtons = true;
         $showTabs = true;
         $showSort = true;
+        $showAbuseReport = true;
 
         // Remove Pagination
         if (isset($variables['pagination']) && $variables['pagination'] === false) {
@@ -70,10 +71,16 @@ class Variables extends Behavior
             $showTabs = false;
         }
 
-        // Show Tabs
+        // Show Sort
         if (isset($variables['showSort']) && $variables['showSort'] === false) {
             $showSort = false;
         }
+
+        // Show Abuse Reporting
+        if (isset($variables['abuse']) && $variables['abuse'] === false) {
+            $showAbuseReport = false;
+        }
+
 
         // Reviews & Questions
         if ($removePagination) {
@@ -116,6 +123,7 @@ class Variables extends Behavior
                 'showButtons' => $showButtons,
                 'showTabs' => $showTabs,
                 'showSort' => $showSort,
+                'showAbuseReporting' => $showAbuseReport,
             ]);
         } else {
             $html = Craft::$app->view->renderTemplate('qarr/frontend/index', [
