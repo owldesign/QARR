@@ -2,9 +2,8 @@
 /*!***************************************!*\
   !*** ./development/js/widget-func.js ***!
   \***************************************/
-var QARR = {};
-QARR.Widgets = {};
-QARR.Widgets.PendingItemsWidget = Garnish.Base.extend({
+QARRWidgets = {};
+QARRWidgets.PendingItemsWidget = Garnish.Base.extend({
   $container: null,
   $items: null,
   $loader: null,
@@ -19,7 +18,7 @@ QARR.Widgets.PendingItemsWidget = Garnish.Base.extend({
 
     if (this.$items.length > 0) {
       $.each(this.$items, function (i, item) {
-        new QARR.Widgets.PendingItem(item, parent);
+        new QARRWidgets.PendingItem(item, parent);
       });
     }
 
@@ -59,11 +58,11 @@ QARR.Widgets.PendingItemsWidget = Garnish.Base.extend({
     }, this));
   },
   addPendingItem: function addPendingItem(item) {
-    new QARR.Widgets.PendingItem(item, this);
+    new QARRWidgets.PendingItem(item, this);
     this.checkElements();
   }
 });
-QARR.Widgets.PendingItem = Garnish.Base.extend({
+QARRWidgets.PendingItem = Garnish.Base.extend({
   $item: null,
   $actionBtn: null,
   parent: null,

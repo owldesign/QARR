@@ -152,6 +152,10 @@
   color: white;
 }
 
+.qarr-elementindex #sources {
+  position: relative;
+}
+
 .qarr-elementindex #sources a {
   display: flex;
 }
@@ -160,8 +164,17 @@
   margin-left: auto;
 }
 
-.qarr-elementindex #sources.active {
-  background: #f1f5f8;
+.qarr-elementindex #sources.active:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border: 1px dashed #b2b3b5;
+  border-radius: 5px;
+  margin: -6px -10px;
 }
 
 .qarr-elementindex .sidebar .customize-sources:hover {
@@ -169,12 +182,18 @@
 }
 
 .qarr-elementindex .sidebar .button-group {
+  display: flex;
+  align-items: center;
   margin-top: 15px;
 }
 
 .qarr-elementindex .sidebar .button-group a {
   display: block;
-  margin-bottom: 5px;
+  margin: 0;
+}
+
+.qarr-elementindex .sidebar .button-group a.customize-sources {
+  padding: 10px 15px 10px 10px;
 }
 
 .qarr-elementindex .status.pending {

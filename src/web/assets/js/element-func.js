@@ -407,7 +407,7 @@ QarrPrompt = Garnish.Base.extend({
 // Answers Instance
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var Answers = {};
+Answers = {};
 Answers.Container = Garnish.Base.extend({
   $container: null,
   $items: null,
@@ -654,6 +654,71 @@ ConfigureElementsModal = Garnish.Modal.extend({
   handleCancel: function handleCancel() {
     this.hide();
   }
+}); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Configure Elements HUD
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ConfigureElementHud = Garnish.Base.extend({
+  $form: null,
+  type: null,
+  target: null,
+  elementIndex: null,
+  init: function init(el) {
+    // TODO: update this to open a hud and only save single item
+    this.type = el.data('type');
+    this.target = el.data('target'); // Temp
+
+    new ConfigureElementsModal(this.target, this.type); // let that = this
+    // this.elementIndex = Craft.elementIndex
+    //
+    // let $hudContents = $()
+    // let randomId = Math.floor(Math.random() * 11)
+    //
+    // this.$form = $('<form/>')
+    // let $footer = $('<div class="hud-footer"/>').appendTo(this.$form)
+    // let $body = $(`
+    //         <input type="hidden" name="pluginHandle" value="qarr">
+    //         <div class="field">
+    //             <div class="heading">
+    //                 <label class="qarr-label" for="asset-handle-${randomId}">${Craft.t('qarr', 'Asset Handle')}</label>
+    //             </div>
+    //             <div class="input">
+    //                 <input class="text fullwidth" type="text" id="asset-handle-${randomId}" name="settings[elementAssetHandleName][${this.target}]" autocomplete="off" placeholder="Asset handle">
+    //             </div>
+    //         </div>
+    //     `).appendTo(this.$form)
+    // let $buttonsContainer = $('<div class="buttons right"/>').appendTo($footer)
+    // let $cancelBtn = $('<div class="btn">' + Craft.t('qarr', 'Cancel') + '</div>').appendTo($buttonsContainer)
+    // let $okBtn = $('<input class="btn submit" type="submit" value="' + Craft.t('qarr', 'Save') + '"/>').appendTo($buttonsContainer)
+    // let $spinner = $('<div class="spinner hidden"/>').appendTo($buttonsContainer)
+    //
+    // $hudContents = $hudContents.add(this.$form)
+    //
+    // this.hud = new Garnish.HUD(el, $hudContents, {
+    //     hudClass: 'hud',
+    //     bodyClass: 'body',
+    //     closeOtherHUDs: false
+    // })
+    //
+    // this.addListener($cancelBtn, 'click', function() {
+    //     this.hud.hide()
+    // })
+    //
+    // this.addListener(this.$form, 'submit', 'handleOk')
+    //
+    // this.hud.on('submit', function(e) {
+    //     that.handleOk(e)
+    //     that.hud.hide()
+    // })
+  } // handleOk() {
+  //     let data = this.$form.serialize()
+  //     Craft.postActionRequest('qarr/settings/configuration/save-element-settings', data, $.proxy(((response, textStatus) => {
+  //         if (response.success) {
+  //             this.elementIndex.updateElements()
+  //         }
+  //     }), this))
+  // },
+
 }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Color Input
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~

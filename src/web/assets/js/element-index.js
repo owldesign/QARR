@@ -34,6 +34,11 @@ Garnish.$doc.ready(function () {
     Craft.elementIndex.statusMenu.$container.addClass('qarr-menu qarr-status-menu');
     Craft.elementIndex.sortMenu.$container.addClass('qarr-menu qarr-sort-menu');
     Craft.elementIndex.on('updateElements', function (e) {
+      $('.configure-element').on('click', function (e) {
+        e.preventDefault();
+        new ConfigureElementHud($(this));
+      });
+
       if (Craft.elementIndex.view.elementSelect) {
         var count = Craft.elementIndex.view._totalVisible;
 
