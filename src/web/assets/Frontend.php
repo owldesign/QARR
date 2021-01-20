@@ -3,6 +3,7 @@
 namespace owldesign\qarr\web\assets;
 
 use craft\web\AssetBundle;
+use craft\web\assets\axios\AxiosAsset;
 use craft\web\assets\garnish\GarnishAsset;
 use craft\web\assets\velocity\VelocityAsset;
 use yii\web\JqueryAsset;
@@ -23,6 +24,7 @@ class Frontend extends AssetBundle
             GarnishAsset::class,
             JqueryAsset::class,
             VelocityAsset::class,
+            AxiosAsset::class,
         ];
 
         $this->js = [

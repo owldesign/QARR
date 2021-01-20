@@ -1,1 +1,117 @@
-!function(e){var t={};function n(o){if(t[o])return t[o].exports;var a=t[o]={i:o,l:!1,exports:{}};return e[o].call(a.exports,a,a.exports,n),a.l=!0,a.exports}n.m=e,n.c=t,n.d=function(e,t,o){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:o})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var o=Object.create(null);if(n.r(o),Object.defineProperty(o,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var a in e)n.d(o,a,function(t){return e[t]}.bind(null,a));return o},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="/",n(n.s=22)}({22:function(e,t,n){e.exports=n(23)},23:function(e,t){Garnish.$doc.ready((function(){new Vue({el:"#email-template-app",data:function(){return{iframe:null,options:{},templatePath:"simple",element:"review",elementId:null,settings:{bgColor:"#f4f4f4",containerColor:"#ffffff"},body:"",footer:""}},created:function(){this.updateIframe()},mounted:function(){templateSuggest.$on("templateSelected",this.onTemplatePathChanged),this.elementId=$("#element-id").val(),""!==$("#template").val()?this.templatePath=$("#template").val():this.templatePath="simple",this.settings.bgColor=$("#tmp-bg-color-field input").val(),this.settings.containerColor=$("#tmp-container-color-field input").val(),this.body=$("#tmp-body-field textarea").val(),this.footer=$("#tmp-footer-field textarea").val(),this.updateIframe()},methods:{onTemplatePathChanged:function(e){this.templatePath=e.item.name,this.updateIframe()},onBgColorChanged:function(e){this.settings.bgColor=e.target.value,this.updateIframe()},onContainerColorChanged:function(e){this.settings.containerColor=e.target.value,this.updateIframe()},onBodyChanged:function(e){this.body=e.target.value,this.updateIframe()},onFooterChanged:function(e){this.footer=e.target.value,this.updateIframe()},onElementChanged:function(e){this.element=e.target.value,this.updateIframe(!0)},initColorInputs:function(e){$.each(e,(function(e,t){var n=$(t).attr("id");new QarrColorInput("#".concat(n,"-container"))}))},updateIframe:function(){var e=this,t=arguments.length>0&&void 0!==arguments[0]&&arguments[0],n={templatePath:this.templatePath,element:this.element,body:this.body,footer:this.footer,settings:this.settings,elementId:this.elementId,forceUpdate:t};return n[Craft.csrfTokenName]=Craft.csrfTokenValue,axios.post(Craft.getActionUrl("qarr/campaigns/email-templates/get-email-template-preview"),n,{headers:{"X-CSRF-Token":Craft.csrfTokenValue}}).then((function(t){e.elementId=t.data.elementId;var n=$('<iframe class="lp-preview" frameborder="0" width="100%" height="100%"/>');n.appendTo(e.$el),n.on("load",(function(){e.iframe&&e.iframe.remove(),e.iframe=n,e.iframe.off()})),Garnish.requestAnimationFrame($.proxy((function(){n[0].contentWindow.document.open(),n[0].contentWindow.document.write(t.data.template),n[0].contentWindow.document.close(),n[0].height=n[0].contentWindow.document.body.scrollHeight+60}),e))}))}}})}))}});
+/******/ (() => { // webpackBootstrap
+/*!*******************************************!*\
+  !*** ./development/js/email-templates.js ***!
+  \*******************************************/
+Garnish.$doc.ready(function () {
+  new Vue({
+    el: '#email-template-app',
+    data: function data() {
+      return {
+        iframe: null,
+        options: {},
+        templatePath: 'simple',
+        element: 'review',
+        elementId: null,
+        settings: {
+          bgColor: '#f4f4f4',
+          containerColor: '#ffffff'
+        },
+        body: '',
+        footer: ''
+      };
+    },
+    created: function created() {
+      this.updateIframe();
+    },
+    mounted: function mounted() {
+      templateSuggest.$on('templateSelected', this.onTemplatePathChanged);
+      this.elementId = $('#element-id').val();
+
+      if ($('#template').val() !== '') {
+        this.templatePath = $('#template').val();
+      } else {
+        this.templatePath = 'simple';
+      }
+
+      this.settings.bgColor = $('#tmp-bg-color-field input').val();
+      this.settings.containerColor = $('#tmp-container-color-field input').val();
+      this.body = $('#tmp-body-field textarea').val();
+      this.footer = $('#tmp-footer-field textarea').val();
+      this.updateIframe();
+    },
+    methods: {
+      onTemplatePathChanged: function onTemplatePathChanged(options) {
+        this.templatePath = options.item.name;
+        this.updateIframe();
+      },
+      onBgColorChanged: function onBgColorChanged(e) {
+        this.settings.bgColor = e.target.value;
+        this.updateIframe();
+      },
+      onContainerColorChanged: function onContainerColorChanged(e) {
+        this.settings.containerColor = e.target.value;
+        this.updateIframe();
+      },
+      onBodyChanged: function onBodyChanged(e) {
+        this.body = e.target.value;
+        this.updateIframe();
+      },
+      onFooterChanged: function onFooterChanged(e) {
+        this.footer = e.target.value;
+        this.updateIframe();
+      },
+      onElementChanged: function onElementChanged(e) {
+        this.element = e.target.value;
+        this.updateIframe(true);
+      },
+      initColorInputs: function initColorInputs(inputs) {
+        $.each(inputs, function (i, item) {
+          var id = $(item).attr('id');
+          new QarrColorInput("#".concat(id, "-container"));
+        });
+      },
+      updateIframe: function updateIframe() {
+        var _this = this;
+
+        var $forceUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+        var payload = {
+          templatePath: this.templatePath,
+          element: this.element,
+          body: this.body,
+          footer: this.footer,
+          settings: this.settings,
+          elementId: this.elementId,
+          forceUpdate: $forceUpdate
+        };
+        payload[Craft.csrfTokenName] = Craft.csrfTokenValue;
+        return axios.post(Craft.getActionUrl('qarr/campaigns/email-templates/get-email-template-preview'), payload, {
+          headers: {
+            'X-CSRF-Token': Craft.csrfTokenValue
+          }
+        }).then(function (res) {
+          // cache element id
+          _this.elementId = res.data.elementId;
+          var iframe = $('<iframe class="lp-preview" frameborder="0" width="100%" height="100%"/>');
+          iframe.appendTo(_this.$el);
+          iframe.on('load', function () {
+            if (_this.iframe) {
+              _this.iframe.remove();
+            }
+
+            _this.iframe = iframe;
+
+            _this.iframe.off();
+          });
+          Garnish.requestAnimationFrame($.proxy(function () {
+            iframe[0].contentWindow.document.open();
+            iframe[0].contentWindow.document.write(res.data.template);
+            iframe[0].contentWindow.document.close();
+            iframe[0].height = iframe[0].contentWindow.document.body.scrollHeight + 60;
+          }, _this));
+        });
+      }
+    }
+  });
+});
+/******/ })()
+;

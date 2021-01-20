@@ -1,4 +1,9 @@
-<a href="#" class="qarr-filter-item {% if total == 0 %}not-active{% endif %}" data-type="reviews" data-rating="{{ stars }}" data-total-entries="{{ total }}">
+<a href="#"
+   class="qarr-filter-item {% if total == 0 %}not-active{% endif %}"
+   data-type="reviews"
+   data-rating="{{ stars }}"
+   data-total-entries="{{ total }}">
+
     <div class="qarr-filter-stars">
         {% for i in 1..5 %}
             <div class="qarr-star static {% if i <= stars %}active{% endif %}" data-star-count="{{ i }}">

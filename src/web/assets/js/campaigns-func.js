@@ -1,1 +1,95 @@
-!function(e){var t={};function n(r){if(t[r])return t[r].exports;var l=t[r]={i:r,l:!1,exports:{}};return e[r].call(l.exports,l,l.exports,n),l.l=!0,l.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var l in e)n.d(r,l,function(t){return e[t]}.bind(null,l));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="/",n(n.s=18)}({18:function(e,t,n){e.exports=n(19)},19:function(e,t){Garnish.Base.extend({$container:null,$elementSelectContainer:null,$generatedUrlInput:null,type:null,elementType:null,siteUrl:null,user:null,element:null,selectedClass:null,init:function(e){var t=this;this.$container=$(e),this.type=this.$container.data("type"),this.elementType=this.$container.data("element-type"),this.siteUrl=this.$container.data("site-url")+"qarr/direct?",this.$elementSelectContainer=this.$container.find(".elementselect"),this.$generatedUrlInput=this.$container.find("#generated-url"),this.handleSelectedElements(),this.on("elementRemoved",(function(e){var n=e.settings.elementType;"craft\\elements\\Entry"===n&&(t.element=null),"craft\\elements\\User"===n&&(t.user=null),t.$generatedUrlInput.val(t.siteUrl)}))},handleSelectedElements:function(){var e=this,t=this.$container.find(".element");$.each(t,(function(t,n){var r=$(n)[0],l=r.dataset.id,i=r.dataset.type;"craft\\elements\\Entry"===i&&(e.element={id:l,type:"Entry"}),"craft\\elements\\User"===i&&(e.user={id:l,type:"User"})}))},handleAddElement:function(e){var t=this;Craft.postActionRequest("qarr/campaigns/direct-links/get-element-info",{elementId:e.id},$.proxy((function(e,n){e.success&&t.buildUrl(e)}),this))},handleRemoveElement:function(){},buildUrl:function(e){this.selectedClass=e.class;var t=this.$generatedUrlInput.val(),n=e.class,r=e.element;if("User"===n?this.user=r:this.element=r,this.user&&this.element){var l=this.siteUrl+"elementId="+this.element.id+"&userId="+this.user.id;this.$generatedUrlInput.val(l)}else this.$generatedUrlInput.val(t)}})}});
+/******/ (() => { // webpackBootstrap
+/*!******************************************!*\
+  !*** ./development/js/campaigns-func.js ***!
+  \******************************************/
+var DirectLink = Garnish.Base.extend({
+  $container: null,
+  $elementSelectContainer: null,
+  $generatedUrlInput: null,
+  type: null,
+  elementType: null,
+  siteUrl: null,
+  user: null,
+  element: null,
+  selectedClass: null,
+  init: function init(container) {
+    var that = this;
+    this.$container = $(container);
+    this.type = this.$container.data('type');
+    this.elementType = this.$container.data('element-type');
+    this.siteUrl = this.$container.data('site-url') + 'qarr/direct?';
+    this.$elementSelectContainer = this.$container.find('.elementselect');
+    this.$generatedUrlInput = this.$container.find('#generated-url'); // Handle selected elements
+
+    this.handleSelectedElements();
+    this.on('elementRemoved', function (e) {
+      var type = e.settings.elementType;
+
+      if (type === 'craft\\elements\\Entry') {
+        that.element = null;
+      }
+
+      if (type === "craft\\elements\\User") {
+        that.user = null;
+      }
+
+      that.$generatedUrlInput.val(that.siteUrl);
+    });
+  },
+  handleSelectedElements: function handleSelectedElements() {
+    var that = this;
+    var elements = this.$container.find('.element');
+    $.each(elements, function (key, el) {
+      var target = $(el)[0];
+      var id = target.dataset.id;
+      var type = target.dataset.type;
+
+      if (type === 'craft\\elements\\Entry') {
+        that.element = {
+          id: id,
+          type: 'Entry'
+        };
+      }
+
+      if (type === "craft\\elements\\User") {
+        that.user = {
+          id: id,
+          type: 'User'
+        };
+      }
+    });
+  },
+  handleAddElement: function handleAddElement(element) {
+    var _this = this;
+
+    Craft.postActionRequest('qarr/campaigns/direct-links/get-element-info', {
+      elementId: element.id
+    }, $.proxy(function (response, textStatus) {
+      if (response.success) {
+        _this.buildUrl(response);
+      }
+    }, this));
+  },
+  handleRemoveElement: function handleRemoveElement() {},
+  buildUrl: function buildUrl(data) {
+    this.selectedClass = data["class"];
+    var oldUrl = this.$generatedUrlInput.val();
+    var elementClass = data["class"];
+    var element = data.element;
+
+    if (elementClass === 'User') {
+      this.user = element;
+    } else {
+      this.element = element;
+    }
+
+    if (this.user && this.element) {
+      var newUrl = this.siteUrl + 'elementId=' + this.element.id + '&userId=' + this.user.id;
+      this.$generatedUrlInput.val(newUrl);
+    } else {
+      this.$generatedUrlInput.val(oldUrl);
+    }
+  }
+});
+/******/ })()
+;

@@ -1,1 +1,336 @@
-!function(t){var e={};function r(a){if(e[a])return e[a].exports;var n=e[a]={i:a,l:!1,exports:{}};return t[a].call(n.exports,n,n.exports,r),n.l=!0,n.exports}r.m=t,r.c=e,r.d=function(t,e,a){r.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:a})},r.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},r.t=function(t,e){if(1&e&&(t=r(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var a=Object.create(null);if(r.r(a),Object.defineProperty(a,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var n in t)r.d(a,n,function(e){return t[e]}.bind(null,n));return a},r.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return r.d(e,"a",e),e},r.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},r.p="/",r(r.s=14)}({14:function(t,e,r){t.exports=r(15)},15:function(t,e,r){function a(t,e){return function(t){if(Array.isArray(t))return t}(t)||function(t,e){if("undefined"==typeof Symbol||!(Symbol.iterator in Object(t)))return;var r=[],a=!0,n=!1,i=void 0;try{for(var s,o=t[Symbol.iterator]();!(a=(s=o.next()).done)&&(r.push(s.value),!e||r.length!==e);a=!0);}catch(t){n=!0,i=t}finally{try{a||null==o.return||o.return()}finally{if(n)throw i}}return r}(t,e)||function(t,e){if(!t)return;if("string"==typeof t)return n(t,e);var r=Object.prototype.toString.call(t).slice(8,-1);"Object"===r&&t.constructor&&(r=t.constructor.name);if("Map"===r||"Set"===r)return Array.from(t);if("Arguments"===r||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r))return n(t,e)}(t,e)||function(){throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function n(t,e){(null==e||e>t.length)&&(e=t.length);for(var r=0,a=new Array(e);r<e;r++)a[r]=t[r];return a}function i(t){return(i="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}QarrLineChart=Garnish.Base.extend({$container:null,$chartExplorer:null,$totalValue:null,$chartContainer:null,$spinner:null,$error:null,$chart:null,element:null,params:{startDate:null,endDate:null},init:function(t,e){this.$container=$(t),this.element=e,this.createChartExplorer(),this.handleMonthChange()},getStorage:function(t){return QarrLineChart.getStorage(this._namespace,t)},setStorage:function(t,e){QarrLineChart.setStorage(this._namespace,t,e)},createChartExplorer:function(){var t=$('<div class="chart-explorer"></div>').appendTo(this.$container),e=$('<div class="chart-header"></div>').appendTo(t),r=$('<div class="timeline-wrapper mb-4" />').appendTo(e);this.$chartExplorer=t,this.$chartContainer=$('<div class="chart-container"></div>').appendTo(t),this.$spinner=$('<div class="loader"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"/><path d="M36 18c0-9.94-8.06-18-18-18"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"/></path></g></g></svg></div>').prependTo(e),this.$error=$('<div class="error"></div>').appendTo(this.$chartContainer),this.$chart=$('<div class="chart"></div>').appendTo(this.$chartContainer),this.$monthBtn=$('<div id="month-range" class="btn secondary small">'+Craft.t("qarr","Last 30 days")+"</div>").appendTo(r),this.$weekBtn=$('<div id="week-range" class="btn small">'+Craft.t("qarr","Week")+"</div>").appendTo(r),this.addListener(this.$monthBtn,"click","handleMonthChange"),this.addListener(this.$weekBtn,"click","handleWeekChange")},handleMonthChange:function(){this.$weekBtn.removeClass("secondary"),this.$monthBtn.addClass("secondary");var t=this.monthRangeDate(),e=new Date((new Date).getTime());this.params.startDate=t,this.params.endDate=e,this.setStorage("startTime",t),this.setStorage("endTime",e),this.loadReport()},handleWeekChange:function(){this.$monthBtn.removeClass("secondary"),this.$weekBtn.addClass("secondary");var t=this.weekRangeDate(),e=new Date((new Date).getTime());this.params.startDate=t,this.params.endDate=e,this.setStorage("startTime",t),this.setStorage("endTime",e),this.loadReport()},monthRangeDate:function(){var t=new Date;return new Date((new Date).setDate(t.getDate()-30))},weekRangeDate:function(){var t=new Date((new Date).getTime());return new Date(t.getTime()-6048e5)},loadReport:function(){var t=this.params;t.startDate=this.getDateValue(this.params.startDate),t.endDate=this.getDateValue(this.params.endDate),t.elementType=this.element,this.$spinner.removeClass("hidden"),this.$error.addClass("hidden"),this.$chart.removeClass("error"),Craft.postActionRequest("qarr/charts/get-entries-count",t,$.proxy((function(t,e){if(this.$spinner.addClass("hidden"),"success"===e&&void 0===t.error){this.chart||(this.chart=new Craft.charts.Area(this.$chart));var r=new Craft.charts.DataTable(t.dataTable),a={orientation:t.orientation,dataScale:t.scale,formats:t.formats,margin:{top:10,right:10,bottom:30,left:10}};this.chart.draw(r,a)}else{var n=Craft.t("An unknown error occurred.");void 0!==t&&t&&void 0!==t.error&&(n=t.error),this.$error.html(n),this.$error.removeClass("hidden"),this.$chart.addClass("error")}}),this))},getDateFromDatepickerInstance:function(t){return new Date(t.currentYear,t.currentMonth,t.currentDay)},getDateValue:function(t){return t.getFullYear()+"-"+(t.getMonth()+1)+"-"+t.getDate()}},{storage:{},getStorage:function(t,e){return QarrLineChart.storage[t]&&QarrLineChart.storage[t][e]?QarrLineChart.storage[t][e]:null},setStorage:function(t,e,r){"undefined"===i(QarrLineChart.storage[t])&&(QarrLineChart.storage[t]={}),QarrLineChart.storage[t][e]=r}}),QarrDonutChart=Garnish.Base.extend({$el:null,elementType:null,width:null,height:null,radius:null,data:null,totalContainer:null,totalCount:null,counter:0,currentValue:null,color:null,pie:null,svg:null,g:null,arc:null,path:null,init:function(t,e){this.el=t,this.elementType=e,this.width=QarrDonutChart.settings.width,this.height=QarrDonutChart.settings.height,this.radius=QarrDonutChart.settings.radius,this._fetchData()},_fetchData:function(){var t={};t.elementType=this.elementType,Craft.postActionRequest("qarr/charts/get-status-stats",t,$.proxy((function(t,e){t.success&&(this.data=t.data,t.data.total>0?this.drawChart():this.drawEmptyChart(),this.trigger("response",{data:this.data.entries}))}),this))},refreshData:function(){this.svg.remove(),this._fetchData()},drawEmptyChart:function(){this.drawArc(),this.drawPie(),this.drawSvg(),this.drawTotalText(),this.drawEmptyPath()},drawChart:function(){this.drawArc(),this.drawPie(),this.drawSvg(),this.drawTotalText(),this.drawPaths(),this.setMouseEvents()},drawArc:function(){this.arc=d3.arc().outerRadius(this.radius-10).innerRadius(this.radius/1.7).cornerRadius(2).padAngle(.04)},drawPie:function(){this.pie=d3.pie()($.map(this.data.entries,(function(t){return t.count})))},drawSvg:function(){this.svg=d3.select(this.el).append("svg").attr("width",this.width).attr("height",this.height).attr("fill","transparent").append("g").attr("transform","translate("+this.width/2+","+this.height/2+")")},drawTotalText:function(){this.totalContainer=this.svg.append("text").attr("text-anchor","middle").attr("font-size","1em").attr("y",7).attr("fill","#a5a6a8").text(this.data.total)},drawPaths:function(){var t=this;this.path=this.svg.selectAll("path").data(this.pie).enter().append("path").transition().delay((function(t,e){return 400*e})).attr("d",this.arc).attrTween("d",(function(e){var r=d3.interpolate(e.startAngle+.1,e.endAngle);return function(a){return e.endAngle=r(a),t.arc(e)}})).style("fill",(function(e,r){return t.data.entries[r].color}))},drawEmptyPath:function(){var t=this;this.path=this.svg.selectAll(".background").data(d3.pie()([1])).enter().append("path").transition().delay((function(t,e){return 400*e})).attr("d",this.arc).attrTween("d",(function(e){var r=d3.interpolate(e.startAngle+.1,e.endAngle);return function(a){return e.endAngle=r(a),t.arc(e)}})).style("fill",(function(t,e){return"#E9EFF4"}))},setMouseEvents:function(){var t=this;this.svg.selectAll("path").on("mouseover",(function(e,r){d3.select(this).transition().duration(300).ease(d3.easeExpOut).style("opacity",.5),t.totalContainer.transition().duration(300).style("opacity",0).transition().duration(300).style("opacity",1).text(t.data.entries[r].count),t.trigger("pieIn",{data:t.data.entries[r]})})).on("mouseout",(function(e,r){d3.select(this).transition().duration(300).ease(d3.easeExpIn).style("opacity",1),t.totalContainer.transition().duration(300).style("opacity",0).transition().duration(300).style("opacity",1).text(t.data.total),t.trigger("pieOut",{data:t.data.entries[r]})}))}},{settings:{width:100,height:100,radius:60}}),QarrPieChart=Garnish.Base.extend({target:null,cumulativePercent:0,init:function(t,e){this.target=$(t),this.addSlices(e)},addSlices:function(t){var e=this;t.forEach((function(t){var r=a(e._getCoordinatesForPercent(e.cumulativePercent),2),n=r[0],i=r[1];e.cumulativePercent+=t.percent;var s=a(e._getCoordinatesForPercent(e.cumulativePercent),2),o=s[0],h=s[1],l=t.percent>.5?1:0,c=e._getPath(n,i,l,o,h),u=document.createElementNS("http://www.w3.org/2000/svg","path");u.setAttribute("d",c),u.setAttribute("fill",t.color),e.target.append(u)}))},_getPath:function(t,e,r,a,n){return["M ".concat(t," ").concat(e),"A 1 1 0 ".concat(r," 1 ").concat(a," ").concat(n),"L 0 0"].join(" ")},_getCoordinatesForPercent:function(t){return[Math.cos(2*Math.PI*t),Math.sin(2*Math.PI*t)]}})}});
+/******/ (() => { // webpackBootstrap
+/*!**********************************!*\
+  !*** ./development/js/charts.js ***!
+  \**********************************/
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var QarrLineChart, QarrPieChart, QarrDonutChart;
+QarrLineChart = Garnish.Base.extend({
+  $container: null,
+  $chartExplorer: null,
+  $totalValue: null,
+  $chartContainer: null,
+  $spinner: null,
+  $error: null,
+  $chart: null,
+  element: null,
+  params: {
+    startDate: null,
+    endDate: null
+  },
+  init: function init(el, element) {
+    this.$container = $(el);
+    this.element = element;
+    this.createChartExplorer();
+    this.handleMonthChange();
+  },
+  getStorage: function getStorage(key) {
+    return QarrLineChart.getStorage(this._namespace, key);
+  },
+  setStorage: function setStorage(key, value) {
+    QarrLineChart.setStorage(this._namespace, key, value);
+  },
+  createChartExplorer: function createChartExplorer() {
+    var $chartExplorer = $('<div class="chart-explorer"></div>').appendTo(this.$container);
+    var $chartHeader = $('<div class="chart-header"></div>').appendTo($chartExplorer);
+    var $timelinePickerWrapper = $('<div class="timeline-wrapper mb-4" />').appendTo($chartHeader);
+    this.$chartExplorer = $chartExplorer;
+    this.$chartContainer = $('<div class="chart-container"></div>').appendTo($chartExplorer);
+    this.$spinner = $('<div class="loader"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"/><path d="M36 18c0-9.94-8.06-18-18-18"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"/></path></g></g></svg></div>').prependTo($chartHeader);
+    this.$error = $('<div class="error"></div>').appendTo(this.$chartContainer);
+    this.$chart = $('<div class="chart"></div>').appendTo(this.$chartContainer);
+    this.$monthBtn = $('<div id="month-range" class="btn secondary small">' + Craft.t('qarr', 'Last 30 days') + '</div>').appendTo($timelinePickerWrapper);
+    this.$weekBtn = $('<div id="week-range" class="btn small">' + Craft.t('qarr', 'Week') + '</div>').appendTo($timelinePickerWrapper);
+    this.addListener(this.$monthBtn, 'click', 'handleMonthChange');
+    this.addListener(this.$weekBtn, 'click', 'handleWeekChange');
+  },
+  handleMonthChange: function handleMonthChange() {
+    this.$weekBtn.removeClass('secondary');
+    this.$monthBtn.addClass('secondary');
+    var startTime = this.monthRangeDate();
+    var endTime = new Date(new Date().getTime());
+    this.params.startDate = startTime;
+    this.params.endDate = endTime;
+    this.setStorage('startTime', startTime);
+    this.setStorage('endTime', endTime);
+    this.loadReport();
+  },
+  handleWeekChange: function handleWeekChange() {
+    this.$monthBtn.removeClass('secondary');
+    this.$weekBtn.addClass('secondary');
+    var startTime = this.weekRangeDate();
+    var endTime = new Date(new Date().getTime());
+    this.params.startDate = startTime;
+    this.params.endDate = endTime;
+    this.setStorage('startTime', startTime);
+    this.setStorage('endTime', endTime);
+    this.loadReport();
+  },
+  monthRangeDate: function monthRangeDate() {
+    var today = new Date();
+    return new Date(new Date().setDate(today.getDate() - 30));
+  },
+  weekRangeDate: function weekRangeDate() {
+    var firstDay = new Date(new Date().getTime());
+    return new Date(firstDay.getTime() - 7 * 24 * 60 * 60 * 1000);
+  },
+  loadReport: function loadReport() {
+    var requestData = this.params;
+    requestData.startDate = this.getDateValue(this.params.startDate);
+    requestData.endDate = this.getDateValue(this.params.endDate);
+    requestData.elementType = this.element;
+    this.$spinner.removeClass('hidden');
+    this.$error.addClass('hidden');
+    this.$chart.removeClass('error');
+    Craft.postActionRequest('qarr/charts/get-entries-count', requestData, $.proxy(function (response, textStatus) {
+      this.$spinner.addClass('hidden');
+
+      if (textStatus === 'success' && typeof response.error === 'undefined') {
+        if (!this.chart) {
+          this.chart = new Craft.charts.Area(this.$chart);
+        }
+
+        var chartDataTable = new Craft.charts.DataTable(response.dataTable);
+        var chartSettings = {
+          orientation: response.orientation,
+          dataScale: response.scale,
+          formats: response.formats,
+          margin: {
+            top: 10,
+            right: 10,
+            bottom: 30,
+            left: 10
+          }
+        }; // this.chart.settings.formats = response.formats
+        // TODO: check back if responsive has been fixed for multiple charts!
+
+        this.chart.draw(chartDataTable, chartSettings);
+      } else {
+        var msg = Craft.t('An unknown error occurred.');
+
+        if (typeof response !== 'undefined' && response && typeof response.error !== 'undefined') {
+          msg = response.error;
+        }
+
+        this.$error.html(msg);
+        this.$error.removeClass('hidden');
+        this.$chart.addClass('error');
+      }
+    }, this));
+  },
+  getDateFromDatepickerInstance: function getDateFromDatepickerInstance(inst) {
+    return new Date(inst.currentYear, inst.currentMonth, inst.currentDay);
+  },
+  getDateValue: function getDateValue(date) {
+    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+  }
+}, {
+  storage: {},
+  getStorage: function getStorage(namespace, key) {
+    if (QarrLineChart.storage[namespace] && QarrLineChart.storage[namespace][key]) {
+      return QarrLineChart.storage[namespace][key];
+    }
+
+    return null;
+  },
+  setStorage: function setStorage(namespace, key, value) {
+    if (_typeof(QarrLineChart.storage[namespace]) === ( true ? "undefined" : 0)) {
+      QarrLineChart.storage[namespace] = {};
+    }
+
+    QarrLineChart.storage[namespace][key] = value;
+  }
+});
+QarrDonutChart = Garnish.Base.extend({
+  $el: null,
+  elementType: null,
+  width: null,
+  height: null,
+  radius: null,
+  data: null,
+  totalContainer: null,
+  totalCount: null,
+  counter: 0,
+  currentValue: null,
+  color: null,
+  pie: null,
+  svg: null,
+  g: null,
+  arc: null,
+  path: null,
+  init: function init(el, element) {
+    this.el = el;
+    this.elementType = element;
+    this.width = QarrDonutChart.settings.width;
+    this.height = QarrDonutChart.settings.height;
+    this.radius = QarrDonutChart.settings.radius;
+
+    this._fetchData();
+  },
+  _fetchData: function _fetchData() {
+    var payload = {};
+    payload.elementType = this.elementType;
+    Craft.postActionRequest('qarr/charts/get-status-stats', payload, $.proxy(function (response, textStatus) {
+      if (response.success) {
+        this.data = response.data;
+
+        if (response.data.total > 0) {
+          this.drawChart();
+        } else {
+          this.drawEmptyChart();
+        }
+
+        this.trigger('response', {
+          data: this.data.entries
+        });
+      }
+    }, this));
+  },
+  refreshData: function refreshData() {
+    // TODO: fix this
+    // this.path
+    this.svg.remove();
+
+    this._fetchData();
+  },
+  drawEmptyChart: function drawEmptyChart() {
+    this.drawArc();
+    this.drawPie();
+    this.drawSvg();
+    this.drawTotalText();
+    this.drawEmptyPath();
+  },
+  drawChart: function drawChart() {
+    this.drawArc();
+    this.drawPie();
+    this.drawSvg();
+    this.drawTotalText();
+    this.drawPaths();
+    this.setMouseEvents();
+  },
+  drawArc: function drawArc() {
+    this.arc = d3.arc().outerRadius(this.radius - 10).innerRadius(this.radius / 1.7).cornerRadius(2).padAngle(.04);
+  },
+  drawPie: function drawPie() {
+    this.pie = d3.pie()($.map(this.data.entries, function (d) {
+      return d.count;
+    }));
+  },
+  drawSvg: function drawSvg() {
+    this.svg = d3.select(this.el).append('svg').attr('width', this.width).attr('height', this.height).attr('fill', 'transparent').append('g').attr('transform', 'translate(' + this.width / 2 + ',' + this.height / 2 + ')');
+  },
+  drawTotalText: function drawTotalText() {
+    this.totalContainer = this.svg.append("text").attr("text-anchor", "middle").attr('font-size', '1em').attr('y', 7).attr('fill', '#a5a6a8').text(this.data.total);
+  },
+  drawPaths: function drawPaths() {
+    var that = this;
+    this.path = this.svg.selectAll('path').data(this.pie).enter().append('path').transition().delay(function (d, i) {
+      return i * 400;
+    }).attr('d', this.arc).attrTween('d', function (d) {
+      var i = d3.interpolate(d.startAngle + 0.1, d.endAngle);
+      return function (t) {
+        d.endAngle = i(t);
+        return that.arc(d);
+      };
+    }).style('fill', function (d, i) {
+      return that.data.entries[i].color;
+    });
+  },
+  drawEmptyPath: function drawEmptyPath() {
+    var that = this;
+    this.path = this.svg.selectAll('.background').data(d3.pie()([1])).enter().append('path').transition().delay(function (d, i) {
+      return i * 400;
+    }).attr('d', this.arc).attrTween('d', function (d) {
+      var i = d3.interpolate(d.startAngle + 0.1, d.endAngle);
+      return function (t) {
+        d.endAngle = i(t);
+        return that.arc(d);
+      };
+    }).style('fill', function (d, i) {
+      return '#E9EFF4';
+    });
+  },
+  setMouseEvents: function setMouseEvents() {
+    var that = this;
+    this.svg.selectAll('path').on('mouseover', function (d, i) {
+      d3.select(this).transition().duration(300).ease(d3.easeExpOut).style('opacity', 0.5);
+      that.totalContainer.transition().duration(300).style('opacity', 0).transition().duration(300).style('opacity', 1).text(that.data.entries[i].count);
+      that.trigger('pieIn', {
+        data: that.data.entries[i]
+      });
+    }).on('mouseout', function (d, i) {
+      d3.select(this).transition().duration(300).ease(d3.easeExpIn).style('opacity', 1);
+      that.totalContainer.transition().duration(300).style('opacity', 0).transition().duration(300).style('opacity', 1).text(that.data.total);
+      that.trigger('pieOut', {
+        data: that.data.entries[i]
+      });
+    });
+  }
+}, {
+  settings: {
+    width: 100,
+    height: 100,
+    radius: 60
+  }
+});
+QarrPieChart = Garnish.Base.extend({
+  target: null,
+  cumulativePercent: 0,
+  init: function init(target, data) {
+    this.target = $(target);
+    this.addSlices(data);
+  },
+  addSlices: function addSlices(data) {
+    var _this = this;
+
+    data.forEach(function (slice) {
+      var _this$_getCoordinates = _this._getCoordinatesForPercent(_this.cumulativePercent),
+          _this$_getCoordinates2 = _slicedToArray(_this$_getCoordinates, 2),
+          startX = _this$_getCoordinates2[0],
+          startY = _this$_getCoordinates2[1];
+
+      _this.cumulativePercent += slice.percent;
+
+      var _this$_getCoordinates3 = _this._getCoordinatesForPercent(_this.cumulativePercent),
+          _this$_getCoordinates4 = _slicedToArray(_this$_getCoordinates3, 2),
+          endX = _this$_getCoordinates4[0],
+          endY = _this$_getCoordinates4[1];
+
+      var largeArcFlag = slice.percent > .5 ? 1 : 0;
+
+      var path = _this._getPath(startX, startY, largeArcFlag, endX, endY);
+
+      var pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pathEl.setAttribute('d', path);
+      pathEl.setAttribute('fill', slice.color);
+
+      _this.target.append(pathEl);
+    });
+  },
+  _getPath: function _getPath(startX, startY, largeArcFlag, endX, endY) {
+    var path = ["M ".concat(startX, " ").concat(startY), // Move
+    "A 1 1 0 ".concat(largeArcFlag, " 1 ").concat(endX, " ").concat(endY), // Arc
+    "L 0 0" // Line
+    ].join(' ');
+    return path;
+  },
+  _getCoordinatesForPercent: function _getCoordinatesForPercent(percent) {
+    var x = Math.cos(2 * Math.PI * percent);
+    var y = Math.sin(2 * Math.PI * percent);
+    return [x, y];
+  }
+});
+/******/ })()
+;

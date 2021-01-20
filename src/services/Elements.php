@@ -24,6 +24,7 @@ use owldesign\qarr\elements\Question;
 use owldesign\qarr\elements\Display;
 use craft\elements\db\ElementQueryInterface;
 use Throwable;
+use yii\data\Pagination;
 use yii\db\Exception;
 
 //require_once CRAFT_VENDOR_PATH . '/owldesign/qarr/src/functions/array-group-by.php';
@@ -51,16 +52,17 @@ class Elements extends Component
 
     /**
      * @param string $type
+     * @param string $order
      * @param int|null $elementId
      * @param int|null $limit
      * @param int|null $offset
-     * @param string $status
+     * @param string|null $status
      * @param array $exclude
      * @return ElementQueryInterface|null
      */
-    public function queryElements(string $type, int $elementId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = [])
+    public function queryElements(string $type, string $order = 'dateCreated desc', int $elementId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = [])
     {
-        $query = $this->_getElementQuery($type);
+        $query = $type::find();
         $query->elementId($elementId);
         $query->limit($limit);
 
@@ -70,6 +72,7 @@ class Elements extends Component
 
         $query->offset($offset);
         $query->status($status);
+        $query->orderBy($order);
 
         return $query;
     }
@@ -78,19 +81,21 @@ class Elements extends Component
      * Query sort elements
      *
      * @param string $type
+     * @param string $order
      * @param $elementId
-     * @param string $value
      * @param $limit
      * @return ElementQueryInterface|null
-     * @throws \yii\base\ExitException
      */
-    public function querySortElements(string $type, $elementId, string $value, $limit)
+    public function querySortElements(string $type, string $order, $elementId, $limit)
     {
-        $query = $this->_getElementQuery($type);
+        $query = $type::find();
+
         if ($elementId) {
             $query->elementId($elementId);
         }
-        $query->orderBy($value);
+
+        $query->limit($limit);
+        $query->orderBy($order);
         $query->status('approved');
 
         return $query;
@@ -101,19 +106,24 @@ class Elements extends Component
      *
      * @param string $type
      * @param int $elementId
-     * @param int $rating
+     * @param $rating
+     * @param string $order
      * @param int|null $limit
-     * @param init|null $offset
+     * @param int|null $offset
      * @return ElementQueryInterface|null
      */
-    public function queryStarFilteredElements(string $type, int $elementId, int $rating, int $limit = null, int $offset = null)
+    public function queryStarFilteredElements(string $type, int $elementId, $rating, string $order, int $limit = null, int $offset = null)
     {
         $query = $this->_getElementQuery($type);
         $query->elementId($elementId);
-        $query->rating($rating);
-        // TODO: setup ajax limit and offsets
-        // $query->limit($limit);
-        // $query->offset($offset);
+
+        if ($rating) {
+            $query->rating($rating);
+        }
+
+        $query->limit($limit);
+        $query->orderBy($order);
+        $query->offset($offset);
 
         $query->status('approved');
 
@@ -345,10 +355,9 @@ class Elements extends Component
      */
     public function getEntriesByRating($status, $elementId): array
     {
-        $query = new Query();
-        $query->select('*')
-            ->from(Table::REVIEWS)
-            ->where(['status' => $status, 'elementId' => $elementId]);
+        $query = Review::find();
+        $query->status($status);
+        $query->elementId($elementId);
 
         $grouped = QARR::$app->functions->groupBy($query->all(), 'rating');
 
@@ -449,13 +458,9 @@ class Elements extends Component
     private function _getElementQuery($type)
     {
         if ($type === 'reviews') {
-            $query = Review::find();
-        } elseif ($type === 'questions') {
-            $query = Question::find();
+            return Review::find();
         } else {
-            return null;
+            return Question::find();
         }
-
-        return $query;
     }
 }

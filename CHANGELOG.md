@@ -1,5 +1,17 @@
 # QARR Changelog
 
+## 1.2.6 - 2021-01-20
+
+### Fixed
+- Fixed frontend displays with pagination
+- Fixed frontend sort filter
+- Fixed star rating count error
+
+## 1.2.5.1 - 2021-01-11
+
+### Fixed
+- Fixed sort by bug
+
 ## 1.2.5 - 2021-01-11
 
 ### Added

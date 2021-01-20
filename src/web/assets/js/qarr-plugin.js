@@ -1,1 +1,304 @@
-!function(t){var e={};function r(n){if(e[n])return e[n].exports;var a=e[n]={i:n,l:!1,exports:{}};return t[n].call(a.exports,a,a.exports,r),a.l=!0,a.exports}r.m=t,r.c=e,r.d=function(t,e,n){r.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:n})},r.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},r.t=function(t,e){if(1&e&&(t=r(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var a in t)r.d(n,a,function(e){return t[e]}.bind(null,a));return n},r.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return r.d(e,"a",e),e},r.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},r.p="/",r(r.s=0)}({0:function(t,e,r){r(1),r(30),r(35),r(37),t.exports=r(39)},1:function(t,e){function r(t){return(r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t})(t)}!function(){function t(t,e){var r;for(r in e)e.hasOwnProperty(r)&&(t[r]=e[r]);return t}this.QarrPlugin=function(){this.qarrplugin=null;var e={target:"#qarr-display-container"};arguments[0]&&"object"===r(arguments[0])&&(this.options=t(e,arguments[0]))},QarrPlugin.prototype.init=function(){new QarrTabs("#qarr-display-container"),$(".qarr-entry-ra-btn").on("click",(function(t){t.preventDefault();var e=$(this),r={id:$(this).data("element-id"),type:$(this).data("type")};r[QARR.csrfTokenName]=QARR.csrfTokenValue,$.post(QARR.actionUrl+"qarr/elements/report-abuse",r,(function(t,r,n){t.success&&e.parent().html("<span>Reported</span>")}))})),$(".qarr-star:not(.static)").on("click",(function(){$(".qarr-star").removeClass("selected"),$(".qarr-star").removeClass("active");var t=$(this).data("star-count");$(this).addClass("selected"),$(this).prevAll().addClass("active"),$("#qarr-rating-input").val(t)}));var t=$(".qarr-pagination");[].forEach.call(t,(function(t){new QarrPagination(t)})),$(".add-answer").on("click",(function(t){t.preventDefault();var e={target:$(this),questionId:$(this).data("id"),authorName:$(this).data("user-name"),authorId:$(this).data("user-id")};new QarrAnswerHud(e)}));var e=$(".qarr-filter-item");[].forEach.call(e,(function(t){var e={target:$(t),type:$(t).data("type"),rating:$(t).data("rating"),total:$(t).data("total-entries")};new QarrStarFilterEntries(e)})),$(".qarr-entry-sort").on("change",(function(t){var e=$(".qarr-loader"),r=$("#qarr-"+$(this).data("type")+"-container"),n=$(this).val(),a=$(this).data("type");e.addClass("active"),r.addClass("transition");var o={value:n,type:a,limit:QARR.limit,elementId:QARR.elementId};o[QARR.csrfTokenName]=QARR.csrfTokenValue,$.post(QARR.actionUrl+"qarr/elements/query-sort-elements",o,(function(t,o,i){t.success&&(setTimeout((function(){e.removeClass("active"),r.html(t.template);var n=$(t.template).attr("id"),a=$("#"+n);$("html, body").animate({scrollTop:a.offset().top},"fast"),r.removeClass("transition"),$(".qarr-pagination").hide()}),1e3),window.localStorage.setItem("qarr-sort-filter-type",a),window.localStorage.setItem("qarr-sort-filter-value",n))}))}))}}()},30:function(t,e){},35:function(t,e){},37:function(t,e){},39:function(t,e){}});
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./development/js/qarr-plugin.js":
+/*!***************************************!*\
+  !*** ./development/js/qarr-plugin.js ***!
+  \***************************************/
+/***/ (() => {
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+(function () {
+  this.QarrPlugin = function () {
+    this.qarrplugin = null;
+    var defaults = {
+      target: '#qarr-display-container'
+    };
+
+    if (arguments[0] && _typeof(arguments[0]) === "object") {
+      this.options = extendDefaults(defaults, arguments[0]);
+    }
+  }; // Utility method to extend defaults
+
+
+  function extendDefaults(source, properties) {
+    var property;
+
+    for (property in properties) {
+      if (properties.hasOwnProperty(property)) {
+        source[property] = properties[property];
+      }
+    }
+
+    return source;
+  }
+
+  QarrPlugin.prototype.init = function () {
+    // Initialize plugin methods
+    new QarrTabs('#qarr-display-container'); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Report Abuse
+    // TODO: this needs to work for ajax pagination as well
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $('.qarr-entry-ra-btn').on('click', function (e) {
+      e.preventDefault();
+      var that = $(this);
+      var payload = {
+        id: $(this).data('element-id'),
+        type: $(this).data('type')
+      };
+      payload[QARR.csrfTokenName] = QARR.csrfTokenValue;
+      $.post(QARR.actionUrl + 'qarr/elements/report-abuse', payload, function (response, textStatus, jqXHR) {
+        if (response.success) {
+          that.parent().html("<span>Reported!</span>");
+        }
+      });
+    }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Star Changer
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $('.qarr-star:not(.static)').on('click', function () {
+      var $qarrStarEl = $('.qarr-star');
+      $qarrStarEl.removeClass('selected');
+      $qarrStarEl.removeClass('active');
+      var rating = $(this).data('star-count');
+      $(this).addClass('selected');
+      $(this).prevAll().addClass('active');
+      $('#qarr-rating-input').val(rating);
+    }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Pagination
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Initialized from within the twig templates
+    // qarr/templates/frontend/_includes/pagination.twig
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Questions
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $('.add-answer').on('click', function (e) {
+      e.preventDefault();
+      var payload = {
+        target: $(this),
+        questionId: $(this).data('id'),
+        authorName: $(this).data('user-name'),
+        authorId: $(this).data('user-id')
+      };
+      var answerHud = new QarrAnswerHud(payload);
+    }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Star Filter
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var qarrFilterItem = $('.qarr-filter-item');
+    [].forEach.call(qarrFilterItem, function (el) {
+      new QarrStarFilterEntries(el);
+    }); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Sort Order
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    var qarrSortOrder = $('.qarr-entry-sort');
+    [].forEach.call(qarrSortOrder, function (el) {
+      new QarrSortOrderEntries(el);
+    });
+  };
+})();
+
+/***/ }),
+
+/***/ "./development/scss/dashboard.scss":
+/*!*****************************************!*\
+  !*** ./development/scss/dashboard.scss ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./development/scss/frontend.scss":
+/*!****************************************!*\
+  !*** ./development/scss/frontend.scss ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./development/scss/ui.scss":
+/*!**********************************!*\
+  !*** ./development/scss/ui.scss ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./development/scss/widgets.scss":
+/*!***************************************!*\
+  !*** ./development/scss/widgets.scss ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		if(__webpack_module_cache__[moduleId]) {
+/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/******/ 	// the startup function
+/******/ 	// It's empty as some runtime module handles the default behavior
+/******/ 	__webpack_require__.x = x => {}
+/************************************************************************/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// Promise = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"/release/src/web/assets/js/qarr-plugin": 0
+/******/ 		};
+/******/ 		
+/******/ 		var deferredModules = [
+/******/ 			["./development/js/qarr-plugin.js"],
+/******/ 			["./development/scss/dashboard.scss"],
+/******/ 			["./development/scss/frontend.scss"],
+/******/ 			["./development/scss/ui.scss"],
+/******/ 			["./development/scss/widgets.scss"]
+/******/ 		];
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		var checkDeferredModules = x => {};
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime, executeModules] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0, resolves = [];
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					resolves.push(installedChunks[chunkId][0]);
+/******/ 				}
+/******/ 				installedChunks[chunkId] = 0;
+/******/ 			}
+/******/ 			for(moduleId in moreModules) {
+/******/ 				if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 					__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 				}
+/******/ 			}
+/******/ 			if(runtime) runtime(__webpack_require__);
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			while(resolves.length) {
+/******/ 				resolves.shift()();
+/******/ 			}
+/******/ 		
+/******/ 			// add entry modules from loaded chunk to deferred list
+/******/ 			if(executeModules) deferredModules.push.apply(deferredModules, executeModules);
+/******/ 		
+/******/ 			// run deferred modules when all chunks ready
+/******/ 			return checkDeferredModules();
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 		
+/******/ 		function checkDeferredModulesImpl() {
+/******/ 			var result;
+/******/ 			for(var i = 0; i < deferredModules.length; i++) {
+/******/ 				var deferredModule = deferredModules[i];
+/******/ 				var fulfilled = true;
+/******/ 				for(var j = 1; j < deferredModule.length; j++) {
+/******/ 					var depId = deferredModule[j];
+/******/ 					if(installedChunks[depId] !== 0) fulfilled = false;
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferredModules.splice(i--, 1);
+/******/ 					result = __webpack_require__(__webpack_require__.s = deferredModule[0]);
+/******/ 				}
+/******/ 			}
+/******/ 			if(deferredModules.length === 0) {
+/******/ 				__webpack_require__.x();
+/******/ 				__webpack_require__.x = x => {};
+/******/ 			}
+/******/ 			return result;
+/******/ 		}
+/******/ 		var startup = __webpack_require__.x;
+/******/ 		__webpack_require__.x = () => {
+/******/ 			// reset startup function so it can be called again when more startup code is added
+/******/ 			__webpack_require__.x = startup || (x => {});
+/******/ 			return (checkDeferredModules = checkDeferredModulesImpl)();
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	// run startup
+/******/ 	return __webpack_require__.x();
+/******/ })()
+;

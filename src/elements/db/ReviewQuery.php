@@ -124,6 +124,13 @@ class ReviewQuery extends ElementQuery
         return $this;
     }
 
+    public function reply($value)
+    {
+        $this->reply = $value;
+
+        return $this;
+    }
+
     // Protected Methods
     // =========================================================================
 

@@ -1,31 +1,46 @@
-<div class="qarr-entries-set" id="{{ random() }}">
-    {% for review in entries.all() %}
-        <div class="qarr-entry-item">
-            <div class="qarr-entry-meta">
-                <div class="qarr-entry-name">{{ review.fullName }}</div>
-                <div class="qarr-entry-posted-date">{{ review.dateCreated |date() }}</div>
-                <div class="qarr-entry-stars">
-                    {% for i in 1..5 %}
-                        <div class="qarr-entry-star {% if i <= review.rating %}active{% endif %}" data-star-count="{{ i }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="fill-current" viewBox="0 0 20 20">
-                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                            </svg>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="qarr-entry-content">
-                {{ review.feedback }}
-            </div>
+{% set pageTrigger = craft.app.config.general.getPageTrigger() %}
 
-            {% if review.reply %}
-                <div class="qarr-entry-admin-response">
-                    <div class="qarr-entry-ar-title">{{ 'Response'|t('qarr') }}</div>
-                    <span class="qarr-entry-ar-text">{{ review.reply }}</span>
-                </div>
-            {% endif %}
+{% paginate reviews as pageInfo, reviewEntries %}
 
-            {% if showAbuseReporting %}
+<div id="qarr-reviews-container"
+     class="qarr-entries-container"
+     data-element-type="{{ reviews.elementType }}"
+     data-pagination-style="{{ pagination }}"
+     data-page-trigger="{{ pageTrigger }}"
+     data-current-page="{{ pageInfo.currentPage }}"
+     data-order="dateCreated desc"
+     data-limit="{{ reviews.limit }}"
+     data-total-pages="{{ pageInfo.totalPages }}"
+     data-offset="0"
+     {% if element != '*' %}data-element-id="{{ element.id }}"{% endif %}>
+
+    <div class="qarr-entries-set" id="{{ random() }}">
+        {% for review in reviewEntries %}
+            <div class="qarr-entry-item">
+                <div class="qarr-entry-meta">
+                    <div class="qarr-entry-name">{{ review.fullName }}</div>
+                    <div class="qarr-entry-posted-date">{{ review.dateCreated |date() }}</div>
+                    <div class="qarr-entry-stars">
+                        {% for i in 1..5 %}
+                            <div class="qarr-entry-star {% if i <= review.rating %}active{% endif %}" data-star-count="{{ i }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="fill-current" viewBox="0 0 20 20">
+                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                </svg>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="qarr-entry-content">
+                    {{ review.feedback }}
+                </div>
+
+                {% if review.reply %}
+                    <div class="qarr-entry-admin-response">
+                        <div class="qarr-entry-ar-title">{{ 'Response'|t('qarr') }}</div>
+                        <span class="qarr-entry-ar-text">{{ review.reply }}</span>
+                    </div>
+                {% endif %}
+
                 <div class="qarr-entry-report-abuse-container">
                     {% set reported = craft.qarr.getCookie('reported') %}
                     {% if reported == review.id %}
@@ -34,9 +49,17 @@
                         <a href="#" class="qarr-entry-ra-btn" data-element-id="{{ review.id }}" data-type="reviews">{{ 'Report Abuse'|t('qarr') }}</a>
                     {% endif %}
                 </div>
-            {% endif %}
-        </div>
-    {% else %}
-        <div class="qarr-entry-empty">{{ 'No reviews yet, be the first to leave a review.'|t('qarr') }}</div>
-    {% endfor %}
+            </div>
+        {% else %}
+            <div class="qarr-entry-empty">{{ 'No reviews yet, be the first to leave a review.'|t('qarr') }}</div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<div class="qarr-entries-footer">
+{#    {% if reviewEntries and pageInfo.totalPages > 1 %}#}
+        {% include 'qarr/frontend/_includes/pagination' ignore missing with { type: 'reviews', pageInfo: pageInfo, paginationStyle: pagination } %}
+{#    {% endif %}#}
+    {% include 'qarr/frontend/_includes/copyright' ignore missing %}
 </div>

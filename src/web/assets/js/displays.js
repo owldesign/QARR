@@ -1,1 +1,40 @@
-!function(e){var t={};function r(n){if(t[n])return t[n].exports;var o=t[n]={i:n,l:!1,exports:{}};return e[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}r.m=e,r.c=t,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(e,t){if(1&t&&(e=r(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)r.d(n,o,function(t){return e[t]}.bind(null,o));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.p="/",r(r.s=10)}({10:function(e,t,r){e.exports=r(11)},11:function(e,t){Garnish.$doc.ready((function(){$(".tag-link").on("click",(function(){var e=$($(this).data("target")),t=$(this).data("field");e.val(e.val()+t),e.focus()})),$("#delete-display").on("click",(function(e){e.preventDefault();var t={id:$(this).data("id")},r=Craft.t("qarr","Are you sure you want to remove this display?");new QarrPrompt(r,null).on("response",(function(e){var r=this;e&&"ok"===e.response&&Craft.postActionRequest("qarr/displays/delete",t,$.proxy((function(e,t){e.success&&setTimeout($.proxy((function(){Craft.cp.displayNotice(Craft.t("qarr","Display deleted, redirecting...")),setTimeout($.proxy((function(){Craft.redirectTo(Craft.getCpUrl()+"/qarr/displays")}),this),1e3)}),r),1e3)}),this))}))}))}))}});
+/******/ (() => { // webpackBootstrap
+/*!************************************!*\
+  !*** ./development/js/displays.js ***!
+  \************************************/
+Garnish.$doc.ready(function () {
+  // Title Format
+  $('.tag-link').on('click', function () {
+    var target = $($(this).data('target'));
+    var field = $(this).data('field');
+    target.val(target.val() + field);
+    target.focus();
+  }); // Delete Display
+
+  $('#delete-display').on('click', function (e) {
+    e.preventDefault();
+    var data = {
+      id: $(this).data('id')
+    };
+    var message = Craft.t('qarr', 'Are you sure you want to remove this display?');
+    var deletePrompt = new QarrPrompt(message, null);
+    deletePrompt.on('response', function (response) {
+      var _this = this;
+
+      if (response && response.response === 'ok') {
+        Craft.postActionRequest('qarr/displays/delete', data, $.proxy(function (response, textStatus) {
+          if (response.success) {
+            setTimeout($.proxy(function () {
+              Craft.cp.displayNotice(Craft.t('qarr', 'Display deleted, redirecting...'));
+              setTimeout($.proxy(function () {
+                Craft.redirectTo(Craft.getCpUrl() + '/qarr/displays');
+              }, this), 1000);
+            }, _this), 1000);
+          }
+        }, this));
+      }
+    });
+  });
+});
+/******/ })()
+;

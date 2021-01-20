@@ -27,6 +27,7 @@ class Variables extends Behavior
     public function display($element, $variables = null)
     {
         $limit = null;
+        $offset = null;
         $pagination = 'arrows';
         $removePagination = false;
         $removeReviews = false;
@@ -56,9 +57,21 @@ class Variables extends Behavior
             $removeQuestions = true;
         }
 
-        // Limit
+        // Limit (global limit)
+        $reviewsLimit = null;
+        $questionsLimit = null;
+
         if (isset($variables['limit']) && $variables['limit'] != '') {
             $limit = $variables['limit'];
+        }
+
+        // Limit per element type
+        if (isset($variables['reviews']['limit']) && $variables['reviews']['limit'] != '') {
+            $limit = $variables['reviews']['limit'];
+        }
+
+        if (isset($variables['questions']['limit']) && $variables['questions']['limit'] != '') {
+            $limit = $variables['questions']['limit'];
         }
 
         // Hide Buttons
@@ -81,24 +94,13 @@ class Variables extends Behavior
             $showAbuseReport = false;
         }
 
-
         // Reviews & Questions
         if ($removePagination) {
-            if ($element === '*') {
-                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', null, null, 'approved');
-                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', null, null, 'approved');
-            } else {
-                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, null, 'approved');
-                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, null, 'approved');
-            }
+            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Review', 'dateCreated desc', $element === '*' ? null : $element->id, $limit, $offset, 'approved');
+            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Question', 'dateCreated desc', $element === '*' ? null : $element->id, $limit, $offset, 'approved');
         } else {
-            if ($element === '*') {
-                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', null, $limit, null, 'approved');
-                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', null, $limit, null, 'approved');
-            } else {
-                $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('reviews', $element->id, $limit, null, 'approved');
-                $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('questions', $element->id, $limit, null, 'approved');
-            }
+            $reviews = $removeReviews ? null : QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Review', 'dateCreated desc', $element === '*' ? null : $element->id, $limit, $offset, 'approved');
+            $questions = $removeQuestions ? null : QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Question', 'dateCreated desc', $element === '*' ? null : $element->id, $limit, $offset, 'approved');
         }
 
         // Displays
@@ -108,40 +110,22 @@ class Variables extends Behavior
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        if ($element === '*') {
-            $html = Craft::$app->view->renderTemplate('qarr/frontend/index-all', [
-                'element' => $element,
-                'includeReviews' => $removeReviews ? false : true,
-                'includeQuestions' => $removeQuestions ? false : true,
-                'includePagination' => $removePagination ? false : true,
-                'pagination' => $pagination,
-                'limit' => $limit,
-                'reviews' => $reviews,
-                'questions' => $questions,
-                'reviewsDisplay' => $reviewsDisplay,
-                'questionsDisplay' => $questionsDisplay,
-                'showButtons' => $showButtons,
-                'showTabs' => $showTabs,
-                'showSort' => $showSort,
-                'showAbuseReporting' => $showAbuseReport,
-            ]);
-        } else {
-            $html = Craft::$app->view->renderTemplate('qarr/frontend/index', [
-                'element' => $element,
-                'includeReviews' => $removeReviews ? false : true,
-                'includeQuestions' => $removeQuestions ? false : true,
-                'includePagination' => $removePagination ? false : true,
-                'pagination' => $pagination,
-                'limit' => $limit,
-                'reviews' => $reviews,
-                'questions' => $questions,
-                'reviewsDisplay' => $reviewsDisplay,
-                'questionsDisplay' => $questionsDisplay,
-                'showButtons' => $showButtons,
-                'showTabs' => $showTabs,
-                'showSort' => $showSort,
-            ]);
-        }
+        $html = Craft::$app->view->renderTemplate($element === '*' ? 'qarr/frontend/index-all': 'qarr/frontend/index', [
+            'element' => $element,
+            'includeReviews' => $removeReviews ? false : true,
+            'includeQuestions' => $removeQuestions ? false : true,
+            'includePagination' => $removePagination ? false : true,
+            'pagination' => $pagination,
+            'limit' => $limit,
+            'reviews' => $reviews,
+            'questions' => $questions,
+            'reviewsDisplay' => $reviewsDisplay,
+            'questionsDisplay' => $questionsDisplay,
+            'showButtons' => $showButtons,
+            'showTabs' => $showTabs,
+            'showSort' => $showSort,
+            'showAbuseReporting' => $showAbuseReport,
+        ]);
 
         Craft::$app->view->setTemplateMode($oldPath);
 

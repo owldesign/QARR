@@ -19,19 +19,10 @@
         </div>
 
         {% if includeReviews %}
-            {# {% set ratings = craft.qarr.getEntriesByRating(element.id) %} #}
-
             <div id="qarr-tab-reviews" class="qarr-tab-content active pager-style-{{ pagination }}" {% if reviewsDisplay %}data-display-id="{{ reviewsDisplay.id }}"{% endif %} data-qarr-reviews>
 
                 <div class="qarr-tab-header">
-                    {# Over All Average Rating #}
-{#                     {% include 'qarr/frontend/_reviews/_includes/overall-rating' ignore missing %}#}
-
-                    {# Star Rating Filter #}
-                    {# {% include 'qarr/frontend/_reviews/_includes/star-filter' ignore missing with { ratings: ratings } %} #}
-
                     {% if showButtons %}
-                        {# Leave Review Button #}
                         <div class="qarr-header-actions">
                             {% include 'qarr/frontend/_includes/button' ignore missing with { type: 'reviews' } %}
                         </div>
@@ -39,7 +30,6 @@
                 </div>
 
                 {% if showSort %}
-                    {# Sort & Filters #}
                     <div class="qarr-filer-actions">
                         <div class="qarr-filter-title">
                             {{ 'Sort By'|t('qarr') }}
@@ -49,18 +39,15 @@
                 {% endif %}
 
                 <div class="qarr-entries-body">
-                    {% include 'qarr/frontend/_reviews' ignore missing with { type: 'reviews' } %}
+                    {% include 'qarr/frontend/_reviews/entries' ignore missing with { type: 'reviews', pagination: pagination } %}
                 </div>
             </div>
         {% endif %}
 
         {% if includeQuestions %}
-            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-element-id="{{ element.id }}" data-qarr-questions>
+            <div id="qarr-tab-question" class="qarr-tab-content pager-style-{{ pagination }}" {% if questionsDisplay %}data-display-id="{{ questionsDisplay.id }}"{% endif %} data-qarr-questions>
                 <div class="qarr-tab-header">
-                    {% include 'qarr/frontend/_includes/title' ignore missing with { element: element, type: 'Questions' } %}
-
                     {% if showButtons %}
-                        {# Ask Question Button #}
                         <div class="qarr-header-actions">
                             {% include 'qarr/frontend/_includes/button' ignore missing with { type: 'questions' } %}
                         </div>
@@ -69,7 +56,6 @@
                 </div>
 
                 {% if showSort %}
-                    {# Sort & Filters #}
                     <div class="qarr-filer-actions">
                         <div class="qarr-filter-title">
                             {{ 'Sort By'|t('qarr') }}
@@ -79,7 +65,7 @@
                 {% endif %}
 
                 <div class="qarr-entries-body">
-                    {% include 'qarr/frontend/_questions' ignore missing with { type: 'questions' } %}
+                    {% include 'qarr/frontend/_questions/entries' ignore missing with { type: 'questions', pagination: pagination } %}
                 </div>
             </div>
         {% endif %}
@@ -91,10 +77,11 @@
     window.QARR = {};
     QARR.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
     QARR.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+    QARR.actionUrl = "{{ actionUrl('') }}/";
+    QARR.limit = "{{ limit }}";
+
     {% if element != '*' %}
     QARR.elementId = "{{ element.id }}";
     QARR.elementTypeId = "{{ element.type.id }}";
     {% endif %}
-    QARR.actionUrl = "{{ actionUrl('') }}/";
-    QARR.limit = "{{ limit }}";
 </script>

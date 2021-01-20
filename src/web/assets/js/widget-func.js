@@ -1,1 +1,172 @@
-!function(t){var e={};function n(i){if(e[i])return e[i].exports;var a=e[i]={i:i,l:!1,exports:{}};return t[i].call(a.exports,a,a.exports,n),a.l=!0,a.exports}n.m=t,n.c=e,n.d=function(t,e,i){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:i})},n.r=function(t){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"==typeof t&&t&&t.__esModule)return t;var i=Object.create(null);if(n.r(i),Object.defineProperty(i,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var a in t)n.d(i,a,function(e){return t[e]}.bind(null,a));return i},n.n=function(t){var e=t&&t.__esModule?function(){return t.default}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="/",n(n.s=16)}({16:function(t,e,n){t.exports=n(17)},17:function(t,e){QARRWidgets={},QARRWidgets.PendingItemsWidget=Garnish.Base.extend({$container:null,$items:null,$loader:null,payload:null,exclude:null,init:function(t){var e=this;this.exclude=[],this.$container=$(t),this.$loader=this.$container.find(".loader"),this.$items=this.$container.find(".widget-recent-element-item"),this.$items.length>0&&$.each(this.$items,(function(t,n){new QARRWidgets.PendingItem(n,e)})),this.checkElements()},checkElements:function(){this.$items=this.$container.find(".widget-recent-element-item"),0===this.$items.length&&this.$container.find(".element-list").html('<p class="text-gray-500">'+Craft.t("qarr","No pending submissions")+"</p>")},excludeElement:function(t){this.exclude.push(t)},fetchNewItem:function(t,e){var n=this,i={type:t.type,limit:1,exclude:this.exclude};Craft.postActionRequest("qarr/elements/fetch-pending-items",i,$.proxy((function(t,i){if(n.$loader.addClass("hidden"),t.success){e.remove();var a=$(t.template);n.$container.find(".element-list").append(a),a.addClass("element-item-new"),n.addPendingItem(n.$container.find(a))}}),this))},addPendingItem:function(t){new QARRWidgets.PendingItem(t,this),this.checkElements()}}),QARRWidgets.PendingItem=Garnish.Base.extend({$item:null,$actionBtn:null,parent:null,payload:null,hud:null,init:function(t,e){this.parent=e,this.$item=$(t),this.$actionBtn=this.$item.find(".action-btn"),this.payload={id:this.$item.data("element-id"),type:this.$item.data("type")},this.parent.excludeElement(this.payload.id),this.addTip(),this.addListener(this.$actionBtn,"click","performAction")},addTip:function(){var t=this.$item.find(".tippy-with-html");tippy(t[0],{onShow:function(t){var e=t.reference.dataset.tippyId,n=document.getElementById("element-popup-"+e).cloneNode(!0);$(n).show(),t.setContent(n)},placement:"top",interactive:!0,theme:"light",duration:400,arrow:!0})},performAction:function(t){var e=this,n=this,i=t.target.dataset.actionType;if("delete"===i){var a=$(),s=$("<div/>"),d=$('<div class="hud-footer"/>').appendTo(s),r=($("\n                <div>".concat(Craft.t("qarr","Are you sure?"),"</div>\n            ")).appendTo(s),$('<div class="buttons right"/>').appendTo(d)),o=$('<div class="btn">'+Craft.t("qarr","Cancel")+"</div>").appendTo(r);$('<input class="btn submit" type="submit" value="'+Craft.t("qarr","Ok")+'"/>').appendTo(r),$('<div class="spinner hidden"/>').appendTo(r);a=a.add(s),this.hud=new Garnish.HUD(t.target,a,{hudClass:"hud",bodyClass:"body",closeOtherHUDs:!1}),this.addListener(o,"click",(function(){this.hud.hide()})),this.hud.on("submit",(function(t){n.deleteElement(),n.hud.hide()}))}"status"===i&&(this.parent.$loader.removeClass("hidden"),this.payload.status=t.target.dataset.status,Craft.postActionRequest("qarr/elements/update-status",this.payload,$.proxy((function(t,i){t.success&&(Craft.cp.displayNotice(Craft.t("qarr","Item "+e.payload.status)),n.$item.addClass("status-changed"),e.$item.velocity("slideUp",{duration:300}),e.parent.fetchNewItem(n.payload,e.$item))}),this)))},deleteElement:function(){var t=this;this.parent.$loader.removeClass("hidden");var e={id:this.payload.id};Craft.postActionRequest("qarr/elements/delete",e,$.proxy((function(e,n){t.parent.$loader.addClass("hidden"),e.success&&(Craft.cp.displayNotice(Craft.t("qarr","Item deleted")),t.$item.addClass("item-deleted"),t.$item.velocity("slideUp",{duration:300}),t.parent.fetchNewItem(t.payload,t.$item))}),this))}})}});
+/******/ (() => { // webpackBootstrap
+/*!***************************************!*\
+  !*** ./development/js/widget-func.js ***!
+  \***************************************/
+var QARR = {};
+QARR.Widgets = {};
+QARR.Widgets.PendingItemsWidget = Garnish.Base.extend({
+  $container: null,
+  $items: null,
+  $loader: null,
+  payload: null,
+  exclude: null,
+  init: function init(el) {
+    var parent = this;
+    this.exclude = [];
+    this.$container = $(el);
+    this.$loader = this.$container.find('.loader');
+    this.$items = this.$container.find('.widget-recent-element-item');
+
+    if (this.$items.length > 0) {
+      $.each(this.$items, function (i, item) {
+        new QARR.Widgets.PendingItem(item, parent);
+      });
+    }
+
+    this.checkElements();
+  },
+  checkElements: function checkElements() {
+    this.$items = this.$container.find('.widget-recent-element-item');
+
+    if (this.$items.length === 0) {
+      this.$container.find('.element-list').html('<p class="text-gray-500">' + Craft.t('qarr', 'No pending submissions') + '</p>');
+    }
+  },
+  excludeElement: function excludeElement(id) {
+    this.exclude.push(id);
+  },
+  fetchNewItem: function fetchNewItem(payload, oldChild) {
+    var _this = this;
+
+    var newPayload = {
+      type: payload.type,
+      limit: 1,
+      exclude: this.exclude
+    };
+    Craft.postActionRequest('qarr/elements/fetch-pending-items', newPayload, $.proxy(function (response, textStatus) {
+      _this.$loader.addClass('hidden');
+
+      if (response.success) {
+        oldChild.remove();
+        var itemHtml = $(response.template);
+
+        _this.$container.find('.element-list').append(itemHtml);
+
+        itemHtml.addClass('element-item-new');
+
+        _this.addPendingItem(_this.$container.find(itemHtml));
+      }
+    }, this));
+  },
+  addPendingItem: function addPendingItem(item) {
+    new QARR.Widgets.PendingItem(item, this);
+    this.checkElements();
+  }
+});
+QARR.Widgets.PendingItem = Garnish.Base.extend({
+  $item: null,
+  $actionBtn: null,
+  parent: null,
+  payload: null,
+  hud: null,
+  init: function init(el, parent) {
+    this.parent = parent;
+    this.$item = $(el);
+    this.$actionBtn = this.$item.find('.action-btn');
+    this.payload = {
+      id: this.$item.data('element-id'),
+      type: this.$item.data('type')
+    };
+    this.parent.excludeElement(this.payload.id);
+    this.addTip();
+    this.addListener(this.$actionBtn, 'click', 'performAction');
+  },
+  addTip: function addTip() {
+    var tippyTarget = this.$item.find('.tippy-with-html');
+    tippy(tippyTarget[0], {
+      onShow: function onShow(e) {
+        var id = e.reference.dataset.tippyId;
+        var template = document.getElementById('element-popup-' + id).cloneNode(true);
+        $(template).show();
+        e.setContent(template);
+      },
+      placement: 'top',
+      interactive: true,
+      theme: 'light',
+      duration: 400,
+      arrow: true
+    });
+  },
+  performAction: function performAction(e) {
+    var _this2 = this;
+
+    var that = this;
+    var action = e.target.dataset.actionType;
+
+    if (action === 'delete') {
+      var $hudContents = $();
+      var $form = $('<div/>');
+      var $footer = $('<div class="hud-footer"/>').appendTo($form);
+      var $body = $("\n                <div>".concat(Craft.t("qarr", "Are you sure?"), "</div>\n            ")).appendTo($form);
+      var $buttonsContainer = $('<div class="buttons right"/>').appendTo($footer);
+      var $cancelBtn = $('<div class="btn">' + Craft.t('qarr', 'Cancel') + '</div>').appendTo($buttonsContainer);
+      var $okBtn = $('<input class="btn submit" type="submit" value="' + Craft.t('qarr', 'Ok') + '"/>').appendTo($buttonsContainer);
+      var $spinner = $('<div class="spinner hidden"/>').appendTo($buttonsContainer);
+      $hudContents = $hudContents.add($form);
+      this.hud = new Garnish.HUD(e.target, $hudContents, {
+        hudClass: 'hud',
+        bodyClass: 'body',
+        closeOtherHUDs: false
+      });
+      this.addListener($cancelBtn, 'click', function () {
+        this.hud.hide();
+      });
+      this.hud.on('submit', function (e) {
+        that.deleteElement();
+        that.hud.hide();
+      });
+    }
+
+    if (action === 'status') {
+      this.parent.$loader.removeClass('hidden');
+      this.payload.status = e.target.dataset.status;
+      Craft.postActionRequest('qarr/elements/update-status', this.payload, $.proxy(function (response, textStatus) {
+        if (response.success) {
+          Craft.cp.displayNotice(Craft.t('qarr', 'Item ' + _this2.payload.status));
+          that.$item.addClass('status-changed');
+
+          _this2.$item.velocity('slideUp', {
+            duration: 300
+          });
+
+          _this2.parent.fetchNewItem(that.payload, _this2.$item);
+        }
+      }, this));
+    }
+  },
+  deleteElement: function deleteElement() {
+    var _this3 = this;
+
+    this.parent.$loader.removeClass('hidden');
+    var newPayload = {
+      id: this.payload.id
+    };
+    Craft.postActionRequest('qarr/elements/delete', newPayload, $.proxy(function (response, textStatus) {
+      _this3.parent.$loader.addClass('hidden');
+
+      if (response.success) {
+        Craft.cp.displayNotice(Craft.t('qarr', 'Item deleted'));
+
+        _this3.$item.addClass('item-deleted');
+
+        _this3.$item.velocity('slideUp', {
+          duration: 300
+        });
+
+        _this3.parent.fetchNewItem(_this3.payload, _this3.$item);
+      }
+    }, this));
+  }
+});
+/******/ })()
+;

@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="qarr-entries-body">
-                    {% include 'qarr/frontend/_reviews' ignore missing with { type: 'reviews' } %}
+                    {% include 'qarr/frontend/_reviews/entries' ignore missing with { type: 'reviews', pagination: pagination } %}
                 </div>
             </div>
         {% endif %}
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="qarr-entries-body">
-                    {% include 'qarr/frontend/_questions' ignore missing with { type: 'questions' } %}
+                    {% include 'qarr/frontend/_questions/entries' ignore missing with { type: 'questions', pagination: pagination } %}
                 </div>
             </div>
         {% endif %}

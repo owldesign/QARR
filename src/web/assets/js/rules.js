@@ -1,1 +1,55 @@
-!function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)n.d(r,o,function(t){return e[t]}.bind(null,o));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="/",n(n.s=12)}({12:function(e,t,n){e.exports=n(13)},13:function(e,t){Garnish.$doc.ready((function(){if($("#rule-data").length>0){var e=document.getElementById("rule-data"),t=new Tagify(e);t.DOM.input.classList.add("tagify__input--outside"),t.DOM.scope.parentNode.insertBefore(t.DOM.input,t.DOM.scope),document.querySelector(".tags--removeAllBtn").addEventListener("click",function(e){t.removeAllTags(),$(".tags--removeAllBtn").addClass("btn-disabled")}.bind(t)),t.on("add",(function(e){t.value.length>0&&$(".tags--removeAllBtn").removeClass("btn-disabled")})),t.on("remove",(function(e){0===t.value.length&&$(".tags--removeAllBtn").addClass("btn-disabled")}))}$("#delete-rule").on("click",(function(e){e.preventDefault();var t={id:$(this).data("id")},n=Craft.t("qarr","Deleting this rule will also remove all its flagged entries?");new QarrPrompt(n,null).on("response",(function(e){var n=this;e&&"ok"===e.response&&Craft.postActionRequest("qarr/rules/delete",t,$.proxy((function(e,t){e.success&&setTimeout($.proxy((function(){Craft.cp.displayNotice(Craft.t("qarr","Rule deleted, redirecting...")),setTimeout($.proxy((function(){Craft.redirectTo(Craft.getCpUrl()+"/qarr/rules")}),this),1e3)}),n),1e3)}),this))}))}))}))}});
+/******/ (() => { // webpackBootstrap
+/*!*********************************!*\
+  !*** ./development/js/rules.js ***!
+  \*********************************/
+Garnish.$doc.ready(function () {
+  // Data List
+  if ($('#rule-data').length > 0) {
+    var dataInput = document.getElementById('rule-data');
+    var tagify = new Tagify(dataInput);
+    tagify.DOM.input.classList.add('tagify__input--outside');
+    tagify.DOM.scope.parentNode.insertBefore(tagify.DOM.input, tagify.DOM.scope);
+    document.querySelector('.tags--removeAllBtn').addEventListener('click', function (e) {
+      tagify.removeAllTags();
+      $('.tags--removeAllBtn').addClass('btn-disabled');
+    }.bind(tagify));
+    tagify.on('add', function (e) {
+      if (tagify.value.length > 0) {
+        $('.tags--removeAllBtn').removeClass('btn-disabled');
+      }
+    });
+    tagify.on('remove', function (e) {
+      if (tagify.value.length === 0) {
+        $('.tags--removeAllBtn').addClass('btn-disabled');
+      }
+    });
+  } // Delete Rule
+
+
+  $('#delete-rule').on('click', function (e) {
+    e.preventDefault();
+    var data = {
+      id: $(this).data('id')
+    };
+    var message = Craft.t('qarr', 'Deleting this rule will also remove all its flagged entries?');
+    var deletePrompt = new QarrPrompt(message, null);
+    deletePrompt.on('response', function (response) {
+      var _this = this;
+
+      if (response && response.response === 'ok') {
+        Craft.postActionRequest('qarr/rules/delete', data, $.proxy(function (response, textStatus) {
+          if (response.success) {
+            setTimeout($.proxy(function () {
+              Craft.cp.displayNotice(Craft.t('qarr', 'Rule deleted, redirecting...'));
+              setTimeout($.proxy(function () {
+                Craft.redirectTo(Craft.getCpUrl() + '/qarr/rules');
+              }, this), 1000);
+            }, _this), 1000);
+          }
+        }, this));
+      }
+    });
+  });
+});
+/******/ })()
+;

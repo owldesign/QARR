@@ -11,15 +11,22 @@
 namespace owldesign\qarr\controllers;
 
 use Craft;
+use craft\db\Paginator;
+use craft\helpers\AdminTable;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\web\View;
 use craft\web\Controller;
 use craft\helpers\Template;
 use craft\controllers\ElementIndexesController;
 use owldesign\qarr\elements\Question;
+use owldesign\qarr\elements\Review;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use yii\base\Exception;
+use yii\data\Pagination;
+use yii\log\Logger;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -43,6 +50,53 @@ class ElementsController extends Controller
     // Public Methods
     // =========================================================================
 
+//    public function actionQueryPaginatedElements()
+//    {
+//        $this->requirePostRequest();
+//
+//        $pageInfo = Craft::$app->getRequest()->getBodyParam('pageInfo');
+//        $page = Craft::$app->getRequest()->getQueryParam('page');
+//        $pageSize = Craft::$app->getRequest()->getQueryParam('per-page');
+//
+//        $pageSize = 1;
+//
+//        $query = Review::find()->status('approved');
+//        $countQuery = clone $query;
+//
+//        $pages = new Pagination([
+//            'totalCount' => $countQuery->count(),
+//            'pageSize' => $pageSize,
+//        ]);
+//
+//        $entries = $query->offset($pages->offset)->limit($pages->limit)->all();
+//
+//        $variables = [
+//            'entries' => $entries,
+//            'pages' => $pages,
+//        ];
+//
+//        $oldPath = Craft::$app->view->getTemplateMode();
+//        Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+//        $template = Craft::$app->view->renderTemplate('qarr/frontend/_reviews/entries-ajax', $variables);
+//        $paginationTemplate = Craft::$app->view->renderTemplate('qarr/frontend/_reviews/_pagination', $variables);
+//        Craft::$app->view->setTemplateMode($oldPath);
+//
+//        return $this->asJson([
+//            'pageInfo' => $pageInfo,
+//            'entries' => $entries,
+//            'template' => $template,
+//            'paginationTemplate' => $paginationTemplate,
+//        ]);
+//
+////        $variables['entries'] = QARR::$plugin->elements->queryElements($type, $elementId, $limit, $offset);
+////
+////
+////        return $this->asJson([
+////            'success' => true,
+////            'template' => Template::raw($template)
+////        ]);
+//    }
+
     /**
      * Query builder for elements
      *
@@ -54,22 +108,25 @@ class ElementsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $type       = $request->getBodyParam('type');
-        $limit      = $request->getBodyParam('limit');
-        $offset     = $request->getBodyParam('offset');
-        $elementId  = $request->getBodyParam('elementId');
+        $request = Craft::$app->getRequest();
+        $type = $request->getBodyParam('type');
+        $order = $request->getBodyParam('order');
+        $limit = $request->getBodyParam('limit');
+        $offset = $request->getBodyParam('offset');
+        $elementId = $request->getBodyParam('elementId');
 
-        $variables['entries'] = QARR::$plugin->elements->queryElements($type, $elementId, $limit, $offset);
+        $templatePath = $this->_getTemplatePathByElementType($type);
+
+        $variables['entries'] = QARR::$plugin->elements->queryElements($type, $order, $elementId, $limit, $offset);
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-        $template = Craft::$app->view->renderTemplate('qarr/frontend/_'. $type .'/entries', $variables);
+        $template = Craft::$app->view->renderTemplate('qarr/frontend/_' . $templatePath . '/entries-ajax', $variables);
         Craft::$app->view->setTemplateMode($oldPath);
 
         return $this->asJson([
             'success' => true,
-            'template'   => Template::raw($template)
+            'template' => Template::raw($template)
         ]);
     }
 
@@ -84,24 +141,25 @@ class ElementsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $type       = $request->getBodyParam('type');
-        $value      = $request->getBodyParam('value');
-        $limit      = $request->getBodyParam('limit');
-        $elementId  = $request->getBodyParam('elementId');
+        $request = Craft::$app->getRequest();
+        $type = $request->getBodyParam('type');
+        $order = $request->getBodyParam('order');
+        $limit = $request->getBodyParam('limit');
+        $elementId = $request->getBodyParam('elementId');
 
-        $variables['entries'] = QARR::$plugin->elements->querySortElements($type, $elementId, $value, $limit);
+        $variables['entries'] = QARR::$plugin->elements->querySortElements($type, $order, $elementId, $limit);
+
+        $templatePath = $this->_getTemplatePathByElementType($type);
 
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-        $template = Craft::$app->view->renderTemplate('qarr/frontend/_'. $type .'/entries', $variables);
+        $template = Craft::$app->view->renderTemplate('qarr/frontend/_' . $templatePath . '/entries-ajax', $variables);
         Craft::$app->view->setTemplateMode($oldPath);
 
         return $this->asJson([
             'success' => true,
-            'template'   => Template::raw($template)
+            'template' => Template::raw($template)
         ]);
-
     }
 
     /**
@@ -115,22 +173,27 @@ class ElementsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $type       = $request->getBodyParam('type');
-        $rating     = $request->getBodyParam('rating');
-        $limit      = $request->getBodyParam('limit');
-        $elementId  = $request->getBodyParam('elementId');
-        
-        $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $elementId, $rating, $limit != '');
-        
+        $request = Craft::$app->getRequest();
+        $type = $request->getBodyParam('type');
+        $rating = $request->getBodyParam('rating');
+        $limit = $request->getBodyParam('limit');
+        $offset = $request->getBodyParam('offset');
+        $elementId = $request->getBodyParam('elementId');
+        $order = $request->getBodyParam('order');
+
+        $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $elementId, $rating, $order, $limit, $offset);
+
         $oldPath = Craft::$app->view->getTemplateMode();
         Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
-        $template = Craft::$app->view->renderTemplate('qarr/frontend/_'. $type .'/entries', $variables);
+        $template = Craft::$app->view->renderTemplate('qarr/frontend/_' . $type . '/entries-ajax', $variables);
         Craft::$app->view->setTemplateMode($oldPath);
 
         return $this->asJson([
             'success' => true,
-            'template'   => Template::raw($template)
+            'pageInfo' => [
+                'total' => $variables['entries']->count(),
+            ],
+            'template' => Template::raw($template)
         ]);
     }
 
@@ -148,7 +211,7 @@ class ElementsController extends Controller
         $reviewsPending = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'pending')->count();
         $reviewsApproved = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'approved')->count();
         $reviewsRejected = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'rejected')->count();
-        $reviewsTotal =  $reviewsPending + $reviewsApproved + $reviewsRejected;
+        $reviewsTotal = $reviewsPending + $reviewsApproved + $reviewsRejected;
 
         $questionsPending = QARR::$plugin->elements->queryElements('questions', null, null, null, 'pending')->count();
         $questionsApproved = QARR::$plugin->elements->queryElements('questions', null, null, null, 'approved')->count();
@@ -156,28 +219,28 @@ class ElementsController extends Controller
         $questionsTotal = $questionsPending + $questionsApproved + $questionsRejected;
 
         $totalPending = $reviewsPending + $questionsPending;
-        
+
         $variable['reviews'] = [
             'total' => $reviewsTotal,
-            'pending' =>  (int) $reviewsPending,
-            'approved' => (int) $reviewsApproved,
-            'rejected' => (int) $reviewsRejected
+            'pending' => (int)$reviewsPending,
+            'approved' => (int)$reviewsApproved,
+            'rejected' => (int)$reviewsRejected
         ];
 
         $variable['questions'] = [
             'total' => $questionsTotal,
-            'pending' => (int) $questionsPending,
-            'approved' => (int) $questionsApproved,
-            'rejected' => (int) $questionsRejected,
+            'pending' => (int)$questionsPending,
+            'approved' => (int)$questionsApproved,
+            'rejected' => (int)$questionsRejected,
         ];
-        
+
 
         $data = [
-            'success'       => true,
-            'variables'     => $variable,
-            'totalPending'  => $totalPending,
+            'success' => true,
+            'variables' => $variable,
+            'totalPending' => $totalPending,
         ];
-        
+
         return $this->asJson($data);
     }
 
@@ -194,10 +257,10 @@ class ElementsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $type       = $request->getBodyParam('type');
-        $limit      = $request->getBodyParam('limit');
-        $exclude    = $request->getBodyParam('exclude');
+        $request = Craft::$app->getRequest();
+        $type = $request->getBodyParam('type');
+        $limit = $request->getBodyParam('limit');
+        $exclude = $request->getBodyParam('exclude');
 
         $variables['type'] = $type;
         $variables['entries'] = QARR::$plugin->getElements()->queryElements($type, null, $limit, null, 'pending', $exclude);
@@ -207,7 +270,7 @@ class ElementsController extends Controller
 
         return $this->asJson([
             'success' => true,
-            'template'   => Template::raw($template),
+            'template' => Template::raw($template),
             'count' => $variables['entries']->count()
         ]);
     }
@@ -222,16 +285,16 @@ class ElementsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $elementId  = $request->getBodyParam('id');
-        $type       = $request->getBodyParam('type');
+        $request = Craft::$app->getRequest();
+        $elementId = $request->getBodyParam('id');
+        $type = $request->getBodyParam('type');
 
         if (!$elementId && !$type) {
             return false;
         }
 
         $result = QARR::$plugin->elements->reportAbuse($elementId, $type);
-        $entry  = QARR::$plugin->reviews->getEntryById($elementId);
+        $entry = QARR::$plugin->reviews->getEntryById($elementId);
 
         if ($result) {
             if (Craft::$app->getRequest()->getIsAjax()) {
@@ -272,9 +335,9 @@ class ElementsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $elementId  = $request->getBodyParam('id');
-        $type       = $request->getBodyParam('type');
+        $request = Craft::$app->getRequest();
+        $elementId = $request->getBodyParam('id');
+        $type = $request->getBodyParam('type');
 
         if (!$elementId && !$type) {
             return false;
@@ -303,17 +366,17 @@ class ElementsController extends Controller
     {
         $this->requirePostRequest();
 
-        $request    = Craft::$app->getRequest();
-        $elementId  = $request->getBodyParam('id');
-        $status     = $request->getBodyParam('status');
-        $type       = $request->getBodyParam('type');
+        $request = Craft::$app->getRequest();
+        $elementId = $request->getBodyParam('id');
+        $status = $request->getBodyParam('status');
+        $type = $request->getBodyParam('type');
 
         if (!$elementId && !$type) {
             return null;
         }
 
         $result = QARR::$plugin->elements->updateStatus($elementId, $status, $type);
-        $entry  = QARR::$plugin->elements->getElement($type, $elementId);
+        $entry = QARR::$plugin->elements->getElement($type, $elementId);
 
         if (!$result) {
             return null;
@@ -374,5 +437,20 @@ class ElementsController extends Controller
     private function _enforceEditPermissions()
     {
         $this->requirePermission('qarr:accessReviews');
+    }
+
+    /**
+     * Return element type path
+     *
+     * @param $elementType
+     * @return string
+     */
+    private function _getTemplatePathByElementType($elementType): string
+    {
+        if (new $elementType instanceof Review) {
+            return 'reviews';
+        } else {
+            return 'questions';
+        }
     }
 }
