@@ -59,8 +59,8 @@ class UtilitiesController extends Controller
 
         // TODO: allow to pick Reviews or Questions
 
-        $reviews = QARR::$plugin->elements->queryElements('reviews')->all();
-        $questions = QARR::$plugin->elements->queryElements('questions')->all();
+        $reviews = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Review')->all();
+        $questions = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Question')->all();
 
         foreach($reviews as $element) {
             if ($element) {

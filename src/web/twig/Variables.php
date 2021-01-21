@@ -217,12 +217,8 @@ class Variables extends Behavior
 
         $variables = [];
 
-        if ($element === '*') {
-            $query = QARR::$app->elements->queryElements('reviews');
-        } else {
-            $query = QARR::$plugin->elements->queryElements('reviews', $element->id, null, null, 'approved');
-            $variables['averageRating'] = $this->getAverageRating($element->id);
-        }
+        $query = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Review', 'dateCreated desc', $element === '*' ? null : $element->id, null, null, 'approved');
+        $variables['averageRating'] = $this->getAverageRating($element->id);
 
         $variables = [
             'reviews' => $query,
@@ -252,6 +248,8 @@ class Variables extends Behavior
      * Display questions
      *
      * @param $element
+     * @param bool $markup
+     * @return array|\Twig\Markup
      * @throws Exception
      */
     public function displayQuestions($element, $markup = true)
@@ -260,7 +258,7 @@ class Variables extends Behavior
         $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
         $customFile = $this->_resolveTemplate($path, 'questions');
 
-        $query = QARR::$plugin->elements->queryElements('questions', $element->id, null, null, 'approved');
+        $query = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Question', 'dateCreated desc', $element === '*' ? null : $element->id, null, null, 'approved');
 
         $variables = [
             'questions' => $query,

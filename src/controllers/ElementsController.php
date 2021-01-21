@@ -208,14 +208,14 @@ class ElementsController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        $reviewsPending = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'pending')->count();
-        $reviewsApproved = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'approved')->count();
-        $reviewsRejected = QARR::$plugin->elements->queryElements('reviews', null, null, null, 'rejected')->count();
+        $reviewsPending = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Review', null, null, null, 'pending')->count();
+        $reviewsApproved = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Review', null, null, null, 'approved')->count();
+        $reviewsRejected = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Review', null, null, null, 'rejected')->count();
         $reviewsTotal = $reviewsPending + $reviewsApproved + $reviewsRejected;
 
-        $questionsPending = QARR::$plugin->elements->queryElements('questions', null, null, null, 'pending')->count();
-        $questionsApproved = QARR::$plugin->elements->queryElements('questions', null, null, null, 'approved')->count();
-        $questionsRejected = QARR::$plugin->elements->queryElements('questions', null, null, null, 'rejected')->count();
+        $questionsPending = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Question', null, null, null, 'pending')->count();
+        $questionsApproved = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Question', null, null, null, 'approved')->count();
+        $questionsRejected = QARR::$plugin->elements->queryElements('owldesign\qarr\elements\Question', null, null, null, 'rejected')->count();
         $questionsTotal = $questionsPending + $questionsApproved + $questionsRejected;
 
         $totalPending = $reviewsPending + $questionsPending;

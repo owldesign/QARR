@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.2.6.1 - 2021-01-21
+
+### Fixed
+- Fixed query bug for qarr.displayReviews and qarr.displayQuestions()
+
 ## 1.2.6 - 2021-01-20
 
 ### Fixed
