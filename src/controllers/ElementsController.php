@@ -110,7 +110,7 @@ class ElementsController extends Controller
 
         $request = Craft::$app->getRequest();
         $type = $request->getBodyParam('type');
-        $order = $request->getBodyParam('order');
+        $order = $request->getBodyParam('order', 'dateCreated desc');
         $limit = $request->getBodyParam('limit');
         $offset = $request->getBodyParam('offset');
         $elementId = $request->getBodyParam('elementId');

@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.2.7 - 2021-03-04
+
+### Fixed
+- Fixed bug when showSort is set to false
+
 ## 1.2.6.1 - 2021-01-21
 
 ### Fixed
