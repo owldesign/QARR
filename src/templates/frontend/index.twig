@@ -4,10 +4,14 @@
 
     <div class="qarr-tab-links">
         {% if includeReviews %}
-            <a href="#" class="qarr-tab-link qarr-tab-link-reviews active" data-target="reviews">Reviews</a>
+            <a href="#" class="qarr-tab-link qarr-tab-link-reviews active" data-target="reviews">
+                {{ 'Reviews'|t('qarr') }}
+            </a>
         {% endif %}
         {% if includeQuestions %}
-            <a href="#" class="qarr-tab-link qarr-tab-link-questions" data-target="questions">Questions</a>
+            <a href="#" class="qarr-tab-link qarr-tab-link-questions" data-target="questions">
+                {{ 'Questions'|t('qarr') }}
+            </a>
         {% endif %}
     </div>
 
