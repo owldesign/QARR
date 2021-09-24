@@ -174,43 +174,60 @@ class QARR extends Plugin
      */
     public function getCpNavItem()
     {
-        $parent = parent::getCpNavItem();
+        $navItems = parent::getCpNavItem();
+        $loggedUser = Craft::$app->getUser();
 
-        $navigation = ArrayHelper::merge($parent, [
+        $navItems = ArrayHelper::merge($navItems, [
             'badgeCount' => QARR::getInstance()->elements->getTotalPending(),
             'subnav' => [
                 'dashboard' => [
                     'label' => QARR::t('Dashboard'),
                     'url' => 'qarr'
-                ],
-                'reviews' => [
-                    'label' => QARR::t('Reviews'),
-                    'url' => 'qarr/reviews'
-                ],
-                'questions' => [
-                    'label' => QARR::t('Questions'),
-                    'url' => 'qarr/questions'
-                ],
-                'campaigns' => [
-                    'label' => QARR::t('Campaigns'),
-                    'url' => 'qarr/campaigns'
-                ],
-                'displays' => [
-                    'label' => QARR::t('Displays'),
-                    'url' => 'qarr/displays'
-                ],
-                'rules' => [
-                    'label' => QARR::t('Rules'),
-                    'url' => 'qarr/rules'
-                ],
-                'settings' => [
-                    'label' => QARR::t('Settings'),
-                    'url' => 'qarr/settings'
                 ]
             ]
         ]);
 
-        return $navigation;
+        if ($loggedUser->checkPermission('qarr:accessReviews')) {
+            $navItems['subnav']['reviews'] = [
+                'label' => QARR::t('Reviews'),
+                'url' => 'qarr/reviews'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessQuestions')) {
+            $navItems['subnav']['questions'] = [
+                'label' => QARR::t('Questions'),
+                'url' => 'qarr/questions'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessCampaigns')) {
+            $navItems['subnav']['campaigns'] = [
+                'label' => QARR::t('Campaigns'),
+                'url' => 'qarr/campaigns'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessDisplays')) {
+            $navItems['subnav']['displays'] = [
+                'label' => QARR::t('Displays'),
+                'url' => 'qarr/displays'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessRules')) {
+            $navItems['subnav']['rules'] = [
+                'label' => QARR::t('Rules'),
+                'url' => 'qarr/rules'
+            ];
+        }
+
+        $navItems['subnav']['settings'] = [
+            'label' => QARR::t('Settings'),
+            'url' => 'qarr/settings'
+        ];
+
+        return $navItems;
     }
 
     /**
