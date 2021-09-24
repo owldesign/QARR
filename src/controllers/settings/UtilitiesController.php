@@ -10,12 +10,15 @@
 
 namespace owldesign\qarr\controllers\settings;
 
+use craft\helpers\DateTimeHelper;
 use owldesign\qarr\QARR;
 use owldesign\qarr\jobs\GeolocationTask;
 
 use Craft;
 use craft\web\Controller;
 use craft\helpers\Json;
+use owldesign\qarr\records\Question;
+use owldesign\qarr\records\Review;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -90,6 +93,52 @@ class UtilitiesController extends Controller
             'success'   => true,
             'message'   => QARR::t('Geolocation updates started...'),
         ]);
+    }
+
+    /**
+     * Fix review elements
+     *
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionFixReviewElements()
+    {
+        $this->requirePostRequest();
+        $date = DateTimeHelper::toDateTime(DateTimeHelper::currentTimeStamp());
+        $reviews = Review::find()->where(['dateDeleted' => null])->all();
+
+        foreach ($reviews as $review) {
+            $element = Craft::$app->getElements()->getElementById($review->elementId);
+
+            if (!$element) {
+                $review->updateAttributes(['dateDeleted' => $date->format('Y-m-d H:i:s')]);
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Fix question elements
+     *
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionFixQuestionElements()
+    {
+        $this->requirePostRequest();
+        $date = DateTimeHelper::toDateTime(DateTimeHelper::currentTimeStamp());
+        $questions = Question::find()->where(['dateDeleted' => null])->all();
+
+        foreach ($questions as $question) {
+            $element = Craft::$app->getElements()->getElementById($question->elementId);
+
+            if (!$element) {
+                $question->updateAttributes(['dateDeleted' => $date->format('Y-m-d H:i:s')]);
+            }
+        }
+
+        return true;
     }
 
 }

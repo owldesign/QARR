@@ -13,6 +13,6 @@
 
 {% block sidebar %}
     {% if sources is not empty %}
-        {% include 'qarr/_elements/element-sources' ignore missing with { srouces: sources } %}
+        {% include 'qarr/_elements/element-sources' ignore missing with { srouces: sources, elementType: 'reviews' } %}
     {% endif %}
 {% endblock %}

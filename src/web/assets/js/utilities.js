@@ -15,6 +15,26 @@ Garnish.$doc.ready(function () {
       }
     }, this));
   });
+  $('#fix-review-elements').on('click', function (e) {
+    e.preventDefault();
+    Craft.postActionRequest('qarr/settings/utilities/fix-review-elements', {}, $.proxy(function (response, textStatus) {
+      console.log(response);
+
+      if (response) {
+        Craft.cp.displayNotice(Craft.t('qarr', 'Review entries fixed'));
+      }
+    }, this));
+  });
+  $('#fix-question-elements').on('click', function (e) {
+    e.preventDefault();
+    Craft.postActionRequest('qarr/settings/utilities/fix-question-elements', {}, $.proxy(function (response, textStatus) {
+      console.log(response);
+
+      if (response) {
+        Craft.cp.displayNotice(Craft.t('qarr', 'Question entries fixed'));
+      }
+    }, this));
+  });
 });
 /******/ })()
 ;

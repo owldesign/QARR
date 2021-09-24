@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.2.9 - 2021-09-24
+
+### Added
+- Added a method to bulk remove previous reviews or questions after Entry or Product elements has been deleted from CMS
+
 ## 1.2.8 - 2021-09-23
 
 ### Fixed
