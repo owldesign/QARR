@@ -160,7 +160,7 @@ class ReviewQuery extends ElementQuery
             'qarr_reviews.ipAddress',
             'qarr_reviews.userAgent',
             'qarr_reviews.dateCreated',
-            'qarr_reviews.dateUpdated'
+            'qarr_reviews.dateUpdated',
         ]);
 
         if ($this->fullName) {
@@ -222,6 +222,9 @@ class ReviewQuery extends ElementQuery
         if ($this->hasPurchased) {
             $this->subQuery->andWhere(Db::parseParam('qarr_reviews.hasPurchased', $this->hasPurchased));
         }
+
+        $this->subQuery->andWhere(['qarr_reviews.dateDeleted' => null]);
+
 
         return parent::beforePrepare();
     }

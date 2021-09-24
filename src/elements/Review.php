@@ -234,7 +234,6 @@ class Review extends Element
         return $names;
     }
 
-
     /**
      * @inheritdoc
      */

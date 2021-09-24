@@ -1,5 +1,13 @@
 # QARR Changelog
 
+## 1.2.8 - 2021-09-23
+
+### Fixed
+- Fixed bug where plugin would break after elements got removed from CMS
+- Fixed siteId error on multiple pages
+- Renamed json_decode filter 
+- Merge requests 
+
 ## 1.2.7 - 2021-03-04
 
 ### Fixed

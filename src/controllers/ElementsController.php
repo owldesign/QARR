@@ -47,6 +47,7 @@ class ElementsController extends Controller
      */
     protected $allowAnonymous = true;
 
+
     // Public Methods
     // =========================================================================
 
@@ -162,6 +163,41 @@ class ElementsController extends Controller
         ]);
     }
 
+    public function actionQueryRenderElements($kind = 'reviews')
+    {
+        $this->requirePostRequest();
+
+        $request = Craft::$app->getRequest();
+        $type = $request->getBodyParam('type');
+        $order = $request->getBodyParam('order', 'dateCreated desc');
+        $limit = $request->getBodyParam('limit');
+        $offset = $request->getBodyParam('offset');
+        $elementId = $request->getBodyParam('elementId');
+        $template = $request->getBodyParam('template');
+
+        $variables['records'] = QARR::$plugin->elements->queryElements($type, $order, $elementId, $limit, $offset);
+        $variables['template'] = $template;
+        $variables['pagination'] = $variables['pagination'] ?? true;
+
+        if ($elementId) {
+            $variables['model'] = Craft::$app->getElements()->getElementById($elementId);
+        }
+
+        if ($template !== '') {
+            $html = Craft::$app->view->renderTemplate($template, $variables);
+        } else {
+            $oldPath = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+            $html = Craft::$app->view->renderTemplate('qarr/frontend/render/' . $kind . '-ajax', $variables);
+            Craft::$app->view->setTemplateMode($oldPath);
+        }
+
+        return $this->asJson([
+            'success' => true,
+            'template' => Template::raw($html)
+        ]);
+    }
+
     /**
      * Star filtered elements
      *
@@ -176,10 +212,14 @@ class ElementsController extends Controller
         $request = Craft::$app->getRequest();
         $type = $request->getBodyParam('type');
         $rating = $request->getBodyParam('rating');
-        $limit = $request->getBodyParam('limit');
+        $limit = $request->getBodyParam('limit', null);
         $offset = $request->getBodyParam('offset');
         $elementId = $request->getBodyParam('elementId');
         $order = $request->getBodyParam('order');
+
+        if ($limit === '') {
+            $limit = null;
+        }
 
         $variables['entries'] = QARR::$plugin->elements->queryStarFilteredElements($type, $elementId, $rating, $order, $limit, $offset);
 
@@ -261,9 +301,10 @@ class ElementsController extends Controller
         $type = $request->getBodyParam('type');
         $limit = $request->getBodyParam('limit');
         $exclude = $request->getBodyParam('exclude');
+        $elementId = $request->getBodyParam('elementId');
 
         $variables['type'] = $type;
-        $variables['entries'] = QARR::$plugin->getElements()->queryElements($type, null, $limit, null, 'pending', $exclude);
+        $variables['entries'] = QARR::$plugin->getElements()->queryElements($type, 'dateCreated desc', $elementId, $limit, null, 'pending', $exclude);
 
         $template = Craft::$app->view->renderTemplate('qarr/dashboard/_includes/pending-items', $variables);
 

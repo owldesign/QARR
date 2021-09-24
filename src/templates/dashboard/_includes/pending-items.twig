@@ -1,5 +1,12 @@
 {% for entry in entries.all() %}
-    <div class="element-item mb-4 pb-4 border-b border-gray-200 border-solid widget-recent-element-item" data-type="{{ type }}" data-element-id="{{ entry.id }}">
+
+    {% if type == 'reviews' %}
+        {% set elementType = 'owldesign\\qarr\\elements\\Review' %}
+    {% else %}
+        {% set elementType = 'owldesign\\qarr\\elements\\Question' %}
+    {% endif %}
+
+    <div class="element-item mb-4 pb-4 border-b border-gray-200 border-solid widget-recent-element-item" data-type="{{ elementType }}" data-element-id="{{ entry.id }}">
 
         <div class="element-object text-base font-mono flex-container items-center" data-tippy-id="{{ entry.id }}">
             <div>{{ entry.element }}</div>

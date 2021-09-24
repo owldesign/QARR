@@ -10,6 +10,10 @@
 
 namespace owldesign\qarr;
 
+use craft\base\Element;
+use craft\commerce\elements\Product;
+use craft\events\ElementEvent;
+use craft\events\ModelEvent;
 use craft\web\Controller;
 use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\Review as ReviewElement;
@@ -100,9 +104,9 @@ class QARR extends Plugin
         // $this->_registerFieldTypes();
         // $this->_registerUtilities();
 
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
             /** @var CraftVariable $variable */
-            $variable = $e->sender;
+            $variable = $event->sender;
             $variable->set('functions', Functions::class);
             $variable->set('qarrEmails', EmailTemplates::class);
             $variable->set('qarrRules', Rules::class);
@@ -111,13 +115,33 @@ class QARR extends Plugin
         });
 
         // Element status updates
-        Event::on(SetStatus::class, SetStatus::EVENT_AFTER_SAVE, function(Event $e) {
-            if ($e->response) {
-                $status = $e->status;
-                $type = $e->type;
+        Event::on(SetStatus::class, SetStatus::EVENT_AFTER_SAVE, function(Event $event) {
+            if ($event->response) {
+                $status = $event->status;
+                $type = $event->type;
 
                 // Reset geolocation stats
                 QARR::$plugin->geolocations->reset();
+            }
+        });
+
+        // On Element disable or delete, update all reviews + questions to dateDeleted status
+        Event::on(Element::class, Element::EVENT_AFTER_DELETE, function (Event $event) {
+            $sender = $event->sender;
+            $elementClass = get_class($sender);
+
+            $elementId = null;
+
+            if ($elementClass === 'craft\\commerce\\elements\\Product') {
+                $elementId = $sender->id;
+            }
+
+            if ($elementClass === 'craft\\elements\\Entry') {
+                $elementId = $sender->id;
+            }
+
+            if ($elementId) {
+                $result = QARR::$app->getElements()->markElementsAsDeletedByElementId($elementId, $sender->dateUpdated);
             }
         });
 
@@ -144,7 +168,6 @@ class QARR extends Plugin
     {
         return Craft::$app->controller->renderTemplate('qarr/settings/index');
     }
-
 
     /**
      * @inheritdoc
