@@ -222,10 +222,12 @@ class QARR extends Plugin
             ];
         }
 
-        $navItems['subnav']['settings'] = [
-            'label' => QARR::t('Settings'),
-            'url' => 'qarr/settings'
-        ];
+        if ($loggedUser->checkPermission('qarr:manageSettings')) {
+            $navItems['subnav']['settings'] = [
+                'label' => QARR::t('Settings'),
+                'url' => 'qarr/settings'
+            ];
+        }
 
         return $navItems;
     }
@@ -314,6 +316,7 @@ class QARR extends Plugin
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
                 $permissions = [];
+
                 $permissions['qarr:accessReviews'] = [
                     'label' => QARR::t('Access Reviews'),
                     'nested' => [
@@ -325,6 +328,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessQuestions'] = [
                     'label' => QARR::t('Access Questions'),
                     'nested' => [
@@ -336,6 +340,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessDisplays'] = [
                     'label' => QARR::t('Access Displays'),
                     'nested' => [
@@ -347,6 +352,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessRules'] = [
                     'label' => QARR::t('Access Rules'),
                     'nested' => [
@@ -358,6 +364,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessCampaigns'] = [
                     'label' => QARR::t('Access Campaigns'),
                     'nested' => [
@@ -369,6 +376,11 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
+                $permissions['qarr:manageSettings'] = [
+                    'label' => QARR::t('Manage settings'),
+                ];
+
                 $event->permissions[QARR::t('QARR')] = $permissions;
             }
         );

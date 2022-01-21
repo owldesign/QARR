@@ -45,6 +45,8 @@ class UtilitiesController extends Controller
      */
     public function actionIndex(array $variables = []): Response
     {
+        $this->requirePermission('qarr:manageSettings');
+
         $variables['rules'] = QARR::$plugin->rules->getAllRules();
 
         return $this->renderTemplate('qarr/settings/utilities/index', $variables);
@@ -59,6 +61,8 @@ class UtilitiesController extends Controller
     public function actionUpdateGeolocations()
     {
         $this->requirePostRequest();
+
+        $this->requirePermission('qarr:manageSettings');
 
         // TODO: allow to pick Reviews or Questions
 

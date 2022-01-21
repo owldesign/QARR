@@ -40,6 +40,8 @@ class ConfigurationController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
+        $this->requirePermission('qarr:manageSettings');
+
         $settings = QARR::$plugin->settings;
         $sections = Craft::$app->getSections()->getAllSections();
 
@@ -70,6 +72,9 @@ class ConfigurationController extends Controller
     public function actionSaveElementSettings()
     {
         $this->requirePostRequest();
+
+        $this->requirePermission('qarr:manageSettings');
+
         $pluginHandle = Craft::$app->getRequest()->getRequiredBodyParam('pluginHandle');
         $settings = Craft::$app->getRequest()->getBodyParam('settings', []);
         $plugin = Craft::$app->getPlugins()->getPlugin($pluginHandle);
