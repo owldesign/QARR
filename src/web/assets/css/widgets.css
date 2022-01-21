@@ -92,13 +92,9 @@
   transition: opacity 0.3s ease;
 }
 .qarr-widgets .widget-item-wrapper {
-  display: flex;
-}
-.qarr-widgets .widget-item-wrapper .widget-item {
-  flex: 1;
-}
-.qarr-widgets .widget-item-wrapper .widget-item:first-child {
-  margin-right: 24px;
+  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 #widget-pending-reviews .flex-container, #widget-pending-questions .flex-container {
