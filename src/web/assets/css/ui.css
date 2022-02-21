@@ -57,6 +57,7 @@
 }
 .qarr .qarr-rating {
   margin: 5px 0;
+  white-space: nowrap;
 }
 .qarr .qarr-rating .qarr-rating-star {
   margin-right: 3px;
