@@ -8,7 +8,7 @@
                     <a data-label="{{ source.label }}" data-key="{{ source.key is defined ? source.key : key }}" {%- if source.defaultSort is defined %}{% set defaultSort = source.defaultSort %} data-default-sort="{{ defaultSort is iterable ? defaultSort|join(':') : defaultSort }}"{% endif %}{%- if source.data is defined -%}{% for dataKey, dataVal in source.data %} data-{{ dataKey }}="{{ dataVal }}"{% endfor %}{%- endif %}>
                         <span class="source-text">{{- source.label -}}</span>
                         {% if source.id is defined %}
-                            {% set count = craft.qarr.getCount('reviews', '*', null, source.type, source.id) %}
+                            {% set count = craft.qarr.getCount(elementType, '*', null, source.type, source.id) %}
                             <span class="badge-count">{{ count is defined and count > 0 ? count : '' }}</span>
                         {% endif %}
                     </a>
@@ -20,6 +20,5 @@
 
 <div class="button-group">
     <a class="customize-sources"><span class="settings icon"></span></a>
-{#    <a class="customize-sources btn secondary fullwidth" title="{{ 'Customize sources'|t('qarr') }}">{{ 'Customize Sidebar'|t('qarr') }}</a>#}
     <a class="configure-elements btn secondary fullwidth" title="{{ 'Configure Elements'|t('qarr') }}">{{ 'Configure Elements'|t('qarr') }}</a>
 </div>

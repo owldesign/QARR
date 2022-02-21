@@ -155,6 +155,8 @@ class QuestionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam('qarr_questions.abuse', $this->abuse));
         }
 
+        $this->subQuery->andWhere(['qarr_questions.dateDeleted' => null]);
+
         return parent::beforePrepare();
     }
 

@@ -31,7 +31,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('json_decode', [$this, 'json_decode']),
+            new \Twig_SimpleFilter('qarr_json_decode', [$this, 'json_decode']),
             new \Twig_SimpleFilter('getClass', [$this, 'getClass']),
             new \Twig_SimpleFilter('timeAgo', [$this, 'getTimeAgo']),
             new \Twig_SimpleFilter('browser', [$this, 'browser']),

@@ -67,7 +67,6 @@
 
         {{ forms.textField({
             label: "Name"|t('app'),
-            siteId: display.name,
             id: 'name',
             name: 'name',
             first: true,
@@ -83,7 +82,6 @@
 
             {{ forms.textField({
                 label: "Title Format"|t('qarr'),
-                siteId: display.titleFormat,
                 id: 'titleFormat',
                 name: 'titleFormat',
                 instructions: 'eg. Review from {fullName} submitted on {dateCreated}',
@@ -132,7 +130,6 @@
     <div id="settings" class="meta">
         {{ forms.textField({
             label: "Handle"|t('app'),
-            siteId: display.siteId,
             id: 'handle',
             name: 'handle',
             autocorrect: false,

@@ -1,5 +1,5 @@
 <div class="qarr-entries-set" id="{{ random() }}">
-    {% for review in entries %}
+    {% for review in entries.all() %}
         <div class="qarr-entry-item">
             <div class="qarr-entry-meta">
                 <div class="qarr-entry-name">{{ review.fullName }}</div>

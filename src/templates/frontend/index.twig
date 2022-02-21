@@ -4,10 +4,14 @@
 
     <div class="qarr-tab-links">
         {% if includeReviews %}
-            <a href="#" class="qarr-tab-link qarr-tab-link-reviews active" data-target="reviews">Reviews</a>
+            <a href="#" class="qarr-tab-link qarr-tab-link-reviews active" data-target="reviews">
+                {{ 'Reviews'|t('qarr') }}
+            </a>
         {% endif %}
         {% if includeQuestions %}
-            <a href="#" class="qarr-tab-link qarr-tab-link-questions" data-target="questions">Questions</a>
+            <a href="#" class="qarr-tab-link qarr-tab-link-questions" data-target="questions">
+                {{ 'Questions'|t('qarr') }}
+            </a>
         {% endif %}
     </div>
 
@@ -86,4 +90,17 @@
     QARR.elementTypeId = "{{ element.type.id }}";
     QARR.actionUrl = "{{ actionUrl('') }}/";
     QARR.limit = "{{ limit }}";
+    QARR.t = {
+        abuse: {
+            success: {
+                button: "{{ 'Reported!'|t('qarr') }}"
+            }
+        },
+        modal: {
+            success: {
+                title: "{{ 'Form Submitted!'|t('qarr') }}",
+                message: "{{ 'Your submission is being reviewed.'|t('qarr') }}"
+            }
+        }
+    };
 </script>

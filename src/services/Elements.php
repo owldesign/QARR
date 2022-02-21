@@ -439,6 +439,23 @@ class Elements extends Component
         }
     }
 
+    public function markElementsAsDeletedByElementId($elementId, $date)
+    {
+        $reviews = Craft::$app->getDb()->createCommand()
+            ->update('{{%qarr_reviews}}',
+                ['dateDeleted' => $date->format('Y-m-d H:i:s')],
+                ['elementId' => $elementId])
+            ->execute();
+
+        $questions = Craft::$app->getDb()->createCommand()
+            ->update('{{%qarr_questions}}',
+                ['dateDeleted' => $date->format('Y-m-d H:i:s')],
+                ['elementId' => $elementId])
+            ->execute();
+
+        return true;
+    }
+
     // Private Methods
     // =========================================================================
 

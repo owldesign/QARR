@@ -1,16 +1,24 @@
 # QARR Changelog
 
-## 1.3.0 - 2021-03-24
+## 1.3.0 - 2022-02-21
 
 ### Added
 - Added option for auto approval, update QARR Settings -> General
 - Added twig helpers for custom templates while still using built in js scripts for functionality
+- Merged PRs from @billmn
 
+## 1.2.9 - 2021-09-24
 
-## 1.2.8 - 2021-03-05
+### Added
+- Added a method to bulk remove previous reviews or questions after Entry or Product elements has been deleted from CMS
+
+## 1.2.8 - 2021-09-23
 
 ### Fixed
-- Fixed various bugs
+- Fixed bug where plugin would break after elements got removed from CMS
+- Fixed siteId error on multiple pages
+- Renamed json_decode filter 
+- Merge requests 
 
 ## 1.2.7 - 2021-03-04
 

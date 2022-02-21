@@ -10,6 +10,10 @@
 
 namespace owldesign\qarr;
 
+use craft\base\Element;
+use craft\commerce\elements\Product;
+use craft\events\ElementEvent;
+use craft\events\ModelEvent;
 use craft\web\Controller;
 use owldesign\qarr\elements\actions\SetStatus;
 use owldesign\qarr\elements\Review as ReviewElement;
@@ -104,15 +108,44 @@ class QARR extends Plugin
         // $this->_registerFieldTypes();
         // $this->_registerUtilities();
 
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $event) {
+            /** @var CraftVariable $variable */
+            $variable = $event->sender;
+            $variable->set('functions', Functions::class);
+            $variable->set('qarrEmails', EmailTemplates::class);
+            $variable->set('qarrRules', Rules::class);
+            $variable->set('qarrElements', QarrElements::class);
+            $variable->set('geolocations', Geolocations::class);
+        });
 
         // Element status updates
-        Event::on(SetStatus::class, SetStatus::EVENT_AFTER_SAVE, function (Event $e) {
-            if ($e->response) {
-                $status = $e->status;
-                $type = $e->type;
+        Event::on(SetStatus::class, SetStatus::EVENT_AFTER_SAVE, function(Event $event) {
+            if ($event->response) {
+                $status = $event->status;
+                $type = $event->type;
 
                 // Reset geolocation stats
                 QARR::$plugin->geolocations->reset();
+            }
+        });
+
+        // On Element disable or delete, update all reviews + questions to dateDeleted status
+        Event::on(Element::class, Element::EVENT_AFTER_DELETE, function (Event $event) {
+            $sender = $event->sender;
+            $elementClass = get_class($sender);
+
+            $elementId = null;
+
+            if ($elementClass === 'craft\\commerce\\elements\\Product') {
+                $elementId = $sender->id;
+            }
+
+            if ($elementClass === 'craft\\elements\\Entry') {
+                $elementId = $sender->id;
+            }
+
+            if ($elementId) {
+                $result = QARR::$app->getElements()->markElementsAsDeletedByElementId($elementId, $sender->dateUpdated);
             }
         });
 
@@ -140,49 +173,67 @@ class QARR extends Plugin
         return Craft::$app->controller->renderTemplate('qarr/settings/index');
     }
 
-
     /**
      * @inheritdoc
      */
     public function getCpNavItem()
     {
-        $parent = parent::getCpNavItem();
+        $navItems = parent::getCpNavItem();
+        $loggedUser = Craft::$app->getUser();
 
-        $navigation = ArrayHelper::merge($parent, [
+        $navItems = ArrayHelper::merge($navItems, [
             'badgeCount' => QARR::getInstance()->elements->getTotalPending(),
             'subnav' => [
                 'dashboard' => [
                     'label' => QARR::t('Dashboard'),
                     'url' => 'qarr'
-                ],
-                'reviews' => [
-                    'label' => QARR::t('Reviews'),
-                    'url' => 'qarr/reviews'
-                ],
-                'questions' => [
-                    'label' => QARR::t('Questions'),
-                    'url' => 'qarr/questions'
-                ],
-                'campaigns' => [
-                    'label' => QARR::t('Campaigns'),
-                    'url' => 'qarr/campaigns'
-                ],
-                'displays' => [
-                    'label' => QARR::t('Displays'),
-                    'url' => 'qarr/displays'
-                ],
-                'rules' => [
-                    'label' => QARR::t('Rules'),
-                    'url' => 'qarr/rules'
-                ],
-                'settings' => [
-                    'label' => QARR::t('Settings'),
-                    'url' => 'qarr/settings'
                 ]
             ]
         ]);
 
-        return $navigation;
+        if ($loggedUser->checkPermission('qarr:accessReviews')) {
+            $navItems['subnav']['reviews'] = [
+                'label' => QARR::t('Reviews'),
+                'url' => 'qarr/reviews'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessQuestions')) {
+            $navItems['subnav']['questions'] = [
+                'label' => QARR::t('Questions'),
+                'url' => 'qarr/questions'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessCampaigns')) {
+            $navItems['subnav']['campaigns'] = [
+                'label' => QARR::t('Campaigns'),
+                'url' => 'qarr/campaigns'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessDisplays')) {
+            $navItems['subnav']['displays'] = [
+                'label' => QARR::t('Displays'),
+                'url' => 'qarr/displays'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:accessRules')) {
+            $navItems['subnav']['rules'] = [
+                'label' => QARR::t('Rules'),
+                'url' => 'qarr/rules'
+            ];
+        }
+
+        if ($loggedUser->checkPermission('qarr:manageSettings')) {
+            $navItems['subnav']['settings'] = [
+                'label' => QARR::t('Settings'),
+                'url' => 'qarr/settings'
+            ];
+        }
+
+        return $navItems;
     }
 
     /**
@@ -284,6 +335,7 @@ class QARR extends Plugin
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function (RegisterUserPermissionsEvent $event) {
                 $permissions = [];
+
                 $permissions['qarr:accessReviews'] = [
                     'label' => QARR::t('Access Reviews'),
                     'nested' => [
@@ -295,6 +347,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessQuestions'] = [
                     'label' => QARR::t('Access Questions'),
                     'nested' => [
@@ -306,6 +359,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessDisplays'] = [
                     'label' => QARR::t('Access Displays'),
                     'nested' => [
@@ -317,6 +371,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessRules'] = [
                     'label' => QARR::t('Access Rules'),
                     'nested' => [
@@ -328,6 +383,7 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
                 $permissions['qarr:accessCampaigns'] = [
                     'label' => QARR::t('Access Campaigns'),
                     'nested' => [
@@ -339,6 +395,11 @@ class QARR extends Plugin
                         ]
                     ]
                 ];
+
+                $permissions['qarr:manageSettings'] = [
+                    'label' => QARR::t('Manage settings'),
+                ];
+
                 $event->permissions[QARR::t('QARR')] = $permissions;
             }
         );
