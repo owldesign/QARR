@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.3.1 - 2022-02-21
+
+### Fixed
+- fixed composer.json error
+
 ## 1.3.0 - 2022-02-21
 
 ### Added
