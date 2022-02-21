@@ -15,47 +15,66 @@
     {% include 'qarr/campaigns/_includes/sidebar' ignore missing %}
 {% endblock %}
 
-{% block content %}
+{% block main %}
 
-    <div class="field">
+    <div class="content-pane">
+        <h2>Pre-Built Templates</h2>
 
-        {% include 'qarr/_elements/no-elements' ignore missing with {
-            text: 'No email templates exist yet.'|t('qarr'),
-            hidden: templates|length ? true : false
-        } %}
+        <ul class="icons">
+            <li>
+                <a href="">
+                    <div class="icon icon-mask">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="35px" height="35px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35;" xml:space="preserve"><path d="M0,25.366h35V9.546H0V25.366z M2.121,11.667h30.758v11.578H2.121V11.667z"/><rect y="28.283" width="35" height="6.717"/><rect width="35" height="6.717"/></svg>
+                    </div>
+                    Minimal
+                </a>
+            </li>
+        </ul>
+    </div>
 
-        {% if templates|length %}
-            <table id="templates" class="data fullwidth collapsible">
-                <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Handle</th>
-                    <th scope="col">Enabled</th>
-                    <th scope="thin"></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for template in templates %}
-                    {% set enabled = template.enabled ? 'Yes' : 'No' %}
+    <br>
 
-                    <tr data-id="{{ template.id }}" data-name="{{ template.name }}">
-                        <th scope="row" data-title="{{ 'Name'|t('qarr') }}"><a href="{{ url('qarr/campaigns/email-templates/' ~ template.id) }}">{{ template.name }}</a></th>
-                        <td scope="code" data-title="{{ 'Handle'|t('qarr') }}">{{ template.handle }}</td>
-                        <td scope="row" data-title="{{ 'Enabled'|t('qarr') }}">{{ enabled }}</td>
-                        <td scope="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}"></a></td>
+    <div class="content-pane">
+        <div class="field">
+
+            {% include 'qarr/_elements/no-elements' ignore missing with {
+                text: 'No email templates exist yet.'|t('qarr'),
+                hidden: templates|length ? true : false
+            } %}
+
+            {% if templates|length %}
+                <table id="templates" class="data fullwidth collapsible">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Handle</th>
+                        <th scope="col">Enabled</th>
+                        <th class="thin"></th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+                    </thead>
+                    <tbody>
+                    {% for template in templates %}
+                        {% set enabled = template.enabled ? 'Yes' : 'No' %}
+
+                        <tr data-id="{{ template.id }}" data-name="{{ template.name }}">
+                            <th scope="row" data-title="{{ 'Name'|t('qarr') }}"><a href="{{ url('qarr/campaigns/email-templates/' ~ template.id) }}">{{ template.name }}</a></th>
+                            <td data-title="{{ 'Handle'|t('qarr') }}">{{ template.handle }}</td>
+                            <td data-title="{{ 'Enabled'|t('qarr') }}">{{ enabled }}</td>
+                            <td class="thin"><a class="delete icon" title="{{ 'Delete'|t('app') }}"></a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
     </div>
 
 {% endblock %}
 
 {% js %}
-    var adminTable = new Craft.AdminTable({
+var adminTable = new Craft.AdminTable({
     tableSelector: '#templates',
     noItemsSelector: '#noelements',
     deleteAction: 'qarr/campaigns/email-templates/delete',
-    });
+});
 {% endjs %}

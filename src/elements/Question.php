@@ -718,10 +718,19 @@ class Question extends Element
             $record->id = $this->id;
         }
 
+        $settings = QARR::$plugin->getSettings();
+
         $record->fullName       = $this->fullName;
         $record->emailAddress   = $this->emailAddress;
         $record->question       = $this->question;
-        $record->status         = $this->status;
+
+        // Check for auto approvals
+        if ($settings->enableAutoApprovalForQuestions) {
+            $record->status = self::STATUS_APPROVED;
+        } else {
+            $record->status = $this->status;
+        }
+
         $record->options        = $this->options;
         $record->displayId      = $this->displayId;
         $record->elementId      = $this->elementId;

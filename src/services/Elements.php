@@ -254,6 +254,12 @@ class Elements extends Component
             return null;
         }
 
+        if ($type === 'owldesign\\qarr\\elements\\Question') {
+            $type = 'questions';
+        } else {
+            $type = 'reviews';
+        }
+
         $table = '{{%qarr_' . $type . '}}';
 
         $result = Craft::$app->getDb()->createCommand()

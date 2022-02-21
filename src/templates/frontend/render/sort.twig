@@ -1,0 +1,14 @@
+{% set attributes = {
+    classs: 'qarry-entry-sort',
+    'aria-label': 'Sort Entries',
+    'data-type': type
+} %}
+
+<select {{ attr(attributes) }} data-qarr-sort>
+    <option value="dateCreated desc">{{ 'Newest'|t('qarr') }}</option>
+    <option value="dateCreated asc">{{ 'Oldest'|t('qarr') }}</option>
+    {% if type == 'reviews' %}
+        <option value="rating desc">{{ 'Highest Rated'|t('qarr') }}</option>
+        <option value="rating asc">{{ 'Lowest Rated'|t('qarr') }}</option>
+    {% endif %}
+</select>

@@ -63,7 +63,9 @@
                         <td scope="row" data-title="{{ 'Completed'|t('qarr') }}">
                             {% if link.completed %}
                                 {% set result = craft.app.elements.getElementById(link.options['submissionId']) %}
-                                {{ 'Yes'|t('qarr') }}, <a href="{{ result.url }}" target="_blank">{{ 'view here'|t('qarr') }}</a>
+                                {% if result %}
+                                    {{ 'Yes'|t('qarr') }}, <a href="{{ result.url }}" target="_blank">{{ 'view here'|t('qarr') }}</a>
+                                {% endif %}
                             {% else %}
                                 {{ 'No'|t('qarr') }}
                             {% endif %}

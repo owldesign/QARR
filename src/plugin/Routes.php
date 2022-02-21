@@ -50,6 +50,7 @@ trait Routes
                 $event->rules['qarr/campaigns/email-templates/<templateId:\d+>'] = 'qarr/campaigns/email-templates/edit';
 
                 $event->rules['qarr/settings'] = 'qarr/settings/settings/index';
+                $event->rules['qarr/settings/general'] = 'qarr/settings/general/index';
                 $event->rules['qarr/settings/utilities'] = 'qarr/settings/utilities/index';
             }
         );

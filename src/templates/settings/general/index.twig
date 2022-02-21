@@ -1,0 +1,39 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("owldesign\\qarr\\web\\assets\\UI") %}
+
+{% set title = "Settings"|t('qarr') %}
+{% set selectedSubnavItem = "general" %}
+{% set selectedSidebarItem = "general" %}
+{% set bodyClass = "qarr qarr-element-static" %}
+
+{% set fullPageForm = true %}
+
+{% block sidebar %}
+    {% include 'qarr/settings/_includes/sidebar' ignore missing %}
+{% endblock %}
+
+{% set content %}
+    {{ actionInput('plugins/save-plugin-settings') }}
+    {{ hiddenInput('pluginHandle', 'qarr') }}
+    {{ redirectInput('qarr/settings/general') }}
+
+    <h2>{{ 'General'|t('qarr') }}</h2>
+
+    <hr>
+    <h2>Auto Approval</h2>
+
+    {{ forms.lightSwitchField({
+        label: 'Automatically Approve Reviews Submissions',
+        name: 'settings[enableAutoApprovalForReviews]',
+        on: settings.enableAutoApprovalForReviews,
+    }) }}
+
+    {{ forms.lightSwitchField({
+        label: 'Automatically Approve Question Submissions',
+        name: 'settings[enableAutoApprovalForQuestions]',
+        on: settings.enableAutoApprovalForQuestions,
+    }) }}
+
+{% endset %}

@@ -1,5 +1,17 @@
 # QARR Changelog
 
+## 1.3.0 - 2021-03-24
+
+### Added
+- Added option for auto approval, update QARR Settings -> General
+- Added twig helpers for custom templates while still using built in js scripts for functionality
+
+
+## 1.2.8 - 2021-03-05
+
+### Fixed
+- Fixed various bugs
+
 ## 1.2.7 - 2021-03-04
 
 ### Fixed

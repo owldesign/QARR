@@ -1,0 +1,17 @@
+{% for element in elements %}
+<div class="qarr-entry-item">
+    <p class="qarr-review-name">{{ element.fullName }}</p>
+    <p class="qarr-review-date">{{ element.dateCreated |date() }}</p>
+
+    {% do qarr.render.stars(element) %}
+
+    <p class="qarr-review-body">{{ element.feedback |nl2br }}</p>
+
+    {% if element.reply %}
+        <div class="qarr-review-response">
+            <div class="qarr-review-ar-title">{{ 'Response'|t('qarr') }}</div>
+            <span class="qarr-review-ar-text">{{ element.reply }}</span>
+        </div>
+    {% endif %}
+</div>
+{% endfor %}

@@ -20,7 +20,11 @@ use owldesign\qarr\services\Rules;
 use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\services\Elements as QarrElements;
 use owldesign\qarr\utilities\QARRUtility as QARRUtilityUtility;
+
 //use owldesign\qarr\web\assets\QarrCp;
+use owldesign\qarr\web\twig\BaseExtensions;
+use owldesign\qarr\web\twig\BaseVariables;
+use owldesign\qarr\web\twig\Render;
 use owldesign\qarr\widgets\Stats;
 use owldesign\qarr\widgets\Pending;
 use owldesign\qarr\plugin\Routes;
@@ -75,7 +79,7 @@ class QARR extends Plugin
     // =========================================================================
 
     /**
-     *  @inheritdoc
+     * @inheritdoc
      */
     public function init()
     {
@@ -96,22 +100,13 @@ class QARR extends Plugin
 
         // TODO: Widgets, fieldtypes, utilities
         // Coming soon
-         $this->_registerWidgets();
+        $this->_registerWidgets();
         // $this->_registerFieldTypes();
         // $this->_registerUtilities();
 
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
-            /** @var CraftVariable $variable */
-            $variable = $e->sender;
-            $variable->set('functions', Functions::class);
-            $variable->set('qarrEmails', EmailTemplates::class);
-            $variable->set('qarrRules', Rules::class);
-            $variable->set('qarrElements', QarrElements::class);
-            $variable->set('geolocations', Geolocations::class);
-        });
 
         // Element status updates
-        Event::on(SetStatus::class, SetStatus::EVENT_AFTER_SAVE, function(Event $e) {
+        Event::on(SetStatus::class, SetStatus::EVENT_AFTER_SAVE, function (Event $e) {
             if ($e->response) {
                 $status = $e->status;
                 $type = $e->type;
@@ -208,6 +203,7 @@ class QARR extends Plugin
     {
         Craft::$type(self::t($message), __METHOD__);
     }
+
     /**
      * @param $message
      */
@@ -215,6 +211,7 @@ class QARR extends Plugin
     {
         Craft::info(self::t($message), __METHOD__);
     }
+
     /**
      * @param $message
      */
@@ -245,15 +242,22 @@ class QARR extends Plugin
      */
     private function _registerVariables()
     {
-        Event::on(
-            CraftVariable::class,
-            CraftVariable::EVENT_INIT,
-            function (Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('qarr', Variables::class);
-            }
-        );
+        Event::on(BaseVariables::class, BaseVariables::EVENT_INIT, function (Event $event) {
+            /** @var BaseVariables $variables */
+            $variables = $event->sender;
+            $variables->set('render', Render::class);
+        });
+
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function (Event $event) {
+            /** @var CraftVariable $variable */
+            $variable = $event->sender;
+            $variable->set('qarr', Variables::class);
+            $variable->set('functions', Functions::class);
+            $variable->set('qarrEmails', EmailTemplates::class);
+            $variable->set('qarrRules', Rules::class);
+            $variable->set('qarrElements', QarrElements::class);
+            $variable->set('geolocations', Geolocations::class);
+        });
     }
 
     /**
@@ -261,7 +265,13 @@ class QARR extends Plugin
      */
     private function _addTwigExtensions()
     {
-        Craft::$app->view->registerTwigExtension(new Extensions());
+        if (Craft::$app->request->getIsSiteRequest()) {
+            Craft::$app->view->registerTwigExtension(new BaseExtensions);
+        }
+
+        if (Craft::$app->request->getIsCpRequest()) {
+            Craft::$app->view->registerTwigExtension(new Extensions);
+        }
     }
 
     /**
@@ -272,7 +282,7 @@ class QARR extends Plugin
         Event::on(
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
-            function(RegisterUserPermissionsEvent $event) {
+            function (RegisterUserPermissionsEvent $event) {
                 $permissions = [];
                 $permissions['qarr:accessReviews'] = [
                     'label' => QARR::t('Access Reviews'),

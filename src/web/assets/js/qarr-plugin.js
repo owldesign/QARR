@@ -130,6 +130,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./development/scss/render-frontend.scss":
+/*!***********************************************!*\
+  !*** ./development/scss/render-frontend.scss ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./development/scss/ui.scss":
 /*!**********************************!*\
   !*** ./development/scss/ui.scss ***!
@@ -186,11 +199,11 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	
 /******/ 	// the startup function
 /******/ 	// It's empty as some runtime module handles the default behavior
-/******/ 	__webpack_require__.x = x => {}
+/******/ 	__webpack_require__.x = x => {};
 /************************************************************************/
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -219,6 +232,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 			["./development/js/qarr-plugin.js"],
 /******/ 			["./development/scss/dashboard.scss"],
 /******/ 			["./development/scss/frontend.scss"],
+/******/ 			["./development/scss/render-frontend.scss"],
 /******/ 			["./development/scss/ui.scss"],
 /******/ 			["./development/scss/widgets.scss"]
 /******/ 		];
@@ -298,7 +312,9 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	})();
 /******/ 	
 /************************************************************************/
+/******/ 	
 /******/ 	// run startup
-/******/ 	return __webpack_require__.x();
+/******/ 	var __webpack_exports__ = __webpack_require__.x();
+/******/ 	
 /******/ })()
 ;

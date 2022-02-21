@@ -1,0 +1,19 @@
+{% set attributes = {
+    class: 'qarr-pager-container',
+    'data-page-trigger': craft.app.config.general.getPageTrigger(),
+    'data-pagination-style': paginationStyle,
+    'data-qarr-pagination': true,
+} %}
+
+<div {{ attr(attributes) }}>
+    {% if paginationStyle == 'infinite' %}
+        <button type="button" class="qarr-pager qarr-pager-next qarr-btn qarr-pager-infinite" data-direction="next"><span>{{ 'Load More'|t('qarr') }}</span></button>
+    {% elseif paginationStyle == 'text' %}
+        <a class="qarr-pager qarr-pager-text qarr-pager-prev" data-direction="prev">{{ 'Prev'|t('qarr') }}</a>
+        <span class="qarr-pages"></span>
+        <a class="qarr-pager qarr-pager-text qarr-pager-next" data-direction="next">{{ 'Next'|t('qarr') }}</a>
+    {% else %}
+        <button type="button" class="qarr-pager qarr-pager-prev" data-direction="prev"><span>&#8249;</span></button>
+        <button type="button" class="qarr-pager qarr-pager-next" data-direction="next"><span>&#8250;</span></button>
+    {% endif %}
+</div>

@@ -10,13 +10,9 @@
 
 namespace owldesign\qarr\web\twig;
 
-use Craft;
-use craft\helpers\StringHelper;
 use craft\helpers\ArrayHelper;
-use owldesign\qarr\web\assets\Qarr;
-use owldesign\qarr\web\twig\Variables as QarrVariables;
 
-class Extensions extends \Twig_Extension
+class Extensions extends \Twig\Extension\AbstractExtension
 {
     // Public Methods
     // =========================================================================
@@ -63,16 +59,6 @@ class Extensions extends \Twig_Extension
     {
         return [
             new \Twig_Function('flaggedWords', [$this, 'flaggedWords']),
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function getGlobals(): array
-    {
-        return [
-            'qarr' => new QarrVariables()
         ];
     }
 

@@ -1,0 +1,10 @@
+{# Available Params: #}
+{# total #}
+
+{% if total > 1 %}
+    {% set label = 'reviews'|t('qarr') %}
+{% else %}
+    {% set label = 'review'|t('qarr') %}
+{% endif %}
+
+<div class="qarr-reviews-count">{{ total }} {{ label }}</div>

@@ -12,6 +12,7 @@ namespace owldesign\qarr\elements;
 
 use craft\helpers\Json;
 use craft\models\Section;
+use craft\web\View;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\db\ReviewQuery;
 use owldesign\qarr\elements\actions\SetStatus;
@@ -234,7 +235,6 @@ class Review extends Element
         return $names;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -343,8 +343,48 @@ class Review extends Element
         return $rules;
     }
 
+    public static function renderElementsHtml($elementQuery)
+    {
+        $variables = [
+            'elements' => $elementQuery->all()
+        ];
+
+        $customFile = self::_resolveTemplate(Craft::$app->view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr', 'reviews');
+
+        if ($customFile) {
+            $html = Craft::$app->view->renderTemplate($customFile, $variables);
+        } else {
+            $oldPath = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+            $html = Craft::$app->view->renderTemplate('qarr/frontend/render/reviews', $variables);
+            Craft::$app->view->setTemplateMode($oldPath);
+        }
+
+        return $html;
+    }
+
     // Protected Methods
     // =========================================================================
+
+    /**
+     * Function to get custom templates path
+     *
+     * @param string $path
+     * @param string $name
+     * @return string
+     */
+    private static function _resolveTemplate(string $path, string $name): string
+    {
+        foreach (['html', 'twig'] as $extension) {
+            $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+
+            if (is_file($testPath)) {
+                return 'qarr' . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * @inheritdoc
@@ -800,11 +840,20 @@ class Review extends Element
             $record->id = $this->id;
         }
 
+        $settings = QARR::$plugin->getSettings();
+
         $record->fullName = $this->fullName;
         $record->emailAddress = $this->emailAddress;
         $record->feedback = $this->feedback;
         $record->rating = $this->rating;
-        $record->status = $this->status;
+
+        // Check for auto approvals
+        if ($settings->enableAutoApprovalForReviews) {
+            $record->status = self::STATUS_APPROVED;
+        } else {
+            $record->status = $this->status;
+        }
+
         $record->options = $this->options;
         $record->displayId = $this->displayId;
         $record->elementId = $this->elementId;
