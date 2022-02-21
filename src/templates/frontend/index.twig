@@ -90,4 +90,17 @@
     QARR.elementTypeId = "{{ element.type.id }}";
     QARR.actionUrl = "{{ actionUrl('') }}/";
     QARR.limit = "{{ limit }}";
+    QARR.t = {
+        abuse: {
+            success: {
+                button: "{{ 'Reported!'|t('qarr') }}"
+            }
+        },
+        modal: {
+            success: {
+                title: "{{ 'Form Submitted!'|t('qarr') }}",
+                message: "{{ 'Your submission is being reviewed.'|t('qarr') }}"
+            }
+        }
+    };
 </script>
