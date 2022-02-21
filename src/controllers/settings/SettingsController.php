@@ -41,6 +41,8 @@ class SettingsController extends Controller
      */
     public function actionIndex(array $variables = []): Response
     {
+        $this->requirePermission('qarr:manageSettings');
+
         return $this->renderTemplate('qarr/settings/index', $variables);
     }
 
