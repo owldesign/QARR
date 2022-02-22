@@ -40,10 +40,6 @@ class GeneralController extends Controller
             'settings' => QARR::$plugin->getSettings(),
         ];
 
-        if (function_exists('ray')) {
-            ray($variables);
-        }
-
         return $this->renderTemplate('qarr/settings/general/index', $variables);
     }
 }
