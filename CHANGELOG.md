@@ -1,5 +1,11 @@
 # QARR Changelog
 
+## 1.3.2 - 2022-02-22
+
+### Fixed
+- fixed garnish js error
+- merged PRs, remove unused debugging code
+
 ## 1.3.1 - 2022-02-21
 
 ### Fixed
