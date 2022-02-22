@@ -21,13 +21,14 @@ class Frontend extends AssetBundle
         $this->sourcePath = __DIR__;
 
         $this->depends = [
-            GarnishAsset::class,
+//            GarnishAsset::class,
             JqueryAsset::class,
             VelocityAsset::class,
             AxiosAsset::class,
         ];
 
         $this->js = [
+            'js/garnish.min.js',
             'js/qarr-plugin.js',
             'js/utilities-web.js',
             'js/frontend.js',
