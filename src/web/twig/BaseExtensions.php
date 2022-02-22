@@ -32,4 +32,26 @@ class BaseExtensions extends AbstractExtension implements GlobalsInterface
             'qarr' => new BaseVariables()
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFilters()
+    {
+        return [
+            new \Twig_SimpleFilter('getClass', [$this, 'getClass']),
+        ];
+    }
+
+    /**
+     * Get clean element class name
+     *
+     * @param $object
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function getClass($object)
+    {
+        return (new \ReflectionClass($object))->getShortName();
+    }
 }
