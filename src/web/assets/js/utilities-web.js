@@ -370,8 +370,8 @@ QarrTabContent = Garnish.Base.extend({
   sendPayload: function sendPayload(data) {
     var targetModal = data.target;
     targetModal.$form.addClass('has-sent');
-    targetModal.$header.find('span').html('Form Submitted!');
-    targetModal.$body.html('<div class="qarr-modal-message">Your submission is being reviewed.</div>');
+    targetModal.$header.find('span').html(QARR.t.modal.success.title);
+    targetModal.$body.html('<div class="qarr-modal-message">' + QARR.t.modal.success.message + '</div>');
     targetModal.updateSizeAndPosition();
     setTimeout(function () {
       targetModal.hide();
@@ -778,7 +778,7 @@ QarrPagination = Garnish.Base.extend({
         abuseParams[QARR.csrfTokenName] = QARR.csrfTokenValue;
         QarrApi.postActionRequest(QARR.actionUrl + 'qarr/elements/report-abuse', abuseParams, function (response) {
           if (response.success) {
-            target.html("<span>Reported!</span>");
+            target.html("<span>" + QARR.t.abuse.success.button + "</span>");
           }
         });
       });
