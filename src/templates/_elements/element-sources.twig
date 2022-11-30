@@ -20,5 +20,10 @@
 
 <div class="button-group">
     <a class="customize-sources"><span class="settings icon"></span></a>
-    <a class="configure-elements btn secondary fullwidth" title="{{ 'Configure Elements'|t('qarr') }}">{{ 'Configure Elements'|t('qarr') }}</a>
+
+    {% if currentUser.can('qarr:manageSettings') %}
+        <a class="configure-elements btn secondary fullwidth">
+            {{ 'Configure Elements'|t('qarr') }}
+        </a>
+    {% endif %}
 </div>
