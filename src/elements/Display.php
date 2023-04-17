@@ -53,7 +53,7 @@ class Display extends Element
     /**
      * @var
      */
-    public $fieldLayoutId;
+    public ?int $fieldLayoutId = null;
     /**
      * @var
      */
@@ -78,7 +78,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'fieldLayout' => [
@@ -107,7 +107,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'qarrDisplay';
     }
@@ -150,7 +150,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/displays/'.$this->id
@@ -160,7 +160,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->name;
     }
@@ -168,7 +168,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function getFieldLayout()
+    public function getFieldLayout(): ?\craft\models\FieldLayout
     {
         $behavior = $this->getBehavior('fieldLayout');
 
@@ -287,7 +287,7 @@ class Display extends Element
      *
      * @return array
      */
-    public function getFields()
+    public function getFields(): array
     {
         if ($this->_fields === null) {
             $this->_fields = [];
@@ -306,7 +306,7 @@ class Display extends Element
      *
      * @return null|FieldInterface
      */
-    public function getField($handle)
+    public function getField(string $handle): ?FieldInterface
     {
         $fields = $this->getFields();
 
@@ -320,7 +320,7 @@ class Display extends Element
      *
      * @return SingleOptionFieldData
      */
-    public function getEmptyOptionFieldData()
+    public function getEmptyOptionFieldData(): SingleOptionFieldData
     {
         return new SingleOptionFieldData(null, null, true, true);
     }
@@ -328,7 +328,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules      = parent::rules();
         $rules[]    = [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true];
@@ -347,7 +347,7 @@ class Display extends Element
      * @param bool $isNew
      * @throws Exception
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$isNew) {
             $record = DisplayRecord::findOne($this->id);
@@ -373,10 +373,7 @@ class Display extends Element
         parent::afterSave($isNew);
     }
 
-    /**
-     * @return bool
-     */
-    public function afterDelete(): bool
+    public function afterDelete(): void
     {
         // Delete display record
         QARR::$plugin->getDisplays()->deleteDisplayById($this->id);
@@ -384,6 +381,7 @@ class Display extends Element
         if ($this->fieldLayoutId !== null) {
             Craft::$app->getFields()->deleteLayoutById($this->fieldLayoutId);
         }
-        return parent::beforeDelete();
+
+        parent::beforeDelete();
     }
 }

@@ -10,21 +10,29 @@ use owldesign\qarr\elements\Review;
 use Craft;
 use craft\web\View;
 use craft\helpers\Template;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Markup;
 use yii\base\Behavior;
 use yii\base\Exception;
 
 class Variables extends Behavior
 {
-    public $defaultTemplateExtensions = ['html', 'twig'];
+    public array $defaultTemplateExtensions = ['html', 'twig'];
 
     /**
      * Render pre-build templates
      *
      * @param $element
      * @param null $variables
+     * @return Markup
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function display($element, $variables = null)
+    public function display($element, $variables = null): \Twig\Markup
     {
         $limit = null;
         $offset = null;
@@ -138,7 +146,7 @@ class Variables extends Behavior
      * @param null $criteria
      * @return ElementQueryInterface
      */
-    public function reviews($criteria = null)
+    public function reviews($criteria = null): ElementQueryInterface
     {
         $query = Review::find();
 
@@ -155,7 +163,7 @@ class Variables extends Behavior
      * @param null $criteria
      * @return ElementQueryInterface
      */
-    public function questions($criteria = null)
+    public function questions($criteria = null): ElementQueryInterface
     {
         $query = Question::find();
 
@@ -173,8 +181,11 @@ class Variables extends Behavior
      * @param bool $markup
      * @return array|Markup
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function displayRating($element, $markup = true)
+    public function displayRating($element, bool $markup = true): array|Markup
     {
         $view = Craft::$app->getView();
         $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -207,9 +218,13 @@ class Variables extends Behavior
      *
      * @param $element
      * @param bool $markup
+     * @return array|Markup
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function displayReviews($element, $markup = true)
+    public function displayReviews($element, bool $markup = true): array|Markup
     {
         $view = Craft::$app->getView();
         $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -249,10 +264,13 @@ class Variables extends Behavior
      *
      * @param $element
      * @param bool $markup
-     * @return array|\Twig\Markup
+     * @return array|Markup
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function displayQuestions($element, $markup = true)
+    public function displayQuestions($element, bool $markup = true): array|Markup
     {
         $view = Craft::$app->getView();
         $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -284,7 +302,6 @@ class Variables extends Behavior
 
     }
 
-
     /**
      * Function to get custom templates path
      *
@@ -292,7 +309,7 @@ class Variables extends Behavior
      * @param string $name
      * @return string
      */
-    private function _resolveTemplate(string $path, string $name)
+    private function _resolveTemplate(string $path, string $name): string
     {
         foreach ($this->defaultTemplateExtensions as $extension) {
             $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;
@@ -301,8 +318,9 @@ class Variables extends Behavior
                 return 'qarr' . DIRECTORY_SEPARATOR . $name . '.' . $extension;
             }
         }
-    }
 
+        return '';
+    }
 
     /**
      * * Get count of elements by **elementId**, **productTypeId** and **status**
@@ -312,11 +330,11 @@ class Variables extends Behavior
      * @param string $type
      * @param string $status
      * @param int|null $elementId
-     * @param int|null $elementType
+     * @param string|null $elementType
      * @param int|null $elementTypeId
      * @return mixed
      */
-    public function getCount(string $type, string $status, int $elementId = null, $elementType = null, $elementTypeId = null)
+    public function getCount(string $type, string $status, int $elementId = null, mixed $elementType = null, mixed $elementTypeId = null): mixed
     {
         return QARR::$plugin->elements->getCount($type, $status, $elementId, $elementType, $elementTypeId);
     }
@@ -325,7 +343,6 @@ class Variables extends Behavior
      * Entries by rating
      *
      * @param $elementId
-     * @return null
      */
     public function getEntriesByRating($elementId)
     {
@@ -340,7 +357,6 @@ class Variables extends Behavior
      * Average rating
      *
      * @param $elementId
-     * @return null
      */
     public function getAverageRating($elementId)
     {
@@ -355,7 +371,7 @@ class Variables extends Behavior
      * @param $name
      * @return mixed
      */
-    public function getCookie($name)
+    public function getCookie($name): mixed
     {
         return QARR::$plugin->cookies->get($name);
     }
@@ -365,7 +381,7 @@ class Variables extends Behavior
      *
      * @return mixed
      */
-    public function pluginUrl()
+    public function pluginUrl(): mixed
     {
         return QARR::$plugin->pluginUrl;
     }
@@ -376,7 +392,7 @@ class Variables extends Behavior
      * @param $array
      * @return mixed
      */
-    public function getArrayValue($array)
+    public function getArrayValue($array): mixed
     {
         foreach ($array as $option) {
             if ($option->selected) {
@@ -384,7 +400,7 @@ class Variables extends Behavior
             }
         }
 
-        $result = null;
+        return null;
     }
 
     /**
@@ -392,7 +408,7 @@ class Variables extends Behavior
      *
      * @return array
      */
-    public function allowedFields()
+    public function allowedFields(): array
     {
         return [
             'PlainText',

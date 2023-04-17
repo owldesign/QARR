@@ -3,8 +3,7 @@ var __webpack_exports__ = {};
 /*!*****************************************!*\
   !*** ./development/js/utilities-web.js ***!
   \*****************************************/
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 QarrApi = {
   pathParam: 'p'
 };
@@ -16,24 +15,19 @@ $.extend(QarrApi, {
     if (!Garnish.isArray(chars)) {
       chars = chars.split();
     }
-
     var escaped = '';
-
     for (var i = 0; i < chars.length; i++) {
       escaped += "\\" + chars[i];
     }
-
     return escaped;
   },
   ltrim: function ltrim(str, chars) {
     if (!str) {
       return str;
     }
-
     if (typeof chars === 'undefined') {
       chars = ' \t\n\r\0\x0B';
     }
-
     var re = new RegExp('^[' + QarrApi.escapeChars(chars) + ']+');
     return str.replace(re, '');
   },
@@ -41,11 +35,9 @@ $.extend(QarrApi, {
     if (!str) {
       return str;
     }
-
     if (typeof chars === 'undefined') {
       chars = ' \t\n\r\0\x0B';
     }
-
     var re = new RegExp('[' + QarrApi.escapeChars(chars) + ']+$');
     return str.replace(re, '');
   },
@@ -57,73 +49,61 @@ $.extend(QarrApi, {
   getUrl: function getUrl(path, params, baseUrl) {
     if (typeof path !== 'string') {
       path = '';
-    } // Normalize the params
+    }
 
-
+    // Normalize the params
     var anchor = '';
-
     if ($.isPlainObject(params)) {
       var aParams = [];
-
       for (var name in params) {
         if (!params.hasOwnProperty(name)) {
           continue;
         }
-
         var value = params[name];
-
         if (name === '#') {
           anchor = value;
         } else if (value !== null && value !== '') {
           aParams.push(name + '=' + value);
         }
       }
-
       params = aParams;
     }
-
     if (Garnish.isArray(params)) {
       params = params.join('&');
     } else {
       params = QarrApi.trim(params, '&?');
-    } // Was there already an anchor on the path?
+    }
 
-
+    // Was there already an anchor on the path?
     var apos = path.indexOf('#');
-
     if (apos !== -1) {
       // Only keep it if the params didn't specify a new anchor
       if (!anchor) {
         anchor = path.substr(apos + 1);
       }
-
       path = path.substr(0, apos);
-    } // Were there already any query string params in the path?
+    }
 
-
+    // Were there already any query string params in the path?
     var qpos = path.indexOf('?');
-
     if (qpos !== -1) {
       params = path.substr(qpos + 1) + (params ? '&' + params : '');
       path = path.substr(0, qpos);
-    } // Return path if it appears to be an absolute URL.
+    }
 
-
+    // Return path if it appears to be an absolute URL.
     if (path.search('://') !== -1 || path[0] === '/') {
       return path + (params ? '?' + params : '') + (anchor ? '#' + anchor : '');
     }
+    path = QarrApi.trim(path, '/');
 
-    path = QarrApi.trim(path, '/'); // Put it all together
-
+    // Put it all together
     var url;
-
     if (baseUrl) {
       url = baseUrl;
-
       if (path && QarrApi.pathParam) {
         // Does baseUrl already contain a path?
         var pathMatch = url.match(new RegExp('[&\?]' + QarrApi.escapeRegex(QarrApi.pathParam) + '=[^&]+'));
-
         if (pathMatch) {
           url = url.replace(pathMatch[0], QarrApi.rtrim(pathMatch[0], '/') + '/' + path);
           path = '';
@@ -131,16 +111,14 @@ $.extend(QarrApi, {
       }
     } else {
       url = QarrApi.baseUrl;
-    } // Does the base URL already have a query string?
+    }
 
-
+    // Does the base URL already have a query string?
     qpos = url.indexOf('?');
-
     if (qpos !== -1) {
       params = url.substr(qpos + 1) + (params ? '&' + params : '');
       url = url.substr(0, qpos);
     }
-
     if (!QarrApi.omitScriptNameInUrls && path) {
       if (QarrApi.usePathInfo || !QarrApi.pathParam) {
         // Make sure that the script name is in the URL
@@ -149,42 +127,38 @@ $.extend(QarrApi, {
         }
       } else {
         // Move the path into the query string params
+
         // Is the path param already set?
         if (params && params.substr(0, QarrApi.pathParam.length + 1) === QarrApi.pathParam + '=') {
           var basePath,
-              endPath = params.indexOf('&');
-
+            endPath = params.indexOf('&');
           if (endPath !== -1) {
             basePath = params.substring(2, endPath);
             params = params.substr(endPath + 1);
           } else {
             basePath = params.substr(2);
             params = null;
-          } // Just in case
+          }
 
-
+          // Just in case
           basePath = QarrApi.rtrim(basePath);
           path = basePath + (path ? '/' + path : '');
-        } // Now move the path into the params
+        }
 
-
+        // Now move the path into the params
         params = QarrApi.pathParam + '=' + path + (params ? '&' + params : '');
         path = null;
       }
     }
-
     if (path) {
       url = QarrApi.rtrim(url, '/') + '/' + path;
     }
-
     if (params) {
       url += '?' + params;
     }
-
     if (anchor) {
       url += '#' + anchor;
     }
-
     return url;
   },
   escapeRegex: function escapeRegex(str) {
@@ -192,7 +166,6 @@ $.extend(QarrApi, {
   },
   sendActionRequest: function sendActionRequest(method, action, options) {
     var _this = this;
-
     return new Promise(function (resolve, reject) {
       options = options ? $.extend({}, options) : {};
       options.method = method;
@@ -214,17 +187,13 @@ $.extend(QarrApi, {
       callback = data;
       data = {};
     }
-
     options = options || {};
-
     if (options.contentType && options.contentType.match(/\bjson\b/)) {
       if (_typeof(data) === 'object') {
         data = JSON.stringify(data);
       }
-
       options.contentType = 'application/json; charset=utf-8';
     }
-
     var jqXHR = $.ajax($.extend({
       url: QarrApi.getActionUrl(action),
       type: 'POST',
@@ -238,28 +207,24 @@ $.extend(QarrApi, {
         if (jqXHR.readyState !== 4) {
           return;
         }
-
         alert('A server error occurred.');
-
         if (callback) {
           callback(null, textStatus, jqXHR);
         }
       }
-    }, options)); // Call the 'send' callback
+    }, options));
 
+    // Call the 'send' callback
     if (typeof options.send === 'function') {
       options.send(jqXHR);
     }
-
     return jqXHR;
   },
   _actionHeaders: function _actionHeaders() {
     var headers = {};
-
     if (QARR.csrfTokenValue) {
       headers['X-CSRF-Token'] = QARR.csrfTokenValue;
     }
-
     return headers;
   }
 });
@@ -297,8 +262,9 @@ QarrTabs = Garnish.Base.extend({
       elementId: this.questionsContainer.data('element-id')
     };
     this.reviewsContent = new QarrTabContent(this.reviewsContainer, this, 'review', reviewParams);
-    this.questionsContent = new QarrTabContent(this.questionsContainer, this, 'question', questionParams); // Toggle tab content if local storage is set
+    this.questionsContent = new QarrTabContent(this.questionsContainer, this, 'question', questionParams);
 
+    // Toggle tab content if local storage is set
     this.checkTabSelection();
     this.addListener(this.$tabLink, 'click', 'handleTabClick');
   },
@@ -306,7 +272,6 @@ QarrTabs = Garnish.Base.extend({
     if (window.sessionStorage.getItem('qarr-tab')) {
       this.selectedTab = window.sessionStorage.getItem('qarr-tab');
     }
-
     this.updateTabSelection();
   },
   handleTabClick: function handleTabClick(e) {
@@ -319,7 +284,6 @@ QarrTabs = Garnish.Base.extend({
   },
   updateTabSelection: function updateTabSelection(cta) {
     this.$tabLink.removeClass('active');
-
     if (this.selectedTab === 'reviews') {
       this.showReviews();
     } else {
@@ -356,7 +320,6 @@ QarrTabContent = Garnish.Base.extend({
   },
   openModal: function openModal(e) {
     e.preventDefault();
-
     if (this.modal) {
       this.modal.$form.remove();
       delete this.modal;
@@ -364,14 +327,13 @@ QarrTabContent = Garnish.Base.extend({
     } else {
       this.modal = new QarrFeedbackModal(this);
     }
-
     this.modal.on('onSaved', $.proxy(this, 'sendPayload'));
   },
   sendPayload: function sendPayload(data) {
     var targetModal = data.target;
     targetModal.$form.addClass('has-sent');
-    targetModal.$header.find('span').html(QARR.t.modal.success.title);
-    targetModal.$body.html('<div class="qarr-modal-message">' + QARR.t.modal.success.message + '</div>');
+    targetModal.$header.find('span').html('Form Submitted!');
+    targetModal.$body.html('<div class="qarr-modal-message">Your submission is being reviewed.</div>');
     targetModal.updateSizeAndPosition();
     setTimeout(function () {
       targetModal.hide();
@@ -409,10 +371,11 @@ QarrFeedbackModal = Garnish.Modal.extend({
     this.show();
     this.$errorsContainer = this.$container.find('.qarr-errors');
     this.$form = $('#qarr-modal-' + this.context.type);
-
     if (this.context.type === 'review') {
       new QarrStarRating(this.$form.find('.qarr-star-container'));
-    } // $.each(this.$form.find('.qarr-field'), function (i, el) {
+    }
+
+    // $.each(this.$form.find('.qarr-field'), function (i, el) {
     //     if ($(el).data('field-type') === 'checkboxes') {
     //         new QarrCheckboxes(el);
     //     }
@@ -429,7 +392,6 @@ QarrFeedbackModal = Garnish.Modal.extend({
     //     }
     // });
 
-
     this.$header = this.$form.find('.qarr-header');
     this.$body = this.$form.find('.qarr-body');
     this.$footer = this.$form.find('.qarr-footer');
@@ -440,16 +402,14 @@ QarrFeedbackModal = Garnish.Modal.extend({
   save: function save(e) {
     e.preventDefault();
     var url = null;
-    var that = this; // let formData = this.$form.serialize()
-
+    var that = this;
+    // let formData = this.$form.serialize()
     var formData = new FormData(this.$form[0]);
-
     if (this.context.type === 'review') {
       url = QARR.actionUrl + 'qarr/reviews/save';
     } else {
       url = QARR.actionUrl + 'qarr/questions/save';
     }
-
     $.ajax({
       url: url,
       type: 'POST',
@@ -527,7 +487,6 @@ QarrInputField = Garnish.Base.extend({
     this.addListener(this.$input, 'change', 'inputChange');
     this.addListener(this.$input, 'keyup', 'inputKeyup');
     this.addListener(this.$input, 'focus focusout', 'inputFocus');
-
     if (this.$el.hasClass('custom-select')) {
       this.addListener(this.$el.find('select'), 'change', 'inputChange');
       this.selectElement();
@@ -547,15 +506,12 @@ QarrInputField = Garnish.Base.extend({
   },
   inputKeyup: function inputKeyup() {
     var count = this.$input.val();
-
     if (!count && this.hadError) {
       this.$el.addClass('has-error');
       this.$label.html(this.errorMessage);
     }
-
     if (this.$el.hasClass('has-error')) {
       this.hadError = true;
-
       if (count) {
         this.$el.removeClass('has-error');
         this.$label.html(this.labelText);
@@ -571,19 +527,15 @@ QarrInputField = Garnish.Base.extend({
     } else {
       this.$el.removeClass('has-focus');
     }
-
     this.checkInputValue();
   },
   checkInputValue: function checkInputValue() {
     var value = this.$input.val();
-
     if (this.$el.hasClass('custom-select')) {
       value = this.$el.find('select').select2('data');
-
       if (this.$el.hasClass('has-error')) {
         this.hadError = true;
       }
-
       if (this.hadError) {
         if (value) {
           this.$el.removeClass('has-error');
@@ -591,7 +543,6 @@ QarrInputField = Garnish.Base.extend({
         }
       }
     }
-
     if (value) {
       this.$el.addClass('has-value');
     } else {
@@ -625,15 +576,12 @@ QarrTextareaField = Garnish.Base.extend({
   },
   inputKeyup: function inputKeyup() {
     var count = this.$textarea.val();
-
     if (!count && this.hadError) {
       this.$el.addClass('has-error');
       this.$label.html(this.errorMessage);
     }
-
     if (this.$el.hasClass('has-error')) {
       this.hadError = true;
-
       if (count) {
         this.$el.removeClass('has-error');
         this.$label.html(this.labelText);
@@ -652,7 +600,6 @@ QarrTextareaField = Garnish.Base.extend({
   },
   checkInputValue: function checkInputValue() {
     var value = this.$textarea.val();
-
     if (value) {
       this.$el.addClass('has-value');
     } else {
@@ -719,11 +666,12 @@ QarrPagination = Garnish.Base.extend({
     this.elementId = this.$entriesContainer.data('element-id');
     this.initOffset();
     this.addListener(this.$paginationLink, 'click', 'handlePagination');
-    this.addListener(this.$sortSelector, 'change', 'handleSortChange'); // TODO: use sessionStorage to track pagination for refresh
+    this.addListener(this.$sortSelector, 'change', 'handleSortChange');
+
+    // TODO: use sessionStorage to track pagination for refresh
   },
   handlePagination: function handlePagination(e) {
     var _this2 = this;
-
     e.preventDefault();
     this.checkSorting();
     this.$loader.addClass('active');
@@ -740,12 +688,9 @@ QarrPagination = Garnish.Base.extend({
     params[QARR.csrfTokenName] = QARR.csrfTokenValue;
     QarrApi.postActionRequest(QARR.actionUrl + 'qarr/elements/query-elements', params, function (response) {
       var template = response.template;
-
       _this2.$loader.removeClass('active');
-
       if (_this2.paginationStyle === 'infinite') {
         _this2.$entriesContainer.append(template);
-
         var entrySetId = $(template).attr('id');
         var $entrySet = $('#' + entrySetId);
         $('html, body').animate({
@@ -753,9 +698,9 @@ QarrPagination = Garnish.Base.extend({
         }, 'fast');
       } else {
         _this2.$entriesContainer.html(template);
-      } // Adding answers to questions
+      }
 
-
+      // Adding answers to questions
       _this2.$entriesContainer.find('.add-answer').on('click', function (e) {
         e.preventDefault();
         var answerParams = {
@@ -765,9 +710,9 @@ QarrPagination = Garnish.Base.extend({
           authorId: $(this).data('user-id')
         };
         new QarrAnswerHud(answerParams);
-      }); // Reporting abuse
+      });
 
-
+      // Reporting abuse
       _this2.$entriesContainer.find('.qarr-entry-ra-btn').on('click', function (e) {
         e.preventDefault();
         var target = $(e.currentTarget);
@@ -778,13 +723,11 @@ QarrPagination = Garnish.Base.extend({
         abuseParams[QARR.csrfTokenName] = QARR.csrfTokenValue;
         QarrApi.postActionRequest(QARR.actionUrl + 'qarr/elements/report-abuse', abuseParams, function (response) {
           if (response.success) {
-            target.html("<span>" + QARR.t.abuse.success.button + "</span>");
+            target.html("<span>Reported!</span>");
           }
         });
       });
-
       _this2.$entriesContainer.removeClass('transition');
-
       _this2.checkOffset();
     });
   },
@@ -809,7 +752,6 @@ QarrPagination = Garnish.Base.extend({
     this.currentPage = 1;
     this.offset = 0;
     this.$prevBtn.addClass('pager-disabled');
-
     if (this.currentPage < this.totalPages) {
       this.$nextBtn.removeClass('pager-disabled');
     }
@@ -818,7 +760,6 @@ QarrPagination = Garnish.Base.extend({
     if (this.currentPage) {
       this.$prevBtn.addClass('pager-disabled');
     }
-
     if (this.currentPage === this.totalPages) {
       this.$nextBtn.addClass('pager-disabled');
     }
@@ -828,17 +769,14 @@ QarrPagination = Garnish.Base.extend({
       if (this.currentPage === this.totalPages) {
         this.$nextBtn.addClass('pager-disabled');
       }
-
       if (this.currentPage !== 1 || this.offset !== 0) {
         this.$prevBtn.removeClass('pager-disabled');
       }
     }
-
     if (this.direction === 'prev') {
       if (this.currentPage === 1 || this.offset === 0) {
         this.$prevBtn.addClass('pager-disabled');
       }
-
       if (this.currentPage !== this.totalPages) {
         this.$nextBtn.removeClass('pager-disabled');
       }
@@ -904,8 +842,9 @@ QarrAnswerHud = Garnish.Base.extend({
     var $cancelBtn = this.hud.$footer.find('.cancel');
     this.addListener($cancelBtn, 'click', function () {
       this.hud.hide();
-    }); // Check Anonymous
+    });
 
+    // Check Anonymous
     lightswitch.$outerContainer.on('change', function () {
       that.anonymous = lightswitch.$input.val() === '1';
       that.updateAnonymous();
@@ -915,14 +854,14 @@ QarrAnswerHud = Garnish.Base.extend({
       var answerValue = that.hud.$body.find('textarea').val();
       that.$errorsContainer.html('');
       $('.qarr-field').removeClass('has-error');
-
       if (answerValue === '') {
         Garnish.shake(that.hud.$body);
         textarea.$el.addClass('has-error');
         that.$errorsContainer.append('<li>Answer is required</li>');
       } else {
-        textarea.$el.removeClass('has-error'); // Submit Answer
+        textarea.$el.removeClass('has-error');
 
+        // Submit Answer
         var data = {
           questionId: that.questionId,
           authorId: that.authorId,
@@ -961,6 +900,7 @@ QarrStarFilterEntries = Garnish.Base.extend({
   order: null,
   init: function init(el) {
     // TODO: Make this work with pagination and the rest of filters
+
     this.$loader = $('.qarr-loader');
     this.$triggerEl = $(el);
     this.type = this.$triggerEl.data('type');
@@ -977,9 +917,7 @@ QarrStarFilterEntries = Garnish.Base.extend({
   },
   fetchEntries: function fetchEntries(e) {
     var _this3 = this;
-
     e.preventDefault();
-
     if (this.$triggerEl.hasClass('active')) {
       this.$triggerEl.removeClass('active');
       this.rating = null;
@@ -987,7 +925,6 @@ QarrStarFilterEntries = Garnish.Base.extend({
       this.$triggerEl.addClass('active');
       this.rating = this.$triggerEl.data('rating');
     }
-
     this.$loader.addClass('active');
     this.$entriesContainer.addClass('transition');
     var params = {
@@ -1011,8 +948,9 @@ QarrStarFilterEntries = Garnish.Base.extend({
             scrollTop: $entrySet.offset().top
           }, 'fast');
           this.$entriesContainer.removeClass('transition');
-        }, _this3), 1000); // Set sessionStorage for clicked star rating
+        }, _this3), 1000);
 
+        // Set sessionStorage for clicked star rating
         window.sessionStorage.setItem('qarr-star-filter', _this3.rating);
       }
     });
@@ -1042,7 +980,6 @@ QarrSortOrderEntries = Garnish.Base.extend({
   },
   handleSortChange: function handleSortChange() {
     var _this4 = this;
-
     this.selectedValue = this.$selector.val();
     this.$loader.addClass('active');
     this.$container.addClass('transition');
@@ -1065,14 +1002,18 @@ QarrSortOrderEntries = Garnish.Base.extend({
             scrollTop: $entrySet.offset().top
           }, 'fast');
           this.$container.removeClass('transition');
-        }, _this4), 1000); // Set sessionStorage for sort
+        }, _this4), 1000);
 
+        // Set sessionStorage for sort
         window.sessionStorage.setItem('qarr-sort-filter-type', _this4.elementType);
-        window.sessionStorage.setItem('qarr-sort-filter-value', _this4.selectedValue); // TODO: Reset pagination
+        window.sessionStorage.setItem('qarr-sort-filter-value', _this4.selectedValue);
+
+        // TODO: Reset pagination
       }
     });
   }
 });
+
 QarrAnswersContainer = Garnish.Base.extend({
   $container: null,
   $answersContainer: null,
@@ -1090,7 +1031,6 @@ QarrAnswersContainer = Garnish.Base.extend({
   },
   showAnswers: function showAnswers(e) {
     e.preventDefault();
-
     if (this.$container.hasClass('is-visible')) {
       this.$container.removeClass('is-visible');
       this.visible = false;
@@ -1137,11 +1077,9 @@ QarrLightSwitch = Garnish.Base.extend({
     this.setSettings(settings, QarrLightSwitch.defaults);
     this.$innerContainer = this.$outerContainer.find('.lightswitch-container:first');
     this.$input = this.$outerContainer.find('input:first');
-
     if (this.$input.prop('disabled')) {
       return;
     }
-
     this.on = this.$outerContainer.hasClass('on');
     this.$outerContainer.attr({
       'role': 'checkbox',
@@ -1165,7 +1103,6 @@ QarrLightSwitch = Garnish.Base.extend({
     this.$input.val(this.settings.value);
     this.$outerContainer.addClass('on');
     this.$outerContainer.attr('aria-checked', 'true');
-
     if (this.on !== (this.on = true)) {
       this.onChange();
     }
@@ -1178,7 +1115,6 @@ QarrLightSwitch = Garnish.Base.extend({
     this.$input.val('');
     this.$outerContainer.removeClass('on');
     this.$outerContainer.attr('aria-checked', 'false');
-
     if (this.on !== (this.on = false)) {
       this.onChange();
     }
@@ -1200,7 +1136,6 @@ QarrLightSwitch = Garnish.Base.extend({
   },
   _onMouseUp: function _onMouseUp() {
     this.removeListener(Garnish.$doc, 'mouseup');
-
     if (!this.dragger.dragging) {
       this.toggle();
     }
@@ -1213,7 +1148,6 @@ QarrLightSwitch = Garnish.Base.extend({
           event.preventDefault();
           break;
         }
-
       case Garnish.RIGHT_KEY:
         {
           if (this.orientation === 'ltr') {
@@ -1221,11 +1155,9 @@ QarrLightSwitch = Garnish.Base.extend({
           } else {
             this.turnOff();
           }
-
           event.preventDefault();
           break;
         }
-
       case Garnish.LEFT_KEY:
         {
           if (this.orientation === 'ltr') {
@@ -1233,7 +1165,6 @@ QarrLightSwitch = Garnish.Base.extend({
           } else {
             this.turnOn();
           }
-
           event.preventDefault();
           break;
         }
@@ -1248,24 +1179,20 @@ QarrLightSwitch = Garnish.Base.extend({
   },
   _onDrag: function _onDrag() {
     var margin;
-
     if (this.orientation === 'ltr') {
       margin = this.dragStartMargin + this.dragger.mouseDistX;
     } else {
       margin = this.dragStartMargin - this.dragger.mouseDistX;
     }
-
     if (margin < this._getOffMargin()) {
       margin = this._getOffMargin();
     } else if (margin > 0) {
       margin = 0;
     }
-
     this.$innerContainer.css('margin-left', margin);
   },
   _onDragStop: function _onDragStop() {
     var margin = this._getMargin();
-
     if (margin > this._getOffMargin() / 2) {
       this.turnOn();
     } else {

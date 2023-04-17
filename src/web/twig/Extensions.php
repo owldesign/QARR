@@ -31,15 +31,15 @@ class Extensions extends \Twig\Extension\AbstractExtension
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('qarr_json_decode', [$this, 'json_decode']),
-            new \Twig_SimpleFilter('getClass', [$this, 'getClass']),
-            new \Twig_SimpleFilter('timeAgo', [$this, 'getTimeAgo']),
-            new \Twig_SimpleFilter('browser', [$this, 'browser']),
-            new \Twig_SimpleFilter('formatBytes', [$this, 'formatBytes']),
-            new \Twig_SimpleFilter('valueOutOfArray', [$this, 'valueOutOfArray']),
-            new \Twig_SimpleFilter('truncate', [$this, 'truncate']),
-            new \Twig_SimpleFilter('occurrence', [$this, 'occurrence']),
-            new \Twig_SimpleFilter('toObject', array($this, 'toObject')),
+            new \Twig\TwigFilter('qarr_json_decode', [$this, 'json_decode']),
+            new \Twig\TwigFilter('getClass', [$this, 'getClass']),
+            new \Twig\TwigFilter('timeAgo', [$this, 'getTimeAgo']),
+            new \Twig\TwigFilter('browser', [$this, 'browser']),
+            new \Twig\TwigFilter('formatBytes', [$this, 'formatBytes']),
+            new \Twig\TwigFilter('valueOutOfArray', [$this, 'valueOutOfArray']),
+            new \Twig\TwigFilter('truncate', [$this, 'truncate']),
+            new \Twig\TwigFilter('occurrence', [$this, 'occurrence']),
+            new \Twig\TwigFilter('toObject', array($this, 'toObject')),
         ];
     }
 
@@ -58,7 +58,8 @@ class Extensions extends \Twig\Extension\AbstractExtension
     public function getFunctions()
     {
         return [
-            new \Twig_Function('flaggedWords', [$this, 'flaggedWords']),
+            new \Twig\TwigFunction('flaggedWords', [$this, 'flaggedWords']),
+            new \Twig\TwigFunction('flaggedWords', [$this, 'flaggedWords']),
         ];
     }
 

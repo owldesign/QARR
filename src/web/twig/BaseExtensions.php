@@ -39,7 +39,7 @@ class BaseExtensions extends AbstractExtension implements GlobalsInterface
     public function getFilters()
     {
         return [
-            new \Twig_SimpleFilter('getClass', [$this, 'getClass']),
+            new \Twig\TwigFilter('getClass', [$this, 'getClass']),
         ];
     }
 

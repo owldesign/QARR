@@ -4,24 +4,19 @@ var __webpack_exports__ = {};
   !*** ./development/js/charts.js ***!
   \**********************************/
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 QarrLineChart = Garnish.Base.extend({
   $container: null,
-  $chartExplorer: null,
-  $totalValue: null,
   $chartContainer: null,
+  $timelinePickerWrapper: null,
+  $chartExplorer: null,
+  $chartHeader: null,
+  $totalValue: null,
   $spinner: null,
   $error: null,
   $chart: null,
@@ -43,16 +38,13 @@ QarrLineChart = Garnish.Base.extend({
     QarrLineChart.setStorage(this._namespace, key, value);
   },
   createChartExplorer: function createChartExplorer() {
-    var $chartExplorer = $('<div class="chart-explorer"></div>').appendTo(this.$container);
-    var $chartHeader = $('<div class="chart-header"></div>').appendTo($chartExplorer);
-    var $timelinePickerWrapper = $('<div class="timeline-wrapper mb-4" />').appendTo($chartHeader);
-    this.$chartExplorer = $chartExplorer;
-    this.$chartContainer = $('<div class="chart-container"></div>').appendTo($chartExplorer);
-    this.$spinner = $('<div class="loader"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"/><path d="M36 18c0-9.94-8.06-18-18-18"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"/></path></g></g></svg></div>').prependTo($chartHeader);
+    this.$chartContainer = $('<div class="chart hidden"></div>').appendTo(this.$container);
+    this.$chartHeader = $('<div class="chart-header"></div>').prependTo(this.$container);
+    this.$timelinePickerWrapper = $('<div class="timeline-wrapper mb-4" />').appendTo(this.$chartHeader);
+    this.$spinner = $('<div class="loader"><svg width="20px" height="20px" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg" stroke="#E9EFF4"><g fill="none" fill-rule="evenodd"><g transform="translate(4 3)" stroke-width="5"><circle stroke-opacity=".5" cx="18" cy="18" r="18"/><path d="M36 18c0-9.94-8.06-18-18-18"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="1s" repeatCount="indefinite"/></path></g></g></svg></div>').prependTo(this.$chartHeader);
     this.$error = $('<div class="error"></div>').appendTo(this.$chartContainer);
-    this.$chart = $('<div class="chart"></div>').appendTo(this.$chartContainer);
-    this.$monthBtn = $('<div id="month-range" class="btn secondary small">' + Craft.t('qarr', 'Last 30 days') + '</div>').appendTo($timelinePickerWrapper);
-    this.$weekBtn = $('<div id="week-range" class="btn small">' + Craft.t('qarr', 'Week') + '</div>').appendTo($timelinePickerWrapper);
+    this.$monthBtn = $('<div id="month-range" class="btn secondary small">' + Craft.t('qarr', 'Last 30 days') + '</div>').appendTo(this.$timelinePickerWrapper);
+    this.$weekBtn = $('<div id="week-range" class="btn small">' + Craft.t('qarr', 'Week') + '</div>').appendTo(this.$timelinePickerWrapper);
     this.addListener(this.$monthBtn, 'click', 'handleMonthChange');
     this.addListener(this.$weekBtn, 'click', 'handleWeekChange');
   },
@@ -65,6 +57,7 @@ QarrLineChart = Garnish.Base.extend({
     this.params.endDate = endTime;
     this.setStorage('startTime', startTime);
     this.setStorage('endTime', endTime);
+    this.$chartContainer.html('');
     this.loadReport();
   },
   handleWeekChange: function handleWeekChange() {
@@ -76,6 +69,7 @@ QarrLineChart = Garnish.Base.extend({
     this.params.endDate = endTime;
     this.setStorage('startTime', startTime);
     this.setStorage('endTime', endTime);
+    this.$chartContainer.html('');
     this.loadReport();
   },
   monthRangeDate: function monthRangeDate() {
@@ -87,48 +81,45 @@ QarrLineChart = Garnish.Base.extend({
     return new Date(firstDay.getTime() - 7 * 24 * 60 * 60 * 1000);
   },
   loadReport: function loadReport() {
+    var _this = this;
     var requestData = this.params;
     requestData.startDate = this.getDateValue(this.params.startDate);
     requestData.endDate = this.getDateValue(this.params.endDate);
     requestData.elementType = this.element;
     this.$spinner.removeClass('hidden');
     this.$error.addClass('hidden');
-    this.$chart.removeClass('error');
-    Craft.postActionRequest('qarr/charts/get-entries-count', requestData, $.proxy(function (response, textStatus) {
-      this.$spinner.addClass('hidden');
-
-      if (textStatus === 'success' && typeof response.error === 'undefined') {
-        if (!this.chart) {
-          this.chart = new Craft.charts.Area(this.$chart);
-        }
-
-        var chartDataTable = new Craft.charts.DataTable(response.dataTable);
-        var chartSettings = {
-          orientation: response.orientation,
-          dataScale: response.scale,
-          formats: response.formats,
-          margin: {
-            top: 10,
-            right: 10,
-            bottom: 30,
-            left: 10
+    Craft.sendActionRequest('POST', 'qarr/charts/get-entries-count', {
+      data: requestData
+    }).then(function (response) {
+      _this.$spinner.addClass('hidden');
+      if (_this.$chartContainer.removeClass('hidden'), response.data.errors && response.data.errors.length) return Promise.reject();
+      _this.chart = new Craft.charts.Area(_this.$chartContainer, {
+        yAxis: {
+          formatter: function formatter(chart) {
+            return function (d) {
+              var format = ',.0f';
+              if (d !== Math.round(d)) {
+                format = ',.1f';
+              }
+              return chart.formatLocale.format(format)(d);
+            };
           }
-        }; // this.chart.settings.formats = response.formats
-        // TODO: check back if responsive has been fixed for multiple charts!
-
-        this.chart.draw(chartDataTable, chartSettings);
-      } else {
-        var msg = Craft.t('An unknown error occurred.');
-
-        if (typeof response !== 'undefined' && response && typeof response.error !== 'undefined') {
-          msg = response.error;
         }
-
-        this.$error.html(msg);
-        this.$error.removeClass('hidden');
-        this.$chart.addClass('error');
-      }
-    }, this));
+      });
+      var chartDataTable = new Craft.charts.DataTable(response.data.dataTable);
+      var chartSettings = {
+        orientation: response.data.orientation,
+        dataScale: response.data.scale,
+        formats: response.data.formats
+      };
+      _this.chart.draw(chartDataTable, chartSettings);
+      _this.chart.resize();
+    })["catch"](function (e) {
+      var error = e.response.data.message || Craft.t('A server error occurred');
+      this.$error.html(error);
+      this.$error.removeClass('hidden');
+      // this.$chart.addClass('error')
+    });
   },
   getDateFromDatepickerInstance: function getDateFromDatepickerInstance(inst) {
     return new Date(inst.currentYear, inst.currentMonth, inst.currentDay);
@@ -142,14 +133,12 @@ QarrLineChart = Garnish.Base.extend({
     if (QarrLineChart.storage[namespace] && QarrLineChart.storage[namespace][key]) {
       return QarrLineChart.storage[namespace][key];
     }
-
     return null;
   },
   setStorage: function setStorage(namespace, key, value) {
     if (_typeof(QarrLineChart.storage[namespace]) === ( true ? "undefined" : 0)) {
       QarrLineChart.storage[namespace] = {};
     }
-
     QarrLineChart.storage[namespace][key] = value;
   }
 });
@@ -176,33 +165,47 @@ QarrDonutChart = Garnish.Base.extend({
     this.width = QarrDonutChart.settings.width;
     this.height = QarrDonutChart.settings.height;
     this.radius = QarrDonutChart.settings.radius;
-
     this._fetchData();
   },
   _fetchData: function _fetchData() {
+    var _this2 = this;
     var payload = {};
     payload.elementType = this.elementType;
-    Craft.postActionRequest('qarr/charts/get-status-stats', payload, $.proxy(function (response, textStatus) {
-      if (response.success) {
-        this.data = response.data;
-
-        if (response.data.total > 0) {
-          this.drawChart();
-        } else {
-          this.drawEmptyChart();
-        }
-
-        this.trigger('response', {
-          data: this.data.entries
-        });
+    Craft.sendActionRequest('POST', 'qarr/charts/get-status-stats', {
+      data: payload
+    }).then(function (response) {
+      if (!response.data.success) return Promise.reject();
+      _this2.data = response.data;
+      if (response.data.total > 0) {
+        _this2.drawChart();
+      } else {
+        _this2.drawEmptyChart();
       }
-    }, this));
+      _this2.trigger('response', {
+        data: _this2.data.entries
+      });
+    })["catch"](function (e) {});
+
+    // Craft.postActionRequest('qarr/charts/get-status-stats', payload, $.proxy(function (response, textStatus) {
+    //     if (response.success) {
+    //         this.data = response.data;
+    //
+    //         if (response.data.total > 0) {
+    //             this.drawChart();
+    //         } else {
+    //             this.drawEmptyChart();
+    //         }
+    //
+    //         this.trigger('response', {
+    //             data: this.data.entries
+    //         })
+    //     }
+    // }, this));
   },
   refreshData: function refreshData() {
     // TODO: fix this
     // this.path
     this.svg.remove();
-
     this._fetchData();
   },
   drawEmptyChart: function drawEmptyChart() {
@@ -293,38 +296,30 @@ QarrPieChart = Garnish.Base.extend({
     this.addSlices(data);
   },
   addSlices: function addSlices(data) {
-    var _this = this;
-
+    var _this3 = this;
     data.forEach(function (slice) {
-      var _this$_getCoordinates = _this._getCoordinatesForPercent(_this.cumulativePercent),
-          _this$_getCoordinates2 = _slicedToArray(_this$_getCoordinates, 2),
-          startX = _this$_getCoordinates2[0],
-          startY = _this$_getCoordinates2[1];
-
-      _this.cumulativePercent += slice.percent;
-
-      var _this$_getCoordinates3 = _this._getCoordinatesForPercent(_this.cumulativePercent),
-          _this$_getCoordinates4 = _slicedToArray(_this$_getCoordinates3, 2),
-          endX = _this$_getCoordinates4[0],
-          endY = _this$_getCoordinates4[1];
-
+      var _this3$_getCoordinate = _this3._getCoordinatesForPercent(_this3.cumulativePercent),
+        _this3$_getCoordinate2 = _slicedToArray(_this3$_getCoordinate, 2),
+        startX = _this3$_getCoordinate2[0],
+        startY = _this3$_getCoordinate2[1];
+      _this3.cumulativePercent += slice.percent;
+      var _this3$_getCoordinate3 = _this3._getCoordinatesForPercent(_this3.cumulativePercent),
+        _this3$_getCoordinate4 = _slicedToArray(_this3$_getCoordinate3, 2),
+        endX = _this3$_getCoordinate4[0],
+        endY = _this3$_getCoordinate4[1];
       var largeArcFlag = slice.percent > .5 ? 1 : 0;
-
-      var path = _this._getPath(startX, startY, largeArcFlag, endX, endY);
-
+      var path = _this3._getPath(startX, startY, largeArcFlag, endX, endY);
       var pathEl = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       pathEl.setAttribute('d', path);
       pathEl.setAttribute('fill', slice.color);
-
-      _this.target.append(pathEl);
+      _this3.target.append(pathEl);
     });
   },
   _getPath: function _getPath(startX, startY, largeArcFlag, endX, endY) {
-    var path = ["M ".concat(startX, " ").concat(startY), // Move
+    return ["M ".concat(startX, " ").concat(startY), // Move
     "A 1 1 0 ".concat(largeArcFlag, " 1 ").concat(endX, " ").concat(endY), // Arc
     "L 0 0" // Line
     ].join(' ');
-    return path;
   },
   _getCoordinatesForPercent: function _getCoordinatesForPercent(percent) {
     var x = Math.cos(2 * Math.PI * percent);

@@ -6,6 +6,7 @@ var __webpack_exports__ = {};
 Garnish.$doc.ready(function () {
   var reviewsChart = new QarrLineChart('.chart-explorer-container.chart-reviews', 'owldesign\\qarr\\elements\\Review');
   var questionsChart = new QarrLineChart('.chart-explorer-container.chart-questions', 'owldesign\\qarr\\elements\\Question');
+  console.log(reviewsChart);
   var reviewsDonutChart = new QarrDonutChart('#reviews-donut', 'owldesign\\qarr\\elements\\Review');
   var questionsDonutChart = new QarrDonutChart('#questions-donut', 'owldesign\\qarr\\elements\\Question');
   reviewsDonutChart.on('pieIn', function (e) {
@@ -35,7 +36,19 @@ Garnish.$doc.ready(function () {
     $.each(e.data, function (i, item) {
       mother.find('.stat-' + item.handle).find('.stat-value').html(Math.round(item.percent * 100) + '%');
     });
-  }); // if ($('#widget-top-country-submissions').length > 0) {
+  });
+
+  // Counterup
+  var counterUp = window.counterUp["default"];
+  var $counters = $('.stat-value, .pie-area text');
+  $counters.each(function (ignore, counter) {
+    counterUp(counter, {
+      duration: 1000,
+      delay: 16
+    });
+  });
+
+  // if ($('#widget-top-country-submissions').length > 0) {
   //
   //     $('.reset-geolocation-stats').on('click', function(e) {
   //         e.preventDefault();

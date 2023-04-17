@@ -17,6 +17,7 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\ChartHelper;
 use craft\helpers\DateTimeHelper;
 
+use owldesign\qarr\elements\db\Table;
 use owldesign\qarr\QARR;
 
 class ChartsController extends ElementIndexesController
@@ -31,13 +32,15 @@ class ChartsController extends ElementIndexesController
      * @return \yii\web\Response
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionGetStatusStats()
+    public function actionGetStatusStats(): \yii\web\Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
         $variables = [];
         $entries = $this->getElementQuery()->all();
+
+        ray($entries);
 
         $this->_setCount($variables, $entries);
         $this->_setHandle($variables);
@@ -59,7 +62,7 @@ class ChartsController extends ElementIndexesController
      * @return \yii\web\Response
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionGetReviewsStats()
+    public function actionGetReviewsStats(): \yii\web\Response
     {
         $this->requireAcceptsJson();
         $reviews = QARR::$plugin->reviews->getAllReviews();
@@ -99,7 +102,7 @@ class ChartsController extends ElementIndexesController
      * @throws \yii\base\Exception
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionGetEntriesCount()
+    public function actionGetEntriesCount(): \yii\web\Response
     {
         $startDateParam = $this->request->getRequiredBodyParam('startDate');
         $endDateParam = $this->request->getRequiredBodyParam('endDate');
@@ -116,15 +119,18 @@ class ChartsController extends ElementIndexesController
         $intervalUnit = 'day';
 
         if ($elementType == 'owldesign\\qarr\\elements\\Review') {
-            $table = '{{%qarr_reviews}} db';
+            $table = Table::REVIEWS;
         } else {
-            $table = '{{%qarr_questions}} db';
+            $table = Table::QUESTIONS;
         }
 
-        $query = (new Query())
-            ->from([$table]);
 
-        $dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, 'db.dateCreated', 'count', '*', [
+        $query = (new Query())
+            ->from([
+                'entry' => $table
+            ]);
+
+        $dataTable = ChartHelper::getRunChartDataFromQuery($query, $startDate, $endDate, 'entry.dateCreated', 'count', '*', [
             'intervalUnit' => $intervalUnit,
             'valueLabel' => QARR::t('Entries'),
         ]);
@@ -154,7 +160,7 @@ class ChartsController extends ElementIndexesController
      * @param $variables
      * @param $entries
      */
-    private function _setCount(&$variables, $entries)
+    private function _setCount(&$variables, $entries): void
     {
         $variables['total'] = $this->getElementQuery()->count();
 
@@ -173,7 +179,7 @@ class ChartsController extends ElementIndexesController
      *
      * @param $variables
      */
-    private function _setStatColors(&$variables)
+    private function _setStatColors(&$variables): void
     {
         $variables['entries']['0']['color'] = '#4da1ff';
         $variables['entries']['1']['color'] = '#2fec94';
@@ -185,7 +191,7 @@ class ChartsController extends ElementIndexesController
      *
      * @param $variables
      */
-    private function _setHandle(&$variables)
+    private function _setHandle(&$variables): void
     {
         $variables['entries']['0']['handle'] = 'pending';
         $variables['entries']['1']['handle'] = 'approved';
@@ -197,7 +203,7 @@ class ChartsController extends ElementIndexesController
      *
      * @param $variables
      */
-    private function _setPercentages(&$variables)
+    private function _setPercentages(&$variables): void
     {
         $variables['entries']['0']['percent'] = ($variables['entries']['0']['count'] / $variables['total']);
         $variables['entries']['1']['percent'] = ($variables['entries']['1']['count'] / $variables['total']);

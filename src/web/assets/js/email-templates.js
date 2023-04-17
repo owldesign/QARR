@@ -27,13 +27,11 @@ Garnish.$doc.ready(function () {
     mounted: function mounted() {
       templateSuggest.$on('templateSelected', this.onTemplatePathChanged);
       this.elementId = $('#element-id').val();
-
       if ($('#template').val() !== '') {
         this.templatePath = $('#template').val();
       } else {
         this.templatePath = 'simple';
       }
-
       this.settings.bgColor = $('#tmp-bg-color-field input').val();
       this.settings.containerColor = $('#tmp-container-color-field input').val();
       this.body = $('#tmp-body-field textarea').val();
@@ -73,7 +71,6 @@ Garnish.$doc.ready(function () {
       },
       updateIframe: function updateIframe() {
         var _this = this;
-
         var $forceUpdate = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
         var payload = {
           templatePath: this.templatePath,
@@ -98,9 +95,7 @@ Garnish.$doc.ready(function () {
             if (_this.iframe) {
               _this.iframe.remove();
             }
-
             _this.iframe = iframe;
-
             _this.iframe.off();
           });
           Garnish.requestAnimationFrame($.proxy(function () {

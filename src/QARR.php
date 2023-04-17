@@ -11,7 +11,7 @@
 namespace owldesign\qarr;
 
 use craft\base\Element;
-use craft\commerce\elements\Product;
+//use craft\commerce\elements\Product;
 use craft\events\ElementEvent;
 use craft\events\ModelEvent;
 use craft\web\Controller;
@@ -65,13 +65,13 @@ class QARR extends Plugin
     // Public Properties
     // =========================================================================
 
-    public $schemaVersion = '1.0.8';
-    public $hasCpSettings = false;
-    public $hasCpSection = true;
-    public $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
-    public $downloadUrl = 'https://qarr.tools';
-    public $pluginUrl = 'https://qarr.tools';
-    public $docsUrl = 'https://docs.qarr.tools';
+    public string $schemaVersion = '1.0.8';
+    public bool $hasCpSettings = false;
+    public bool $hasCpSection = true;
+    public ?string $changelogUrl = 'https://raw.githubusercontent.com/owldesign/QARR/master/CHANGELOG.md';
+    public ?string $downloadUrl = 'https://qarr.tools';
+    public string $pluginUrl = 'https://qarr.tools';
+    public string $docsUrl = 'https://docs.qarr.tools';
 
     // Trails
     // =========================================================================
@@ -92,6 +92,7 @@ class QARR extends Plugin
         self::$app = $this;
 
         Craft::setAlias('@qarr', dirname(__DIR__));
+        Craft::setAlias('@libs', '@vendor/owldesign/qarr/lib/');
 
         $this->_setPluginComponents();
         $this->_registerSiteRoutes();
@@ -153,12 +154,12 @@ class QARR extends Plugin
 
     // Protected Methods
     // =========================================================================
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }
 
-    protected function settingsHtml()
+    protected function settingsHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('qarr/settings/index', [
             'settings' => $this->getSettings()
@@ -168,7 +169,7 @@ class QARR extends Plugin
     /**
      * @inheritdoc
      */
-    public function getSettingsResponse()
+    public function getSettingsResponse(): mixed
     {
         return Craft::$app->controller->renderTemplate('qarr/settings/index');
     }
@@ -176,7 +177,7 @@ class QARR extends Plugin
     /**
      * @inheritdoc
      */
-    public function getCpNavItem()
+    public function getCpNavItem(): ?array
     {
         $navItems = parent::getCpNavItem();
         $loggedUser = Craft::$app->getUser();

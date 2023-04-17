@@ -236,8 +236,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  -webkit-animation: qarr-spin 1s linear infinite;
-          animation: qarr-spin 1s linear infinite;
+  animation: qarr-spin 1s linear infinite;
 }
 .qarr-gradient-spinner.smaller {
   width: 15px;
@@ -268,29 +267,12 @@
   width: 0%;
   height: 100%;
   background: #b289ef;
-  -webkit-animation: qarr-grow 1s ease-in-out infinite;
-          animation: qarr-grow 1s ease-in-out infinite;
-}
-
-@-webkit-keyframes qarr-spin {
-  100% {
-    transform: rotate(360deg);
-  }
+  animation: qarr-grow 1s ease-in-out infinite;
 }
 
 @keyframes qarr-spin {
   100% {
     transform: rotate(360deg);
-  }
-}
-@-webkit-keyframes qarr-grow {
-  50% {
-    width: 100%;
-  }
-  100% {
-    width: 0;
-    right: 0;
-    left: unset;
   }
 }
 @keyframes qarr-grow {

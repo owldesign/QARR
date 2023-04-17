@@ -17,7 +17,7 @@ use yii\web\Response;
 
 class DashboardController extends Controller
 {
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
     // Public Methods
     // =========================================================================

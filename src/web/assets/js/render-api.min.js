@@ -3,8 +3,7 @@ var __webpack_exports__ = {};
 /*!**************************************!*\
   !*** ./development/js/render-api.js ***!
   \**************************************/
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 $.extend(QRAPI, {
   getActionUrl: function getActionUrl(path, params) {
     return QRAPI.getUrl(path, params, QRAPI.actionUrl);
@@ -13,24 +12,19 @@ $.extend(QRAPI, {
     if (!Garnish.isArray(chars)) {
       chars = chars.split();
     }
-
     var escaped = '';
-
     for (var i = 0; i < chars.length; i++) {
       escaped += "\\" + chars[i];
     }
-
     return escaped;
   },
   ltrim: function ltrim(str, chars) {
     if (!str) {
       return str;
     }
-
     if (typeof chars === 'undefined') {
       chars = ' \t\n\r\0\x0B';
     }
-
     var re = new RegExp('^[' + QRAPI.escapeChars(chars) + ']+');
     return str.replace(re, '');
   },
@@ -38,11 +32,9 @@ $.extend(QRAPI, {
     if (!str) {
       return str;
     }
-
     if (typeof chars === 'undefined') {
       chars = ' \t\n\r\0\x0B';
     }
-
     var re = new RegExp('[' + QRAPI.escapeChars(chars) + ']+$');
     return str.replace(re, '');
   },
@@ -54,73 +46,61 @@ $.extend(QRAPI, {
   getUrl: function getUrl(path, params, baseUrl) {
     if (typeof path !== 'string') {
       path = '';
-    } // Normalize the params
+    }
 
-
+    // Normalize the params
     var anchor = '';
-
     if ($.isPlainObject(params)) {
       var aParams = [];
-
       for (var name in params) {
         if (!params.hasOwnProperty(name)) {
           continue;
         }
-
         var value = params[name];
-
         if (name === '#') {
           anchor = value;
         } else if (value !== null && value !== '') {
           aParams.push(name + '=' + value);
         }
       }
-
       params = aParams;
     }
-
     if (Garnish.isArray(params)) {
       params = params.join('&');
     } else {
       params = QRAPI.trim(params, '&?');
-    } // Was there already an anchor on the path?
+    }
 
-
+    // Was there already an anchor on the path?
     var apos = path.indexOf('#');
-
     if (apos !== -1) {
       // Only keep it if the params didn't specify a new anchor
       if (!anchor) {
         anchor = path.substr(apos + 1);
       }
-
       path = path.substr(0, apos);
-    } // Were there already any query string params in the path?
+    }
 
-
+    // Were there already any query string params in the path?
     var qpos = path.indexOf('?');
-
     if (qpos !== -1) {
       params = path.substr(qpos + 1) + (params ? '&' + params : '');
       path = path.substr(0, qpos);
-    } // Return path if it appears to be an absolute URL.
+    }
 
-
+    // Return path if it appears to be an absolute URL.
     if (path.search('://') !== -1 || path[0] === '/') {
       return path + (params ? '?' + params : '') + (anchor ? '#' + anchor : '');
     }
+    path = QRAPI.trim(path, '/');
 
-    path = QRAPI.trim(path, '/'); // Put it all together
-
+    // Put it all together
     var url;
-
     if (baseUrl) {
       url = baseUrl;
-
       if (path && QRAPI.pathParam) {
         // Does baseUrl already contain a path?
         var pathMatch = url.match(new RegExp('[&\?]' + QRAPI.escapeRegex(QRAPI.pathParam) + '=[^&]+'));
-
         if (pathMatch) {
           url = url.replace(pathMatch[0], QRAPI.rtrim(pathMatch[0], '/') + '/' + path);
           path = '';
@@ -128,16 +108,14 @@ $.extend(QRAPI, {
       }
     } else {
       url = QRAPI.baseUrl;
-    } // Does the base URL already have a query string?
+    }
 
-
+    // Does the base URL already have a query string?
     qpos = url.indexOf('?');
-
     if (qpos !== -1) {
       params = url.substr(qpos + 1) + (params ? '&' + params : '');
       url = url.substr(0, qpos);
     }
-
     if (!QRAPI.omitScriptNameInUrls && path) {
       if (QRAPI.usePathInfo || !QRAPI.pathParam) {
         // Make sure that the script name is in the URL
@@ -146,42 +124,38 @@ $.extend(QRAPI, {
         }
       } else {
         // Move the path into the query string params
+
         // Is the path param already set?
         if (params && params.substr(0, QRAPI.pathParam.length + 1) === QRAPI.pathParam + '=') {
           var basePath,
-              endPath = params.indexOf('&');
-
+            endPath = params.indexOf('&');
           if (endPath !== -1) {
             basePath = params.substring(2, endPath);
             params = params.substr(endPath + 1);
           } else {
             basePath = params.substr(2);
             params = null;
-          } // Just in case
+          }
 
-
+          // Just in case
           basePath = QRAPI.rtrim(basePath);
           path = basePath + (path ? '/' + path : '');
-        } // Now move the path into the params
+        }
 
-
+        // Now move the path into the params
         params = QRAPI.pathParam + '=' + path + (params ? '&' + params : '');
         path = null;
       }
     }
-
     if (path) {
       url = QRAPI.rtrim(url, '/') + '/' + path;
     }
-
     if (params) {
       url += '?' + params;
     }
-
     if (anchor) {
       url += '#' + anchor;
     }
-
     return url;
   },
   escapeRegex: function escapeRegex(str) {
@@ -189,7 +163,6 @@ $.extend(QRAPI, {
   },
   sendActionRequest: function sendActionRequest(method, action, options) {
     var _this = this;
-
     return new Promise(function (resolve, reject) {
       options = options ? $.extend({}, options) : {};
       options.method = method;
@@ -211,17 +184,13 @@ $.extend(QRAPI, {
       callback = data;
       data = {};
     }
-
     options = options || {};
-
     if (options.contentType && options.contentType.match(/\bjson\b/)) {
       if (_typeof(data) === 'object') {
         data = JSON.stringify(data);
       }
-
       options.contentType = 'application/json; charset=utf-8';
     }
-
     var jqXHR = $.ajax($.extend({
       url: QRAPI.getActionUrl(action),
       type: 'POST',
@@ -235,28 +204,24 @@ $.extend(QRAPI, {
         if (jqXHR.readyState !== 4) {
           return;
         }
-
         alert('A server error occurred.');
-
         if (callback) {
           callback(null, textStatus, jqXHR);
         }
       }
-    }, options)); // Call the 'send' callback
+    }, options));
 
+    // Call the 'send' callback
     if (typeof options.send === 'function') {
       options.send(jqXHR);
     }
-
     return jqXHR;
   },
   _actionHeaders: function _actionHeaders() {
     var headers = {};
-
     if (QRAPI.csrfTokenValue) {
       headers['X-CSRF-Token'] = QRAPI.csrfTokenValue;
     }
-
     return headers;
   }
 });

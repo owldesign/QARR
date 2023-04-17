@@ -28,10 +28,7 @@ class ReviewsController extends Controller
     // Protected Properties
     // =========================================================================
 
-    /**
-     * @var array
-     */
-    protected $allowAnonymous = [
+    protected int|bool|array $allowAnonymous = [
         'save' => self::ALLOW_ANONYMOUS_LIVE,
         'paginate' => self::ALLOW_ANONYMOUS_LIVE,
     ];
@@ -100,7 +97,7 @@ class ReviewsController extends Controller
         $request = Craft::$app->getRequest();
 
         $review = new Review();
-        Craft::$app->getContent()->populateElementContent($review);
+//        Craft::$app->getContent()->populateElementContent($review);
         $fields                 = $request->getBodyParams()['fields'];
         $review->fullName       = $fields['fullName'];
         $review->emailAddress   = $fields['emailAddress'];

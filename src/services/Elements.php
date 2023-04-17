@@ -42,7 +42,7 @@ class Elements extends Component
      * @param int $elementId
      * @return array|ElementInterface|null
      */
-    public function getElement(string $type, int $elementId)
+    public function getElement(string $type, int $elementId): ElementInterface|array|null
     {
         $query = $this->_getElementQuery($type);
         $query->id($elementId);
@@ -60,7 +60,7 @@ class Elements extends Component
      * @param array $exclude
      * @return ElementQueryInterface|null
      */
-    public function queryElements(string $type, string $order = 'dateCreated desc', int $elementId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = [])
+    public function queryElements(string $type, string $order = 'dateCreated desc', int $elementId = null, int $limit = null, int $offset = null, string $status = null, array $exclude = []): ?ElementQueryInterface
     {
         $query = $type::find();
         $query->elementId($elementId);
@@ -86,7 +86,7 @@ class Elements extends Component
      * @param $limit
      * @return ElementQueryInterface|null
      */
-    public function querySortElements(string $type, string $order, $elementId, $limit)
+    public function querySortElements(string $type, string $order, $elementId, $limit): ?ElementQueryInterface
     {
         $query = $type::find();
 
@@ -112,7 +112,7 @@ class Elements extends Component
      * @param int|null $offset
      * @return ElementQueryInterface|null
      */
-    public function queryStarFilteredElements(string $type, int $elementId, $rating, string $order, int $limit = null, int $offset = null)
+    public function queryStarFilteredElements(string $type, int $elementId, $rating, string $order, int $limit = null, int $offset = null): ?ElementQueryInterface
     {
         $query = $this->_getElementQuery($type);
         $query->elementId($elementId);
@@ -138,7 +138,7 @@ class Elements extends Component
      * @return bool|int
      * @throws Exception
      */
-    public function reportAbuse(int $elementId, string $type)
+    public function reportAbuse(int $elementId, string $type): bool|int
     {
         if (!$elementId & !$type) {
             return false;
@@ -161,7 +161,7 @@ class Elements extends Component
      * @return bool|int
      * @throws Exception
      */
-    public function clearAbuse(int $elementId, string $type)
+    public function clearAbuse(int $elementId, string $type): bool|int
     {
         if (!$elementId) {
             return false;
@@ -185,7 +185,7 @@ class Elements extends Component
      * @throws Throwable
      * @throws \yii\base\Exception
      */
-    public function getDisplay($request, $fields, &$entry)
+    public function getDisplay($request, $fields, &$entry): void
     {
         $displayHandle = $request->getBodyParam('displayHandle');
 
@@ -213,7 +213,7 @@ class Elements extends Component
      * @param $review
      * @return string
      */
-    public function setElementData($request, &$review)
+    public function setElementData($request, $review): string
     {
         $elementId = $request->getRequiredBodyParam('elementId');
 
@@ -237,6 +237,8 @@ class Elements extends Component
         }
 
         $review->elementId = $elementId;
+
+        return $review;
     }
 
     /**
@@ -248,7 +250,7 @@ class Elements extends Component
      * @return int|null
      * @throws Exception
      */
-    public function updateStatus(int $elementId, string $status, string $type)
+    public function updateStatus(int $elementId, string $status, string $type): ?int
     {
         if (!$elementId) {
             return null;
@@ -278,7 +280,7 @@ class Elements extends Component
      * @return bool
      * @throws Exception
      */
-    public function updateAllStatuses($entries, $status, $type)
+    public function updateAllStatuses($entries, $status, $type): bool
     {
         foreach ($entries as $key => $entry) {
             if ($entry) {
@@ -301,7 +303,7 @@ class Elements extends Component
      * @param $elementTypeId
      * @return int|null
      */
-    public function getCount($type, $status, $elementId = null, $elementType = null, $elementTypeId = null)
+    public function getCount($type, $status, $elementId = null, $elementType = null, $elementTypeId = null): ?int
     {
         $query = $this->_getElementQuery($type);
 
@@ -329,7 +331,7 @@ class Elements extends Component
      *
      * @return int
      */
-    public function getTotalApproved()
+    public function getTotalApproved(): int
     {
         $reviews = Review::find()->where(['status' => 'approved'])->count();
         $questions = Question::find()->where(['status' => 'approved'])->count();
@@ -343,7 +345,7 @@ class Elements extends Component
      *
      * @return int
      */
-    public function getTotalPending()
+    public function getTotalPending(): int
     {
         $reviews = Review::find()->where(['status' => 'pending'])->count();
         $questions = Question::find()->where(['status' => 'pending'])->count();
@@ -385,7 +387,7 @@ class Elements extends Component
      * @param $elementId
      * @return float|int
      */
-    public function getAverageRating($elementId)
+    public function getAverageRating($elementId): float|int
     {
         $query = new Query();
         $query->select('rating')
@@ -407,7 +409,7 @@ class Elements extends Component
      *
      * @return array
      */
-    public function allowedElementTypes()
+    public function allowedElementTypes(): array
     {
         $elements = Craft::$app->getElements()->getAllElementTypes();
         $allowedElements = $this->_allowedElements();
@@ -428,18 +430,16 @@ class Elements extends Component
      * @param $type
      * @return string
      */
-    public function getElementTypeByName($type)
+    public function getElementTypeByName($type): string
     {
         if ($type == 'product') {
             return 'craft\\commerce\\elements\\Product';
         }
 
-        if ($type == 'entry') {
-            return 'craft\\elements\\Entry';
-        }
+        return 'craft\\elements\\Entry';
     }
 
-    public function markElementsAsDeletedByElementId($elementId, $date)
+    public function markElementsAsDeletedByElementId($elementId, $date): true
     {
         $reviews = Craft::$app->getDb()->createCommand()
             ->update('{{%qarr_reviews}}',
@@ -464,7 +464,7 @@ class Elements extends Component
      *
      * @return array
      */
-    private function _allowedElements()
+    private function _allowedElements(): array
     {
         return [
             'craft\\elements\\Entry',
@@ -478,7 +478,7 @@ class Elements extends Component
      * @param $type
      * @return ElementQueryInterface|null
      */
-    private function _getElementQuery($type)
+    private function _getElementQuery($type): ?ElementQueryInterface
     {
         if ($type === 'reviews') {
             return Review::find();

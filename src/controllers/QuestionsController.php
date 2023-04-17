@@ -24,7 +24,7 @@ class QuestionsController extends Controller
     // Protected Properties
     // =========================================================================
 
-    protected $allowAnonymous = [
+    protected int|bool|array $allowAnonymous = [
         'save' => self::ALLOW_ANONYMOUS_LIVE,
     ];
 
@@ -89,13 +89,13 @@ class QuestionsController extends Controller
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\web\BadRequestHttpException
      */
-    public function actionSave()
+    public function actionSave(): Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
 
         $question = new Question();
-        Craft::$app->getContent()->populateElementContent($question);
+        // Craft::$app->getContent()->populateElementContent($question);
         $fields                   = $request->getBodyParams()['fields'];
         $question->fullName       = $fields['fullName'];
         $question->emailAddress   = $fields['emailAddress'];
@@ -164,7 +164,7 @@ class QuestionsController extends Controller
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function actionDelete()
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -195,7 +195,7 @@ class QuestionsController extends Controller
     /**
      * @throws \yii\web\ForbiddenHttpException
      */
-    private function _enforceEditPermissions()
+    private function _enforceEditPermissions(): void
     {
         $this->requirePermission('qarr:accessQuestions');
     }

@@ -34,7 +34,7 @@ class GeolocationTask extends BaseJob
      * @return bool
      * @throws \yii\db\Exception
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         try {
             $json = file_get_contents('http://ip-api.com/json/'.$this->ipAddress);
@@ -55,14 +55,12 @@ class GeolocationTask extends BaseJob
         } catch (\Exception $e) {
             QARR::log('Geolocation failed to update: ' . $e->getMessage());
         }
-
-        return true;
     }
 
     // Private Methods
     // =========================================================================
 
-    private function _normalizeData($json)
+    private function _normalizeData($json): array
     {
         $cleanData = [];
         $data = Json::decode($json);

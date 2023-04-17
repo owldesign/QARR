@@ -144,7 +144,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'qarrQuestion';
     }
@@ -184,7 +184,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         if ($this->status == 'pending') {
             return self::STATUS_PENDING;
@@ -215,7 +215,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->status;
     }
@@ -223,7 +223,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/questions/'.$this->id
@@ -233,7 +233,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/questions/'.$this->id
@@ -255,7 +255,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['fullName', 'emailAddress', 'question'], 'required'],
@@ -381,7 +381,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function setEagerLoadedElements(string $handle, array $elements)
+    public function setEagerLoadedElements(string $handle, array $elements): void
     {
         if ($handle === 'element') {
             $element = $elements[0] ?? null;
@@ -496,7 +496,7 @@ class Question extends Element
      * @param $status
      * @return mixed
      */
-    public function getAnswers($status = '*')
+    public function getAnswers($status = '*'): mixed
     {
         $response = QARR::$plugin->answers->getAnswers($status, $this->id);
 
@@ -529,7 +529,7 @@ class Question extends Element
      * @param $time
      * @return string
      */
-    public function getTimeAgo($time)
+    public function getTimeAgo($time): string
     {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
         $lengths = array("60","60","24","7","4.35","12","10");
@@ -555,7 +555,7 @@ class Question extends Element
      *
      * @return mixed
      */
-    public function getFlags()
+    public function getFlags(): mixed
     {
         $result = QARR::$plugin->rules->getFlagged($this->id);
 
@@ -567,7 +567,7 @@ class Question extends Element
      *
      * @return string
      */
-    public function avatarUrl()
+    public function avatarUrl(): string
     {
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
     }
@@ -577,7 +577,7 @@ class Question extends Element
      *
      * @return mixed
      */
-    public function getSettings()
+    public function getSettings(): mixed
     {
         return QARR::$plugin->settings;
     }
@@ -588,7 +588,7 @@ class Question extends Element
      * @return Element|\craft\base\ElementInterface|null
      * @throws InvalidConfigException
      */
-    public function getElement()
+    public function getElement(): \craft\base\ElementInterface|Element|null
     {
         if ($this->_element !== null) {
             return $this->_element;
@@ -610,7 +610,7 @@ class Question extends Element
      *
      * @param Element|null $element
      */
-    public function setElement(Element $element = null)
+    public function setElement(Element $element = null): void
     {
         $this->_element = $element;
     }
@@ -620,7 +620,7 @@ class Question extends Element
      *
      * @return \craft\elements\User|null
      */
-    public function getUser()
+    public function getUser(): ?\craft\elements\User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
@@ -630,7 +630,7 @@ class Question extends Element
      *
      * @return \craft\elements\User|null
      */
-    public function getAuthor()
+    public function getAuthor(): ?\craft\elements\User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
@@ -640,7 +640,7 @@ class Question extends Element
      *
      * @return mixed
      */
-    public function getCustomer()
+    public function getCustomer(): mixed
     {
         if ($this->commerce) {
             $customer = null;
@@ -661,7 +661,7 @@ class Question extends Element
      *
      * @return string
      */
-    public function getElementType()
+    public function getElementType(): string
     {
         $class = get_class($this->element);
 
@@ -682,7 +682,7 @@ class Question extends Element
      *
      * @return bool
      */
-    public function getCommerce()
+    public function getCommerce(): bool
     {
         $commerce = Craft::$app->getPlugins()->isPluginEnabled('commerce');
 
@@ -705,7 +705,7 @@ class Question extends Element
      * @param bool $isNew
      * @throws Exception
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$isNew) {
             $record = QuestionRecord::findOne($this->id);
@@ -770,7 +770,7 @@ class Question extends Element
     /**
      * @throws \Throwable
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         $record = QuestionRecord::findOne($this->id);
         $record->softDelete();
@@ -788,7 +788,7 @@ class Question extends Element
     /**
      * @param int $structureId
      */
-    public function afterMoveInStructure(int $structureId)
+    public function afterMoveInStructure(int $structureId): void
     {
     }
 }

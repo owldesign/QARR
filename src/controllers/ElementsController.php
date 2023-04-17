@@ -42,10 +42,7 @@ class ElementsController extends Controller
     // Protected Properties
     // =========================================================================
 
-    /**
-     * @var array
-     */
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
 
     // Public Methods
@@ -105,7 +102,7 @@ class ElementsController extends Controller
      * @throws Exception
      * @throws BadRequestHttpException
      */
-    public function actionQueryElements()
+    public function actionQueryElements(): Response
     {
         $this->requirePostRequest();
 
@@ -138,7 +135,7 @@ class ElementsController extends Controller
      * @throws BadRequestHttpException
      * @throws Exception
      */
-    public function actionQuerySortElements()
+    public function actionQuerySortElements(): Response
     {
         $this->requirePostRequest();
 
@@ -163,7 +160,7 @@ class ElementsController extends Controller
         ]);
     }
 
-    public function actionQueryRenderElements($kind = 'reviews')
+    public function actionQueryRenderElements($kind = 'reviews'): Response
     {
         $this->requirePostRequest();
 
@@ -205,7 +202,7 @@ class ElementsController extends Controller
      * @throws Exception
      * @throws BadRequestHttpException
      */
-    public function actionQueryStarFilteredElements()
+    public function actionQueryStarFilteredElements(): Response
     {
         $this->requirePostRequest();
 
@@ -243,7 +240,7 @@ class ElementsController extends Controller
      * @return Response
      * @throws BadRequestHttpException
      */
-    public function actionCheckPending()
+    public function actionCheckPending(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -293,7 +290,7 @@ class ElementsController extends Controller
      * @throws SyntaxError
      * @throws BadRequestHttpException
      */
-    public function actionFetchPendingItems()
+    public function actionFetchPendingItems(): Response
     {
         $this->requirePostRequest();
 
@@ -322,7 +319,7 @@ class ElementsController extends Controller
      * @return bool|Response
      * @throws BadRequestHttpException
      */
-    public function actionReportAbuse()
+    public function actionReportAbuse(): Response|bool|null
     {
         $this->requirePostRequest();
 
@@ -372,7 +369,7 @@ class ElementsController extends Controller
      * @return bool|Response
      * @throws BadRequestHttpException
      */
-    public function actionClearAbuse()
+    public function actionClearAbuse(): Response|bool
     {
         $this->requirePostRequest();
 
@@ -403,7 +400,7 @@ class ElementsController extends Controller
      * @return null|Response
      * @throws BadRequestHttpException
      */
-    public function actionUpdateStatus()
+    public function actionUpdateStatus(): ?Response
     {
         $this->requirePostRequest();
 
@@ -436,7 +433,7 @@ class ElementsController extends Controller
      * @throws BadRequestHttpException
      * @throws ForbiddenHttpException
      */
-    public function actionDelete()
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -475,7 +472,7 @@ class ElementsController extends Controller
     /**
      * @throws ForbiddenHttpException
      */
-    private function _enforceEditPermissions()
+    private function _enforceEditPermissions(): void
     {
         $this->requirePermission('qarr:accessReviews');
     }

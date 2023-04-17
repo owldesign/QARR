@@ -25,14 +25,11 @@ use yii\helpers\Markdown;
 class EmailTemplatesController extends Controller
 {
 
-    /**
-     * @var array
-     */
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
     // Public Properties
     // =========================================================================
-    public $defaultTemplateExtensions = ['html', 'twig'];
+    public array $defaultTemplateExtensions = ['html', 'twig'];
     public $_cachedElement;
 
     // Public Methods
@@ -164,7 +161,7 @@ class EmailTemplatesController extends Controller
      * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
      */
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -243,7 +240,7 @@ class EmailTemplatesController extends Controller
         return $this->asJson(['success' => true]);
     }
 
-    public function actionGetAllEmailTemplates()
+    public function actionGetAllEmailTemplates(): Response
     {
         $templates = QARR::$plugin->getEmailTemplates()->getAllEmailTemplates();
 
@@ -265,7 +262,7 @@ class EmailTemplatesController extends Controller
 
     // Private Methods
     // =========================================================================
-    private function _getRandomElementByType($type, $elementId, $forceUpdate)
+    private function _getRandomElementByType($type, $elementId, $forceUpdate): void
     {
         if ($forceUpdate) {
             if ($type == 'review') {
@@ -317,7 +314,7 @@ class EmailTemplatesController extends Controller
      * @param EmailTemplate $template
      * @throws ForbiddenHttpException
      */
-    private function _enforceEditRulePermissions(EmailTemplate $template)
+    private function _enforceEditRulePermissions(EmailTemplate $template): void
     {
         $this->requirePermission('qarr:editCampaigns');
     }
@@ -327,7 +324,7 @@ class EmailTemplatesController extends Controller
      * @return bool
      * @throws UserNotAllowedException
      */
-    private function _enforceActionPermissions($user)
+    private function _enforceActionPermissions($user): bool
     {
         $currentUser = Craft::$app->getUser()->getIdentity();
 
@@ -346,7 +343,7 @@ class EmailTemplatesController extends Controller
      * @param string $name
      * @return string
      */
-    private function _resolveTemplate(string $path, string $name)
+    private function _resolveTemplate(string $path, string $name): string
     {
         foreach ($this->defaultTemplateExtensions as $extension) {
             $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;
