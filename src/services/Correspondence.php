@@ -10,16 +10,12 @@
 
 namespace owldesign\qarr\services;
 
-use owldesign\qarr\QARR;
-use owldesign\qarr\models\Reply;
 use owldesign\qarr\records\Correspondence as CorrespondenceRecord;
-
 
 use Craft;
 use craft\base\Component;
 use craft\helpers\ArrayHelper;
 use craft\mail\Message;
-use yii\base\Exception;
 
 /**
  * Class Correspondence
@@ -39,7 +35,7 @@ class Correspondence extends Component
      * @param $elementId
      * @return array|null
      */
-    public function getCorrespondenceByParams($email, $type, $elementId)
+    public function getCorrespondenceByParams($email, $type, $elementId): ?array
     {
         $record = CorrespondenceRecord::find()
             ->where(['ownerEmail' => $email, 'type' => $type, 'elementId' => $elementId])
@@ -49,9 +45,7 @@ class Correspondence extends Component
             return null;
         }
 
-        $correspondence = ArrayHelper::toArray($record);
-
-        return $correspondence;
+        return ArrayHelper::toArray($record);
     }
 
     /**
@@ -132,7 +126,7 @@ class Correspondence extends Component
 
     }
 
-    public function deleteCorrespondenceByElement($element)
+    public function deleteCorrespondenceByElement($element): bool
     {
         $records = CorrespondenceRecord::find()
             ->where(['elementId' => $element->id])

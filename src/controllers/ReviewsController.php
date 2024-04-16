@@ -12,6 +12,9 @@ namespace owldesign\qarr\controllers;
 
 use Craft;
 use craft\web\Controller;
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -22,7 +25,7 @@ use owldesign\qarr\rules\RuleChecker;
 /**_l
  * Class ReviewsController
  * @package owldesign\qarr\controllers
-*/
+ */
 class ReviewsController extends Controller
 {
     // Protected Properties
@@ -56,7 +59,7 @@ class ReviewsController extends Controller
      * @param int|null $reviewId
      * @return Response
      * @throws NotFoundHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionEdit(int $reviewId = null): Response
     {
@@ -88,23 +91,23 @@ class ReviewsController extends Controller
      * Save
      *
      * @return Response
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\web\BadRequestHttpException
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
      */
-    public function actionSave()
+    public function actionSave(): Response
     {
         $this->requirePostRequest();
         $request = Craft::$app->getRequest();
 
         $review = new Review();
 //        Craft::$app->getContent()->populateElementContent($review);
-        $fields                 = $request->getBodyParams()['fields'];
-        $review->fullName       = $fields['fullName'];
-        $review->emailAddress   = $fields['emailAddress'];
-        $review->rating         = $fields['rating'];
-        $review->feedback       = $fields['feedback'];
-        $review->ipAddress      = $request->getUserIP();
-        $review->userAgent      = $request->getHeaders()->get('user-agent');
+        $fields = $request->getBodyParams()['fields'];
+        $review->fullName = $fields['fullName'];
+        $review->emailAddress = $fields['emailAddress'];
+        $review->rating = $fields['rating'];
+        $review->feedback = $fields['feedback'];
+        $review->ipAddress = $request->getUserIP();
+        $review->userAgent = $request->getHeaders()->get('user-agent');
 
 
         // Set Display
@@ -128,7 +131,6 @@ class ReviewsController extends Controller
         }
 
         if ($saved) {
-
             // Is this Direct Link Submission?
             if ($directLinkId) {
                 QARR::$plugin->links->completeById($directLinkId, $review);
@@ -139,10 +141,9 @@ class ReviewsController extends Controller
                     'success' => true,
                     'message' => QARR::t('Submission successful.')
                 ]);
-            } else {
-                $this->redirectToPostedUrl($review);
             }
-        } else {
+
+
             if (Craft::$app->getRequest()->getIsAjax()) {
                 return $this->asJson([
                     'success' => false,
@@ -150,24 +151,27 @@ class ReviewsController extends Controller
                     'errors' => $review->getErrors(),
                     'message' => QARR::t('Submission failed.')
                 ]);
-            } else {
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'review' => $review,
-                    'errors' => $review->getErrors(),
-                ]);
             }
 
         }
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'review' => $review,
+            'errors' => $review->getErrors(),
+        ]);
+
+        return $this->redirectToPostedUrl($review);
     }
 
     /**
      * Delete
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
-    public function actionDelete()
+    public
+    function actionDelete(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -196,9 +200,10 @@ class ReviewsController extends Controller
     // =========================================================================
 
     /**
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
-    private function _enforceEditPermissions()
+    private
+    function _enforceEditPermissions(): void
     {
         $this->requirePermission('qarr:accessReviews');
     }

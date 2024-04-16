@@ -11,7 +11,13 @@
 namespace owldesign\qarr\controllers;
 
 use Craft;
+use craft\errors\ElementNotFoundException;
 use craft\web\Controller;
+use Throwable;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -51,7 +57,7 @@ class QuestionsController extends Controller
      * @param int|null $questionId
      * @return Response
      * @throws NotFoundHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionEdit(int $questionId = null): Response
     {
@@ -83,11 +89,11 @@ class QuestionsController extends Controller
      * Save
      *
      * @return Response
-     * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\web\BadRequestHttpException
+     * @throws Throwable
+     * @throws ElementNotFoundException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
      */
     public function actionSave(): Response
     {
@@ -96,12 +102,12 @@ class QuestionsController extends Controller
 
         $question = new Question();
         // Craft::$app->getContent()->populateElementContent($question);
-        $fields                   = $request->getBodyParams()['fields'];
-        $question->fullName       = $fields['fullName'];
-        $question->emailAddress   = $fields['emailAddress'];
-        $question->question       = $fields['question'];
-        $question->ipAddress      = $request->getUserIP();
-        $question->userAgent      = $request->getHeaders()->get('user-agent');
+        $fields = $request->getBodyParams()['fields'];
+        $question->fullName = $fields['fullName'];
+        $question->emailAddress = $fields['emailAddress'];
+        $question->question = $fields['question'];
+        $question->ipAddress = $request->getUserIP();
+        $question->userAgent = $request->getHeaders()->get('user-agent');
 
         // Get Display
         QARR::$plugin->elements->getDisplay($request, $fields, $question);
@@ -124,7 +130,6 @@ class QuestionsController extends Controller
         }
 
         if ($saved) {
-
             // Is this Direct Link Submission?
             if ($directLinkId) {
                 QARR::$plugin->links->completeById($directLinkId, $question);
@@ -136,33 +141,34 @@ class QuestionsController extends Controller
                     'errors' => $question->getErrors(),
                     'message' => QARR::t('Submission successful.')
                 ]);
-            } else {
-                $this->redirectToPostedUrl($question);
-            }
-        } else {
-            if (Craft::$app->getRequest()->getIsAjax()) {
-                return $this->asJson([
-                    'success' => false,
-                    'question' => $question,
-                    'errors' => $question->getErrors(),
-                    'message' => QARR::t('Submission failed.')
-                ]);
-            } else {
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'question' => $question,
-                    'errors' => $question->getErrors(),
-                ]);
             }
 
+            $this->redirectToPostedUrl($question);
         }
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+            return $this->asJson([
+                'success' => false,
+                'question' => $question,
+                'errors' => $question->getErrors(),
+                'message' => QARR::t('Submission failed.')
+            ]);
+        }
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'question' => $question,
+            'errors' => $question->getErrors(),
+        ]);
+
+        return $this->redirectToPostedUrl($question);
     }
 
     /**
      * Delete
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionDelete(): Response
     {
@@ -193,7 +199,7 @@ class QuestionsController extends Controller
     // =========================================================================
 
     /**
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
     private function _enforceEditPermissions(): void
     {

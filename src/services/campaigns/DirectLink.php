@@ -12,17 +12,14 @@ namespace owldesign\qarr\services\campaigns;
 
 use owldesign\qarr\QARR;
 use craft\helpers\Json;
-use craft\helpers\StringHelper;
 use owldesign\qarr\models\DirectLink as DirectLinkModel;
 use owldesign\qarr\records\DirectLink as DirectLinkRecord;
-use Hashids\Hashids;
 
-use Craft;
 use craft\base\Component;
-use craft\helpers\ArrayHelper;
 use craft\db\Query;
-use owldesign\qarr\rules\RuleChecker;
+use Throwable;
 use yii\base\Exception;
+use yii\db\StaleObjectException;
 
 /**
  * Class Reviews
@@ -50,7 +47,7 @@ class DirectLink extends Component
     /**
      * @var bool
      */
-    private $_fetchedAllLinks = false;
+    private bool $_fetchedAllLinks = false;
 
     // Public Methods
     // =========================================================================
@@ -95,24 +92,21 @@ class DirectLink extends Component
      * @param int $id
      * @return DirectLinkModel
      */
-    public function getLinkById(int $id)
+    public function getLinkById(int $id): DirectLinkModel
     {
         $query = DirectLinkRecord::find()
             ->where(['id' => $id]);
 
         $record = $query->one();
 
-        $record = new DirectLinkModel($record->toArray(['id', 'slug', 'elementId', 'userId', 'type', 'link', 'completed', 'enabled', 'settings', 'options', 'dateCreated', 'dateUpdated']));
-
-
-        return $record;
+        return new DirectLinkModel($record->toArray(['id', 'slug', 'elementId', 'userId', 'type', 'link', 'completed', 'enabled', 'settings', 'options', 'dateCreated', 'dateUpdated']));
     }
 
     /**
      * Save direct link
      *
      * @param DirectLinkModel $link
-     * @return object
+     * @return bool
      * @throws Exception
      */
     public function save(DirectLinkModel $link): bool
@@ -159,10 +153,10 @@ class DirectLink extends Component
      *
      * @param $id
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
-    public function deleteLinkById($id)
+    public function deleteLinkById($id): bool
     {
         $record = DirectLinkRecord::find()
             ->where(['id' => $id])
@@ -184,7 +178,7 @@ class DirectLink extends Component
      * @param $submission
      * @return bool
      */
-    public function completeById($id, $submission)
+    public function completeById($id, $submission): bool
     {
         try {
             $record = DirectLinkRecord::find()

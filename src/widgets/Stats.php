@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\widgets;
 
+use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Html;
 use craft\helpers\Json;
@@ -32,6 +33,9 @@ use craft\base\Widget;
  * @author    Vadim Goncharov
  * @package   QARR
  * @since     1.0.0
+ *
+ * @property-read null|string $bodyHtml
+ * @property-read null|string $settingsHtml
  */
 class Stats extends Widget
 {
@@ -102,7 +106,7 @@ class Stats extends Widget
 
         $variables['stats'] = $this->_getStatusStats();
         
-        if ($this->type == 'reviews') {
+        if ($this->type === 'reviews') {
             $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Review")';
         } else {
             $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Question")';
@@ -120,11 +124,11 @@ class Stats extends Widget
      * Get element instance
      * 
      * @param $type
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
-    private function _getElementType($type): \craft\elements\db\ElementQueryInterface
+    private function _getElementType($type): ElementQueryInterface
     {
-        if ($type == 'reviews') {
+        if ($type === 'reviews') {
             return Review::find();
         } else {
             return Question::find();

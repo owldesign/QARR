@@ -7,7 +7,7 @@ use craft\web\AssetBundle;
 
 class Tags extends AssetBundle
 {
-    public function init()
+    public function init(): void
     {
         Craft::setAlias('@odlib', '@vendor/owldesign/qarr/lib/');
 

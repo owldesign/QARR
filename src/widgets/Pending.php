@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\widgets;
 
+use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use owldesign\qarr\elements\Question;
@@ -31,6 +32,9 @@ use craft\base\Widget;
  * @author    Vadim Goncharov
  * @package   QARR
  * @since     1.0.0
+ *
+ * @property-read null|string $bodyHtml
+ * @property-read null|string $settingsHtml
  */
 class Pending extends Widget
 {
@@ -111,7 +115,7 @@ class Pending extends Widget
 
         $this->elementType = $this->_getElementType($this->type);
 
-        if ($this->type == 'reviews') {
+        if ($this->type === 'reviews') {
             $js = 'new QARRWidgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         } else {
             $js = 'new QARRWidgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
@@ -131,11 +135,11 @@ class Pending extends Widget
      * Get element instance
      *
      * @param $type
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
-    private function _getElementType($type): \craft\elements\db\ElementQueryInterface
+    private function _getElementType($type): ElementQueryInterface
     {
-        if ($type == 'reviews') {
+        if ($type === 'reviews') {
             return Review::find();
         } else {
             return Question::find();

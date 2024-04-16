@@ -29,8 +29,6 @@ class DashboardController extends Controller
      */
     public function actionIndex(array $variables = []): Response
     {
-        $variables = [];
-
         return $this->renderTemplate('qarr/index', $variables);
     }
 }

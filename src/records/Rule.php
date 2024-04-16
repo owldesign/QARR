@@ -12,7 +12,7 @@ class Rule extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%qarr_rules}}';
     }

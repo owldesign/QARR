@@ -15,6 +15,7 @@ use craft\base\Element;
 use craft\base\FieldInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\fields\data\SingleOptionFieldData;
+use craft\models\FieldLayout;
 use yii\base\Exception;
 use craft\db\Query;
 use craft\helpers\Json;
@@ -32,6 +33,9 @@ use owldesign\qarr\records\Display as DisplayRecord;
 /**
  * Class Display
  * @package owldesign\qarr\elements
+ *
+ * @property-read SingleOptionFieldData $emptyOptionFieldData
+ * @property-read array $fields
  */
 class Display extends Element
 {
@@ -39,29 +43,29 @@ class Display extends Element
     // =========================================================================
 
     /**
-     * @var
+     * @var string
      */
-    public $name;
+    public string $name;
     /**
-     * @var
+     * @var string
      */
-    public $handle;
+    public string $handle;
     /**
-     * @var
+     * @var string
      */
-    public $oldHandle;
+    public string $oldHandle;
     /**
-     * @var
+     * @var string
      */
     public ?int $fieldLayoutId = null;
     /**
-     * @var
+     * @var string
      */
-    public $titleFormat;
+    public string $titleFormat;
     /**
-     * @var
+     * @var int
      */
-    public $oldFieldLayoutId;
+    public int $oldFieldLayoutId;
     /**
      * @var
      */
@@ -71,9 +75,9 @@ class Display extends Element
      */
     public $options;
     /**
-     * @var
+     * @vars string
      */
-    public $customTemplates;
+    public string $customTemplates;
 
     /**
      * @inheritdoc
@@ -168,11 +172,9 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function getFieldLayout(): ?\craft\models\FieldLayout
+    public function getFieldLayout(): ?FieldLayout
     {
-        $behavior = $this->getBehavior('fieldLayout');
-
-        return $behavior->getFieldLayout();
+        return $this->getBehavior('fieldLayout')->getFieldLayout();
     }
 
     /**
@@ -182,7 +184,7 @@ class Display extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new DisplayQuery(get_called_class());
+        return new DisplayQuery(static::class);
     }
 
     /**
@@ -211,13 +213,11 @@ class Display extends Element
      */
     protected static function defineSortOptions(): array
     {
-        $attributes = [
+        return [
             'name' => QARR::t('Display Name'),
             'elements.dateCreated' => QARR::t('Date Created'),
             'elements.dateUpdated' => QARR::t('Date Updated'),
         ];
-
-        return $attributes;
     }
 
     /**
@@ -238,8 +238,7 @@ class Display extends Element
      */
     protected static function defineDefaultTableAttributes(string $source): array
     {
-        $attributes = ['name', 'handle', 'totalSubmissions'];
-        return $attributes;
+        return ['name', 'handle', 'totalSubmissions'];
     }
 
     /**
@@ -254,13 +253,11 @@ class Display extends Element
                 }
             case 'totalSubmissions':
                 {
-                    $totalSubmissions = (new Query())
+                    return (new Query())
                         ->select('COUNT(*)')
                         ->from('{{%qarr_reviews}}')
                         ->where(['displayId' => $this->id])
                         ->scalar();
-
-                    return $totalSubmissions;
                 }
         }
 
@@ -272,14 +269,12 @@ class Display extends Element
      */
     protected static function defineSources(string $context = null): array
     {
-        $sources = [
+        return [
             [
                 'key'   => '*',
                 'label' => QARR::t('All Displays')
             ]
         ];
-
-        return $sources;
     }
 
     /**
@@ -313,6 +308,8 @@ class Display extends Element
         if (is_string($handle) && !empty($handle)) {
             return $fields[$handle] ?? null;
         }
+
+        return null;
     }
 
     /**
@@ -382,6 +379,6 @@ class Display extends Element
             Craft::$app->getFields()->deleteLayoutById($this->fieldLayoutId);
         }
 
-        parent::beforeDelete();
+        $this->beforeDelete();
     }
 }

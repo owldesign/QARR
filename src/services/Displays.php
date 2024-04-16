@@ -19,12 +19,13 @@ use owldesign\qarr\records\Review as ReviewRecord;
 use Craft;
 use craft\db\Query;
 use craft\base\Component;
-use craft\helpers\Json;
 use yii\base\Exception;
 
 /**
  * Class Displays
  * @package owldesign\qarr\services
+ *
+ * @property-read array $allDisplays
  */
 class Displays extends Component
 {
@@ -67,7 +68,7 @@ class Displays extends Component
      * @param int $displayId
      * @return Display|null
      */
-    public function getDisplayById(int $displayId)
+    public function getDisplayById(int $displayId): ?Display
     {
         return ArrayHelper::firstWhere($this->getAllDisplays(), 'id', $displayId);
     }
@@ -78,7 +79,7 @@ class Displays extends Component
      * @param int $uid
      * @return Display|null
      */
-    public function getDisplayByUid(int $uid)
+    public function getDisplayByUid(int $uid): ?Display
     {
         return ArrayHelper::firstWhere($this->getAllDisplays(), 'uid', $uid, true);
     }
@@ -89,7 +90,7 @@ class Displays extends Component
      * @param string $displayHandle
      * @return Display|null
      */
-    public function getDisplayByHandle(string $displayHandle)
+    public function getDisplayByHandle(string $displayHandle): ?Display
     {
         return ArrayHelper::firstWhere($this->getAllDisplays(), 'handle', $displayHandle, true);
     }
@@ -101,7 +102,7 @@ class Displays extends Component
      * @throws \Throwable
      * @throws \yii\db\Exception
      */
-    public function saveDisplay(Display $display)
+    public function saveDisplay(Display $display): bool
     {
         $isNewDisplay = !$display->id;
 
@@ -200,7 +201,7 @@ class Displays extends Component
      * @return bool
      * @throws \yii\db\Exception
      */
-    public function removeDisplaysFromElements($displayId)
+    public function removeDisplaysFromElements($displayId): bool
     {
         $elements = ReviewRecord::find()->where(['displayId' => $displayId])->all();
 
@@ -221,7 +222,7 @@ class Displays extends Component
      * @param $entries
      * @return bool
      */
-    public function deleteEntries($entries)
+    public function deleteEntries($entries): bool
     {
         foreach ($entries as $key => $entry) {
             $entry = $this->getDisplayById($entry->id);
@@ -238,13 +239,13 @@ class Displays extends Component
     // Private Methods
     // =========================================================================
 
-    private function _createDisplayFromRecord(DisplayRecord $displayRecord = null)
+    private function _createDisplayFromRecord(DisplayRecord $displayRecord = null): ?Display
     {
         if (!$displayRecord) {
             return null;
         }
 
-        $display = new Display($displayRecord->toArray([
+        return new Display($displayRecord->toArray([
             'id',
             'name',
             'handle',
@@ -253,8 +254,6 @@ class Displays extends Component
             'enabled',
             'uid'
         ]));
-
-        return $display;
     }
 
     /**

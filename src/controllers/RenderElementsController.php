@@ -12,6 +12,10 @@ use craft\web\Controller;
 use craft\web\View;
 use owldesign\qarr\QARR;
 use owldesign\qarr\web\twig\Render;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 use yii\db\Expression;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -19,21 +23,24 @@ use yii\web\Response;
 class RenderElementsController extends Controller
 {
     /**
-     * @var array
+     * @var int|bool|array
      */
-    protected $allowAnonymous = ['get-elements', 'count-elements'];
+    protected int|bool|array $allowAnonymous = ['get-elements', 'count-elements'];
 
+    /**
+     * @var
+     */
     protected $elementType;
 
     /**
      * @var ElementQueryInterface|ElementQuery|null
      */
-    protected $elementQuery;
+    protected ElementQueryInterface|null|ElementQuery $elementQuery;
 
     /**
      * @inheritdoc
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
         if (!parent::beforeAction($action)) {
             return false;
@@ -90,6 +97,10 @@ class RenderElementsController extends Controller
      *
      * @return Response
      * @throws BadRequestHttpException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
     public function actionGetModalContent(): Response
     {

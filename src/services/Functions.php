@@ -24,7 +24,7 @@ class Functions extends Component
      * @param $key
      * @return array|null
      */
-    public function groupBy(array $array, $key)
+    public function groupBy(array $array, $key): ?array
     {
         if (!is_string($key) && !is_int($key) && !is_float($key) && !is_callable($key) ) {
             trigger_error('array_group_by(): The key should be a string, an integer, or a callback', E_USER_ERROR);

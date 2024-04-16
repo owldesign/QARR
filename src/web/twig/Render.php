@@ -11,6 +11,10 @@ use craft\helpers\UrlHelper;
 use craft\web\View;
 use owldesign\qarr\QARR;
 use owldesign\qarr\web\assets\RenderFrontend;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
 
 class Render
 {
@@ -31,12 +35,12 @@ class Render
      * Stars rating
      *
      * @param $model
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    public function stars($model)
+    public function stars($model): void
     {
         $customFile = $this->_resolveTemplate($this->customTemplatesPath, 'stars');
         $variables = [];
@@ -63,12 +67,12 @@ class Render
      * Reviews count
      *
      * @param $model
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    public function reviewsCount($model)
+    public function reviewsCount($model): void
     {
         $customFile = $this->_resolveTemplate($this->customTemplatesPath, 'reviews-count');
 
@@ -92,12 +96,12 @@ class Render
      * Average rating block
      *
      * @param $model
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    public function averageRating($model)
+    public function averageRating($model): void
     {
         $customFile = $this->_resolveTemplate($this->customTemplatesPath, 'average-rating');
 
@@ -117,7 +121,8 @@ class Render
         echo Template::raw($html);
     }
 
-    public function sort($type = 'reviews') {
+    public function sort($type = 'reviews'): void
+    {
         $customFile = $this->_resolveTemplate($this->customTemplatesPath, 'sort');
 
         $variables = [
@@ -136,7 +141,7 @@ class Render
         echo Template::raw($html);
     }
 
-    public function questions($model, $criteria = null)
+    public function questions($model, $criteria = null): void
     {
         $customFile = $this->_resolveTemplate($this->customTemplatesPath, 'questions');
 
@@ -174,7 +179,7 @@ class Render
      * @param null $model
      * @param null $settings
      */
-    public function reviews($model = null, $settings = null)
+    public function reviews($model = null, $settings = null): void
     {
         $id = 'qarr-elements-' . Html::id();
         $elementType = 'owldesign\\\qarr\\\elements\\\Review';
@@ -194,15 +199,13 @@ class Render
     /**
      * Get pagination html
      *
-     * @param $pageInfo
-     * @param $entriesContainer
      * @param string $paginationStyle
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \yii\base\Exception
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function pagination($paginationStyle = 'arrows')
+    public function pagination(string $paginationStyle = 'arrows'): void
     {
         $customFile = $this->_resolveTemplate($this->customTemplatesPath, 'pagination');
 
@@ -234,7 +237,7 @@ class Render
      * @param int|null $elementTypeId
      * @return mixed
      */
-    public function _getCount(string $type, string $status, int $elementId = null, $elementType = null, $elementTypeId = null)
+    public function _getCount(string $type, string $status, int $elementId = null, int $elementType = null, int $elementTypeId = null): mixed
     {
         return QARR::$plugin->elements->getCount($type, $status, $elementId, $elementType, $elementTypeId);
     }
@@ -243,9 +246,9 @@ class Render
      * Average rating
      *
      * @param $elementId
-     * @return null
+     * @return mixed
      */
-    public function _getAverageRating($elementId)
+    public function _getAverageRating($elementId): mixed
     {
         if (!$elementId) {
             return null;

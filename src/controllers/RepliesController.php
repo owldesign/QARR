@@ -16,12 +16,19 @@ use owldesign\qarr\QARR;
 
 use Craft;
 use craft\web\Controller;
+use Throwable;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class RepliesController extends Controller
 {
-    protected $allowAnonymous = [
+    protected int|bool|array $allowAnonymous = [
         'save' => self::ALLOW_ANONYMOUS_LIVE,
         'get-markup' => self::ALLOW_ANONYMOUS_LIVE,
     ];
@@ -29,8 +36,14 @@ class RepliesController extends Controller
     /**
      * Generate reply markup
      *
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    public function actionGetMarkup()
+    public function actionGetMarkup(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -55,10 +68,15 @@ class RepliesController extends Controller
      * Save
      *
      * @return Response
+     * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
      * @throws NotFoundHttpException
-     * @throws \yii\web\BadRequestHttpException
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Throwable
      */
-    public function actionSave()
+    public function actionSave(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -105,22 +123,21 @@ class RepliesController extends Controller
                 'response' => $model,
                 'template' => $template
             ]);
-        } else {
-            return $this->asJson([
-                'success' => false,
-                'errors' => $model->getErrors(),
-            ]);
-
         }
+
+        return $this->asJson([
+            'success' => false,
+            'errors' => $model->getErrors(),
+        ]);
     }
 
     /**
      * Remove reply
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
+     * @throws BadRequestHttpException
      */
-    public function actionRemoveReplies()
+    public function actionRemoveReplies(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -135,8 +152,8 @@ class RepliesController extends Controller
      * Delete Reply
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionDelete(): Response
     {

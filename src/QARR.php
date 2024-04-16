@@ -54,6 +54,11 @@ use craft\events\RegisterUserPermissionsEvent;
 use yii\base\Event;
 use yii\web\Response;
 
+/**
+ *
+ * @property-read null|array $cpNavItem
+ * @property-read mixed $settingsResponse
+ */
 class QARR extends Plugin
 {
     /// Static Properties
@@ -85,7 +90,7 @@ class QARR extends Plugin
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
@@ -183,10 +188,10 @@ class QARR extends Plugin
         $loggedUser = Craft::$app->getUser();
 
         $navItems = ArrayHelper::merge($navItems, [
-            'badgeCount' => QARR::getInstance()->elements->getTotalPending(),
+            'badgeCount' => self::getInstance()->elements->getTotalPending(),
             'subnav' => [
                 'dashboard' => [
-                    'label' => QARR::t('Dashboard'),
+                    'label' => self::t('Dashboard'),
                     'url' => 'qarr'
                 ]
             ]
@@ -194,42 +199,42 @@ class QARR extends Plugin
 
         if ($loggedUser->checkPermission('qarr:accessReviews')) {
             $navItems['subnav']['reviews'] = [
-                'label' => QARR::t('Reviews'),
+                'label' => self::t('Reviews'),
                 'url' => 'qarr/reviews'
             ];
         }
 
         if ($loggedUser->checkPermission('qarr:accessQuestions')) {
             $navItems['subnav']['questions'] = [
-                'label' => QARR::t('Questions'),
+                'label' => self::t('Questions'),
                 'url' => 'qarr/questions'
             ];
         }
 
         if ($loggedUser->checkPermission('qarr:accessCampaigns')) {
             $navItems['subnav']['campaigns'] = [
-                'label' => QARR::t('Campaigns'),
+                'label' => self::t('Campaigns'),
                 'url' => 'qarr/campaigns'
             ];
         }
 
         if ($loggedUser->checkPermission('qarr:accessDisplays')) {
             $navItems['subnav']['displays'] = [
-                'label' => QARR::t('Displays'),
+                'label' => self::t('Displays'),
                 'url' => 'qarr/displays'
             ];
         }
 
         if ($loggedUser->checkPermission('qarr:accessRules')) {
             $navItems['subnav']['rules'] = [
-                'label' => QARR::t('Rules'),
+                'label' => self::t('Rules'),
                 'url' => 'qarr/rules'
             ];
         }
 
         if ($loggedUser->checkPermission('qarr:manageSettings')) {
             $navItems['subnav']['settings'] = [
-                'label' => QARR::t('Settings'),
+                'label' => self::t('Settings'),
                 'url' => 'qarr/settings'
             ];
         }
@@ -242,7 +247,7 @@ class QARR extends Plugin
      * @param array $params
      * @return string
      */
-    public static function t($message, array $params = [])
+    public static function t($message, array $params = []): string
     {
         return Craft::t('qarr', $message, $params);
     }
@@ -251,7 +256,7 @@ class QARR extends Plugin
      * @param $message
      * @param string $type
      */
-    public static function log($message, $type = 'info')
+    public static function log($message, string $type = 'info'): void
     {
         Craft::$type(self::t($message), __METHOD__);
     }
@@ -259,7 +264,7 @@ class QARR extends Plugin
     /**
      * @param $message
      */
-    public static function info($message)
+    public static function info($message): void
     {
         Craft::info(self::t($message), __METHOD__);
     }
@@ -267,7 +272,7 @@ class QARR extends Plugin
     /**
      * @param $message
      */
-    public static function error($message)
+    public static function error($message): void
     {
         Craft::error(self::t($message), __METHOD__);
     }
@@ -278,12 +283,12 @@ class QARR extends Plugin
     /**
      * Register element types
      */
-    private function _registerElementTypes()
+    private function _registerElementTypes(): void
     {
         Event::on(
             Elements::class,
             Elements::EVENT_REGISTER_ELEMENT_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            static function (RegisterComponentTypesEvent $event) {
                 $event->types[] = ReviewElement::class;
             }
         );
@@ -292,15 +297,15 @@ class QARR extends Plugin
     /**
      * Register variables
      */
-    private function _registerVariables()
+    private function _registerVariables(): void
     {
-        Event::on(BaseVariables::class, BaseVariables::EVENT_INIT, function (Event $event) {
+        Event::on(BaseVariables::class, BaseVariables::EVENT_INIT, static function (Event $event) {
             /** @var BaseVariables $variables */
             $variables = $event->sender;
             $variables->set('render', Render::class);
         });
 
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function (Event $event) {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, static function (Event $event) {
             /** @var CraftVariable $variable */
             $variable = $event->sender;
             $variable->set('qarr', Variables::class);
@@ -315,7 +320,7 @@ class QARR extends Plugin
     /**
      * Register twig extensions
      */
-    private function _addTwigExtensions()
+    private function _addTwigExtensions(): void
     {
         if (Craft::$app->request->getIsSiteRequest()) {
             Craft::$app->view->registerTwigExtension(new BaseExtensions);
@@ -329,12 +334,12 @@ class QARR extends Plugin
     /**
      * Register plugin permissions
      */
-    private function _registerPermissions()
+    private function _registerPermissions(): void
     {
         Event::on(
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
-            function (RegisterUserPermissionsEvent $event) {
+            static function (RegisterUserPermissionsEvent $event) {
                 $permissions = [];
 
                 $permissions['qarr:accessReviews'] = [
@@ -409,12 +414,12 @@ class QARR extends Plugin
     /**
      * Register Widgets
      */
-    private function _registerWidgets()
+    private function _registerWidgets(): void
     {
         Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            static function (RegisterComponentTypesEvent $event) {
                 $event->types[] = Stats::class;
                 $event->types[] = Pending::class;
             }
@@ -424,7 +429,7 @@ class QARR extends Plugin
     /**
      * Register CP Assets
      */
-    private function _registerCpAssets()
+    private function _registerCpAssets(): void
     {
         // TODO: take a look at this, does it need to exist?
 //        if (Craft::$app->getRequest()->getIsCpRequest()) {
@@ -438,23 +443,23 @@ class QARR extends Plugin
 //        }
     }
 
-    private function _registerFieldTypes()
+    private function _registerFieldTypes(): void
     {
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            static function (RegisterComponentTypesEvent $event) {
                 $event->types[] = QARRFieldField::class;
             }
         );
     }
 
-    private function _registerUtilities()
+    private function _registerUtilities(): void
     {
         Event::on(
             Utilities::class,
             Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            static function (RegisterComponentTypesEvent $event) {
                 $event->types[] = QARRUtilityUtility::class;
             }
         );

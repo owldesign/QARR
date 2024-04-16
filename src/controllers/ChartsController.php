@@ -17,8 +17,13 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\ChartHelper;
 use craft\helpers\DateTimeHelper;
 
+use DateTime;
+use DateTimeZone;
 use owldesign\qarr\elements\db\Table;
 use owldesign\qarr\QARR;
+use yii\base\Exception;
+use yii\web\BadRequestHttpException;
+use yii\web\Response;
 
 class ChartsController extends ElementIndexesController
 {
@@ -29,18 +34,16 @@ class ChartsController extends ElementIndexesController
     /**
      * Get status stats
      *
-     * @return \yii\web\Response
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws BadRequestHttpException
      */
-    public function actionGetStatusStats(): \yii\web\Response
+    public function actionGetStatusStats(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
         $variables = [];
         $entries = $this->getElementQuery()->all();
-
-        ray($entries);
 
         $this->_setCount($variables, $entries);
         $this->_setHandle($variables);
@@ -59,10 +62,10 @@ class ChartsController extends ElementIndexesController
     /**
      * Reviews stats
      *
-     * @return \yii\web\Response
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws BadRequestHttpException
      */
-    public function actionGetReviewsStats(): \yii\web\Response
+    public function actionGetReviewsStats(): Response
     {
         $this->requireAcceptsJson();
         $reviews = QARR::$plugin->reviews->getAllReviews();
@@ -98,11 +101,11 @@ class ChartsController extends ElementIndexesController
     /**
      * Get all reviews for specified date
      *
-     * @return \yii\web\Response
-     * @throws \yii\base\Exception
-     * @throws \yii\web\BadRequestHttpException
+     * @return Response
+     * @throws Exception
+     * @throws BadRequestHttpException
      */
-    public function actionGetEntriesCount(): \yii\web\Response
+    public function actionGetEntriesCount(): Response
     {
         $startDateParam = $this->request->getRequiredBodyParam('startDate');
         $endDateParam = $this->request->getRequiredBodyParam('endDate');
@@ -112,13 +115,13 @@ class ChartsController extends ElementIndexesController
         $endDate = DateTimeHelper::toDateTime($endDateParam);
 
         // Start at midnight on the start date, end at midnight after the end date
-        $timeZone = new \DateTimeZone(Craft::$app->getTimeZone());
-        $startDate = new \DateTime($startDate->format('Y-m-d'), $timeZone);
-        $endDate = new \DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
+        $timeZone = new DateTimeZone(Craft::$app->getTimeZone());
+        $startDate = new DateTime($startDate->format('Y-m-d'), $timeZone);
+        $endDate = new DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
 
         $intervalUnit = 'day';
 
-        if ($elementType == 'owldesign\\qarr\\elements\\Review') {
+        if ($elementType === 'owldesign\\qarr\\elements\\Review') {
             $table = Table::REVIEWS;
         } else {
             $table = Table::QUESTIONS;

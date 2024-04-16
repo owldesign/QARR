@@ -26,9 +26,6 @@ class Rule extends Model
     public $dateCreated;
     public $dateUpdated;
 
-    /**
-     * @inheritdoc
-     */
     public function __toString()
     {
         return $this->name ?: ((string)$this->name ?: static::class);

@@ -108,11 +108,13 @@ class SetStatus extends ElementAction
      * @param $element
      * @return null|string
      */
-    private function _getType($element)
+    private function _getType($element): ?string
     {
         if ($element === Review::class) {
             return 'reviews';
-        } elseif ($element === Question::class) {
+        }
+
+        if ($element === Question::class) {
             return 'questions';
         }
 

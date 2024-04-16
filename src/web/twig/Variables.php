@@ -251,12 +251,11 @@ class Variables extends Behavior
             }
 
             return Template::raw($html);
-        } else {
-            $variables['reviews'] = $query->all();
-
-            return $variables;
         }
 
+        $variables['reviews'] = $query->all();
+
+        return $variables;
     }
 
     /**
@@ -294,12 +293,11 @@ class Variables extends Behavior
 
         if ($markup) {
             return Template::raw($html);
-        } else {
-            $variables['questions'] = $query->all();
-
-            return $variables;
         }
 
+        $variables['questions'] = $query->all();
+
+        return $variables;
     }
 
     /**
@@ -343,8 +341,9 @@ class Variables extends Behavior
      * Entries by rating
      *
      * @param $elementId
+     * @return mixed
      */
-    public function getEntriesByRating($elementId)
+    public function getEntriesByRating($elementId): mixed
     {
         if (!$elementId) {
             return null;
@@ -357,8 +356,9 @@ class Variables extends Behavior
      * Average rating
      *
      * @param $elementId
+     * @return mixed
      */
-    public function getAverageRating($elementId)
+    public function getAverageRating($elementId): mixed
     {
         if (!$elementId) {
             return null;

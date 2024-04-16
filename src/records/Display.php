@@ -11,14 +11,16 @@
 namespace owldesign\qarr\records;
 
 use craft\db\SoftDeleteTrait;
-use owldesign\qarr\QARR;
-
-use Craft;
-use craft\records\Element;
 use craft\db\ActiveRecord;
 use craft\records\FieldLayout;
 use yii\db\ActiveQueryInterface;
 
+/**
+ *
+ * @property-read mixed $oldFieldLayoutId
+ * @property-read ActiveQueryInterface $fieldLayout
+ * @property-read mixed $oldHandle
+ */
 class Display extends ActiveRecord
 {
     use SoftDeleteTrait;
@@ -29,7 +31,7 @@ class Display extends ActiveRecord
     // Public Static Methods
     // =========================================================================
 
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%qarr_displays}}';
     }
@@ -41,11 +43,11 @@ class Display extends ActiveRecord
      */
     public function getFieldLayout(): ActiveQueryInterface
     {
-        return $this->hasOne(FieldLayout::class,
+        return self::hasOne(FieldLayout::class,
             ['id' => 'fieldLayoutId']);
     }
 
-    function afterFind()
+    function afterFind(): void
     {
         $this->_oldHandle = $this->handle;
         $this->_oldFieldLayoutId = $this->fieldLayoutId;

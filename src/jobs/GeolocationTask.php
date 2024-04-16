@@ -10,36 +10,38 @@
 
 namespace owldesign\qarr\jobs;
 
+use craft\queue\QueueInterface;
+use Exception;
 use owldesign\qarr\QARR;
 use owldesign\qarr\helpers\Countries;
 
 use Craft;
 use craft\helpers\Json;
 use craft\queue\BaseJob;
+use yii\queue\Queue;
 
 class GeolocationTask extends BaseJob
 {
     // Public Properties
     // =========================================================================
 
-    public $ipAddress;
-    public $elementId;
+    public string $ipAddress;
+    public int $elementId;
     public $table;
 
     // Public Methods
     // =========================================================================
 
     /**
-     * @param \craft\queue\QueueInterface|\yii\queue\Queue $queue
-     * @return bool
-     * @throws \yii\db\Exception
+     * @param QueueInterface|Queue $queue
+     * @return void
      */
     public function execute($queue): void
     {
         try {
             $json = file_get_contents('http://ip-api.com/json/'.$this->ipAddress);
 
-            if (!$json || Json::decode($json)['status'] == 'fail') {
+            if (!$json || Json::decode($json)['status'] === 'fail') {
                 $json = file_get_contents('http://api.ipstack.com/'. $this->ipAddress .'?access_key=52190a7c005443842c6b11c70df7f59c&format=1&fields=country_code,country_name,region_name,city,zip');
             }
 
@@ -52,7 +54,7 @@ class GeolocationTask extends BaseJob
                 ->update($this->table, ['geolocation' => Json::encode($geolocation)], ['id' => $this->elementId])
                 ->execute();
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             QARR::log('Geolocation failed to update: ' . $e->getMessage());
         }
     }

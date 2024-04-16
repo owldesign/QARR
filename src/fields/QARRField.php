@@ -17,6 +17,11 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Db;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\db\Schema;
 use craft\helpers\Json;
 
@@ -32,6 +37,9 @@ use craft\helpers\Json;
  * @author    Vadim Goncharov
  * @package   QARR
  * @since     1.0.0
+ *
+ * @property-read string $contentColumnType
+ * @property-read null|string $settingsHtml
  */
 class QARRField extends Field
 {
@@ -43,7 +51,7 @@ class QARRField extends Field
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    public string $someAttribute = 'Some Default';
 
     // Static Methods
     // =========================================================================
@@ -71,14 +79,13 @@ class QARRField extends Field
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
-        $rules = array_merge($rules, [
+        return array_merge($rules, [
             ['someAttribute', 'string'],
             ['someAttribute', 'default', 'value' => 'Some Default'],
         ]);
-        return $rules;
     }
 
     /**
@@ -110,7 +117,7 @@ class QARRField extends Field
      *
      * @return mixed The prepared field value
      */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
     {
         return $value;
     }
@@ -122,13 +129,12 @@ class QARRField extends Field
      *
      * If the method returns `false`, the query will be stopped before it ever gets a chance to execute.
      *
-     * @param ElementQueryInterface $query The element query
-     * @param mixed                 $value The value that was set on this field’s corresponding [[ElementCriteriaModel]] param,
+     * @param mixed $value The value that was set on this field’s corresponding [[ElementCriteriaModel]] param,
      *                                     if any.
-     *
+     * @param ElementInterface|null $element
      * @return null|false `false` in the event that the method is sure that no elements are going to be found.
      */
-    public function serializeValue($value, ElementInterface $element = null)
+    public function serializeValue(mixed $value, ElementInterface $element = null): mixed
     {
         return parent::serializeValue($value, $element);
     }
@@ -224,8 +230,12 @@ class QARRField extends Field
      * [[\craft\web\View::registerJs()]].
      *
      * @return string|null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
@@ -327,13 +337,18 @@ class QARRField extends Field
      * The same principles also apply if you’re including your JavaScript code with
      * [[\craft\web\View::registerJs()]].
      *
-     * @param mixed                 $value           The field’s value. This will either be the [[normalizeValue() normalized value]],
+     * @param mixed $value The field’s value. This will either be the [[normalizeValue() normalized value]],
      *                                               raw POST data (i.e. if there was a validation error), or null
-     * @param ElementInterface|null $element         The element the field is associated with, if there is one
+     * @param ElementInterface|null $element The element the field is associated with, if there is one
      *
      * @return string The input HTML.
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws InvalidConfigException
      */
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getInputHtml(mixed $value, ElementInterface $element = null): string
     {
         // Register our asset bundle
         Craft::$app->getView()->registerAssetBundle(QARRFieldFieldAsset::class);

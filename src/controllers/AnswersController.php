@@ -11,6 +11,7 @@
 namespace owldesign\qarr\controllers;
 
 use Craft;
+use craft\errors\MissingComponentException;
 use craft\web\Controller;
 use craft\helpers\ArrayHelper;
 use craft\web\View;
@@ -28,7 +29,7 @@ use yii\web\Response;
 
 class AnswersController extends Controller
 {
-    protected $allowAnonymous = [
+    protected int|bool|array $allowAnonymous = [
         'save' => self::ALLOW_ANONYMOUS_LIVE,
         'get-hud-modal' => self::ALLOW_ANONYMOUS_LIVE,
         'perform-action' => self::ALLOW_ANONYMOUS_LIVE,
@@ -38,10 +39,13 @@ class AnswersController extends Controller
      * Create modal
      *
      * @return Response
-     * @throws Exception
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function actionGetHudModal()
+    public function actionGetHudModal(): Response
     {
         $this->requirePostRequest();
 
@@ -66,7 +70,7 @@ class AnswersController extends Controller
      * @return null|Response
      * @throws BadRequestHttpException
      */
-    public function actionUpdateStatus()
+    public function actionUpdateStatus(): ?Response
     {
         $this->requirePostRequest();
 
@@ -95,7 +99,7 @@ class AnswersController extends Controller
      * @return null|Response
      * @throws BadRequestHttpException
      */
-    public function actionDelete()
+    public function actionDelete(): ?Response
     {
         $this->requirePostRequest();
 
@@ -121,10 +125,15 @@ class AnswersController extends Controller
      * Save entry
      *
      * @return Response|null
-     * @throws Exception
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws \Throwable
+     * @throws MissingComponentException
      */
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
         $questionId = Craft::$app->getRequest()->getBodyParam('questionId');
@@ -167,10 +176,10 @@ class AnswersController extends Controller
                     'success' => true,
                     'template' => $template
                 ]);
-            } else {
-                Craft::$app->getSession()->setNotice(QARR::t('Answer saved.'));
-                return $this->redirectToPostedUrl($model);
             }
+
+            Craft::$app->getSession()->setNotice(QARR::t('Answer saved.'));
+            return $this->redirectToPostedUrl($model);
         }
 
         Craft::$app->getSession()->setError(QARR::t('Cannot save answer.'));
@@ -181,14 +190,14 @@ class AnswersController extends Controller
                 'success' => false,
                 'errors' => $model->getErrors(),
             ]);
-        } else {
-            Craft::$app->getUrlManager()->setRouteParams([
-                'answer' => $model,
-                'errors' => $model->getErrors(),
-            ]);
-
-            return null;
         }
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'answer' => $model,
+            'errors' => $model->getErrors(),
+        ]);
+
+        return null;
     }
 
     /**
@@ -197,7 +206,7 @@ class AnswersController extends Controller
      * @return Response
      * @throws BadRequestHttpException
      */
-    public function actionRemoveReplies()
+    public function actionRemoveReplies(): Response
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();

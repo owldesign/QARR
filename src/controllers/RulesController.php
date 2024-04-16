@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\controllers;
 
+use craft\errors\MissingComponentException;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use owldesign\qarr\models\Rule;
@@ -17,6 +18,9 @@ use owldesign\qarr\QARR;
 
 use Craft;
 use craft\web\Controller;
+use yii\base\ExitException;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use function Couchbase\defaultDecoder;
@@ -56,8 +60,8 @@ class RulesController extends Controller
      * @param Rule|null $rule
      * @return Response
      * @throws NotFoundHttpException
-     * @throws \yii\base\ExitException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ExitException
+     * @throws ForbiddenHttpException
      */
     public function actionEdit(int $ruleId = null, Rule $rule = null): Response
     {
@@ -105,11 +109,11 @@ class RulesController extends Controller
      *
      * @return Response|null
      * @throws NotFoundHttpException
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -122,7 +126,7 @@ class RulesController extends Controller
         $rule->enabled = (bool)$request->getBodyParam('enabled');
         $rule->icon = $request->getBodyParam('icon');
 
-        if ($request->getBodyParam('data') != '' && $request->getBodyParam('data') != '[]') {
+        if ($request->getBodyParam('data') != '' && $request->getBodyParam('data') !== '[]') {
             $rule->data = Json::decode($request->getBodyParam('data'));
             $rule->data = StringHelper::toString($rule->data);
         }
@@ -183,8 +187,8 @@ class RulesController extends Controller
      * Delete
      *
      * @return Response
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionDelete(): Response
     {
@@ -205,9 +209,9 @@ class RulesController extends Controller
 
     /**
      * @param Rule $rule
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
-    private function _enforceEditRulePermissions(Rule $rule)
+    private function _enforceEditRulePermissions(Rule $rule): void
     {
         $this->requirePermission('qarr:editRules');
     }
@@ -236,7 +240,7 @@ class RulesController extends Controller
     /**
      * @param Rule $rule
      */
-    private function _populateRuleModel(Rule $rule)
+    private function _populateRuleModel(Rule $rule): void
     {
         $request = Craft::$app->getRequest();
 

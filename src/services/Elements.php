@@ -439,7 +439,7 @@ class Elements extends Component
         return 'craft\\elements\\Entry';
     }
 
-    public function markElementsAsDeletedByElementId($elementId, $date): true
+    public function markElementsAsDeletedByElementId($elementId, $date): bool
     {
         $reviews = Craft::$app->getDb()->createCommand()
             ->update('{{%qarr_reviews}}',

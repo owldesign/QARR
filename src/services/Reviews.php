@@ -10,6 +10,8 @@
 
 namespace owldesign\qarr\services;
 
+use craft\base\ElementInterface;
+use craft\elements\db\ElementQueryInterface;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Review;
 use owldesign\qarr\records\Review as ReviewRecord;
@@ -17,10 +19,14 @@ use owldesign\qarr\records\Review as ReviewRecord;
 use Craft;
 use craft\base\Component;
 use craft\helpers\ArrayHelper;
+use Throwable;
+use yii\db\Exception;
 
 /**
  * Class Reviews
  * @package owldesign\qarr\services
+ *
+ * @property-read array $allReviews
  */
 class Reviews extends Component
 {
@@ -60,7 +66,7 @@ class Reviews extends Component
 
     /**
      * @param $productId
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
 //    public function getReviewsByProductId($productId)
 //    {
@@ -73,9 +79,9 @@ class Reviews extends Component
 
     /**
      * @param int $entryId
-     * @return array|\craft\base\ElementInterface|null
+     * @return array|ElementInterface|null
      */
-    public function getEntryById(int $entryId)
+    public function getEntryById(int $entryId): ElementInterface|array|null
     {
         if (!$entryId) {
             return null;
@@ -91,10 +97,10 @@ class Reviews extends Component
     /**
      * @param Review $review
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function saveReview(Review $review)
+    public function saveReview(Review $review): bool
     {
         $isNewReview = !$review->id;
 
@@ -141,10 +147,10 @@ class Reviews extends Component
     /**
      * @param Review $review
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function deleteEntry(Review $review)
+    public function deleteEntry(Review $review): bool
     {
         $transaction = Craft::$app->db->beginTransaction();
 
@@ -172,10 +178,10 @@ class Reviews extends Component
      *
      * @param $entries
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function deleteEntries($entries)
+    public function deleteEntries($entries): bool
     {
         foreach ($entries as $key => $entry) {
 

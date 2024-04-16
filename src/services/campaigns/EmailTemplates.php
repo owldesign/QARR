@@ -18,11 +18,16 @@ use Craft;
 use craft\base\Component;
 use owldesign\qarr\QARR;
 use owldesign\qarr\records\EmailTemplate as EmailTemplateRecord;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
 use yii\base\Exception;
 
 /**
  * Class Reviews
  * @package owldesign\qarr\services
+ *
+ * @property-read array $allEmailTemplates
  */
 class EmailTemplates extends Component
 {
@@ -77,7 +82,7 @@ class EmailTemplates extends Component
      * @param int $templateId
      * @return EmailTemplate|null
      */
-    public function getEmailTemplateById(int $templateId)
+    public function getEmailTemplateById(int $templateId): ?EmailTemplate
     {
         return ArrayHelper::firstWhere($this->getAllEmailTemplates(), 'id', $templateId);
     }
@@ -88,7 +93,7 @@ class EmailTemplates extends Component
      * @param int $uid
      * @return EmailTemplate|null
      */
-    public function getEmailTemplateByUid(int $uid)
+    public function getEmailTemplateByUid(int $uid): ?EmailTemplate
     {
         return ArrayHelper::firstWhere($this->getAllEmailTemplates(), 'uid', $uid, true);
     }
@@ -99,7 +104,7 @@ class EmailTemplates extends Component
      * @param string $templateHandle
      * @return EmailTemplate|null
      */
-    public function getEmailTemplateByHandle(string $templateHandle)
+    public function getEmailTemplateByHandle(string $templateHandle): ?EmailTemplate
     {
         return ArrayHelper::firstWhere($this->getAllEmailTemplates(), 'handle', $templateHandle, true);
     }
@@ -111,7 +116,7 @@ class EmailTemplates extends Component
      * @return bool
      * @throws Exception
      */
-    public function save(EmailTemplate $template)
+    public function save(EmailTemplate $template): bool
     {
         $isNewEmailTemplate = !$template->id;
 
@@ -155,7 +160,7 @@ class EmailTemplates extends Component
      * Get email template suggestions for custom templates
      *
      * @return array
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function emailTemplateSuggestions(): array
     {
@@ -166,13 +171,13 @@ class EmailTemplates extends Component
             return [];
         }
 
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root));
-        /** @var \SplFileInfo[] $files */
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root));
+        /** @var SplFileInfo[] $files */
         $files = [];
         $pathLengths = [];
 
         foreach ($iterator as $file) {
-            /** @var \SplFileInfo $file */
+            /** @var SplFileInfo $file */
             if (!$file->isDir() && $file->getFilename()[0] !== '.') {
                 $files[] = $file;
                 $pathLengths[] = strlen($file->getRealPath());
@@ -205,7 +210,7 @@ class EmailTemplates extends Component
 
             // Is it in a site template directory?
             foreach ($sites as $handle => $name) {
-                if (strpos($template, $handle . DIRECTORY_SEPARATOR) === 0) {
+                if (str_starts_with($template, $handle . DIRECTORY_SEPARATOR)) {
                     $hint = $name;
                     $template = substr($template, strlen($handle) + 1);
                     break;
@@ -238,13 +243,13 @@ class EmailTemplates extends Component
     // Private Methods
     // =========================================================================
 
-    private function _createEmailTemplateFromRecord(EmailTemplateRecord $templateRecord = null)
+    private function _createEmailTemplateFromRecord(EmailTemplateRecord $templateRecord = null): ?EmailTemplate
     {
         if (!$templateRecord) {
             return null;
         }
 
-        $template = new EmailTemplate($templateRecord->toArray([
+        return new EmailTemplate($templateRecord->toArray([
             'id',
             'name',
             'handle',
@@ -257,7 +262,5 @@ class EmailTemplates extends Component
             'settings',
             'options',
         ]));
-
-        return $template;
     }
 }

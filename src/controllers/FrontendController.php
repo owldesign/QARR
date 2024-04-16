@@ -33,8 +33,11 @@ class FrontendController extends Controller
      * Build modal
      *
      * @return Response
-     * @throws Exception
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function actionGetModalContent(): Response
     {

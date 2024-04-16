@@ -23,7 +23,10 @@ use craft\base\Component;
 use craft\helpers\ArrayHelper;
 use craft\db\Query;
 use owldesign\qarr\rules\RuleChecker;
+use Throwable;
 use yii\base\Exception;
+use yii\db\ActiveRecord;
+use yii\db\StaleObjectException;
 
 /**
  * Class Reviews
@@ -48,7 +51,7 @@ class Rules extends Component
     /**
      * @var bool
      */
-    private $_fetchedAllRules = false;
+    private bool $_fetchedAllRules = false;
 
     // Public Methods
     // =========================================================================
@@ -91,10 +94,10 @@ class Rules extends Component
      *
      * @param $element
      * @param $elementType
-     * @throws \Throwable
+     * @throws Throwable
      * @throws \yii\db\Exception
      */
-    public function applyRules($element, $elementType)
+    public function applyRules($element, $elementType): void
     {
         $rules = $this->getAllRules(true);
         $config = Craft::$app->config->getConfigFromFile('qarr');
@@ -130,10 +133,10 @@ class Rules extends Component
      * @param $elementType
      * @param $rules
      * @return bool
-     * @throws \Throwable
+     * @throws Throwable
      * @throws \yii\db\Exception
      */
-    public function performRules($element, $elementType, $rules)
+    public function performRules($element, $elementType, $rules): bool
     {
         foreach ($rules as $rule) {
             if (is_string($rule->data)) {
@@ -144,7 +147,7 @@ class Rules extends Component
 
             $checker = new RuleChecker($data);
 
-            if ($elementType == 'question') {
+            if ($elementType === 'question') {
                 $result = $checker->filter($element['question'], true);
             } else {
                 $result = $checker->filter($element['feedback'], true);
@@ -163,7 +166,7 @@ class Rules extends Component
      * @param int $elementId
      * @param null $details
      * @return bool
-     * @throws \Throwable
+     * @throws Throwable
      * @throws \yii\db\Exception
      */
     public function flagElement(int $ruleId, int $elementId, $details = null): bool
@@ -182,7 +185,7 @@ class Rules extends Component
             $record->save(false);
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
 
             throw $e;
@@ -197,7 +200,7 @@ class Rules extends Component
      * @param $elementId
      * @return array|null
      */
-    public function getFlagged($elementId)
+    public function getFlagged($elementId): ?array
     {
         $flags = [];
 
@@ -222,26 +225,26 @@ class Rules extends Component
 
     /**
      * @param int $id
-     * @return array|null|Rule|\yii\db\ActiveRecord
+     * @return array|null|Rule|ActiveRecord
      */
-    public function getRuleById(int $id)
+    public function getRuleById(int $id): Rule|array|ActiveRecord|null
     {
         $query = RuleRecord::find()
             ->where(['id' => $id]);
 
         $record = $query->one();
 
-        $record = new Rule($record->toArray(['id', 'name', 'handle', 'enabled', 'data', 'icon', 'settings', 'options', 'dateCreated', 'dateUpdated']));
-
-        return $record;
+        return new Rule($record->toArray(['id', 'name', 'handle', 'enabled', 'data', 'icon', 'settings', 'options', 'dateCreated', 'dateUpdated']));
     }
 
-    public function getFlaggedCountByRuleId($id)
+    /**
+     * @param $id
+     * @return bool|int|string|null
+     */
+    public function getFlaggedCountByRuleId($id): bool|int|string|null
     {
-        $query = FlaggedRecord::find()
-            ->where(['ruleId' => $id]);
-        
-        return $query->count();
+        return FlaggedRecord::find()
+            ->where(['ruleId' => $id])->count();
     }
 
     /**
@@ -293,10 +296,10 @@ class Rules extends Component
      *
      * @param $id
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
-    public function deleteRuleById($id)
+    public function deleteRuleById($id): bool
     {
         $record = RuleRecord::find()
             ->where(['id' => $id])
@@ -319,10 +322,10 @@ class Rules extends Component
      *
      * @param $elementId
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
-    public function removeRecord($elementId)
+    public function removeRecord($elementId): bool
     {
         $records = FlaggedRecord::find()
             ->where(['elementId' => $elementId])

@@ -12,6 +12,7 @@ namespace owldesign\qarr\controllers;
 
 use Craft;
 use craft\db\Paginator;
+use craft\errors\MissingComponentException;
 use craft\helpers\AdminTable;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
@@ -99,8 +100,11 @@ class ElementsController extends Controller
      * Query builder for elements
      *
      * @return Response
-     * @throws Exception
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function actionQueryElements(): Response
     {
@@ -134,6 +138,9 @@ class ElementsController extends Controller
      * @return Response
      * @throws BadRequestHttpException
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function actionQuerySortElements(): Response
     {
@@ -160,7 +167,16 @@ class ElementsController extends Controller
         ]);
     }
 
-    public function actionQueryRenderElements($kind = 'reviews'): Response
+    /**
+     * @param string $kind
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function actionQueryRenderElements(string $kind = 'reviews'): Response
     {
         $this->requirePostRequest();
 
@@ -199,8 +215,11 @@ class ElementsController extends Controller
      * Star filtered elements
      *
      * @return Response
-     * @throws Exception
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function actionQueryStarFilteredElements(): Response
     {
@@ -285,10 +304,11 @@ class ElementsController extends Controller
      * Fetch pending items
      *
      * @return Response
+     * @throws BadRequestHttpException
+     * @throws Exception
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws BadRequestHttpException
      */
     public function actionFetchPendingItems(): Response
     {
@@ -316,8 +336,9 @@ class ElementsController extends Controller
     /**
      * Report abuse
      *
-     * @return bool|Response
+     * @return Response|bool|null
      * @throws BadRequestHttpException
+     * @throws MissingComponentException
      */
     public function actionReportAbuse(): Response|bool|null
     {
@@ -340,25 +361,25 @@ class ElementsController extends Controller
                     'success' => true,
                     'entry' => $entry
                 ]);
-            } else {
-                Craft::$app->getSession()->setNotice(QARR::t('Abuse reported'));
-
-                return $this->redirectToPostedUrl($entry);
             }
-        } else {
-            if (Craft::$app->getRequest()->getIsAjax()) {
-                return $this->asJson([
-                    'success' => false
-                ]);
-            } else {
-                Craft::$app->getSession()->setError(QARR::t('Cannot report abuse'));
 
-                Craft::$app->getUrlManager()->setRouteParams([
-                    'message' => QARR::t('Cannot report abuse'),
-                    'errors' => $result,
-                ]);
-            }
+            Craft::$app->getSession()->setNotice(QARR::t('Abuse reported'));
+
+            return $this->redirectToPostedUrl($entry);
         }
+
+        if (Craft::$app->getRequest()->getIsAjax()) {
+            return $this->asJson([
+                'success' => false
+            ]);
+        }
+
+        Craft::$app->getSession()->setError(QARR::t('Cannot report abuse'));
+
+        Craft::$app->getUrlManager()->setRouteParams([
+            'message' => QARR::t('Cannot report abuse'),
+            'errors' => $result,
+        ]);
 
         return null;
     }
@@ -487,8 +508,8 @@ class ElementsController extends Controller
     {
         if (new $elementType instanceof Review) {
             return 'reviews';
-        } else {
-            return 'questions';
         }
+
+        return 'questions';
     }
 }

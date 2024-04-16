@@ -10,6 +10,8 @@
 
 namespace owldesign\qarr\services;
 
+use craft\base\ElementInterface;
+use craft\elements\db\ElementQueryInterface;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Question;
 use owldesign\qarr\records\Question as QuestionRecord;
@@ -17,6 +19,8 @@ use owldesign\qarr\records\Question as QuestionRecord;
 use Craft;
 use craft\base\Component;
 use craft\helpers\ArrayHelper;
+use Throwable;
+use yii\db\Exception;
 
 /**
  * Class Questions
@@ -63,7 +67,7 @@ class Questions extends Component
     /**
      * @param $productId
      * @param int $offset
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
 //    public function paginateQuestionsByProductId($productId, $offset = 0)
 //    {
@@ -78,7 +82,7 @@ class Questions extends Component
 
     /**
      * @param $productId
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
 //    public function getQuestionsByProductId($productId)
 //    {
@@ -91,9 +95,9 @@ class Questions extends Component
 
     /**
      * @param int $entryId
-     * @return array|\craft\base\ElementInterface|null
+     * @return array|ElementInterface|null
      */
-    public function getEntryById(int $entryId)
+    public function getEntryById(int $entryId): ElementInterface|array|null
     {
         if (!$entryId) {
             return null;
@@ -109,10 +113,10 @@ class Questions extends Component
     /**
      * @param Question $review
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function saveReview(Question $review)
+    public function saveReview(Question $review): bool
     {
         $isNewQuestion = !$review->id;
 
@@ -157,12 +161,12 @@ class Questions extends Component
     }
 
     /**
-     * @param Question $review
+     * @param Question $question
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Exception
+     * @throws Throwable
      */
-    public function deleteEntry(Question $question)
+    public function deleteEntry(Question $question): bool
     {
         $transaction = Craft::$app->db->beginTransaction();
 
@@ -188,10 +192,10 @@ class Questions extends Component
     /**
      * @param $entries
      * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\Exception
+     * @throws Throwable
+     * @throws Exception
      */
-    public function deleteEntries($entries)
+    public function deleteEntries($entries): bool
     {
         foreach ($entries as $key => $entry) {
             if ($entry) {

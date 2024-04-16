@@ -22,14 +22,14 @@ class DisplayQuery extends ElementQuery
     // Public Properties
     // =========================================================================
 
-    public $id;
-    public $name;
-    public $handle;
-    public $fieldLayoutId;
-    public $titleFormat;
+    public mixed $id;
+    public string $name;
+    public string $handle;
+    public int $fieldLayoutId;
+    public string $titleFormat;
     public $options;
-    public $totalSubmissions;
-    public $customTemplates;
+    public int $totalSubmissions;
+    public string $customTemplates;
 
     // Public Methods
     // =========================================================================
@@ -53,7 +53,7 @@ class DisplayQuery extends ElementQuery
      *
      * @return static self reference
      */
-    public function name($value)
+    public function name($value): static
     {
         $this->name = $value;
 
@@ -67,13 +67,13 @@ class DisplayQuery extends ElementQuery
      *
      * @return static self reference
      */
-    public function handle($value)
+    public function handle($value): static
     {
         $this->handle = $value;
         return $this;
     }
 
-    public function id($value)
+    public function id($value): ElementQuery
     {
         $this->id = $value;
         return $this;

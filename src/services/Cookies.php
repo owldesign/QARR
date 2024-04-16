@@ -10,20 +10,14 @@
 
 namespace owldesign\qarr\services;
 
-use craft\helpers\Json;
-use owldesign\qarr\QARR;
-use owldesign\qarr\elements\Display;
-use owldesign\qarr\records\Display as DisplayRecord;
-
-
 use Craft;
 use craft\base\Component;
-use craft\helpers\ArrayHelper;
-use yii\base\Exception;
 
+/**
+ */
 class Cookies extends Component
 {
-    public function set($name = '', $value = '', $expire = 0, $path = '/', $domain = '', $secure = false, $httpOnly = false)
+    public function set($name = '', $value = '', $expire = 0, $path = '/', $domain = '', $secure = false, $httpOnly = false): void
     {
         if (empty($value)) {
             Craft::$app->response->cookies->remove($name);
@@ -37,10 +31,6 @@ class Cookies extends Component
 
     public function get($name = '')
     {
-        $result = '';
-        if (isset($_COOKIE[$name])) {
-            $result = $_COOKIE[$name];
-        }
-        return $result;
+        return $_COOKIE[$name] ?? '';
     }
 }

@@ -18,9 +18,6 @@ class Reply extends Model
     public $dateCreated;
     public $dateUpdated;
 
-    /**
-     * @inheritdoc
-     */
     public function __toString()
     {
         return $this->reply ?: ((string)$this->reply ?: static::class);
@@ -30,7 +27,7 @@ class Reply extends Model
      * Get author of the reply
      *
      */
-    public function getAuthor()
+    public function getAuthor(): ?\craft\elements\User
     {
         return Craft::$app->getusers()->getUserById($this->authorId);
     }

@@ -7,7 +7,7 @@ use craft\web\AssetBundle;
 
 class Counterup extends AssetBundle
 {
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = "@libs";
 

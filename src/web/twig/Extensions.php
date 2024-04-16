@@ -17,10 +17,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
     // Public Methods
     // =========================================================================
 
-    /**
-     * @inheritdoc
-     */
-    public function getName()
+    public function getName(): string
     {
         return 'qarr';
     }
@@ -28,7 +25,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
     /**
      * @inheritdoc
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new \Twig\TwigFilter('qarr_json_decode', [$this, 'json_decode']),
@@ -47,15 +44,15 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param array $array
      * @return object
      */
-    public function toObject($array)
+    public function toObject($array): object
     {
-        return (object) $array;
+        return (object)$array;
     }
 
     /**
      * @return array|\Twig_Function[]
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new \Twig\TwigFunction('flaggedWords', [$this, 'flaggedWords']),
@@ -69,7 +66,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param $json
      * @return mixed
      */
-    public function json_decode($json)
+    public function json_decode($json): mixed
     {
         return json_decode($json);
     }
@@ -79,9 +76,8 @@ class Extensions extends \Twig\Extension\AbstractExtension
      *
      * @param $object
      * @return string
-     * @throws \ReflectionException
      */
-    public function getClass($object)
+    public function getClass($object): string
     {
         return (new \ReflectionClass($object))->getShortName();
     }
@@ -92,22 +88,22 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param $time
      * @return string
      */
-    public function getTimeAgo($time)
+    public function getTimeAgo($time): string
     {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
-        $lengths = array("60","60","24","7","4.35","12","10");
+        $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
 
         $now = time();
-        $difference     = $now - strtotime($time);
+        $difference = $now - strtotime($time);
 
-        for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+        for ($j = 0; $difference >= $lengths[$j] && $j < count($lengths) - 1; $j++) {
             $difference /= $lengths[$j];
         }
 
         $difference = round($difference);
 
-        if($difference != 1) {
-            $periods[$j].= "s";
+        if ($difference != 1) {
+            $periods[$j] .= "s";
         }
 
         return "$difference $periods[$j]";
@@ -118,24 +114,26 @@ class Extensions extends \Twig\Extension\AbstractExtension
      *
      * @param $browser
      */
-    public function browser($browser)
+    public function browser($browser): void
     {
-        if(strpos($browser, 'MSIE') !== FALSE)
+        if (str_contains($browser, 'MSIE')) {
             echo 'Internet explorer';
-        elseif(strpos($browser, 'Trident') !== FALSE) //For Supporting IE 11
+        } elseif (str_contains($browser, 'Trident')) //For Supporting IE 11
+        {
             echo 'Internet explorer';
-        elseif(strpos($browser, 'Firefox') !== FALSE)
+        } elseif (str_contains($browser, 'Firefox')) {
             echo 'Mozilla Firefox';
-        elseif(strpos($browser, 'Chrome') !== FALSE)
+        } elseif (str_contains($browser, 'Chrome')) {
             echo 'Google Chrome';
-        elseif(strpos($browser, 'Opera Mini') !== FALSE)
+        } elseif (str_contains($browser, 'Opera Mini')) {
             echo "Opera Mini";
-        elseif(strpos($browser, 'Opera') !== FALSE)
+        } elseif (str_contains($browser, 'Opera')) {
             echo "Opera";
-        elseif(strpos($browser, 'Safari') !== FALSE)
+        } elseif (str_contains($browser, 'Safari')) {
             echo "Safari";
-        else
+        } else {
             echo 'Unknown';
+        }
     }
 
     /**
@@ -145,7 +143,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param int $precision
      * @return string
      */
-    public function formatBytes($bytes, $precision = 0)
+    public function formatBytes($bytes, int $precision = 0): string
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB');
         $bytes = max($bytes, 0);
@@ -153,7 +151,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
         $pow = min($pow, count($units) - 1);
 
         // Uncomment one of the following alternatives
-        $bytes /= pow(1024, $pow);
+        $bytes /= 1024 ** $pow;
 
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
@@ -165,7 +163,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param $value
      * @return array
      */
-    public function valueOutOfArray(array $array, $value)
+    public function valueOutOfArray(array $array, $value): array
     {
         $result = [];
 
@@ -185,17 +183,18 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param null $url
      * @return bool|string
      */
-    function truncate($text, $chars = 120, $readMore = 'read the rest', $url = null) {
-        if(strlen($text) > $chars) {
-            $text = $text.' ';
+    public function truncate($text, int $chars = 120, string $readMore = 'read the rest', $url = null): bool|string
+    {
+        if (strlen($text) > $chars) {
+            $text .= ' ';
             $text = substr($text, 0, $chars);
-            $text = substr($text, 0, strrpos($text ,' '));
+            $text = substr($text, 0, strrpos($text, ' '));
 
             if ($url) {
-                $url = '<a href="'. $url .'" class="qarr-btn-link" target="_blank">'. $readMore .'</a>';
+                $url = '<a href="' . $url . '" class="qarr-btn-link" target="_blank">' . $readMore . '</a>';
             }
 
-            $text = $text . '... ' . ($url ? $url : $url);
+            $text .= '... ' . ($url ?: $url);
         }
         return $text;
     }
@@ -207,12 +206,12 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param array $rules
      * @return null|string|string[]
      */
-    function occurrence(string $string, array $rules)
+    public function occurrence(string $string, array $rules): array|string|null
     {
         $wordList = [];
         $patterns = [];
 
-        foreach($rules as $rule => $words) {
+        foreach ($rules as $rule => $words) {
             foreach ($words as $word) {
                 if (!in_array($word, $wordList)) {
                     $patterns[] = '/\b' . $word . '\b/i';
@@ -221,9 +220,7 @@ class Extensions extends \Twig\Extension\AbstractExtension
             }
         }
 
-        $result = preg_replace($patterns, '<span class="matched-word">$0</span>', $string);
-
-        return $result;
+        return preg_replace($patterns, '<span class="matched-word">$0</span>', $string);
     }
 
     /**
@@ -232,10 +229,10 @@ class Extensions extends \Twig\Extension\AbstractExtension
      * @param array $flags
      * @return array
      */
-    function flaggedWords($flags)
+    public function flaggedWords($flags): array
     {
         $result = [];
-        
+
         if ($flags) {
 
             foreach ($flags as $flag) {

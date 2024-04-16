@@ -133,9 +133,7 @@ class Geolocations extends Component
             }
         }
 
-        $geolocations = $cache->get('geolocations');
-
-        return $geolocations;
+        return $cache->get('geolocations');
     }
 
     /**
@@ -143,7 +141,7 @@ class Geolocations extends Component
      *
      * @return bool
      */
-    public function reset()
+    public function reset(): bool
     {
         Craft::$app->getCache()->delete('geolocations');
 

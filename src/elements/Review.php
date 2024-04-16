@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\elements;
 
+use craft\elements\User;
 use craft\helpers\Json;
 use craft\models\Section;
 use craft\web\View;
@@ -35,15 +36,25 @@ use yii\validators\EmailValidator;
 /**
  * Class Review
  * @package owldesign\qarr\elements
+ *
+ * @property-read mixed $settings
+ * @property-read User|null $author
+ * @property-read mixed $flags
+ * @property-read bool $commerce
+ * @property-read mixed $reply
+ * @property-read User|null $user
+ * @property-read string $elementType
+ * @property-read null|false|mixed $customer
+ * @property null|\craft\base\Element|\craft\base\ElementInterface $element
  */
 class Review extends Element
 {
     // Constants
     // =========================================================================
 
-    const STATUS_PENDING = 'pending';
-    const STATUS_APPROVED = 'approved';
-    const STATUS_REJECTED = 'rejected';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
 
     // Properties
     // =========================================================================
@@ -210,7 +221,7 @@ class Review extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new ReviewQuery(get_called_class());
+        return new ReviewQuery(static::class);
     }
 
     // Public Methods
@@ -620,7 +631,7 @@ class Review extends Element
      *
      * @return mixed
      */
-    public function getReply()
+    public function getReply(): mixed
     {
         return QARR::$plugin->replies->getReply($this->id);
     }
@@ -630,7 +641,7 @@ class Review extends Element
      *
      * @return mixed
      */
-    public function getCustomer()
+    public function getCustomer(): mixed
     {
         if ($this->commerce) {
             $customer = null;
@@ -641,9 +652,9 @@ class Review extends Element
             }
 
             return $customer;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -655,11 +666,11 @@ class Review extends Element
     {
         $class = get_class($this->element);
 
-        if ($class == 'craft\commerce\elements\Product') {
+        if ($class === 'craft\commerce\elements\Product') {
             return 'product';
         }
 
-        if ($class == 'craft\elements\Entry') {
+        if ($class === 'craft\elements\Entry') {
             $section = $this->element->section->type;
 
             return $section;
@@ -704,9 +715,9 @@ class Review extends Element
     /**
      * Entry user
      *
-     * @return \craft\elements\User|null
+     * @return User|null
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
@@ -714,14 +725,14 @@ class Review extends Element
     /**
      * Entry author
      *
-     * @return \craft\elements\User|null
+     * @return User|null
      */
-    public function getAuthor(): ?\craft\elements\User
+    public function getAuthor(): ?User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
 
-    public function hasPurchased()
+    public function hasPurchased(): CommerceOrder|bool|array|null
     {
         $commerce = $this->getCommerce();
 
@@ -729,7 +740,7 @@ class Review extends Element
             return false;
         }
 
-        if ($this->getElementType() != 'product') {
+        if ($this->getElementType() !== 'product') {
             return false;
         }
 
@@ -775,9 +786,7 @@ class Review extends Element
      */
     public function getFlags(): mixed
     {
-        $result = QARR::$plugin->rules->getFlagged($this->id);
-
-        return $result;
+        return QARR::$plugin->rules->getFlagged($this->id);
     }
 
     /**
@@ -807,9 +816,7 @@ class Review extends Element
      */
     public function getCommerce(): bool
     {
-        $commerce = Craft::$app->getPlugins()->isPluginEnabled('commerce');
-
-        return $commerce;
+        return Craft::$app->getPlugins()->isPluginEnabled('commerce');
     }
 
     // Events

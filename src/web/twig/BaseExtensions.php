@@ -18,7 +18,7 @@ class BaseExtensions extends AbstractExtension implements GlobalsInterface
     // Public Methods
     // =========================================================================
 
-    public function getName()
+    public function getName(): string
     {
         return 'QARR Base';
     }
@@ -36,7 +36,7 @@ class BaseExtensions extends AbstractExtension implements GlobalsInterface
     /**
      * @inheritdoc
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new \Twig\TwigFilter('getClass', [$this, 'getClass']),
@@ -50,7 +50,7 @@ class BaseExtensions extends AbstractExtension implements GlobalsInterface
      * @return string
      * @throws \ReflectionException
      */
-    public function getClass($object)
+    public function getClass($object): string
     {
         return (new \ReflectionClass($object))->getShortName();
     }

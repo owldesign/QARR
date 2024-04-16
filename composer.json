@@ -2,9 +2,10 @@
     "name": "owldesign/qarr",
     "description": "Questions & Answers and Reviews & Ratings",
     "type": "craft-plugin",
-    "version": "2.0.0",
+    "version": "4.0.0",
     "keywords": [
         "craft",
+        "craft 4",
         "cms",
         "craftcms",
         "craft-plugin",

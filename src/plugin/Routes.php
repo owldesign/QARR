@@ -19,12 +19,12 @@ trait Routes
     // Private Methods
     // =========================================================================
 
-    private function _registerCpRoutes()
+    private function _registerCpRoutes(): void
     {
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            static function (RegisterUrlRulesEvent $event) {
                 $event->rules['qarr'] = 'qarr/dashboard/index';
 
                 $event->rules['qarr/displays'] = 'qarr/displays/index';
@@ -56,12 +56,12 @@ trait Routes
         );
     }
 
-    private function _registerSiteRoutes()
+    private function _registerSiteRoutes(): void
     {
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function(RegisterUrlRulesEvent $event) {
+            static function(RegisterUrlRulesEvent $event) {
                 $event->rules['qarr/direct/<slug:[^\\/]+>'] = 'qarr/campaigns/direct-links/form';
                 $event->rules['c/r'] = 'qarr/campaigns/direct/review';
                 $event->rules['c/q'] = 'qarr/campaigns/direct/question';
