@@ -28,9 +28,6 @@ class DirectLink extends Model
     public $dateCreated;
     public $dateUpdated;
 
-    /**
-     * @inheritdoc
-     */
     public function __toString()
     {
         return $this->slug ?: ((string)$this->slug ?: static::class);
@@ -39,7 +36,7 @@ class DirectLink extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['slug', 'elementId', 'userId', 'type'], 'required']
@@ -51,7 +48,7 @@ class DirectLink extends Model
      *
      * @return User|null
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         return Craft::$app->users->getUserById($this->userId);
     }
@@ -61,7 +58,7 @@ class DirectLink extends Model
      *
      * @return ElementInterface
      */
-    public function getElement()
+    public function getElement(): ElementInterface
     {
         return Craft::$app->elements->getElementById($this->elementId);
     }

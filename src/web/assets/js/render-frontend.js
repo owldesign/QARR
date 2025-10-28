@@ -4,8 +4,9 @@ var __webpack_exports__ = {};
   !*** ./development/js/render-frontend.js ***!
   \*******************************************/
 // Bawe
-QR.FormModal = {}; // Element Index
+QR.FormModal = {};
 
+// Element Index
 QR.ElementIndex = Garnish.Base.extend({
   store: null,
   initialized: false,
@@ -27,33 +28,35 @@ QR.ElementIndex = Garnish.Base.extend({
   reviewForm: null,
   init: function init(id, elementType, settings) {
     this.store = store.namespace('qarr');
-    this.setSettings(JSON.parse(settings), QR.ElementIndex.defaults); // Elements
+    this.setSettings(JSON.parse(settings), QR.ElementIndex.defaults);
 
+    // Elements
     this.$elements = $('[data-qarr-elements]');
     this.elements = this.$elements ? new QR.ElementsView(this.$elements, this) : null;
-    this.elementType = elementType; // Sort
+    this.elementType = elementType;
 
+    // Sort
     var $sort = $('[data-qarr-sort]');
     this.sort = $sort ? new QR.Sort($sort) : null;
-
     if (this.sort) {
       this.sort.on('sortselected', $.proxy(this, '_handleSortChange'));
-    } // Pagination
+    }
 
-
+    // Pagination
     var $pagination = $('[data-qarr-pagination]');
     this.pagination = $pagination ? new QR.Pagination($pagination, this) : null;
-
     if (this.pagination) {
       this.pagination.on('pageInfoReady', this._paginationIsReady);
-    } // Loader
+    }
 
+    // Loader
+    this.loader = new QR.Loader(this);
 
-    this.loader = new QR.Loader(this); // Review Form
-
+    // Review Form
     var $reviewForm = $('[data-qarr-review-form]');
-    this.reviewForm = $reviewForm ? new QR.ReviewForm($reviewForm, this) : null; // Start
+    this.reviewForm = $reviewForm ? new QR.ReviewForm($reviewForm, this) : null;
 
+    // Start
     this.initialized = true;
     this.afterInit();
     this.setPage();
@@ -64,19 +67,15 @@ QR.ElementIndex = Garnish.Base.extend({
   },
   updateElements: function updateElements() {
     var _this = this;
-
     this.loader.show();
-
     if (!this.initialized) {
       return;
     }
-
     var params = this.getViewParams();
     QRAPI.sendActionRequest('POST', this.settings.updateElementsAction, {
       data: params
     }).then(function (response) {
       _this._updateView(params, response.data);
-
       _this.loader.hide();
     })["catch"](function (e) {
       console.log('A server error occurred: ', e);
@@ -88,7 +87,6 @@ QR.ElementIndex = Garnish.Base.extend({
     } else {
       page = this.getPage();
     }
-
     this.page = page;
     this.store.session.set('page', this.page);
   },
@@ -96,6 +94,7 @@ QR.ElementIndex = Garnish.Base.extend({
     // Can store current page for page refresh
     // let page = this.store.session.get('page')
     // return Math.max(page, 1)
+
     return 1;
   },
   getViewParams: function getViewParams() {
@@ -120,7 +119,6 @@ QR.ElementIndex = Garnish.Base.extend({
   },
   _updateView: function _updateView(params, response) {
     var _this2 = this;
-
     this._countResults().then(function (total) {
       var first = Math.min(_this2.settings.limit * (_this2.page - 1) + 1, total);
       var last = Math.min(first + (_this2.settings.limit - 1), total);
@@ -130,15 +128,15 @@ QR.ElementIndex = Garnish.Base.extend({
         total: total,
         totalPages: Math.max(Math.ceil(total / _this2.settings.limit), 1),
         currentPage: _this2.page
-      }; // Update pagination
+      };
 
+      // Update pagination
       if (_this2.pagination) {
         _this2.pagination.setupPageInfo(pageInfo);
       }
     })["catch"](function () {
       _this2.loader.hide();
     });
-
     if (this.pagination) {
       if (this.pagination.paginationStyle === 'infinite') {
         this.$elements.append(response.html);
@@ -151,21 +149,17 @@ QR.ElementIndex = Garnish.Base.extend({
   },
   _countResults: function _countResults() {
     var _this3 = this;
-
     return new Promise(function (resolve, reject) {
       if (_this3.totalResults !== null) {
         resolve(_this3.totalResults);
       } else {
         var params = _this3.getViewParams();
-
         delete params.criteria.offset;
         delete params.criteria.limit;
         delete params.criteria.order;
-
         if (_this3.resultSet === null) {
           _this3.resultSet = Math.floor(Math.random() * 100000000);
         }
-
         params.resultSet = _this3.resultSet;
         QRAPI.sendActionRequest('POST', _this3.settings.countElementsAction, {
           data: params
@@ -198,8 +192,9 @@ QR.ElementIndex = Garnish.Base.extend({
     criteria: null,
     limit: 1
   }
-}); // Elements View
+});
 
+// Elements View
 QR.ElementsView = Garnish.Base.extend({
   context: null,
   $container: null,
@@ -233,8 +228,9 @@ QR.ElementsView = Garnish.Base.extend({
     onAppendElements: $.noop,
     onAfterInit: $.noop
   }
-}); // Pagination
+});
 
+// Pagination
 QR.Pagination = Garnish.Base.extend({
   context: null,
   $container: null,
@@ -253,27 +249,22 @@ QR.Pagination = Garnish.Base.extend({
   setupPageInfo: function setupPageInfo(pageInfo) {
     this.pageInfo = pageInfo;
     this.onPageInfoReady();
-
     if (this.paginationStyle === 'text') {
       this.$pagesContainer = this.$container.find('.qarr-pages');
       this.updatePageNumbers();
     }
-
     this.removeListener(this.$prevBtn, 'click');
     this.removeListener(this.$nextBtn, 'click');
-
     if (this.context.page === 1) {
       this.$prevBtn.addClass('pager-disabled');
     } else {
       this.$prevBtn.removeClass('pager-disabled');
     }
-
     if (pageInfo.currentPage === pageInfo.totalPages) {
       this.$nextBtn.addClass('pager-disabled');
     } else {
       this.$nextBtn.removeClass('pager-disabled');
     }
-
     if (this.context.page > 1) {
       this.addListener(this.$prevBtn, 'click', function () {
         this.removeListener(this.$prevBtn, 'click');
@@ -282,7 +273,6 @@ QR.Pagination = Garnish.Base.extend({
         this.context.updateElements();
       });
     }
-
     if (this.context.page < pageInfo.totalPages) {
       this.addListener(this.$nextBtn, 'click', function () {
         this.removeListener(this.$prevBtn, 'click');
@@ -294,20 +284,18 @@ QR.Pagination = Garnish.Base.extend({
   },
   updatePageNumbers: function updatePageNumbers() {
     // Clear page numbers
-    this.$pagesContainer.html(''); // Add new pages
+    this.$pagesContainer.html('');
 
+    // Add new pages
     for (var i = 0; i < this.pageInfo.totalPages; i++) {
       var page = i + 1;
       this.$pagesContainer.append("<a class=\"qarr-pager qarr-pager-text ".concat(this.pageInfo.currentPage === page ? 'qarr-current-page' : '', "\" data-direction=\"mixed\" data-page=\"").concat(page, "\">").concat(page, "</a>"));
     }
-
     var $pages = this.$pagesContainer.children();
     $pages.on('click', $.proxy(function (el) {
       var $target = $(el.currentTarget);
-
       if (!$target.hasClass('qarr-current-page')) {
         var _page = $target.data('page');
-
         this.context.setPage(_page);
         this.context.updateElements();
       }
@@ -322,8 +310,9 @@ QR.Pagination = Garnish.Base.extend({
   defaults: {
     onPageInfoReady: $.noop
   }
-}); // Sort
+});
 
+// Sort
 QR.Sort = Garnish.Base.extend({
   context: null,
   $container: null,
@@ -337,15 +326,15 @@ QR.Sort = Garnish.Base.extend({
       selectedSort: this.$container.val()
     });
   }
-}); // Loader
+});
 
+// Loader
 QR.Loader = Garnish.Base.extend({
   context: null,
   $container: null,
   init: function init(context) {
     this.context = context;
     this.$container = $('<div class="qarr-line-progress-bar qarr-loader"></div>').hide();
-
     if (this.context.pagination.paginationStyle === 'text') {
       this.$container.addClass('smaller');
     }
@@ -365,8 +354,9 @@ QR.Loader = Garnish.Base.extend({
     this.$container.remove();
     delete this;
   }
-}); // Leave Review Modal
+});
 
+// Leave Review Modal
 QR.ReviewForm = Garnish.Base.extend({
   $container: null,
   context: null,
@@ -398,7 +388,6 @@ QR.FormModal.ReviewModal = Garnish.Modal.extend({
   $footer: null,
   init: function init(context, settings) {
     var _this4 = this;
-
     this.context = context;
     this.base(null, {
       shadeClass: 'modal-shade dark qarr-modal-shade'
@@ -443,7 +432,9 @@ QR.FormModal.Stars = Garnish.Base.extend({
     this.context = context;
     console.log('STARS');
   }
-}); //
+});
+
+//
 // Garnish.$doc.ready(function() {
 //     new QR.ElementIndex()
 // })

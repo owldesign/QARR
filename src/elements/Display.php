@@ -15,6 +15,7 @@ use craft\base\Element;
 use craft\base\FieldInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\fields\data\SingleOptionFieldData;
+use craft\models\FieldLayout;
 use yii\base\Exception;
 use craft\db\Query;
 use craft\helpers\Json;
@@ -32,6 +33,9 @@ use owldesign\qarr\records\Display as DisplayRecord;
 /**
  * Class Display
  * @package owldesign\qarr\elements
+ *
+ * @property-read SingleOptionFieldData $emptyOptionFieldData
+ * @property-read array $fields
  */
 class Display extends Element
 {
@@ -39,29 +43,29 @@ class Display extends Element
     // =========================================================================
 
     /**
-     * @var
+     * @var string
      */
-    public $name;
+    public string $name;
     /**
-     * @var
+     * @var string
      */
-    public $handle;
+    public string $handle;
     /**
-     * @var
+     * @var string
      */
-    public $oldHandle;
+    public string $oldHandle;
     /**
-     * @var
+     * @var string
      */
-    public $fieldLayoutId;
+    public ?int $fieldLayoutId = null;
     /**
-     * @var
+     * @var string
      */
-    public $titleFormat;
+    public string $titleFormat;
     /**
-     * @var
+     * @var int
      */
-    public $oldFieldLayoutId;
+    public int $oldFieldLayoutId;
     /**
      * @var
      */
@@ -71,14 +75,14 @@ class Display extends Element
      */
     public $options;
     /**
-     * @var
+     * @vars string
      */
-    public $customTemplates;
+    public string $customTemplates;
 
     /**
      * @inheritdoc
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'fieldLayout' => [
@@ -107,7 +111,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'qarrDisplay';
     }
@@ -150,7 +154,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/displays/'.$this->id
@@ -160,7 +164,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string)$this->name;
     }
@@ -168,11 +172,9 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function getFieldLayout()
+    public function getFieldLayout(): ?FieldLayout
     {
-        $behavior = $this->getBehavior('fieldLayout');
-
-        return $behavior->getFieldLayout();
+        return $this->getBehavior('fieldLayout')->getFieldLayout();
     }
 
     /**
@@ -182,7 +184,7 @@ class Display extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new DisplayQuery(get_called_class());
+        return new DisplayQuery(static::class);
     }
 
     /**
@@ -211,13 +213,11 @@ class Display extends Element
      */
     protected static function defineSortOptions(): array
     {
-        $attributes = [
+        return [
             'name' => QARR::t('Display Name'),
             'elements.dateCreated' => QARR::t('Date Created'),
             'elements.dateUpdated' => QARR::t('Date Updated'),
         ];
-
-        return $attributes;
     }
 
     /**
@@ -238,8 +238,7 @@ class Display extends Element
      */
     protected static function defineDefaultTableAttributes(string $source): array
     {
-        $attributes = ['name', 'handle', 'totalSubmissions'];
-        return $attributes;
+        return ['name', 'handle', 'totalSubmissions'];
     }
 
     /**
@@ -254,13 +253,11 @@ class Display extends Element
                 }
             case 'totalSubmissions':
                 {
-                    $totalSubmissions = (new Query())
+                    return (new Query())
                         ->select('COUNT(*)')
                         ->from('{{%qarr_reviews}}')
                         ->where(['displayId' => $this->id])
                         ->scalar();
-
-                    return $totalSubmissions;
                 }
         }
 
@@ -272,14 +269,12 @@ class Display extends Element
      */
     protected static function defineSources(string $context = null): array
     {
-        $sources = [
+        return [
             [
                 'key'   => '*',
                 'label' => QARR::t('All Displays')
             ]
         ];
-
-        return $sources;
     }
 
     /**
@@ -287,7 +282,7 @@ class Display extends Element
      *
      * @return array
      */
-    public function getFields()
+    public function getFields(): array
     {
         if ($this->_fields === null) {
             $this->_fields = [];
@@ -306,13 +301,15 @@ class Display extends Element
      *
      * @return null|FieldInterface
      */
-    public function getField($handle)
+    public function getField(string $handle): ?FieldInterface
     {
         $fields = $this->getFields();
 
         if (is_string($handle) && !empty($handle)) {
             return $fields[$handle] ?? null;
         }
+
+        return null;
     }
 
     /**
@@ -320,7 +317,7 @@ class Display extends Element
      *
      * @return SingleOptionFieldData
      */
-    public function getEmptyOptionFieldData()
+    public function getEmptyOptionFieldData(): SingleOptionFieldData
     {
         return new SingleOptionFieldData(null, null, true, true);
     }
@@ -328,7 +325,7 @@ class Display extends Element
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules      = parent::rules();
         $rules[]    = [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true];
@@ -347,7 +344,7 @@ class Display extends Element
      * @param bool $isNew
      * @throws Exception
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$isNew) {
             $record = DisplayRecord::findOne($this->id);
@@ -373,10 +370,7 @@ class Display extends Element
         parent::afterSave($isNew);
     }
 
-    /**
-     * @return bool
-     */
-    public function afterDelete(): bool
+    public function afterDelete(): void
     {
         // Delete display record
         QARR::$plugin->getDisplays()->deleteDisplayById($this->id);
@@ -384,6 +378,7 @@ class Display extends Element
         if ($this->fieldLayoutId !== null) {
             Craft::$app->getFields()->deleteLayoutById($this->fieldLayoutId);
         }
-        return parent::beforeDelete();
+
+        $this->beforeDelete();
     }
 }

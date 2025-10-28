@@ -7,12 +7,12 @@ use craft\helpers\ArrayHelper;
 
 class RuleChecker
 {
-    protected $replaceWith = '****';
-    protected $words = [];
-    protected $filterChecks = [];
-    protected $replaceFullWords = true;
-    protected $multiCharReplace = false;
-    protected $strReplace = [
+    protected string $replaceWith = '****';
+    protected array $words = [];
+    protected array $filterChecks = [];
+    protected bool $replaceFullWords = true;
+    protected bool $multiCharReplace = false;
+    protected array $strReplace = [
         'a' => '(a|a\.|a\-|4|@|Á|á|À|Â|à|Â|â|Ä|ä|Ã|ã|Å|å|α|Δ|Λ|λ)',
         'b' => '(b|b\.|b\-|8|\|3|ß|Β|β)',
         'c' => '(c|c\.|c\-|Ç|ç|¢|€|<|\(|{|©)',
@@ -41,9 +41,9 @@ class RuleChecker
         'z' => '(z|z\.|z\-|Ζ)',
     ];
     protected $replaceWithLength;
-    protected $config = [];
-    protected $filteredStrings = [];
-    protected $wasFiltered = false;
+    protected array $config = [];
+    protected array $filteredStrings = [];
+    protected bool $wasFiltered = false;
 
     public function __construct($words)
     {
@@ -51,30 +51,35 @@ class RuleChecker
         $this->words = $words;
         $this->generateFilterChecks();
     }
-    public function reset()
+
+    public function reset(): static
     {
         $this->replaceFullWords($this->replaceFullWords);
         $this->replaceWith($this->replaceWith);
         return $this;
     }
-    public function replaceWith($string)
+
+    public function replaceWith($string): static
     {
         $this->replaceWith = $string;
         $this->replaceWithLength = mb_strlen($this->replaceWith);
         $this->multiCharReplace = $this->replaceWithLength === 1;
         return $this;
     }
-    public function replaceFullWords($boolean)
+
+    public function replaceFullWords($boolean): static
     {
         $this->replaceFullWords = $boolean;
         $this->generateFilterChecks();
         return $this;
     }
-    private function resetFiltered()
+
+    private function resetFiltered(): void
     {
         $this->filteredStrings = [];
         $this->wasFiltered = false;
     }
+
     public function filter($string, $details = null)
     {
         $this->resetFiltered();
@@ -84,14 +89,15 @@ class RuleChecker
         $filtered = $this->filterString($string);
         if ($details) {
             return [
-                'orig'     => $string,
-                'clean'    => $filtered,
+                'orig' => $string,
+                'clean' => $filtered,
                 'hasMatch' => $this->wasFiltered,
-                'matched'  => $this->filteredStrings,
+                'matched' => $this->filteredStrings,
             ];
         }
         return $filtered;
     }
+
     public function noProfanity($string)
     {
         $this->resetFiltered();
@@ -106,20 +112,23 @@ class RuleChecker
         }
         return true;
     }
-    private function filterString($string)
+
+    private function filterString($string): array|string|null
     {
         return preg_replace_callback($this->filterChecks, function ($matches) {
             return $this->replaceWithFilter($matches[0]);
         }, $string);
     }
-    private function setFiltered($string)
+
+    private function setFiltered($string): void
     {
-        array_push($this->filteredStrings, $string);
+        $this->filteredStrings[] = $string;
         if (!$this->wasFiltered) {
             $this->wasFiltered = true;
         }
     }
-    private function replaceWithFilter($string)
+
+    private function replaceWithFilter($string): string
     {
         $this->setFiltered($string);
         $strlen = mb_strlen($string);
@@ -128,26 +137,30 @@ class RuleChecker
         }
         return $this->randomFilterChar($strlen);
     }
-    private function generateFilterChecks()
+
+    private function generateFilterChecks(): void
     {
         foreach ($this->words as $string) {
             $this->filterChecks[] = $this->getFilterRegexp($string);
         }
     }
-    private function getFilterRegexp($string)
+
+    private function getFilterRegexp($string): string
     {
         $replaceFilter = $this->replaceFilter($string);
         if ($this->replaceFullWords) {
-            return '/\b'.$replaceFilter.'\b/iu';
+            return '/\b' . $replaceFilter . '\b/iu';
         }
-        return '/'.$replaceFilter.'/iu';
+        return '/' . $replaceFilter . '/iu';
     }
-    private function replaceFilter($string)
+
+    private function replaceFilter($string): array|string
     {
         return str_ireplace(array_keys($this->strReplace), array_values($this->strReplace), $string);
     }
-    private function randomFilterChar($len)
+
+    private function randomFilterChar($len): string
     {
-        return str_shuffle(str_repeat($this->replaceWith, intval($len / $this->replaceWithLength)).substr($this->replaceWith, 0, ($len % $this->replaceWithLength)));
+        return str_shuffle(str_repeat($this->replaceWith, intval($len / $this->replaceWithLength)) . substr($this->replaceWith, 0, ($len % $this->replaceWithLength)));
     }
 }

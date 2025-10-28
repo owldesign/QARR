@@ -25,6 +25,7 @@ use owldesign\qarr\services\campaigns\DirectLink;
 use owldesign\qarr\services\campaigns\EmailTemplates;
 use owldesign\qarr\services\Geolocations;
 use owldesign\qarr\services\Encrypt;
+use yii\base\InvalidConfigException;
 
 trait Services
 {
@@ -35,6 +36,7 @@ trait Services
      * Get functions
      *
      * @return Functions
+     * @throws InvalidConfigException
      */
     public function getFunctions(): Functions
     {
@@ -45,6 +47,7 @@ trait Services
      * Get reviews
      *
      * @return Reviews
+     * @throws InvalidConfigException
      */
     public function getReviews(): Reviews
     {
@@ -55,6 +58,7 @@ trait Services
      * Get questions
      *
      * @return Questions
+     * @throws InvalidConfigException
      */
     public function getQuestions(): Questions
     {
@@ -65,6 +69,7 @@ trait Services
      * Get displays
      *
      * @return Displays
+     * @throws InvalidConfigException
      */
     public function getDisplays(): Displays
     {
@@ -75,6 +80,7 @@ trait Services
      * Get replies
      *
      * @return Replies
+     * @throws InvalidConfigException
      */
     public function getReplies(): Replies
     {
@@ -85,6 +91,7 @@ trait Services
      * Get answers
      *
      * @return Answers
+     * @throws InvalidConfigException
      */
     public function getAnswers(): Answers
     {
@@ -95,6 +102,7 @@ trait Services
      * Get notes
      *
      * @return Notes
+     * @throws InvalidConfigException
      */
     public function getNotes(): Notes
     {
@@ -104,7 +112,8 @@ trait Services
     /**
      * Get notes
      *
-     * @return Notes
+     * @return Correspondence
+     * @throws InvalidConfigException
      */
     public function getCorrespondence(): Correspondence
     {
@@ -115,6 +124,7 @@ trait Services
      * Get cookies
      *
      * @return Cookies
+     * @throws InvalidConfigException
      */
     public function getCookies(): Cookies
     {
@@ -125,6 +135,7 @@ trait Services
      * Get elements
      *
      * @return Elements
+     * @throws InvalidConfigException
      */
     public function getElements(): Elements
     {
@@ -135,6 +146,7 @@ trait Services
      * Get rules
      *
      * @return Rules
+     * @throws InvalidConfigException
      */
     public function getRules(): Rules
     {
@@ -145,6 +157,7 @@ trait Services
      * Get geolocations
      *
      * @return Geolocations
+     * @throws InvalidConfigException
      */
     public function getGeolocations(): Geolocations
     {
@@ -155,6 +168,7 @@ trait Services
      * Get direct link
      *
      * @return DirectLink
+     * @throws InvalidConfigException
      */
     public function getLinks(): DirectLink
     {
@@ -165,6 +179,7 @@ trait Services
      * Get email templates
      *
      * @return EmailTemplates
+     * @throws InvalidConfigException
      */
     public function getEmailTemplates(): EmailTemplates
     {
@@ -175,6 +190,7 @@ trait Services
      * Get Encrypt
      *
      * @return Encrypt
+     * @throws InvalidConfigException
      */
     public function getEncrypt(): Encrypt
     {
@@ -187,7 +203,7 @@ trait Services
     /**
      * Set components
      */
-    private function _setPluginComponents()
+    private function _setPluginComponents(): void
     {
         $this->setComponents([
             'functions' => Functions::class,

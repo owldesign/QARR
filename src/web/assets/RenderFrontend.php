@@ -16,7 +16,7 @@ class RenderFrontend extends AssetBundle
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = __DIR__;
 

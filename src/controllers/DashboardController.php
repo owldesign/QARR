@@ -17,7 +17,7 @@ use yii\web\Response;
 
 class DashboardController extends Controller
 {
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
     // Public Methods
     // =========================================================================
@@ -29,8 +29,6 @@ class DashboardController extends Controller
      */
     public function actionIndex(array $variables = []): Response
     {
-        $variables = [];
-
         return $this->renderTemplate('qarr/index', $variables);
     }
 }

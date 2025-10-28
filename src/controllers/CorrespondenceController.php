@@ -31,7 +31,7 @@ use yii\web\Response;
 
 class CorrespondenceController extends Controller
 {
-    protected $allowAnonymous = [
+    protected int|bool|array $allowAnonymous = [
         'index' => self::ALLOW_ANONYMOUS_LIVE,
         'gate-keeper' => self::ALLOW_ANONYMOUS_LIVE,
         'check-password' => self::ALLOW_ANONYMOUS_LIVE,
@@ -46,7 +46,7 @@ class CorrespondenceController extends Controller
      * @return Response
      * @throws Exception
      */
-    public function actionGateKeeper($variables = null)
+    public function actionGateKeeper($variables = null): Response
     {
         $params = Craft::$app->request->queryParams;
 
@@ -67,7 +67,7 @@ class CorrespondenceController extends Controller
      * @throws Exception
      * @throws BadRequestHttpException
      */
-    public function actionCheckPassword()
+    public function actionCheckPassword(): Response|bool
     {
         $this->requirePostRequest();
 
@@ -96,6 +96,7 @@ class CorrespondenceController extends Controller
             return $template;
         }
 
+        return false;
     }
 
     /**
@@ -107,7 +108,7 @@ class CorrespondenceController extends Controller
      * @throws \Throwable
      * @throws \craft\errors\InvalidPluginException
      */
-    public function actionSendMail()
+    public function actionSendMail(): Response|bool
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
@@ -126,7 +127,7 @@ class CorrespondenceController extends Controller
 
         if (!$entry) { return false; }
 
-        if ($variables['type'] == 'reviews') {
+        if ($variables['type'] === 'reviews') {
             $variables['feedback'] = $entry->feedback;
         } else {
             $variables['feedback'] = $entry->question;
@@ -175,10 +176,10 @@ class CorrespondenceController extends Controller
                 'entry' => $variables
             ]);
 
-        } else {
-            return $this->asJson([
-                'success' => false,
-            ]);
         }
+
+        return $this->asJson([
+            'success' => false,
+        ]);
     }
 }

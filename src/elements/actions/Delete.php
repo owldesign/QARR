@@ -17,11 +17,11 @@ class Delete extends ElementAction
     /**
      * @var string|null The confirmation message that should be shown before the elements get deleted
      */
-    public $confirmationMessage;
+    public ?string $confirmationMessage = '';
     /**
      * @var string|null The message that should be shown after the elements get deleted
      */
-    public $successMessage;
+    public ?string $successMessage = '';
     // Public Methods
     // =========================================================================
     /**
@@ -43,7 +43,7 @@ class Delete extends ElementAction
     /**
      * @inheritdoc
      */
-    public function getConfirmationMessage()
+    public function getConfirmationMessage(): ?string
     {
         return QARR::t('Are you sure you want to delete the selected entries?');
     }

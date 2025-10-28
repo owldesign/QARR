@@ -72,10 +72,10 @@
   fill: #F1C40E;
 }
 .qarr .tagify__input {
-  border: 1px solid rgba(0, 0, 20, 0.1);
+  border: 1px solid hsla(240, 100%, 4%, 0.1);
   border-radius: 2px;
   transition: border linear 50ms;
-  color: #b9bfc6;
+  color: hsl(212, 10%, 75%);
   margin: inherit;
   padding: 5px 7px;
   color: #29323d;

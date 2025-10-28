@@ -17,7 +17,10 @@ use owldesign\qarr\records\Reply as ReplyRecord;
 
 use Craft;
 use craft\base\Component;
+use Throwable;
 use yii\base\Exception;
+use yii\db\ActiveRecord;
+use yii\db\StaleObjectException;
 
 /**
  * Class Replies
@@ -37,7 +40,7 @@ class Replies extends Component
      * @param $elementId
      * @return Reply|null
      */
-    public function getReply($elementId)
+    public function getReply($elementId): ?Reply
     {
         $record = ReplyRecord::find()
             ->where(['elementId' => $elementId])
@@ -53,19 +56,17 @@ class Replies extends Component
     /** Reply by id
      *
      * @param int $id
-     * @return array|null|\yii\db\ActiveRecord
+     * @return array|null|ActiveRecord
      */
-    public function getReplyById(int $id)
+    public function getReplyById(int $id): array|ActiveRecord|null
     {
         if (!$id) {
             return null;
         }
 
-        $record = ReplyRecord::find()
+        return ReplyRecord::find()
             ->where(['id' => $id])
             ->one();
-
-        return $record;
     }
 
     /**
@@ -74,7 +75,7 @@ class Replies extends Component
      * @param int $id
      * @return null|Reply
      */
-    public function getReplyModelById(int $id)
+    public function getReplyModelById(int $id): ?Reply
     {
         if (!$id) {
             return null;
@@ -94,10 +95,10 @@ class Replies extends Component
      * @param $author
      * @return bool|null|ReplyRecord
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      * @throws \yii\db\Exception
      */
-    public function save(Reply $reply, $author)
+    public function save(Reply $reply, $author): ReplyRecord|bool|null
     {
         $isNewReply = !$reply->id;
 
@@ -128,7 +129,7 @@ class Replies extends Component
             $reply->id = $record->id;
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
 
             throw $e;
@@ -142,10 +143,10 @@ class Replies extends Component
      *
      * @param $element
      * @return bool|false|int
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
-    public function deleteRepliesByElement($element)
+    public function deleteRepliesByElement($element): bool|int
     {
         $record = ReplyRecord::find()
             ->where(['elementId' => $element->id])

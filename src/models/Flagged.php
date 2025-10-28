@@ -16,6 +16,5 @@ class Flagged extends Model
     public $details;
     public $dateCreated;
     public $dateUpdated;
-
     public $rule;
 }

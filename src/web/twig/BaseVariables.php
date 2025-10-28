@@ -10,20 +10,24 @@ use owldesign\qarr\elements\Review;
 use Craft;
 use craft\web\View;
 use craft\helpers\Template;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Markup;
 use yii\base\Behavior;
 use yii\di\ServiceLocator;
 use yii\base\Exception;
 
 class BaseVariables extends ServiceLocator
 {
-    const EVENT_INIT = 'init';
+    public const EVENT_INIT = 'init';
 
-    public $defaultTemplateExtensions = ['html', 'twig'];
+    public array $defaultTemplateExtensions = ['html', 'twig'];
 
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -37,9 +41,13 @@ class BaseVariables extends ServiceLocator
      *
      * @param $element
      * @param null $variables
+     * @return Markup
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function display($element, $variables = null)
+    public function display($element, $variables = null): \Twig\Markup
     {
         $limit = null;
         $offset = null;
@@ -153,7 +161,7 @@ class BaseVariables extends ServiceLocator
      * @param null $criteria
      * @return ElementQueryInterface
      */
-    public function reviews($criteria = null)
+    public function reviews($criteria = null): ElementQueryInterface
     {
         $query = Review::find();
 
@@ -170,7 +178,7 @@ class BaseVariables extends ServiceLocator
      * @param null $criteria
      * @return ElementQueryInterface
      */
-    public function questions($criteria = null)
+    public function questions($criteria = null): ElementQueryInterface
     {
         $query = Question::find();
 
@@ -189,7 +197,7 @@ class BaseVariables extends ServiceLocator
      * @return array|Markup
      * @throws Exception
      */
-    public function displayRating($element, $markup = true)
+    public function displayRating($element, bool $markup = true): array|Markup
     {
         $view = Craft::$app->getView();
         $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -211,10 +219,9 @@ class BaseVariables extends ServiceLocator
 
         if ($markup) {
             return Template::raw($html);
-        } else {
-            return $variables;
         }
 
+        return $variables;
     }
 
     /**
@@ -222,9 +229,13 @@ class BaseVariables extends ServiceLocator
      *
      * @param $element
      * @param bool $markup
+     * @return array|Markup
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function displayReviews($element, $markup = true)
+    public function displayReviews($element, bool $markup = true): array|Markup
     {
         $view = Craft::$app->getView();
         $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -251,12 +262,11 @@ class BaseVariables extends ServiceLocator
             }
 
             return Template::raw($html);
-        } else {
-            $variables['reviews'] = $query->all();
-
-            return $variables;
         }
 
+        $variables['reviews'] = $query->all();
+
+        return $variables;
     }
 
     /**
@@ -264,10 +274,13 @@ class BaseVariables extends ServiceLocator
      *
      * @param $element
      * @param bool $markup
-     * @return array|\Twig\Markup
+     * @return array|Markup
      * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function displayQuestions($element, $markup = true)
+    public function displayQuestions($element, bool $markup = true): array|Markup
     {
         $view = Craft::$app->getView();
         $path = $view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr';
@@ -291,12 +304,11 @@ class BaseVariables extends ServiceLocator
 
         if ($markup) {
             return Template::raw($html);
-        } else {
-            $variables['questions'] = $query->all();
-
-            return $variables;
         }
 
+        $variables['questions'] = $query->all();
+
+        return $variables;
     }
 
 
@@ -307,7 +319,7 @@ class BaseVariables extends ServiceLocator
      * @param string $name
      * @return string
      */
-    private function _resolveTemplate(string $path, string $name)
+    private function _resolveTemplate(string $path, string $name): string
     {
         foreach ($this->defaultTemplateExtensions as $extension) {
             $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;
@@ -316,6 +328,8 @@ class BaseVariables extends ServiceLocator
                 return 'qarr' . DIRECTORY_SEPARATOR . $name . '.' . $extension;
             }
         }
+
+        return '';
     }
 
 
@@ -331,7 +345,7 @@ class BaseVariables extends ServiceLocator
      * @param int|null $elementTypeId
      * @return mixed
      */
-    public function getCount(string $type, string $status, int $elementId = null, $elementType = null, $elementTypeId = null)
+    public function getCount(string $type, string $status, int $elementId = null, int $elementType = null, int $elementTypeId = null): mixed
     {
         return QARR::$plugin->elements->getCount($type, $status, $elementId, $elementType, $elementTypeId);
     }
@@ -340,9 +354,9 @@ class BaseVariables extends ServiceLocator
      * Entries by rating
      *
      * @param $elementId
-     * @return null
+     * @return mixed
      */
-    public function getEntriesByRating($elementId)
+    public function getEntriesByRating($elementId): mixed
     {
         if (!$elementId) {
             return null;
@@ -355,9 +369,9 @@ class BaseVariables extends ServiceLocator
      * Average rating
      *
      * @param $elementId
-     * @return null
+     * @return mixed
      */
-    public function getAverageRating($elementId)
+    public function getAverageRating($elementId): mixed
     {
         if (!$elementId) {
             return null;
@@ -370,7 +384,7 @@ class BaseVariables extends ServiceLocator
      * @param $name
      * @return mixed
      */
-    public function getCookie($name)
+    public function getCookie($name): mixed
     {
         return QARR::$plugin->cookies->get($name);
     }
@@ -380,7 +394,7 @@ class BaseVariables extends ServiceLocator
      *
      * @return mixed
      */
-    public function pluginUrl()
+    public function pluginUrl(): mixed
     {
         return QARR::$plugin->pluginUrl;
     }
@@ -391,7 +405,7 @@ class BaseVariables extends ServiceLocator
      * @param $array
      * @return mixed
      */
-    public function getArrayValue($array)
+    public function getArrayValue($array): mixed
     {
         foreach ($array as $option) {
             if ($option->selected) {
@@ -399,7 +413,7 @@ class BaseVariables extends ServiceLocator
             }
         }
 
-        $result = null;
+        return null;
     }
 
     /**
@@ -407,7 +421,7 @@ class BaseVariables extends ServiceLocator
      *
      * @return array
      */
-    public function allowedFields()
+    public function allowedFields(): array
     {
         return [
             'PlainText',

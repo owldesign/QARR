@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\widgets;
 
+use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use owldesign\qarr\elements\Question;
@@ -31,6 +32,9 @@ use craft\base\Widget;
  * @author    Vadim Goncharov
  * @package   QARR
  * @since     1.0.0
+ *
+ * @property-read null|string $bodyHtml
+ * @property-read null|string $settingsHtml
  */
 class Pending extends Widget
 {
@@ -40,9 +44,9 @@ class Pending extends Widget
 
     public $type;
     public $elementType;
-    public $limit = 5;
-    public $status = 'pending';
-    public $colspan = 2;
+    public int $limit = 5;
+    public string $status = 'pending';
+    public ?int $colspan = 2;
 
     // Static Methods
     // =========================================================================
@@ -58,7 +62,7 @@ class Pending extends Widget
     /**
      * @inheritdoc
      */
-    public static function icon()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@qarr/src/web/assets/images/icon.svg");
     }
@@ -66,7 +70,7 @@ class Pending extends Widget
     /**
      * @inheritdoc
      */
-    public static function maxColspan()
+    public static function maxColspan(): ?int
     {
         return 2;
     }
@@ -77,7 +81,7 @@ class Pending extends Widget
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules   = parent::rules();
         $rules[] = [['type', 'limit'], 'required'];
@@ -89,7 +93,7 @@ class Pending extends Widget
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         $id = Html::id('type');
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
@@ -104,14 +108,14 @@ class Pending extends Widget
     /**
      * @inheritdoc
      */
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         $view = Craft::$app->getView();
         $view->registerAssetBundle(Widgets::class);
 
         $this->elementType = $this->_getElementType($this->type);
 
-        if ($this->type == 'reviews') {
+        if ($this->type === 'reviews') {
             $js = 'new QARRWidgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
         } else {
             $js = 'new QARRWidgets.PendingItemsWidget("#qarr-widget-' . $this->type . '-'. $this->id .'")';
@@ -131,11 +135,11 @@ class Pending extends Widget
      * Get element instance
      *
      * @param $type
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
-    private function _getElementType($type)
+    private function _getElementType($type): ElementQueryInterface
     {
-        if ($type == 'reviews') {
+        if ($type === 'reviews') {
             return Review::find();
         } else {
             return Question::find();

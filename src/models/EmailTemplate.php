@@ -30,9 +30,6 @@ class EmailTemplate extends Model
     public $dateCreated;
     public $dateUpdated;
 
-    /**
-     * @inheritdoc
-     */
     public function __toString()
     {
         return $this->name ?: ((string)$this->name ?: static::class);
@@ -41,7 +38,7 @@ class EmailTemplate extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'handle'], 'required']

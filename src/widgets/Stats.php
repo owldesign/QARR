@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\widgets;
 
+use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Html;
 use craft\helpers\Json;
@@ -32,6 +33,9 @@ use craft\base\Widget;
  * @author    Vadim Goncharov
  * @package   QARR
  * @since     1.0.0
+ *
+ * @property-read null|string $bodyHtml
+ * @property-read null|string $settingsHtml
  */
 class Stats extends Widget
 {
@@ -56,7 +60,7 @@ class Stats extends Widget
     /**
      * @inheritdoc
      */
-    public static function icon()
+    public static function icon(): ?string
     {
         return Craft::getAlias("@qarr/src/web/assets/images/icon.svg");
     }
@@ -67,7 +71,7 @@ class Stats extends Widget
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules   = parent::rules();
         $rules[] = [['type'], 'required'];
@@ -78,7 +82,7 @@ class Stats extends Widget
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         $id = Html::id('type');
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
@@ -93,7 +97,7 @@ class Stats extends Widget
     /**
      * @inheritdoc
      */
-    public function getBodyHtml()
+    public function getBodyHtml(): ?string
     {
         $view = Craft::$app->getView();
         $view->registerAssetBundle(Widgets::class);
@@ -102,7 +106,7 @@ class Stats extends Widget
 
         $variables['stats'] = $this->_getStatusStats();
         
-        if ($this->type == 'reviews') {
+        if ($this->type === 'reviews') {
             $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Review")';
         } else {
             $js = 'new QarrDonutChart("#' . $this->type . '-donut-'. $this->id .'", "owldesign\\\qarr\\\elements\\\Question")';
@@ -120,11 +124,11 @@ class Stats extends Widget
      * Get element instance
      * 
      * @param $type
-     * @return \craft\elements\db\ElementQueryInterface
+     * @return ElementQueryInterface
      */
-    private function _getElementType($type)
+    private function _getElementType($type): ElementQueryInterface
     {
-        if ($type == 'reviews') {
+        if ($type === 'reviews') {
             return Review::find();
         } else {
             return Question::find();
@@ -134,7 +138,7 @@ class Stats extends Widget
     /**
      * Get status stats
      */
-    private function _getStatusStats()
+    private function _getStatusStats(): array
     {
         $data = [];
         $entries = $this->elementType->all();
@@ -156,13 +160,13 @@ class Stats extends Widget
      * @param $variables
      * @param $entries
      */
-    private function _setCount(&$variables, $entries)
+    private function _setCount(&$variables, $entries): void
     {
         $variables['total'] = $this->elementType->count();
 
-        $variables['entries']['0']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'pending', true));
-        $variables['entries']['1']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'approved', true));
-        $variables['entries']['2']['count'] = count(ArrayHelper::filterByValue($entries, 'status', 'rejected', true));
+        $variables['entries']['0']['count'] = count(ArrayHelper::where($entries, 'status', 'pending', true));
+        $variables['entries']['1']['count'] = count(ArrayHelper::where($entries, 'status', 'approved', true));
+        $variables['entries']['2']['count'] = count(ArrayHelper::where($entries, 'status', 'rejected', true));
 
         // Set empty percentages
         $variables['entries']['0']['percent'] = 0;
@@ -175,7 +179,7 @@ class Stats extends Widget
      *
      * @param $variables
      */
-    private function _setStatColors(&$variables)
+    private function _setStatColors(&$variables): void
     {
         $variables['entries']['0']['color'] = '#4da1ff';
         $variables['entries']['1']['color'] = '#2fec94';
@@ -187,7 +191,7 @@ class Stats extends Widget
      *
      * @param $variables
      */
-    private function _setHandle(&$variables)
+    private function _setHandle(&$variables): void
     {
         $variables['entries']['0']['handle'] = 'pending';
         $variables['entries']['1']['handle'] = 'approved';
@@ -199,7 +203,7 @@ class Stats extends Widget
      *
      * @param $variables
      */
-    private function _setPercentages(&$variables)
+    private function _setPercentages(&$variables): void
     {
         $variables['entries']['0']['percent'] = round(($variables['entries']['0']['count'] / $variables['total']) * 100) . '%';
         $variables['entries']['1']['percent'] = round(($variables['entries']['1']['count'] / $variables['total']) * 100) . '%';

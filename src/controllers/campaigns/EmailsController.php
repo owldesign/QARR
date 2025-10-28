@@ -13,7 +13,7 @@ class EmailsController extends Controller
     /**
      * @var array
      */
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
     // Public Properties
     // =========================================================================

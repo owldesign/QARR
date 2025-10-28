@@ -17,8 +17,10 @@ use owldesign\qarr\records\Answer as AnswerRecord;
 
 use Craft;
 use craft\base\Component;
-use craft\helpers\ArrayHelper;
+use Throwable;
 use yii\base\Exception;
+use yii\db\ActiveRecord;
+use yii\db\StaleObjectException;
 
 /**
  * Class Answers
@@ -37,7 +39,7 @@ class Answers extends Component
      * @param $elementId
      * @return array|null
      */
-    public function getAnswers($status, $elementId)
+    public function getAnswers($status, $elementId): ?array
     {
         $answers = [];
 
@@ -64,19 +66,17 @@ class Answers extends Component
 
     /**
      * @param int $id
-     * @return array|null|\yii\db\ActiveRecord
+     * @return array|null|ActiveRecord
      */
-    public function getAnswerById(int $id)
+    public function getAnswerById(int $id): array|ActiveRecord|null
     {
         if (!$id) {
             return null;
         }
 
-        $record = AnswerRecord::find()
+        return AnswerRecord::find()
             ->where(['id' => $id])
             ->one();
-
-        return $record;
     }
 
     /**
@@ -84,10 +84,10 @@ class Answers extends Component
      * @param $author
      * @return bool|null|AnswerRecord
      * @throws Exception
-     * @throws \Throwable
+     * @throws Throwable
      * @throws \yii\db\Exception
      */
-    public function save(Answer $answer, $author)
+    public function save(Answer $answer, $author): bool|AnswerRecord|null
     {
         $isNewAnswer = !$answer->id;
 
@@ -123,7 +123,7 @@ class Answers extends Component
             $answer->id = $record->id;
 
             $transaction->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $transaction->rollBack();
 
             throw $e;
@@ -135,10 +135,10 @@ class Answers extends Component
     /**
      * @param $id
      * @return bool|false|int
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
-    public function delete($id)
+    public function delete($id): bool|int
     {
         $record = AnswerRecord::find()
             ->where(['id' => $id])
@@ -154,10 +154,10 @@ class Answers extends Component
     /**
      * @param $element
      * @return bool|false|int
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws Throwable
+     * @throws StaleObjectException
      */
-    public function deleteAnswersByElement($element)
+    public function deleteAnswersByElement($element): bool|int
     {
         $record = AnswerRecord::find()
             ->where(['elementId' => $element->id])

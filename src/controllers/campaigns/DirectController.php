@@ -15,11 +15,11 @@ class DirectController extends Controller
     /**
      * @var array
      */
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
     // Public Properties
     // =========================================================================
-    public $defaultTemplateExtensions = ['html', 'twig'];
+    public array $defaultTemplateExtensions = ['html', 'twig'];
     
     // Public Methods
     // =========================================================================

@@ -2,12 +2,15 @@
 
 namespace owldesign\qarr\records;
 
-use owldesign\qarr\elements\Review;
 use owldesign\qarr\elements\Question;
 
 use craft\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 
+/**
+ *
+ * @property-read ActiveQueryInterface $answer
+ */
 class AnswerComment extends ActiveRecord
 {
     // Public Static Methods
@@ -16,7 +19,7 @@ class AnswerComment extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%qarr_questions_answers_comments}}';
     }
@@ -28,7 +31,7 @@ class AnswerComment extends ActiveRecord
      */
     public function getAnswer(): ActiveQueryInterface
     {
-        return $this->hasOne(Question::class, ['id' => 'id']);
+        return self::hasOne(Question::class, ['id' => 'id']);
     }
 
 }

@@ -9,7 +9,6 @@ Garnish.$doc.ready(function () {
     e.preventDefault();
     Craft.postActionRequest('qarr/settings/utilities/update-geolocations', {}, $.proxy(function (response, textStatus) {
       console.log(response);
-
       if (response) {
         Craft.cp.displayNotice(Craft.t('qarr', response.message));
       }

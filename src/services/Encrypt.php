@@ -20,14 +20,12 @@ class Encrypt extends Component
         $this->encoder = new \Hashids\Hashids($this->salt, 24, $this->alphabet);
     }
 
-    public function encodeById($id)
+    public function encodeById($id): string
     {
 
         $this->encoder = new \Hashids\Hashids($this->salt, 24, $this->alphabet);
 
-        $encodedId = $this->encoder->encode($id);
-
-        return $encodedId;
+        return $this->encoder->encode($id);
     }
 
     public function decode($hash)

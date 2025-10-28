@@ -27,16 +27,19 @@ use yii\web\Response;
 
 class FrontendController extends Controller
 {
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
     /**
      * Build modal
      *
      * @return Response
-     * @throws Exception
      * @throws BadRequestHttpException
+     * @throws Exception
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function actionGetModalContent()
+    public function actionGetModalContent(): Response
     {
         $this->requirePostRequest();
 

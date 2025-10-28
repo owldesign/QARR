@@ -40,7 +40,7 @@ class Widgets extends AssetBundle
     /**
      * Initializes the bundle.
      */
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = "@owldesign/qarr/web/assets";
 

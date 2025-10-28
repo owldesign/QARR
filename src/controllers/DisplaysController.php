@@ -10,11 +10,15 @@
 
 namespace owldesign\qarr\controllers;
 
+use craft\errors\MissingComponentException;
 use owldesign\qarr\QARR;
 use owldesign\qarr\elements\Display;
 
 use Craft;
 use craft\web\Controller;
+use Throwable;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -56,7 +60,7 @@ class DisplaysController extends Controller
      * @param Display|null $display
      * @return Response
      * @throws NotFoundHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionEdit(int $displayId = null, Display $display = null): Response
     {
@@ -99,9 +103,9 @@ class DisplaysController extends Controller
      * Save
      *
      * @return Response|null
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
      */
     public function actionSave()
@@ -153,10 +157,10 @@ class DisplaysController extends Controller
      *
      * @return Response
      * @throws NotFoundHttpException
-     * @throws \Throwable
-     * @throws \craft\errors\MissingComponentException
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws Throwable
+     * @throws MissingComponentException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionDelete(): Response
     {
@@ -199,9 +203,9 @@ class DisplaysController extends Controller
 
     /**
      * @param Display $display
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws ForbiddenHttpException
      */
-    private function _enforceEditDisplayPermissions(Display $display)
+    private function _enforceEditDisplayPermissions(Display $display): void
     {
         $this->requirePermission('qarr:editDisplays');
     }
@@ -230,7 +234,7 @@ class DisplaysController extends Controller
     /**
      * @param Display $display
      */
-    private function _populateDisplayModel(Display $display)
+    private function _populateDisplayModel(Display $display): void
     {
         $request = Craft::$app->getRequest();
 

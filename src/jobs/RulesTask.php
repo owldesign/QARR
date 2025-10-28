@@ -27,15 +27,13 @@ class RulesTask extends BaseJob
     // Public Methods
     // =========================================================================
 
-    public function execute($queue)
+    public function execute($queue): void
     {
         try {
             $result = QARR::$plugin->rules->applyRules($this->entry, $this->elementType);
         } catch (\Exception $e) {
             QARR::log('There was an error applying rules: ' . $e->getMessage());
         }
-
-        return true;
     }
 
     // Private Methods

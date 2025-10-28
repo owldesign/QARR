@@ -26,9 +26,6 @@ class Rule extends Model
     public $dateCreated;
     public $dateUpdated;
 
-    /**
-     * @inheritdoc
-     */
     public function __toString()
     {
         return $this->name ?: ((string)$this->name ?: static::class);
@@ -37,7 +34,7 @@ class Rule extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
 

@@ -16,18 +16,15 @@ QARRWidgets.PendingItemsWidget = Garnish.Base.extend({
     this.$container = $(el);
     this.$loader = this.$container.find('.loader');
     this.$items = this.$container.find('.widget-recent-element-item');
-
     if (this.$items.length > 0) {
       $.each(this.$items, function (i, item) {
         new QARRWidgets.PendingItem(item, parent);
       });
     }
-
     this.checkElements();
   },
   checkElements: function checkElements() {
     this.$items = this.$container.find('.widget-recent-element-item');
-
     if (this.$items.length === 0) {
       this.$container.find('.element-list').html('<p class="text-gray-500">' + Craft.t('qarr', 'No pending submissions') + '</p>');
     }
@@ -37,7 +34,6 @@ QARRWidgets.PendingItemsWidget = Garnish.Base.extend({
   },
   fetchNewItem: function fetchNewItem(payload, oldChild) {
     var _this = this;
-
     var newPayload = {
       type: payload.type,
       limit: 1,
@@ -45,15 +41,11 @@ QARRWidgets.PendingItemsWidget = Garnish.Base.extend({
     };
     Craft.postActionRequest('qarr/elements/fetch-pending-items', newPayload, $.proxy(function (response, textStatus) {
       _this.$loader.addClass('hidden');
-
       if (response.success) {
         oldChild.remove();
         var itemHtml = $(response.template);
-
         _this.$container.find('.element-list').append(itemHtml);
-
         itemHtml.addClass('element-item-new');
-
         _this.addPendingItem(_this.$container.find(itemHtml));
       }
     }, this));
@@ -99,10 +91,8 @@ QARRWidgets.PendingItem = Garnish.Base.extend({
   },
   performAction: function performAction(e) {
     var _this2 = this;
-
     var that = this;
     var action = e.target.dataset.actionType;
-
     if (action === 'delete') {
       var $hudContents = $();
       var $form = $('<div/>');
@@ -126,7 +116,6 @@ QARRWidgets.PendingItem = Garnish.Base.extend({
         that.hud.hide();
       });
     }
-
     if (action === 'status') {
       this.parent.$loader.removeClass('hidden');
       this.payload.status = e.target.dataset.status;
@@ -134,11 +123,9 @@ QARRWidgets.PendingItem = Garnish.Base.extend({
         if (response.success) {
           Craft.cp.displayNotice(Craft.t('qarr', 'Item ' + _this2.payload.status));
           that.$item.addClass('status-changed');
-
           _this2.$item.velocity('slideUp', {
             duration: 300
           });
-
           _this2.parent.fetchNewItem(that.payload, _this2.$item);
         }
       }, this));
@@ -146,23 +133,18 @@ QARRWidgets.PendingItem = Garnish.Base.extend({
   },
   deleteElement: function deleteElement() {
     var _this3 = this;
-
     this.parent.$loader.removeClass('hidden');
     var newPayload = {
       id: this.payload.id
     };
     Craft.postActionRequest('qarr/elements/delete', newPayload, $.proxy(function (response, textStatus) {
       _this3.parent.$loader.addClass('hidden');
-
       if (response.success) {
         Craft.cp.displayNotice(Craft.t('qarr', 'Item deleted'));
-
         _this3.$item.addClass('item-deleted');
-
         _this3.$item.velocity('slideUp', {
           duration: 300
         });
-
         _this3.parent.fetchNewItem(_this3.payload, _this3.$item);
       }
     }, this));

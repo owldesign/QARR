@@ -7,8 +7,7 @@ use craft\base\Model;
 
 class Settings extends Model
 {
-    public $elementAssetHandleName = [];
-
-    public $enableAutoApprovalForReviews = false;
-    public $enableAutoApprovalForQuestions = false;
+    public array $elementAssetHandleName = [];
+    public bool $enableAutoApprovalForReviews = false;
+    public bool $enableAutoApprovalForQuestions = false;
 }

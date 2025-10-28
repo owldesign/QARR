@@ -15,6 +15,11 @@ use owldesign\qarr\assetbundles\qarrutilityutility\QARRUtilityUtilityAsset;
 
 use Craft;
 use craft\base\Utility;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /**
  * QARR Utility
@@ -59,7 +64,7 @@ class QARRUtility extends Utility
      *
      * @return string|null The path to the utility SVG icon
      */
-    public static function iconPath()
+    public static function iconPath(): ?string
     {
         return Craft::getAlias("@owldesign/qarr/assetbundles/qarrutilityutility/dist/img/QARRUtility-icon.svg");
     }
@@ -80,6 +85,11 @@ class QARRUtility extends Utility
      * Returns the utility's content HTML.
      *
      * @return string
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws Exception
+     * @throws InvalidConfigException
      */
     public static function contentHtml(): string
     {

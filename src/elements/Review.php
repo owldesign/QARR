@@ -10,6 +10,7 @@
 
 namespace owldesign\qarr\elements;
 
+use craft\elements\User;
 use craft\helpers\Json;
 use craft\models\Section;
 use craft\web\View;
@@ -35,15 +36,25 @@ use yii\validators\EmailValidator;
 /**
  * Class Review
  * @package owldesign\qarr\elements
+ *
+ * @property-read mixed $settings
+ * @property-read User|null $author
+ * @property-read mixed $flags
+ * @property-read bool $commerce
+ * @property-read mixed $reply
+ * @property-read User|null $user
+ * @property-read string $elementType
+ * @property-read null|false|mixed $customer
+ * @property null|\craft\base\Element|\craft\base\ElementInterface $element
  */
 class Review extends Element
 {
     // Constants
     // =========================================================================
 
-    const STATUS_PENDING = 'pending';
-    const STATUS_APPROVED = 'approved';
-    const STATUS_REJECTED = 'rejected';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_APPROVED = 'approved';
+    public const STATUS_REJECTED = 'rejected';
 
     // Properties
     // =========================================================================
@@ -51,11 +62,11 @@ class Review extends Element
     /**
      * @var
      */
-    public $fullName;
+    public string $fullName;
     /**
      * @var
      */
-    public $emailAddress;
+    public string $emailAddress;
     /**
      * @var
      */
@@ -148,7 +159,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'qarrReview';
     }
@@ -188,7 +199,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
         if ($this->status == 'pending') {
             return self::STATUS_PENDING;
@@ -210,7 +221,7 @@ class Review extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new ReviewQuery(get_called_class());
+        return new ReviewQuery(static::class);
     }
 
     // Public Methods
@@ -219,7 +230,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
         $this->setScenario(self::SCENARIO_LIVE);
@@ -228,7 +239,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function extraFields()
+    public function extraFields(): array
     {
         $names = parent::extraFields();
         $names[] = 'element';
@@ -236,9 +247,10 @@ class Review extends Element
     }
 
     /**
+     * @param bool $visibleOnly
      * @inheritdoc
      */
-    public function fieldLayoutFields(): array
+    public function fieldLayoutFields(bool $visibleOnly = false): array
     {
         $display = $this->getDisplay();
 
@@ -267,7 +279,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->status;
     }
@@ -275,7 +287,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function getFieldLayout()
+    public function getFieldLayout(): ?\craft\models\FieldLayout
     {
         if ($this->displayId !== null) {
             $display = $this->getDisplay();
@@ -290,7 +302,7 @@ class Review extends Element
     /**
      * @return mixed
      */
-    public function getDisplay()
+    public function getDisplay(): mixed
     {
         if ($this->displayId !== null) {
             $this->display = QARR::$plugin->displays->getDisplayById($this->displayId);
@@ -302,7 +314,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/reviews/' . $this->id
@@ -312,7 +324,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/reviews/' . $this->id
@@ -334,7 +346,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules[] = [['fullName', 'emailAddress', 'rating', 'feedback'], 'required'];
@@ -343,13 +355,13 @@ class Review extends Element
         return $rules;
     }
 
-    public static function renderElementsHtml($elementQuery)
+    public static function renderElementsHtml($elementQuery): string
     {
         $variables = [
             'elements' => $elementQuery->all()
         ];
 
-        $customFile = self::_resolveTemplate(Craft::$app->view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr', 'reviews');
+        $customFile = self::_resolveTemplate(Craft::$app->view->getTemplatesPath() . DIRECTORY_SEPARATOR . 'qarr');
 
         if ($customFile) {
             $html = Craft::$app->view->renderTemplate($customFile, $variables);
@@ -370,16 +382,15 @@ class Review extends Element
      * Function to get custom templates path
      *
      * @param string $path
-     * @param string $name
      * @return string
      */
-    private static function _resolveTemplate(string $path, string $name): string
+    private static function _resolveTemplate(string $path): string
     {
         foreach (['html', 'twig'] as $extension) {
-            $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+            $testPath = $path . DIRECTORY_SEPARATOR . 'reviews' . '.' . $extension;
 
             if (is_file($testPath)) {
-                return 'qarr' . DIRECTORY_SEPARATOR . $name . '.' . $extension;
+                return 'qarr' . DIRECTORY_SEPARATOR . 'reviews' . '.' . $extension;
             }
         }
 
@@ -501,7 +512,7 @@ class Review extends Element
     /**
      * @inheritdoc
      */
-    public function setEagerLoadedElements(string $handle, array $elements)
+    public function setEagerLoadedElements(string $handle, array $elements): void
     {
         if ($handle === 'element') {
             $element = $elements[0] ?? null;
@@ -620,7 +631,7 @@ class Review extends Element
      *
      * @return mixed
      */
-    public function getReply()
+    public function getReply(): mixed
     {
         return QARR::$plugin->replies->getReply($this->id);
     }
@@ -630,7 +641,7 @@ class Review extends Element
      *
      * @return mixed
      */
-    public function getCustomer()
+    public function getCustomer(): mixed
     {
         if ($this->commerce) {
             $customer = null;
@@ -641,9 +652,9 @@ class Review extends Element
             }
 
             return $customer;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -651,20 +662,21 @@ class Review extends Element
      *
      * @return string
      */
-    public function getElementType()
+    public function getElementType(): string
     {
         $class = get_class($this->element);
 
-        if ($class == 'craft\commerce\elements\Product') {
+        if ($class === 'craft\commerce\elements\Product') {
             return 'product';
         }
 
-        if ($class == 'craft\elements\Entry') {
+        if ($class === 'craft\elements\Entry') {
             $section = $this->element->section->type;
 
             return $section;
         }
 
+        return '';
     }
 
     /**
@@ -673,7 +685,7 @@ class Review extends Element
      * @return Element|\craft\base\ElementInterface|null
      * @throws InvalidConfigException
      */
-    public function getElement()
+    public function getElement(): \craft\base\ElementInterface|Element|null
     {
         if ($this->_element !== null) {
             return $this->_element;
@@ -695,7 +707,7 @@ class Review extends Element
      *
      * @param Element|null $element
      */
-    public function setElement(Element $element = null)
+    public function setElement(Element $element = null): void
     {
         $this->_element = $element;
     }
@@ -703,9 +715,9 @@ class Review extends Element
     /**
      * Entry user
      *
-     * @return \craft\elements\User|null
+     * @return User|null
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
@@ -713,14 +725,14 @@ class Review extends Element
     /**
      * Entry author
      *
-     * @return \craft\elements\User|null
+     * @return User|null
      */
-    public function getAuthor()
+    public function getAuthor(): ?User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
 
-    public function hasPurchased()
+    public function hasPurchased(): CommerceOrder|bool|array|null
     {
         $commerce = $this->getCommerce();
 
@@ -728,7 +740,7 @@ class Review extends Element
             return false;
         }
 
-        if ($this->getElementType() != 'product') {
+        if ($this->getElementType() !== 'product') {
             return false;
         }
 
@@ -746,7 +758,7 @@ class Review extends Element
      * @param $time
      * @return string
      */
-    public function getTimeAgo($time)
+    public function getTimeAgo($time): string
     {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
         $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
@@ -772,11 +784,9 @@ class Review extends Element
      *
      * @return mixed
      */
-    public function getFlags()
+    public function getFlags(): mixed
     {
-        $result = QARR::$plugin->rules->getFlagged($this->id);
-
-        return $result;
+        return QARR::$plugin->rules->getFlagged($this->id);
     }
 
     /**
@@ -784,7 +794,7 @@ class Review extends Element
      *
      * @return string
      */
-    public function avatarUrl()
+    public function avatarUrl(): string
     {
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
     }
@@ -794,7 +804,7 @@ class Review extends Element
      *
      * @return mixed
      */
-    public function getSettings()
+    public function getSettings(): mixed
     {
         return QARR::$plugin->settings;
     }
@@ -804,11 +814,9 @@ class Review extends Element
      *
      * @return bool
      */
-    public function getCommerce()
+    public function getCommerce(): bool
     {
-        $commerce = Craft::$app->getPlugins()->isPluginEnabled('commerce');
-
-        return $commerce;
+        return Craft::$app->getPlugins()->isPluginEnabled('commerce');
     }
 
     // Events
@@ -827,7 +835,7 @@ class Review extends Element
      * @param bool $isNew
      * @throws Exception
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$isNew) {
             $record = ReviewRecord::findOne($this->id);
@@ -894,7 +902,7 @@ class Review extends Element
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         $record = ReviewRecord::findOne($this->id);
         $record->softDelete();
@@ -915,7 +923,7 @@ class Review extends Element
     /**
      * @param int $structureId
      */
-    public function afterMoveInStructure(int $structureId)
+    public function afterMoveInStructure(int $structureId): void
     {
     }
 }

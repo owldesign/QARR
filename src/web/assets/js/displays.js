@@ -10,8 +10,9 @@ Garnish.$doc.ready(function () {
     var field = $(this).data('field');
     target.val(target.val() + field);
     target.focus();
-  }); // Delete Display
+  });
 
+  // Delete Display
   $('#delete-display').on('click', function (e) {
     e.preventDefault();
     var data = {
@@ -21,7 +22,6 @@ Garnish.$doc.ready(function () {
     var deletePrompt = new QarrPrompt(message, null);
     deletePrompt.on('response', function (response) {
       var _this = this;
-
       if (response && response.response === 'ok') {
         Craft.postActionRequest('qarr/displays/delete', data, $.proxy(function (response, textStatus) {
           if (response.success) {

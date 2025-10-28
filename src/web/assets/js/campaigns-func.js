@@ -20,20 +20,18 @@ var DirectLink = Garnish.Base.extend({
     this.elementType = this.$container.data('element-type');
     this.siteUrl = this.$container.data('site-url') + 'qarr/direct?';
     this.$elementSelectContainer = this.$container.find('.elementselect');
-    this.$generatedUrlInput = this.$container.find('#generated-url'); // Handle selected elements
+    this.$generatedUrlInput = this.$container.find('#generated-url');
 
+    // Handle selected elements
     this.handleSelectedElements();
     this.on('elementRemoved', function (e) {
       var type = e.settings.elementType;
-
       if (type === 'craft\\elements\\Entry') {
         that.element = null;
       }
-
       if (type === "craft\\elements\\User") {
         that.user = null;
       }
-
       that.$generatedUrlInput.val(that.siteUrl);
     });
   },
@@ -44,14 +42,12 @@ var DirectLink = Garnish.Base.extend({
       var target = $(el)[0];
       var id = target.dataset.id;
       var type = target.dataset.type;
-
       if (type === 'craft\\elements\\Entry') {
         that.element = {
           id: id,
           type: 'Entry'
         };
       }
-
       if (type === "craft\\elements\\User") {
         that.user = {
           id: id,
@@ -62,7 +58,6 @@ var DirectLink = Garnish.Base.extend({
   },
   handleAddElement: function handleAddElement(element) {
     var _this = this;
-
     Craft.postActionRequest('qarr/campaigns/direct-links/get-element-info', {
       elementId: element.id
     }, $.proxy(function (response, textStatus) {
@@ -77,13 +72,11 @@ var DirectLink = Garnish.Base.extend({
     var oldUrl = this.$generatedUrlInput.val();
     var elementClass = data["class"];
     var element = data.element;
-
     if (elementClass === 'User') {
       this.user = element;
     } else {
       this.element = element;
     }
-
     if (this.user && this.element) {
       var newUrl = this.siteUrl + 'elementId=' + this.element.id + '&userId=' + this.user.id;
       this.$generatedUrlInput.val(newUrl);

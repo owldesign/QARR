@@ -1,7 +1,7 @@
 <?php
 
 /**
- * QARR plugin for Craft CMS 3.x
+ * QARR plugin for Craft CMS 4.x
  *
  * Questions & Answers and Reviews & Ratings
  *
@@ -11,12 +11,10 @@
 
 namespace owldesign\qarr\elements\db;
 
-use Craft;
-use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use craft\helpers\Json;
+use craft\elements\db\ElementQuery;
 use owldesign\qarr\elements\Review;
-use owldesign\qarr\QARR;
 
 class ReviewQuery extends ElementQuery
 {
@@ -27,7 +25,7 @@ class ReviewQuery extends ElementQuery
     public $emailAddress;
     public $rating;
     public $feedback;
-    public $status;
+    public string|array|null $status = 'pending';
     public $options;
     public $hasPurchased;
     public $isNew;
@@ -52,7 +50,7 @@ class ReviewQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function elementId($value)
+    public function elementId($value): static
     {
         $this->elementId = $value;
         return $this;
@@ -64,7 +62,7 @@ class ReviewQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function sectionId($value)
+    public function sectionId($value): static
     {
         $this->sectionId = $value;
         return $this;
@@ -76,7 +74,7 @@ class ReviewQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function productTypeId($value)
+    public function productTypeId($value): static
     {
         $this->productTypeId = $value;
         return $this;
@@ -88,7 +86,7 @@ class ReviewQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function status($value)
+    public function status($value): ElementQuery
     {
         $this->status = $value;
         return $this;
@@ -100,7 +98,7 @@ class ReviewQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function rating($value)
+    public function rating($value): static
     {
         $this->rating = $value;
         return $this;
@@ -112,19 +110,19 @@ class ReviewQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function hasPurchased($value)
+    public function hasPurchased($value): static
     {
         $this->hasPurchased = $value;
         return $this;
     }
 
-    public function geolocation($value)
+    public function geolocation($value): static
     {
         $this->geolocation = Json::decode($value);
         return $this;
     }
 
-    public function reply($value)
+    public function reply($value): static
     {
         $this->reply = $value;
 
@@ -139,7 +137,7 @@ class ReviewQuery extends ElementQuery
      */
     protected function beforePrepare(): bool
     {
-        $this->joinElementTable('qarr_reviews');
+        $this->joinElementTable(Table::REVIEWS);
 
         $this->query->select([
             'qarr_reviews.fullName',
@@ -232,15 +230,18 @@ class ReviewQuery extends ElementQuery
     /**
      * @inheritdoc
      */
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): mixed
     {
-        $statuses = Review::statuses();
-
-        foreach ($statuses as $key => $value) {
-
-            if ($key == $status) {
-                return ['qarr_reviews.status' => $status];
-            }
+        return match ($status) {
+            Review::STATUS_APPROVED => [
+                'qarr_reviews.status' => 'approved'
+            ],
+            Review::STATUS_REJECTED => [
+                'qarr_reviews.status' => 'rejected'
+            ],
+            default => [
+                'qarr_reviews.status' => 'pending'
+            ]
         };
     }
 

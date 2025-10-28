@@ -24,9 +24,9 @@ Garnish.$doc.ready(function () {
         $('.tags--removeAllBtn').addClass('btn-disabled');
       }
     });
-  } // Delete Rule
+  }
 
-
+  // Delete Rule
   $('#delete-rule').on('click', function (e) {
     e.preventDefault();
     var data = {
@@ -36,7 +36,6 @@ Garnish.$doc.ready(function () {
     var deletePrompt = new QarrPrompt(message, null);
     deletePrompt.on('response', function (response) {
       var _this = this;
-
       if (response && response.response === 'ok') {
         Craft.postActionRequest('qarr/rules/delete', data, $.proxy(function (response, textStatus) {
           if (response.success) {

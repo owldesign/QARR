@@ -4,9 +4,13 @@ namespace owldesign\qarr\helpers;
 
 use craft\base\Component;
 
+/**
+ *
+ * @property-read mixed|string[] $continents
+ */
 class Countries extends Component {
 
-    public $countries = [
+    public array $countries = [
         "AF" => ["country" => "Afghanistan", "continent" => "Asia"],
         "AX" => ["country" => "Åland Islands", "continent" => "Europe"],
         "AL" => ["country" => "Albania", "continent" => "Europe"],
@@ -253,7 +257,7 @@ class Countries extends Component {
         "ZW" => ["country" => "Zimbabwe", "continent" => "Africa"]
     ];
 
-    public $continentsByName = [
+    public array $continentsByName = [
         'Africa' => 'AF',
         'Antarctica' => 'AN',
         'Asia' => 'AS',
@@ -263,7 +267,7 @@ class Countries extends Component {
         'South America' => 'SA',
     ];
 
-    public $continentsByCode = [
+    public array $continentsByCode = [
         'AF' => 'Africa',
         'AN' => 'Antarctica',
         'AS' => 'Asia',
@@ -273,17 +277,17 @@ class Countries extends Component {
         'SA' => 'South America',
     ];
 
-    public function getCountries()
+    public function getCountries(): array
     {
         return $this->countries;
     }
 
-    public function getContinents()
+    public function getContinents(): array
     {
         return $this->continentsByName;
     }
 
-    public function continents($code = false)
+    public function continents($code = false): array
     {
         return $this->continentsByCode;
     }

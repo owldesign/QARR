@@ -25,7 +25,7 @@ class QuestionQuery extends ElementQuery
     public $fullName;
     public $emailAddress;
     public $question;
-    public $status;
+    public string|array|null $status = 'pending';
     public $options;
     public $hasPurchased;
     public $isNew;
@@ -49,7 +49,7 @@ class QuestionQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function elementId($value)
+    public function elementId($value): static
     {
         $this->elementId = $value;
         return $this;
@@ -61,7 +61,7 @@ class QuestionQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function sectionId($value)
+    public function sectionId($value): static
     {
         $this->sectionId = $value;
         return $this;
@@ -73,7 +73,7 @@ class QuestionQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function productTypeId($value)
+    public function productTypeId($value): static
     {
         $this->productTypeId = $value;
         return $this;
@@ -85,7 +85,7 @@ class QuestionQuery extends ElementQuery
      * @param $value
      * @return $this
      */
-    public function status($value)
+    public function status($value): ElementQuery
     {
         $this->status = $value;
         return $this;
@@ -163,15 +163,18 @@ class QuestionQuery extends ElementQuery
     /**
      * @inheritdoc
      */
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): array
     {
-        $statuses = Question::statuses();
-
-        foreach ($statuses as $key => $value) {
-
-            if ($key == $status) {
-                return ['qarr_questions.status' => $status];
-            }
+        return match ($status) {
+            Question::STATUS_APPROVED => [
+                'qarr_questions.status' => 'approved'
+            ],
+            Question::STATUS_REJECTED => [
+                'qarr_questions.status' => 'rejected'
+            ],
+            default => [
+                'qarr_questions.status' => 'pending'
+            ]
         };
     }
 

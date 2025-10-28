@@ -50,7 +50,7 @@ class SetStatus extends ElementAction
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules[] = [['status'], 'required'];
@@ -66,7 +66,7 @@ class SetStatus extends ElementAction
     /**
      * @inheritdoc
      */
-    public function getTriggerHtml()
+    public function getTriggerHtml(): ?string
     {
         return Craft::$app->getView()->renderTemplate('qarr/_components/elementactions/SetStatus/trigger');
     }
@@ -108,11 +108,13 @@ class SetStatus extends ElementAction
      * @param $element
      * @return null|string
      */
-    private function _getType($element)
+    private function _getType($element): ?string
     {
         if ($element === Review::class) {
             return 'reviews';
-        } elseif ($element === Question::class) {
+        }
+
+        if ($element === Question::class) {
             return 'questions';
         }
 

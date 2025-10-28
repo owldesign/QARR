@@ -10,14 +10,16 @@
 
 namespace owldesign\qarr\records;
 
-use owldesign\qarr\QARR;
-
-use Craft;
 use craft\records\Element;
 use craft\db\ActiveRecord;
 use craft\db\SoftDeleteTrait;
 use yii\db\ActiveQueryInterface;
 
+/**
+ *
+ * @property-read ActiveQueryInterface $response
+ * @property-read ActiveQueryInterface $element
+ */
 class Review extends ActiveRecord
 {
     use SoftDeleteTrait;
@@ -25,7 +27,7 @@ class Review extends ActiveRecord
     // Public Static Methods
     // =========================================================================
 
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%qarr_reviews}}';
     }
@@ -37,7 +39,7 @@ class Review extends ActiveRecord
      */
     public function getElement(): ActiveQueryInterface
     {
-        return $this->hasOne(Element::class, ['id' => 'id']);
+        return self::hasOne(Element::class, ['id' => 'id']);
     }
 
     /**
@@ -47,6 +49,6 @@ class Review extends ActiveRecord
      */
     public function getResponse(): ActiveQueryInterface
     {
-        return $this->hasOne(Reply::class, ['id' => 'elementId']);
+        return self::hasOne(Reply::class, ['id' => 'elementId']);
     }
 }

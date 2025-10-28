@@ -12,8 +12,10 @@ namespace owldesign\qarr\elements;
 
 use Craft;
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\commerce\elements\Order as CommerceOrder;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\commerce\Plugin as CommercePlugin;
@@ -27,6 +29,7 @@ use owldesign\qarr\records\Question as QuestionRecord;
 use owldesign\qarr\jobs\GeolocationTask;
 use owldesign\qarr\jobs\RulesTask;
 
+use Throwable;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\validators\EmailValidator;
@@ -34,6 +37,15 @@ use yii\validators\EmailValidator;
 /**
  * Class Question
  * @package owldesign\qarr\elements
+ *
+ * @property-read mixed $settings
+ * @property-read User|null $author
+ * @property-read mixed $flags
+ * @property-read bool $commerce
+ * @property-read User|null $user
+ * @property-read string $elementType
+ * @property-read mixed $customer
+ * @property null|Element|ElementInterface $element
  */
 class Question extends Element
 {
@@ -43,31 +55,31 @@ class Question extends Element
     /**
      *
      */
-    const STATUS_PENDING    = 'pending';
+    public const STATUS_PENDING    = 'pending';
     /**
      *
      */
-    const STATUS_APPROVED   = 'approved';
+    public const STATUS_APPROVED   = 'approved';
     /**
      *
      */
-    const STATUS_REJECTED   = 'rejected';
+    public const STATUS_REJECTED   = 'rejected';
 
     // Properties
     // =========================================================================
 
     /**
-     * @var
+     * @var string
      */
-    public $fullName;
+    public string $fullName;
     /**
-     * @var
+     * @var string
      */
-    public $emailAddress;
+    public string $emailAddress;
     /**
-     * @var
+     * @var string
      */
-    public $question;
+    public string $question;
     /**
      * @var string
      */
@@ -77,21 +89,21 @@ class Question extends Element
      */
     public $options;
     /**
-     * @var
+     * @var string
      */
-    public $answer;
+    public string $answer;
     /**
-     * @var
+     * @var bool
      */
-    public $hasPurchased;
+    public bool $hasPurchased;
     /**
-     * @var
+     * @var bool
      */
-    public $isNew;
+    public bool $isNew;
     /**
-     * @var
+     * @var bool
      */
-    public $abuse;
+    public bool $abuse;
     /**
      * @var
      */
@@ -101,9 +113,9 @@ class Question extends Element
      */
     public $displayId;
     /**
-     * @var
+     * @var int
      */
-    public $elementId;
+    public int $elementId;
     /**
      * @var
      */
@@ -113,20 +125,20 @@ class Question extends Element
      */
     public $productTypeId;
     /**
-     * @var
+     * @var string
      */
-    public $geolocation;
+    public string $geolocation;
     /**
-     * @var
+     * @var string
      */
-    public $ipAddress;
+    public string $ipAddress;
     /**
-     * @var
+     * @var string
      */
-    public $userAgent;
+    public string $userAgent;
 
     /**
-     * @var Element|null
+     * @var
      */
     private $_element;
 
@@ -144,7 +156,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'qarrQuestion';
     }
@@ -184,17 +196,17 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function getStatus()
+    public function getStatus(): ?string
     {
-        if ($this->status == 'pending') {
+        if ($this->status === 'pending') {
             return self::STATUS_PENDING;
         }
 
-        if ($this->status == 'approved') {
+        if ($this->status === 'approved') {
             return self::STATUS_APPROVED;
         }
 
-        if ($this->status == 'rejected') {
+        if ($this->status === 'rejected') {
             return self::STATUS_REJECTED;
         }
 
@@ -206,7 +218,7 @@ class Question extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new QuestionQuery(get_called_class());
+        return new QuestionQuery(static::class);
     }
 
     // Public Methods
@@ -215,7 +227,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->status;
     }
@@ -223,7 +235,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/questions/'.$this->id
@@ -233,7 +245,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return UrlHelper::cpUrl(
             'qarr/questions/'.$this->id
@@ -255,7 +267,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['fullName', 'emailAddress', 'question'], 'required'],
@@ -284,7 +296,7 @@ class Question extends Element
         foreach ($sections as $section) {
             $sectionIds[] = $section->id;
 
-            if ($section->type == Section::TYPE_SINGLE) {
+            if ($section->type === Section::TYPE_SINGLE) {
                 $singleSectionIds[] = $section->id;
             } else {
                 $sectionsByType[$section->type][] = $section;
@@ -381,7 +393,7 @@ class Question extends Element
     /**
      * @inheritdoc
      */
-    public function setEagerLoadedElements(string $handle, array $elements)
+    public function setEagerLoadedElements(string $handle, array $elements): void
     {
         if ($handle === 'element') {
             $element = $elements[0] ?? null;
@@ -456,13 +468,11 @@ class Question extends Element
      */
     protected static function defineSortOptions(): array
     {
-        $attributes = [
+        return [
             'status'         => QARR::t('Status'),
             'fullName'       => QARR::t('Author'),
             'dateCreated'    => QARR::t('Submitted')
         ];
-
-        return $attributes;
     }
 
     /**
@@ -473,7 +483,6 @@ class Question extends Element
         $attributes = [];
 
         $attributes['title'] = ['label' => QARR::t('Status')];
-//        $attributes['status'] = ['label' => QARR::t('Status')];
         $attributes['location'] = ['label' => QARR::t('Location')];
         $attributes['author'] = ['label' => QARR::t('Author')];
         $attributes['feedback'] = ['label' => QARR::t('Feedback')];
@@ -493,17 +502,15 @@ class Question extends Element
     /**
      * Entry answer
      *
-     * @param $status
+     * @param string $status
      * @return mixed
      */
-    public function getAnswers($status = '*')
+    public function getAnswers(string $status = '*'): mixed
     {
-        $response = QARR::$plugin->answers->getAnswers($status, $this->id);
-
-        return $response;
+        return QARR::$plugin->answers->getAnswers($status, $this->id);
     }
 
-    public function hasPurchased()
+    public function hasPurchased(): CommerceOrder|bool|array|null
     {
         $commerce = $this->getCommerce();
 
@@ -511,7 +518,7 @@ class Question extends Element
             return false;
         }
 
-        if ($this->getElementType() != 'product') {
+        if ($this->getElementType() !== 'product') {
             return false;
         }
 
@@ -529,7 +536,7 @@ class Question extends Element
      * @param $time
      * @return string
      */
-    public function getTimeAgo($time)
+    public function getTimeAgo($time): string
     {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
         $lengths = array("60","60","24","7","4.35","12","10");
@@ -555,11 +562,9 @@ class Question extends Element
      *
      * @return mixed
      */
-    public function getFlags()
+    public function getFlags(): mixed
     {
-        $result = QARR::$plugin->rules->getFlagged($this->id);
-
-        return $result;
+        return QARR::$plugin->rules->getFlagged($this->id);
     }
 
     /**
@@ -567,7 +572,7 @@ class Question extends Element
      *
      * @return string
      */
-    public function avatarUrl()
+    public function avatarUrl(): string
     {
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->emailAddress)));
     }
@@ -577,7 +582,7 @@ class Question extends Element
      *
      * @return mixed
      */
-    public function getSettings()
+    public function getSettings(): mixed
     {
         return QARR::$plugin->settings;
     }
@@ -585,10 +590,10 @@ class Question extends Element
     /**
      * Entry element
      *
-     * @return Element|\craft\base\ElementInterface|null
+     * @return Element|ElementInterface|null
      * @throws InvalidConfigException
      */
-    public function getElement()
+    public function getElement(): ElementInterface|Element|null
     {
         if ($this->_element !== null) {
             return $this->_element;
@@ -610,7 +615,7 @@ class Question extends Element
      *
      * @param Element|null $element
      */
-    public function setElement(Element $element = null)
+    public function setElement(Element $element = null): void
     {
         $this->_element = $element;
     }
@@ -618,9 +623,9 @@ class Question extends Element
     /**
      * Entry user
      *
-     * @return \craft\elements\User|null
+     * @return User|null
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
@@ -628,9 +633,9 @@ class Question extends Element
     /**
      * Entry author
      *
-     * @return \craft\elements\User|null
+     * @return User|null
      */
-    public function getAuthor()
+    public function getAuthor(): ?User
     {
         return Craft::$app->getUsers()->getUserByUsernameOrEmail($this->emailAddress);
     }
@@ -640,7 +645,7 @@ class Question extends Element
      *
      * @return mixed
      */
-    public function getCustomer()
+    public function getCustomer(): mixed
     {
         if ($this->commerce) {
             $customer = null;
@@ -651,9 +656,9 @@ class Question extends Element
             }
 
             return $customer;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -661,20 +666,15 @@ class Question extends Element
      *
      * @return string
      */
-    public function getElementType()
+    public function getElementType(): string
     {
         $class = get_class($this->element);
 
-        if ($class == 'craft\commerce\elements\Product') {
+        if ($class === 'craft\commerce\elements\Product') {
             return 'product';
         }
 
-        if ($class == 'craft\elements\Entry') {
-            $section = $this->element->section->type;
-
-            return $section;
-        }
-
+        return $this->element->section->type;
     }
 
     /**
@@ -682,11 +682,9 @@ class Question extends Element
      *
      * @return bool
      */
-    public function getCommerce()
+    public function getCommerce(): bool
     {
-        $commerce = Craft::$app->getPlugins()->isPluginEnabled('commerce');
-
-        return $commerce;
+        return Craft::$app->getPlugins()->isPluginEnabled('commerce');
     }
 
     // Events
@@ -705,7 +703,7 @@ class Question extends Element
      * @param bool $isNew
      * @throws Exception
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if (!$isNew) {
             $record = QuestionRecord::findOne($this->id);
@@ -768,9 +766,9 @@ class Question extends Element
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function afterDelete()
+    public function afterDelete(): void
     {
         $record = QuestionRecord::findOne($this->id);
         $record->softDelete();
@@ -788,7 +786,7 @@ class Question extends Element
     /**
      * @param int $structureId
      */
-    public function afterMoveInStructure(int $structureId)
+    public function afterMoveInStructure(int $structureId): void
     {
     }
 }

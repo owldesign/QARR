@@ -21,14 +21,14 @@ use yii\web\Response;
 
 class GeolocationsController extends Controller
 {
-    protected $allowAnonymous = ['actionReset'];
+    protected int|bool|array $allowAnonymous = ['actionReset'];
 
     /**
      * Reset geolocation stats
      *
      * @return mixed
      */
-    public function actionReset()
+    public function actionReset(): mixed
     {
         return QARR::$plugin->geolocations->reset();
     }

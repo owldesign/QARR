@@ -28,7 +28,10 @@ class Display extends Model
     // Public Methods
     // =========================================================================
 
-    public function behaviors()
+    /**
+     * @return array
+     */
+    public function behaviors(): array
     {
         return array_merge(parent::behaviors(), [
             'fieldLayout' => [
@@ -41,7 +44,7 @@ class Display extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'fieldLayoutId'], 'number', 'integerOnly' => true],
@@ -52,10 +55,11 @@ class Display extends Model
         ];
     }
 
+    /**
+     * @return mixed
+     */
     public function getFieldLayout()
     {
-        $behavior = $this->getBehavior('fieldLayout');
-
-        return $behavior->getFieldLayout();
+        return $this->getBehavior('fieldLayout')->getFieldLayout();
     }
 }

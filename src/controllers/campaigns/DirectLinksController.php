@@ -23,14 +23,11 @@ use yii\web\Response;
 class DirectLinksController extends Controller
 {
 
-    /**
-     * @var array
-     */
-    protected $allowAnonymous = true;
+    protected int|bool|array $allowAnonymous = true;
 
     // Public Properties
     // =========================================================================
-    public $defaultTemplateExtensions = ['html', 'twig'];
+    public array $defaultTemplateExtensions = ['html', 'twig'];
     
     // Public Methods
     // =========================================================================
@@ -116,7 +113,7 @@ class DirectLinksController extends Controller
      * @throws BadRequestHttpException
      * @throws ForbiddenHttpException
      */
-    public function actionSave()
+    public function actionSave(): ?Response
     {
         $this->requirePostRequest();
 
@@ -244,7 +241,6 @@ class DirectLinksController extends Controller
             }
             $view->setTemplateMode($oldPath);
         }
-
     }
 
     public function actionGetElementInfo(): Response
@@ -286,7 +282,7 @@ class DirectLinksController extends Controller
      * @param DirectLink $campaign
      * @throws ForbiddenHttpException
      */
-    private function _enforceEditRulePermissions(DirectLink $direct)
+    private function _enforceEditRulePermissions(DirectLink $direct): void
     {
         $this->requirePermission('qarr:editCampaigns');
     }
@@ -296,7 +292,7 @@ class DirectLinksController extends Controller
      * @return bool
      * @throws UserNotAllowedException
      */
-    private function _enforceActionPermissions($user)
+    private function _enforceActionPermissions($user): bool
     {
         $currentUser = Craft::$app->getUser()->getIdentity();
 
@@ -315,7 +311,7 @@ class DirectLinksController extends Controller
      * @param string $name
      * @return string
      */
-    private function _resolveTemplate(string $path, string $name)
+    private function _resolveTemplate(string $path, string $name): string
     {
         foreach ($this->defaultTemplateExtensions as $extension) {
             $testPath = $path . DIRECTORY_SEPARATOR . $name . '.' . $extension;

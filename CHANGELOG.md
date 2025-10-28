@@ -1,5 +1,10 @@
 # QARR Changelog
 
+## 1.3.3 - 2022-03-31
+
+### Fixed
+- updated hashids version for php 8 support
+
 ## 1.3.2 - 2022-02-22
 
 ### Fixed

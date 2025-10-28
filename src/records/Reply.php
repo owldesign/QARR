@@ -8,6 +8,11 @@ use owldesign\qarr\elements\Review;
 use craft\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 
+/**
+ *
+ * @property-read ActiveQueryInterface $author
+ * @property-read ActiveQueryInterface $review
+ */
 class Reply extends ActiveRecord
 {
     // Public Static Methods
@@ -16,7 +21,7 @@ class Reply extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%qarr_reviews_replies}}';
     }
@@ -28,7 +33,7 @@ class Reply extends ActiveRecord
      */
     public function getReview(): ActiveQueryInterface
     {
-        return $this->hasOne(Review::class, ['id' => 'id']);
+        return self::hasOne(Review::class, ['id' => 'id']);
     }
 
     /**
@@ -38,6 +43,6 @@ class Reply extends ActiveRecord
      */
     public function getAuthor(): ActiveQueryInterface
     {
-        return $this->hasOne(User::class, ['id' => 'authorId']);
+        return self::hasOne(User::class, ['id' => 'authorId']);
     }
 }
